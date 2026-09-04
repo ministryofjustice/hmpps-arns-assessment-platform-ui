@@ -6,6 +6,7 @@ import { currentOffenceAndOffendingHistoryFields } from '../current-offence-and-
 import { dateOfCurrentSupervisionFields } from '../date-of-current-supervision/fields'
 import { offencesSinceSupervisionFields } from '../offences-since-supervision/fields'
 import { sexualOffendingFields } from '../sexual-offending/fields'
+import { employmentFields } from '../employment/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -18,6 +19,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.date_of_current_supervision, config: dateOfCurrentSupervisionFields },
   { step: Step.offences_since_community_date, config: offencesSinceSupervisionFields },
   { step: Step.accommodation, config: accommodationFields },
+  { step: Step.employment, config: employmentFields },
 ]
 
 export interface Answerable {
