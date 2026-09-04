@@ -1,10 +1,12 @@
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { InternalServerError } from 'http-errors'
+import { BadRequest, InternalServerError } from 'http-errors'
 import { DateTime } from 'luxon'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
+import { HandoverContext } from '../../../../interfaces/handover-api/response'
 
 const isMissingAssessmentQueryError = (error: unknown): boolean =>
   error instanceof QueryError && error.queryType === 'AssessmentVersionQuery' && error.result === undefined
@@ -20,6 +22,26 @@ const loadAssessmentQuery = async (deps: StrengthsAndNeedsEffectsDeps, query: As
     }
 
     throw error
+  }
+}
+
+/**
+ * Validates that the fetched assessment matches the one specified in the handover context.
+ * This prevents users from accessing assessments they shouldn't have access to.
+ */
+const validateAssessmentMatchesHandoverContext = (
+  assessment: AssessmentVersionQueryResult,
+  handoverContext: HandoverContext,
+) => {
+  if (!handoverContext?.assessmentContext?.assessmentId) {
+    return
+  }
+
+  const handoverAssessmentId = handoverContext.assessmentContext.assessmentId
+  const fetchedAssessmentId = assessment.assessmentUuid
+
+  if (handoverAssessmentId !== fetchedAssessmentId) {
+    throw new BadRequest(`Assessment ID mismatch: expected ${handoverAssessmentId}, but fetched ${fetchedAssessmentId}`)
   }
 }
 
@@ -44,9 +66,14 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
   }
 
   // Check if viewing a previous version via URL (uuid and mode are set on the session by an effect)
-  if (session.uuid && session.mode && ['view', 'view-historic'].includes(session.mode)) {
+  if (session.uuid && session.mode && ['view-historic'].includes(session.mode)) {
     const previousVersions = [...session.previousVersions, ...session.countersignedVersions]
     const previousVersion = previousVersions.find(it => it.assessmentVersionId === session.uuid)
+
+    if (!previousVersion) {
+      throw new InternalServerError(`Invalid assessment version ID: ${session.uuid}`)
+    }
+
     query.timestamp = DateTime.fromMillis(previousVersion?.assessmentUpdatedDate).toISO({ includeOffset: false })
     context.setData('previousVersionDate', previousVersion?.assessmentUpdatedDate)
   }
@@ -75,6 +102,9 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
       }
     }
   }
+
+  // Validate that the fetched assessment matches the handover context
+  validateAssessmentMatchesHandoverContext(assessment, session.handoverContext)
 
   context.setData('assessment', assessment)
   context.setData('assessmentUuid', assessment.assessmentUuid)
