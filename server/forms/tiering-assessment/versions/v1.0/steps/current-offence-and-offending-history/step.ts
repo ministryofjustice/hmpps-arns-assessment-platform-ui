@@ -11,11 +11,10 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { checkYourAnswersQuery, continueButton, returnToAnswersQueryText } from '../../common'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { sectionPageTitle } from '../../locales'
-import { Section } from '../../constants/section'
-import { Step } from './constants/step'
+import { stepTitle } from '../../locales'
+import { Step } from '../../constants/page'
 import {
-  currentOffenceAndOffendingHistorySection,
+  currentOffenceAndOffendingHistoryFields,
   currentOffenceHeadingQuestion,
   currentOffenceInsetQuestion,
   currentOffenceSummaryListQuestion,
@@ -23,13 +22,13 @@ import {
   historyInsetQuestion,
   offenceHistoryHeadingQuestion,
   sectionBreakQuestion,
-} from './section'
+} from './fields'
 
 const hasSexualOffenceHistory = Answer('has_ever_committed_sexual_offence').match(Condition.Equals('YES'))
 
 export const currentOffenceAndOffendingHistoryStep = step({
   path: `/${Step.current_offence_and_offending_history.path}`,
-  title: sectionPageTitle(Section.current_offence_and_offending_history),
+  title: stepTitle(Step.current_offence_and_offending_history),
   onAccess: [
     access({
       effects: [
@@ -47,10 +46,10 @@ export const currentOffenceAndOffendingHistoryStep = step({
     sectionBreakQuestion,
     offenceHistoryHeadingQuestion,
     historyInsetQuestion,
-    currentOffenceAndOffendingHistorySection.questions.dateAtFirstSanctionQuestion.displayModes.field,
-    currentOffenceAndOffendingHistorySection.questions.totalSanctionsQuestion.displayModes.field,
-    currentOffenceAndOffendingHistorySection.questions.totalViolentSanctionsQuestion.displayModes.field,
-    currentOffenceAndOffendingHistorySection.questions.sexualOffenceHistoryQuestion.displayModes.field,
+    currentOffenceAndOffendingHistoryFields.questions.dateAtFirstSanctionQuestion.displayModes.field,
+    currentOffenceAndOffendingHistoryFields.questions.totalSanctionsQuestion.displayModes.field,
+    currentOffenceAndOffendingHistoryFields.questions.totalViolentSanctionsQuestion.displayModes.field,
+    currentOffenceAndOffendingHistoryFields.questions.sexualOffenceHistoryQuestion.displayModes.field,
     continueButton,
   ],
   onSubmission: [

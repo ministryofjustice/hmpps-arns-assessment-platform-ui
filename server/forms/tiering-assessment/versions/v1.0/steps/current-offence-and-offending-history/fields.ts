@@ -19,9 +19,9 @@ import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { CommonOption } from '../../constants/commonOption'
 import { commonContentFor } from '../../locales'
-import { Step } from './constants/step'
 import {
   dateField,
+  dateSummaryRow,
   itemisedSummaryRow,
   question,
   QuestionFormat,
@@ -29,7 +29,7 @@ import {
   textField,
   textSummaryRow,
 } from '../../../../constants/questionContent'
-import { Section } from '../../constants/section'
+import { Step } from '../../constants/page'
 
 export const currentOffenceHeadingQuestion = GovUKHeading({
   text: contentFor('current_offence'),
@@ -98,6 +98,9 @@ const dateAtFirstSanctionQuestion = question({
         }),
       ],
     }),
+    summaryRow: dateSummaryRow({
+      changeHref: Step.current_offence_and_offending_history.path,
+    }),
   },
 })
 
@@ -127,7 +130,7 @@ const totalSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.number_of_sanctions_for_all_offences.path,
+      changeHref: Step.current_offence_and_offending_history.path,
     }),
   },
 })
@@ -158,7 +161,7 @@ const totalViolentSanctionsQuestion = question({
       ],
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.number_of_violent_sanctions.path,
+      changeHref: Step.current_offence_and_offending_history.path,
     }),
   },
 })
@@ -183,12 +186,12 @@ export const sexualOffenceHistoryQuestion = question({
   },
   displayModes: {
     field: radioField({ inputClasses: 'govuk-radios--inline' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.has_ever_committed_sexual_offence.path }),
+    summaryRow: itemisedSummaryRow({ changePath: Step.current_offence_and_offending_history.path }),
   },
 })
 
-export const currentOffenceAndOffendingHistorySection = {
-  code: Section.current_offence_and_offending_history.code,
+export const currentOffenceAndOffendingHistoryFields = {
+  code: Step.current_offence_and_offending_history.code,
   questions: {
     dateAtFirstSanctionQuestion,
     totalSanctionsQuestion,

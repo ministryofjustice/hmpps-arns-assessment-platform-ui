@@ -11,7 +11,7 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { interviewQuestionField } from './fields'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
-import { Step } from '../accommodation/constants/step'
+import { Step } from '../../constants/page'
 
 export const interviewQuestionStep = step({
   path: '/interview-question',

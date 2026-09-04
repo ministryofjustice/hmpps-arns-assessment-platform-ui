@@ -1,6 +1,6 @@
 import { contentFrom, Locales } from '../../../i18n'
 import { CommonLocale, english } from './en-gb'
-import { Section } from '../constants/section'
+import { Step } from '../constants/page'
 
 const locales: Locales = {
   'en-gb': english,
@@ -8,10 +8,9 @@ const locales: Locales = {
 
 export const commonContentFor = contentFrom<CommonLocale>(locales)
 
-type SectionDefinition = (typeof Section)[keyof typeof Section]
+export type StepDefinition = (typeof Step)[keyof typeof Step]
 
 /**
- * Page titles derived from the `sectionTitle` entry. Summary and
- * analysis pages append a suffix, every other page is the plain section name.
+ * Step titles derived from the `stepTitle` entry.
  */
-export const sectionPageTitle = (section: SectionDefinition) => commonContentFor(`sectionTitle.${section.code}`)
+export const stepTitle = (step: StepDefinition) => commonContentFor(`stepTitle.${step.code}`)

@@ -1,27 +1,28 @@
 import { QuestionContent, SectionDefinition, SummaryRow } from '../../../../constants/questionContent'
-import { Section } from '../../constants/section'
-import { accommodationSection } from '../accommodation/section'
-import { currentOffenceAndOffendingHistorySection } from '../current-offence-and-offending-history/section'
-import { dateOfCurrentSupervisionSection } from '../date-of-current-supervision/section'
+import { Step } from '../../constants/page'
+import { StepDefinition } from '../../locales'
+import { accommodationFields } from '../accommodation/fields'
+import { currentOffenceAndOffendingHistoryFields } from '../current-offence-and-offending-history/fields'
+import { dateOfCurrentSupervisionFields } from '../date-of-current-supervision/fields'
+import { offencesSinceSupervisionFields } from '../offences-since-supervision/fields'
 import { sexualOffendingFields } from '../sexual-offending/fields'
 
-type SectionDefinitionOf = (typeof Section)[keyof typeof Section]
-
 export interface CheckYourAnswersSection {
-  section: SectionDefinitionOf
+  step: StepDefinition
   config?: SectionDefinition
 }
 
 export const checkYourAnswersSections: CheckYourAnswersSection[] = [
-  { section: Section.current_offence_and_offending_history, config: currentOffenceAndOffendingHistorySection },
-  { section: Section.sexual_offending, config: sexualOffendingFields },
-  { section: Section.date_of_current_supervision, config: dateOfCurrentSupervisionSection },
-  { section: Section.accommodation, config: accommodationSection },
+  { step: Step.current_offence_and_offending_history, config: currentOffenceAndOffendingHistoryFields },
+  { step: Step.sexual_offending, config: sexualOffendingFields },
+  { step: Step.date_of_current_supervision, config: dateOfCurrentSupervisionFields },
+  { step: Step.offences_since_community_date, config: offencesSinceSupervisionFields },
+  { step: Step.accommodation, config: accommodationFields },
 ]
 
 export interface Answerable {
   content: QuestionContent
-  displayModes?: { answerRow?: SummaryRow }
+  displayModes?: { summaryRow?: SummaryRow }
 }
 
 const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)

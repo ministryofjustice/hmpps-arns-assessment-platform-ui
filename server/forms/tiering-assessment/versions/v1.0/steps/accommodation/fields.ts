@@ -1,11 +1,10 @@
 import { contentFor } from './locales'
 import { Question } from './constants/question'
 import { Option } from './constants/option'
-import { Step } from './constants/step'
 import { commonContentFor } from '../../locales'
 import { CommonOption } from '../../constants/commonOption'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
-import { Section } from '../../constants/section'
+import { Step } from '../../constants/page'
 import {
   checkboxField,
   itemisedSummaryRow,
@@ -72,8 +71,8 @@ export const suitabilityOfAccommodationQuestion = question({
   },
 })
 
-export const accommodationSection = {
-  code: Section.accommodation.code,
+export const accommodationFields = {
+  code: Step.accommodation.code,
   questions: {
     whoAreTheyLivingWithQuestion,
     suitabilityOfAccommodationQuestion,

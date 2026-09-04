@@ -1,14 +1,11 @@
 import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { commonContentFor } from '../../locales'
+import { commonContentFor, stepTitle, StepDefinition } from '../../locales'
 import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
-import { Section } from '../../constants/section'
 import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 
-type SectionDefinition = (typeof Section)[keyof typeof Section]
-
-const sectionHeader = (section: SectionDefinition) =>
+const sectionHeader = (step: StepDefinition) =>
   TemplateWrapper({
     template:
       '<div class="govuk-grid-row govuk-!-margin-top-8">' +
@@ -17,7 +14,7 @@ const sectionHeader = (section: SectionDefinition) =>
     slots: {
       heading: [
         GovUKHeading({
-          text: commonContentFor(`sectionTitle.${section.code}`),
+          text: stepTitle(step),
           size: 'l',
           level: 2,
           classes: 'govuk-!-margin-bottom-0',
@@ -37,17 +34,17 @@ const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answera
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })
 
 const answersFor = (fields: Answerable[]) =>
-  GovUKSummaryList({ rows: fields.map(field => field.displayModes?.answerRow ?? answerRow(field.content)) })
+  GovUKSummaryList({ rows: fields.map(field => field.displayModes?.summaryRow ?? answerRow(field.content)) })
 
 const blocksFor = (entry: CheckYourAnswersSection): BlockDefinition[] => {
   const questions = questionsOf(entry)
 
   if (questions.length === 0) {
-    return [sectionHeader(entry.section)]
+    return [sectionHeader(entry.step)]
   }
 
   return [
-    sectionHeader(entry.section),
+    sectionHeader(entry.step),
     groupHeading(commonContentFor('summary'), questions),
     answersFor(questions),
   ] as BlockDefinition[]

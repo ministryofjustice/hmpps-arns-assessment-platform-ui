@@ -11,21 +11,20 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { continueButton, redirectToCheckYourAnswers } from '../../common'
-import { dateOfCurrentSupervisionSection } from './section'
-import { sectionPageTitle } from '../../locales'
-import { Step } from './constants/step'
-import { Section } from '../../constants/section'
+import { dateOfCurrentSupervisionFields } from './fields'
+import { stepTitle } from '../../locales'
+import { Step } from '../../constants/page'
 
 export const dateOfCurrentSupervisionStep = step({
   path: `/${Step.date_of_current_supervision.path}`,
-  title: sectionPageTitle(Section.date_of_current_supervision),
+  title: stepTitle(Step.date_of_current_supervision),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [
-    dateOfCurrentSupervisionSection.questions.dateOfCurrentSupervisionQuestion.displayModes.field,
+    dateOfCurrentSupervisionFields.questions.dateOfCurrentSupervisionQuestion.displayModes.field,
     continueButton,
   ],
   onSubmission: [

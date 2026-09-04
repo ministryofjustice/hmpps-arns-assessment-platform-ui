@@ -1,19 +1,20 @@
 import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { commonContentFor } from '../../locales'
+import { commonContentFor, stepTitle } from '../../locales'
 import { checkYourAnswersBlock } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import {
   currentOffenceHeadingQuestion,
   currentOffenceSummaryListQuestion,
-} from '../current-offence-and-offending-history/section'
+} from '../current-offence-and-offending-history/fields'
+import { Step } from '../../constants/page'
 
 /**
  * Every answer given so far across every section.
  */
 export const checkYourAnswersStep = step({
-  path: '/check-your-answers',
-  title: commonContentFor('pageTitle.check_your_answers'),
+  path: `/${Step.check_your_answers.path}`,
+  title: stepTitle(Step.check_your_answers),
   reachability: { entryWhen: true },
   onAccess: [
     access({

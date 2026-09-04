@@ -27,7 +27,11 @@ export const startTieringAssessmentStep = step({
     submit({
       validate: true,
       onValid: {
-        effects: [TieringAssessmentEffects.InitialiseAssessment(), TieringAssessmentEffects.SaveAssessmentData()],
+        effects: [
+          TieringAssessmentEffects.ReadWriteAccess(),
+          TieringAssessmentEffects.InitialiseAssessment(),
+          TieringAssessmentEffects.SaveAssessmentData(),
+        ],
         next: [redirect({ goto: 'current-offence-and-offending-history' })],
       },
     }),

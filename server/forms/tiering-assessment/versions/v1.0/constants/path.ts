@@ -1,5 +1,5 @@
 import { formVersion } from './formVersion'
-import { Section } from './section'
+import { Step } from './page'
 
-export const sectionPath = (section: (typeof Section)[keyof typeof Section]) =>
+export const sectionPath = (section: (typeof Step)[keyof typeof Step]) =>
   `/tiering-assessment/${formVersion}${section.path}/`

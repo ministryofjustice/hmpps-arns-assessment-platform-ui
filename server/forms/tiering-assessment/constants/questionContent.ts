@@ -22,8 +22,8 @@ import {
 import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../i18n'
 import { SANGenerators } from '../generators'
 import { commonContentFor } from '../versions/v1.0/locales'
-import { checkYourAnswersQuery } from '../versions/v1.0/common'
 import { StrengthsAndNeedsTransformers } from '../transformers/transformers'
+import { isEditMode } from '../guards'
 
 /**
  * Content-first question authoring.
@@ -243,9 +243,9 @@ export const requiredValidationOf = (
   return allValidations.length > 0 ? allValidations : undefined
 }
 
-export const createSummaryRowActions = (changeRef: ResolvableString) =>
-  when(checkYourAnswersQuery)
-    .then({ items: [{ href: changeRef, text: commonContentFor('change') }] })
+export const createSummaryRowActions = (changeHref: ResolvableString) =>
+  when(isEditMode)
+    .then({ items: [{ href: changeHref, text: commonContentFor('change') }] })
     .else({})
 
 export const textSummaryRow =
@@ -256,6 +256,18 @@ export const textSummaryRow =
       visibleWhen: placement.visibleWhen,
       value: {
         blocks: [GovUKBody({ text: Answer(content.code) })],
+      },
+      actions: createSummaryRowActions(placement.changeHref),
+    })
+
+export const dateSummaryRow =
+  (placement: SummaryRowPlacement) =>
+  (content: QuestionContent): SummaryRow =>
+    definedPropsOf({
+      key: { html: content.text },
+      visibleWhen: placement.visibleWhen,
+      value: {
+        blocks: [GovUKBody({ text: SANGenerators.getFormatterDateFromIso(Answer(content.code)) })],
       },
       actions: createSummaryRowActions(placement.changeHref),
     })
@@ -299,6 +311,23 @@ export const dateField =
           isPageHeading: content.isPageHeading ?? false,
         },
       },
+      formatters: [StrengthsAndNeedsTransformers.ToISO()],
+      validWhen: placement.customValidations,
+    })
+
+export const revealedDateField =
+  (placement: FieldPlacement & { legendClasses?: ResolvableString; customValidations?: ValidationExpr[] } = {}) =>
+  (content: QuestionContent, parent: ParentOption) =>
+    GovUKDateInputFull({
+      code: content.code,
+      fieldset: {
+        legend: {
+          text: content.text,
+          classes: placement.legendClasses ?? 'govuk-fieldset__legend--m',
+          isPageHeading: content.isPageHeading ?? false,
+        },
+      },
+      dependentWhen: parent?.selectedWhen,
       formatters: [StrengthsAndNeedsTransformers.ToISO()],
       validWhen: placement.customValidations,
     })
@@ -754,7 +783,12 @@ export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[]
   [...Object.values(section.questions)].flatMap(field => withRevealedQuestions(field.content))
 
 export const itemisedSummaryRow =
-  (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
+  (placement: {
+    changePath: string
+    visibleWhen?: PredicateExpr
+    changeVisuallyHiddenText?: boolean
+    hideRevealedQuestions?: boolean
+  }) =>
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { text: content.text },
@@ -762,10 +796,10 @@ export const itemisedSummaryRow =
       value: {
         blocks: [
           ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
-          ...revealedAnswerBlocksOf(content),
+          ...(placement.hideRevealedQuestions ? [] : revealedAnswerBlocksOf(content)),
         ],
       },
-      actions: when(checkYourAnswersQuery)
+      actions: when(isEditMode)
         .then({
           items: [
             definedPropsOf({

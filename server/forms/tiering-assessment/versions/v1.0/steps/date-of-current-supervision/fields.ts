@@ -1,8 +1,8 @@
 import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { Section } from '../../constants/section'
+import { Step } from '../../constants/page'
 import { contentFor } from './locales'
 import { commonContentFor } from '../../locales'
-import { dateField, question, QuestionFormat } from '../../../../constants/questionContent'
+import { dateField, dateSummaryRow, question, QuestionFormat } from '../../../../constants/questionContent'
 import { Question } from './constants/question'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
@@ -24,11 +24,14 @@ const dateOfCurrentSupervisionQuestion = question({
         }),
       ],
     }),
+    summaryRow: dateSummaryRow({
+      changeHref: Step.date_of_current_supervision.path,
+    }),
   },
 })
 
-export const dateOfCurrentSupervisionSection = {
-  code: Section.date_of_current_supervision.code,
+export const dateOfCurrentSupervisionFields = {
+  code: Step.date_of_current_supervision.code,
   questions: {
     dateOfCurrentSupervisionQuestion,
   },
