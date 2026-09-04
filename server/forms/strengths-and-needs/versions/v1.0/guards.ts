@@ -11,6 +11,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
+import { basePath } from './constants/formVersion'
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -68,5 +69,28 @@ export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPa
       not(Request.Path().match(Condition.Equals(createRoute([...baseSanRoute, sectionPath, analysisStepPath])))),
     ),
     next: [redirect({ goto: createRoute([...baseSanRoute, sectionPath, analysisStepPath]) })],
+  })
+}
+
+/**
+ * Prevents privilege escalation by validating the mode parameter against the accessMode.
+ *
+ * Rules:
+ * - READ_ONLY accessMode: only allows 'view' or 'view-historic' mode
+ * - READ_WRITE accessMode: allows 'view', 'edit', or 'view-historic' mode
+ *
+ * Redirects users attempting to access unauthorized modes to the accommodation section in view mode.
+ */
+export const preventPrivilegeEscalation = () => {
+  const isReadWriteMode = Params('mode').match(Condition.Equals('edit'))
+  const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
+
+  return access({
+    when: and(isReadWriteMode, not(hasReadWriteAccess)),
+    next: [
+      redirect({
+        goto: createRoute([basePath, 'view', Params('uuid'), 'accommodation']),
+      }),
+    ],
   })
 }

@@ -2,10 +2,10 @@ import { StrengthsAndNeedsContext } from '../types'
 
 /**
  * Extracts mode and UUID from the URL path: /strengths-and-needs/v1.0/{mode}/{uuid}
- * Validates mode is 'edit' or 'view', and stores both in session.
+ * Validates mode is 'edit', 'view', or 'view-historic', and stores both in session.
  *
- * - In edit mode: uuid is the assessmentUuid
- * - In view mode: uuid is the versionUuid
+ * - In edit or view mode: uuid is the assessmentUuid
+ * - In view-historic mode: uuid is the versionUuid
  */
 export const extractModeAndVersionUuidFromUrl = () => (context: StrengthsAndNeedsContext) => {
   const session = context.getSession()

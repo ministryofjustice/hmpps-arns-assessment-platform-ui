@@ -21,7 +21,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isEditMode, isHistoricView, isOasysAccess } from './guards'
+import { isEditMode, isHistoricView, isOasysAccess, preventPrivilegeEscalation } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
@@ -84,6 +84,8 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
+    // Prevent privilege escalation: check mode against accessMode
+    preventPrivilegeEscalation(),
     // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
     access({
       when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
