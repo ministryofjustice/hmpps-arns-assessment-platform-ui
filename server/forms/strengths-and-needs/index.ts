@@ -4,6 +4,7 @@ import {
   Data,
   journey,
   redirect,
+  Session,
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
@@ -25,7 +26,7 @@ const { createRoute } = SANGenerators
 // Where to send the user after accepting privacy, using the mode/uuid from the
 // handover session so they resume where they left off in the accommodation section.
 const privacyScreenRedirectPath = createRoute(
-  [...baseSanRoute, Section.accommodation.sideNavHref],
+  [basePath, 'edit', Session('sessionDetails.assessmentIdentifier.uuid'), Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 

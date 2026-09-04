@@ -14,7 +14,7 @@ export const viewAllAnswersStep = step({
   onAccess: [
     access({
       effects: [
-        StrengthsAndNeedsEffects.setViewAllAnswersBacklink(basePath),
+        StrengthsAndNeedsEffects.setDynamicBacklink(basePath),
         StrengthsAndNeedsEffects.sendAuditEvent(SanAuditEvent.VIEW_ALL_ANSWERS),
       ],
     }),
