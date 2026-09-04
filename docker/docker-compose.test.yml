@@ -64,23 +64,24 @@ services:
       - sh
       - -c
       - |
-        npx playwright test --project=parallel $${SHARD:+--shard=$$SHARD}
-        PARALLEL_EXIT=$$?
+        npx playwright test --project=parallel --project=component $${SHARD:+--shard=$$SHARD}
+        SHARDED_EXIT=$$?
         if [ -z "$$SHARD" ] || [ "$${SHARD%%/*}" = "1" ]; then
-          cp -r test_results/blob-report test_results/blob-report-parallel 2>/dev/null || true
+          cp -r test_results/blob-report test_results/blob-report-sharded 2>/dev/null || true
           npx playwright test --project=serial
           SERIAL_EXIT=$$?
-          cp test_results/blob-report-parallel/* test_results/blob-report/ 2>/dev/null || true
-          rm -rf test_results/blob-report-parallel
+          cp test_results/blob-report-sharded/* test_results/blob-report/ 2>/dev/null || true
+          rm -rf test_results/blob-report-sharded
         else
           SERIAL_EXIT=0
         fi
-        [ $$PARALLEL_EXIT -eq 0 ] && [ $$SERIAL_EXIT -eq 0 ]
+        [ $$SHARDED_EXIT -eq 0 ] && [ $$SERIAL_EXIT -eq 0 ]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../package.json:/playwright/package.json
       - ../package-lock.json:/playwright/package-lock.json
       - ../playwright.config.ts:/playwright/playwright.config.ts
+      - ../assets:/playwright/assets
       - ../integration_tests:/playwright/integration_tests
       - ../test_results:/playwright/test_results
       - node_modules:/playwright/node_modules
