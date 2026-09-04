@@ -90,4 +90,22 @@ export const StrengthsAndNeedsTransformers = {
     const day = dateTime.day
     return `${day}${ordinalSuffix(day)} ${dateTime.toFormat('LLLL')} ${dateTime.toFormat('yyyy')}`
   }),
+
+  FormatVersionStatus: sanTransformers.register('FormatVersionStatus', () => (value: string) => {
+    const statusMappings: Record<string, string> = {
+      AWAITING_COUNTERSIGN: 'Awaiting Countersign',
+      AWAITING_DOUBLE_COUNTERSIGN: 'Awaiting Countersign',
+      CLONED: 'Cloned',
+      COUNTERSIGNED: 'Countersigned',
+      CREATED: 'Created',
+      DOUBLE_COUNTERSIGNED: 'Countersigned',
+      LOCKED: 'Locked',
+      REJECTED: 'Rejected',
+      ROLLED_BACK: 'Rolled Back',
+      SELF_SIGNED: 'Self Signed',
+      UNSIGNED: 'Edited',
+    }
+
+    return value ? statusMappings[value] : value
+  }),
 }
