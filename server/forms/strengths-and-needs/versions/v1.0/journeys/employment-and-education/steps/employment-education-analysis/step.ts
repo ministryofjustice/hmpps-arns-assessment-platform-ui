@@ -3,6 +3,7 @@ import { employmentStatusAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { analysisPageTitle } from '../../../../locales'
 import { Section } from '../../../../constants/section'
+import { SanAuditEvent, auditPageView } from '../../../../audit'
 import { isReadOnlyMode } from '../../../../guards'
 
 export const employmentEducationAnalysisStep = step({
@@ -10,4 +11,11 @@ export const employmentEducationAnalysisStep = step({
   title: analysisPageTitle(Section.employment_and_education),
   blocks: [employmentStatusAnalysisSummaryTab],
   reachability: { entryWhen: isReadOnlyMode },
+  onAccess: [
+    auditPageView(
+      SanAuditEvent.VIEW_PRACTITIONER_ANALYSIS,
+      Section.employment_and_education,
+      Step.employment_education_analysis,
+    ),
+  ],
 })

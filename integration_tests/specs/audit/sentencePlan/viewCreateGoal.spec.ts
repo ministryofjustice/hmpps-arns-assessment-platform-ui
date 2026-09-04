@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Create a Goal page', () => {
   test('visiting create goal page', async ({ page, createSession, auditQueue }) => {
@@ -12,7 +12,7 @@ test.describe('View Create a Goal page', () => {
     await page.goto(sentencePlanV1UrlBuilders.goalCreate('accommodation'))
     await CreateGoalPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_CREATE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_CREATE_GOAL)
     expectAuditEvent(event)
     expect(event.details.areaOfNeed).toBe('accommodation')
   })

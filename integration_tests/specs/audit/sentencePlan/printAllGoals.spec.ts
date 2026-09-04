@@ -3,7 +3,7 @@ import { currentGoals } from '../../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import PrintPreviewPage from '../../../pages/sentencePlan/printPreviewPage'
 import { navigateToSentencePlan } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Print all goals', () => {
   test('accessing print preview from Print all goals sends an audit event', async ({
@@ -23,7 +23,7 @@ test.describe('Print all goals', () => {
     const [newPage] = await Promise.all([page.waitForEvent('popup'), planOverviewPage.printAllGoalsButton.click()])
     await PrintPreviewPage.verifyOnPage(newPage)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.PRINT_ALL_GOALS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.PRINT_ALL_GOALS)
     expectAuditEvent(event)
   })
 })

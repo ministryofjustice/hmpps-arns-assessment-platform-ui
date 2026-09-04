@@ -3,6 +3,7 @@ import { financePractitionerAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { analysisPageTitle } from '../../../../locales'
 import { Section } from '../../../../constants/section'
+import { SanAuditEvent, auditPageView } from '../../../../audit'
 import { isReadOnlyMode } from '../../../../guards'
 
 export const financeAnalysisStep = step({
@@ -10,4 +11,5 @@ export const financeAnalysisStep = step({
   title: analysisPageTitle(Section.finance),
   blocks: [financePractitionerAnalysisSummaryTab],
   reachability: { entryWhen: isReadOnlyMode },
+  onAccess: [auditPageView(SanAuditEvent.VIEW_PRACTITIONER_ANALYSIS, Section.finance, Step.financeAnalysis)],
 })

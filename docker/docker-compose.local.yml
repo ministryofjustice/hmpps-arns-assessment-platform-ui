@@ -60,7 +60,7 @@ services:
 
   coordinator-api:
     ports:
-      - "6060:8080"
+      - '6060:8080'
 
 volumes:
   node_modules:

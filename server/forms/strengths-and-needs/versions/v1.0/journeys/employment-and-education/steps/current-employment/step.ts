@@ -6,6 +6,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
@@ -17,6 +18,9 @@ export const currentEmploymentStep = step({
     },
   },
   blocks: [employmentEducationSection.questions.currentEmploymentStatus.displayModes.field, saveButton],
+  onAccess: [
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -25,6 +29,7 @@ export const currentEmploymentStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
         ],
         next: [
           redirect({

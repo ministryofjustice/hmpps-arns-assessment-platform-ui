@@ -6,6 +6,7 @@ import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const physicalMentalHealthStep = step({
   path: `/${Step.physical_mental_health.path}`,
@@ -31,6 +32,9 @@ export const physicalMentalHealthStep = step({
     healthWellbeingSection.questions.changes.displayModes.field,
     saveButton,
   ],
+  onAccess: [
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -39,6 +43,7 @@ export const physicalMentalHealthStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
         ],
         next: [
           redirect({

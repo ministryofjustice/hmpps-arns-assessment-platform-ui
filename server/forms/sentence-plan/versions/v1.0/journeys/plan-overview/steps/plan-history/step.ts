@@ -1,6 +1,6 @@
 import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { subtitleText, agreementHistory } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccepted } from '../../../../guards'
 
 export const planHistoryStep = step({
@@ -22,7 +22,7 @@ export const planHistoryStep = step({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanHistoryEntries(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_HISTORY),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_HISTORY),
       ],
     }),
     // Redirect to plan overview if plan is not yet agreed.

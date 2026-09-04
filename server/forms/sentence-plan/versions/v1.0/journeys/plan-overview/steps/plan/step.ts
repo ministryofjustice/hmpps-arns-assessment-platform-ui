@@ -28,7 +28,7 @@ import {
   subNavigation,
   notificationBanners,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
 
@@ -120,7 +120,7 @@ export const planStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanLastUpdated(),
         SentencePlanEffects.loadNotifications('plan-overview'),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
       ],
       next: [
         redirect({

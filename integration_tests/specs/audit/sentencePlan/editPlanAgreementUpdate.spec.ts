@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateAgreePlanPage from '../../../pages/sentencePlan/updateAgreePlanPage'
 import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Update Agreement', () => {
   test('updating agreement with yes', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -24,7 +24,7 @@ test.describe('Update Agreement', () => {
     await updatePage.clickSave()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_PLAN_AGREEMENT_UPDATE)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT_UPDATE)
     expectAuditEvent(event)
     expect(event.details.agreementStatus).toBe('yes')
   })
@@ -48,7 +48,7 @@ test.describe('Update Agreement', () => {
     await updatePage.clickSave()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_PLAN_AGREEMENT_UPDATE)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT_UPDATE)
     expectAuditEvent(event)
     expect(event.details.agreementStatus).toBe('no')
   })

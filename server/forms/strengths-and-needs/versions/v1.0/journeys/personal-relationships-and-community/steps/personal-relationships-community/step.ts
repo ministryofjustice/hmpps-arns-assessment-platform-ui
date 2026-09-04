@@ -8,6 +8,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { personalRelationshipsCommunitySection } from '../../section'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
@@ -29,6 +30,13 @@ export const personalRelationshipsCommunityStep = step({
     personalRelationshipsCommunitySection.questions.changes.displayModes.field,
     saveButton,
   ],
+  onAccess: [
+    auditPageView(
+      SanAuditEvent.VIEW_QUESTION_PAGE,
+      Section.personal_relationships_and_community,
+      Step.personal_relationships_community,
+    ),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -37,6 +45,11 @@ export const personalRelationshipsCommunityStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.personal_relationships_and_community,
+            Step.personal_relationships_community,
+          ),
         ],
         next: [
           redirect({

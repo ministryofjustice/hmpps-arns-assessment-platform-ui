@@ -1,6 +1,6 @@
 import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { isOasysAccess, redirectToPrivacyUnlessAccepted } from '../../../../guards'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { previousVersions } from './fields'
 
 export const previousVersionsStep = step({
@@ -22,7 +22,7 @@ export const previousVersionsStep = step({
     access({
       effects: [
         SentencePlanEffects.loadPreviousVersions(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PREVIOUS_VERSIONS),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PREVIOUS_VERSIONS),
       ],
     }),
   ],

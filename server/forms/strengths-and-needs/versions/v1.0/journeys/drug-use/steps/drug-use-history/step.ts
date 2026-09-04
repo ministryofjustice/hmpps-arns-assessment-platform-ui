@@ -5,6 +5,7 @@ import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 
 export const drugUseHistoryStep = step({
@@ -25,6 +26,7 @@ export const drugUseHistoryStep = step({
     drugUseSection.questions.drugUseChanges.displayModes.field,
     saveButton,
   ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use_history)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -33,6 +35,7 @@ export const drugUseHistoryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_history),
         ],
         next: [redirect({ goto: 'drug-use-summary' })],
       },

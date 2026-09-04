@@ -5,6 +5,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { sectionPageTitle } from '../../../../locales'
 import { thinkingBehavioursAttitudesSection } from '../../section'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const thinkingBehavioursStep = step({
   path: `/${Step.thinkingBehaviours.path}`,
@@ -28,6 +29,9 @@ export const thinkingBehavioursStep = step({
     thinkingBehavioursAttitudesSection.questions.changes.displayModes.field,
     saveButton,
   ],
+  onAccess: [
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.thinking_behaviours_and_attitudes, Step.thinkingBehaviours),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -36,6 +40,11 @@ export const thinkingBehavioursStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.thinking_behaviours_and_attitudes,
+            Step.thinkingBehaviours,
+          ),
         ],
         next: [
           redirect({
