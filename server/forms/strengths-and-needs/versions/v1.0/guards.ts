@@ -30,6 +30,8 @@ export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.E
  */
 export const isViewMode = Params('mode').match(Condition.Equals('view'))
 
+export const isHistoricView = Params('mode').match(Condition.Equals('view-historic'))
+
 /**
  * True when the session was opened in READ_ONLY access mode, or when viewing
  * a specific assessment version (mode === 'view').
@@ -37,13 +39,21 @@ export const isViewMode = Params('mode').match(Condition.Equals('view'))
  * Used to conditionally hide editable controls (save buttons, change links)
  * and prevent navigation to editable steps.
  */
-export const isReadOnlyMode = or(Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')), isViewMode)
+export const isReadOnlyMode = or(
+  Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')),
+  isViewMode,
+  isHistoricView,
+)
 
 /**
  * True when the session is NOT in READ_ONLY mode (i.e. the user can edit).
  * Convenience inverse of {@link isReadOnlyMode}.
  */
-export const isEditMode = and(Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE')), not(isViewMode))
+export const isEditMode = and(
+  Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE')),
+  not(isViewMode),
+  not(isHistoricView),
+)
 
 /**
  * Redirects read-only users away from editable steps to the analysis step.

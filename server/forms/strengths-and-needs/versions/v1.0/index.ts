@@ -4,6 +4,7 @@ import {
   Condition,
   Data,
   journey,
+  not,
   Params,
   redirect,
   when,
@@ -20,8 +21,8 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { isEditMode, isHistoricView, isOasysAccess } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
-import { isEditMode, isOasysAccess } from './guards'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
@@ -63,7 +64,7 @@ export const strengthsAndNeedsV1Journey = journey({
       viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
       viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
       buttons: {
-        showReturnToOasysButton: isOasysAccess,
+        showReturnToOasysButton: and(isOasysAccess, not(isHistoricView)),
       },
       feedbackUrl,
       previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),

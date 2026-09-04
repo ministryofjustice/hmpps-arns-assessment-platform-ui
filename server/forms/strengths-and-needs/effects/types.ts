@@ -24,7 +24,7 @@ export interface StrengthsAndNeedsSession {
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
   privacyAccepted?: boolean
-  mode?: 'edit' | 'view'
+  mode?: 'edit' | 'view' | 'view-historic'
   uuid?: string
   versionUuid?: string
   countersignedVersions: PreviousVersionDisplay[]
