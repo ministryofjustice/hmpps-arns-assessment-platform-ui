@@ -7,6 +7,8 @@ export interface PreviousVersionDisplay {
   uuid: string
   updatedAt: string
   date: number
+  description: string
+  status: string
 }
 
 const buildPreviousVersions = (versions: VersionsTable): PreviousVersionDisplay[] =>
@@ -14,10 +16,12 @@ const buildPreviousVersions = (versions: VersionsTable): PreviousVersionDisplay[
     .filter(([, entry]) => Boolean(entry.assessmentVersion))
     .sort(([timestampA], [timestampB]) => timestampB.localeCompare(timestampA))
     .map(
-      ([_, { assessmentVersion }]): PreviousVersionDisplay => ({
-        uuid: assessmentVersion!.uuid,
-        updatedAt: assessmentVersion!.updatedAt,
-        date: DateTime.fromISO(assessmentVersion!.updatedAt).toMillis(),
+      ([_, { description, assessmentVersion }]): PreviousVersionDisplay => ({
+        uuid: assessmentVersion.uuid,
+        updatedAt: assessmentVersion.updatedAt,
+        date: DateTime.fromISO(assessmentVersion.updatedAt).toMillis(),
+        status: assessmentVersion.status,
+        description,
       }),
     )
 
@@ -36,5 +40,6 @@ export const loadPreviousVersions =
     }
 
     const session = context.getSession()
+    session.countersignedVersions = buildPreviousVersions(previousVersions.countersignedVersions)
     session.previousVersions = buildPreviousVersions(previousVersions.allVersions)
   }

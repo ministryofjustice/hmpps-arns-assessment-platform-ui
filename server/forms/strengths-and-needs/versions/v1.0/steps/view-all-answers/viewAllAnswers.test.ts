@@ -30,8 +30,7 @@ const renderPage = async (
 
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
-    .registerGlobalFunctions([testEffects, sanEffects, sanGenerators, sanTransformers, sanConditions], deps)
-    .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions])
+    .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions], deps)
     .registerPackage({
       journey: journey({
         code: 'strengths-and-needs-v1',

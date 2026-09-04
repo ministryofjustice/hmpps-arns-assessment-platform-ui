@@ -1,6 +1,6 @@
 import { access, Data, Session, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../effects'
-import { basePath } from '../../constants/formVersion'
+import { basePath, CaseData } from '../../constants/formVersion'
 import { commonContentFor } from '../../locales'
 import { viewAllAnswersBlocks } from './fields'
 
@@ -23,9 +23,10 @@ export const viewAllAnswersStep = step({
     locals: {
       hideNavigation: true,
       hideNavigationLinks: true,
-      backlink: Data('viewAllAnswersBacklink'),
+      backlink: Data('dynamicBacklink'),
       viewAllAnswersPage: true,
       practitionerName: Session('practitionerDetails.displayName'),
+      sectionTitle: commonContentFor('all_answers_heading', CaseData.ForenamePossessive),
     },
   },
   blocks: viewAllAnswersBlocks,

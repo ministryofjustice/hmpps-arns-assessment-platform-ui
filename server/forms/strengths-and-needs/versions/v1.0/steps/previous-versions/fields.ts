@@ -13,14 +13,26 @@ export const leadingParagraph = GovUKBody({
   text: Format(contentFor('lead_paragraph'), CaseData.ForenamePossessive),
 })
 
-export const previousVersionTable = GovUKTable({
+const versionTableCaptionClasses = 'govuk-table__caption--m govuk-!-margin-top-3'
+
+export const countersignedVersionTable = GovUKTable({
+  caption: contentFor('countersigned_versions_table_caption'),
+  captionClasses: versionTableCaptionClasses,
   head: [
     { text: contentFor('previous_versions_table_head_date') },
     { text: contentFor('previous_versions_table_head_assessment') },
   ],
-  rows: Session('previousVersions').each(
+  rows: Session('countersignedVersions').each(
     Iterator.Map([
-      GovUKBody({ text: Item().path('date').pipe(StrengthsAndNeedsTransformers.FormatDate()) }),
+      HtmlBlock({
+        content: [
+          GovUKBody({
+            text: Item().path('date').pipe(StrengthsAndNeedsTransformers.FormatDate()),
+            classes: 'govuk-!-margin-bottom-1',
+          }),
+          GovUKBody({ text: Item().path('description'), classes: 'govuk-!-margin-bottom-0' }),
+        ],
+      }),
       HtmlBlock({
         content: Format(
           '<a class="button-as-link" href="%1" target="_blank">View<span class="govuk-visually-hidden"> assessment from %2</span></a>',
@@ -30,4 +42,37 @@ export const previousVersionTable = GovUKTable({
       }),
     ]),
   ),
+})
+
+export const previousVersionTable = GovUKTable({
+  caption: contentFor('previous_versions_table_caption'),
+  captionClasses: versionTableCaptionClasses,
+  head: [
+    { text: contentFor('previous_versions_table_head_date') },
+    { text: contentFor('previous_versions_table_head_assessment') },
+  ],
+  rows: Session('previousVersions').each(
+    Iterator.Map([
+      HtmlBlock({
+        content: [
+          GovUKBody({
+            text: Item().path('date').pipe(StrengthsAndNeedsTransformers.FormatDate()),
+            classes: 'govuk-!-margin-bottom-1',
+          }),
+          GovUKBody({ text: Item().path('description'), classes: 'govuk-!-margin-bottom-0' }),
+        ],
+      }),
+      HtmlBlock({
+        content: Format(
+          '<a class="button-as-link" href="%1" target="_blank">View<span class="govuk-visually-hidden"> assessment from %2</span></a>',
+          createRoute([basePath, 'view', Item().path('uuid'), Section.accommodation.sideNavHref]),
+          Item().path('date').pipe(StrengthsAndNeedsTransformers.FormatDate()),
+        ),
+      }),
+    ]),
+  ),
+})
+
+export const backToTopLink = GovUKBody({
+  text: '<a class="govuk-link govuk-body govuk-!-margin-bottom-6" href="#main-content">↑ Back to top</a>',
 })

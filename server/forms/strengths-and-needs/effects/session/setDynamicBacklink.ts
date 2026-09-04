@@ -5,5 +5,5 @@ export const setDynamicBacklink = () => async (context: StrengthsAndNeedsContext
   const fallback = (context.getData('viewAllAnswersBacklinkFallback') as string) || basePath
   const isWithinAssessment = typeof previousPage === 'string' && previousPage.startsWith(basePath)
 
-  context.setData('viewAllAnswersBacklink', isWithinAssessment ? previousPage : fallback)
+  context.setData('dynamicBacklink', isWithinAssessment ? previousPage : fallback)
 }
