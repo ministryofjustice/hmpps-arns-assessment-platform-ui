@@ -4,6 +4,7 @@ import { StepDefinition } from '../../locales'
 import { accommodationFields } from '../accommodation/fields'
 import { currentOffenceAndOffendingHistoryFields } from '../current-offence-and-offending-history/fields'
 import { dateOfCurrentSupervisionFields } from '../date-of-current-supervision/fields'
+import { interviewFields } from '../interview-question/fields'
 import { offencesSinceSupervisionFields } from '../offences-since-supervision/fields'
 import { sexualOffendingFields } from '../sexual-offending/fields'
 import { employmentFields } from '../employment/fields'
@@ -18,6 +19,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.sexual_offending, config: sexualOffendingFields },
   { step: Step.date_of_current_supervision, config: dateOfCurrentSupervisionFields },
   { step: Step.offences_since_community_date, config: offencesSinceSupervisionFields },
+  { step: Step.interview_question, config: interviewFields },
   { step: Step.accommodation, config: accommodationFields },
   { step: Step.employment, config: employmentFields },
 ]

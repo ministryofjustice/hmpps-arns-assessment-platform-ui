@@ -1,4 +1,5 @@
-import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Data, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { commonContentFor, stepTitle } from '../../locales'
 import { checkYourAnswersBlock } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
@@ -8,6 +9,7 @@ import {
   currentOffenceSummaryListQuestion,
 } from '../current-offence-and-offending-history/fields'
 import { Step } from '../../constants/page'
+import { contentFor } from './locales'
 
 /**
  * Every answer given so far across every section.
@@ -33,5 +35,19 @@ export const checkYourAnswersStep = step({
       backlink: Data('viewAllAnswersBacklink'),
     },
   },
-  blocks: [currentOffenceHeadingQuestion, currentOffenceSummaryListQuestion, ...checkYourAnswersBlock],
+  blocks: [
+    currentOffenceHeadingQuestion,
+    currentOffenceSummaryListQuestion,
+    ...checkYourAnswersBlock,
+    GovUKButton({ text: contentFor('view_reoffending_predictor_scores') }),
+  ],
+  onSubmission: [
+    submit({
+      validate: false,
+      onAlways: {
+        effects: [TieringAssessmentEffects.CalculateRiskActuarialScores()],
+        next: [redirect({ goto: Step.reoffending_predictor_scores.path })],
+      },
+    }),
+  ],
 })

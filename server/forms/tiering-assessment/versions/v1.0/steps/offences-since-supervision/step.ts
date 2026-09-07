@@ -22,7 +22,7 @@ export const offencesSinceSupervisionStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirectToCheckYourAnswers, redirect({ goto: 'interview-question' })],
+        next: [redirectToCheckYourAnswers, redirect({ goto: Step.interview_question.path })],
       },
     }),
   ],

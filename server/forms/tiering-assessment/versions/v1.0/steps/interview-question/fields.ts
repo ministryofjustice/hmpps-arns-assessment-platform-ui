@@ -1,16 +1,39 @@
-import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
+import { commonContentFor } from '../../locales'
+import { Step } from '../../constants/page'
+import { Question } from './constants/question'
+import { contentFor } from './locales'
+import { CommonOption } from '../../constants/commonOption'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 
-export const interviewQuestionField = GovUKRadioInput({
-  code: 'have-you-done-an-interview',
-  items: [
-    { value: 'true', text: 'Yes, continue assessment', hint: 'Answer questions needed for the dynamic scores.' },
-    { value: 'false', text: 'No', hint: 'Check your answers and view static scores.' },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
-    }),
-  ],
+export const interviewQuestion = question({
+  content: {
+    code: Question.have_you_done_an_interview,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.have_you_done_an_interview.text', CaseData.Forename),
+    options: [
+      {
+        value: CommonOption.yes,
+        text: contentFor('option.YES'),
+        hint: contentFor('dynamic_questions_hint'),
+      },
+      {
+        value: CommonOption.no,
+        text: contentFor('option.NO'),
+        hint: contentFor('check_your_answers_hint'),
+      },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
+  },
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.interview_question.path }),
+  },
 })
+
+export const interviewFields = {
+  code: Step.interview_question.code,
+  questions: {
+    interviewQuestion,
+  },
+}

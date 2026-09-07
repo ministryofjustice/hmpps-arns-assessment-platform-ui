@@ -1,27 +1,19 @@
-import {
-  access,
-  Answer,
-  Condition,
-  Format,
-  redirect,
-  step,
-  submit,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { access, Answer, Condition, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { interviewQuestionField } from './fields'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { Step } from '../../constants/page'
+import { continueButton } from '../../common'
+import { interviewFields } from './fields'
+import { stepTitle } from '../../locales'
 
 export const interviewQuestionStep = step({
-  path: '/interview-question',
-  title: Format('Have you done an interview with %1?', CaseData.Forename),
+  path: `${Step.interview_question.path}`,
+  title: stepTitle(Step.interview_question),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [interviewQuestionField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [interviewFields.questions.interviewQuestion.displayModes.field, continueButton],
   onSubmission: [
     submit({
       validate: true,
@@ -29,10 +21,10 @@ export const interviewQuestionStep = step({
         effects: [TieringAssessmentEffects.SaveAssessmentData()],
         next: [
           redirect({
-            when: Answer('have-you-done-an-interview').match(Condition.Equals('true')),
+            when: Answer('have_you_done_an_interview').match(Condition.Equals('true')),
             goto: Step.accommodation.path,
           }),
-          redirect({ goto: 'check-your-answers' }),
+          redirect({ goto: Step.check_your_answers.path }),
         ],
       },
     }),
