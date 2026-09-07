@@ -1,18 +1,19 @@
-import { access, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { currentEmploymentStatusField } from './fields'
+import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { employmentFields } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { Step } from '../../constants/page'
+import { continueButton } from '../../common'
+import { stepTitle } from '../../locales'
 
 export const employmentStep = step({
-  path: '/employment',
-  title: Format('What is %1 current employment status?', CaseData.ForenamePossessive),
+  path: `/${Step.employment.path}`,
+  title: stepTitle(Step.employment),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [currentEmploymentStatusField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [employmentFields.questions.currentEmploymentStatusField.displayModes.field, continueButton],
   onSubmission: [
     submit({
       validate: true,

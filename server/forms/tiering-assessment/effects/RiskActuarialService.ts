@@ -13,6 +13,8 @@ import {
   SupervisionStatus,
 } from '../../../interfaces/risk-actuarial-api/riskScores'
 import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils/utils'
+import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
+import { CommonOption } from '../versions/v1.0/constants/commonOption'
 
 export class RiskActuarialService {
   constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
@@ -39,14 +41,14 @@ export class RiskActuarialService {
       supervisionStatus: this.parseSupervisionStatus(context.getAnswer('supervision-status')),
       mostRecentOffenceDate: this.parseString(context.getAnswer('most-recent-offence-date')),
       hasEverCommittedSexualOffence: this.parseBoolean(context.getAnswer('has_ever_committed_sexual_offence')),
-      totalContactAdultSexualSanctions: this.parseNumber(context.getAnswer('number-of-contact-sexual-sanctions')),
-      totalContactChildSexualSanctions: this.parseNumber(context.getAnswer('number-of-contact-child-sexual-sanctions')),
-      totalIndecentImageSanctions: this.parseNumber(context.getAnswer('indecent-child-images')),
-      totalNonContactSexualOffences: this.parseNumber(context.getAnswer('non-contact')),
-      dateOfMostRecentSexualOffence: this.parseString(context.getAnswer('date-of-most-recent-sexual-offence')),
-      isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim-stranger')),
+      totalContactAdultSexualSanctions: this.parseNumber(context.getAnswer('number_of_contact_sexual_sanctions')),
+      totalContactChildSexualSanctions: this.parseNumber(context.getAnswer('number_of_contact_child_sexual_sanctions')),
+      totalIndecentImageSanctions: this.parseNumber(context.getAnswer('indecent_child_images')),
+      totalNonContactSexualOffences: this.parseNumber(context.getAnswer('non_contact')),
+      dateOfMostRecentSexualOffence: this.parseString(context.getAnswer('date_of_most_recent_sexual_offence')),
+      isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim_stranger')),
       suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability_of_accommodation')),
-      isUnemployed: this.parseBoolean(context.getAnswer('is-unemployed')),
+      isUnemployed: this.parseEmploymentStatus(context.getAnswer('is_unemployed')),
       hasBenzodiazepinesUsage: this.parseDrugCheckbox('benzodiazepines', context),
       hasCannabisUsage: this.parseDrugCheckbox('cannabis', context),
       hasPowderCocaineUsage: this.parseDrugCheckbox('cocaine-hydrochloride', context),
@@ -349,5 +351,22 @@ export class RiskActuarialService {
       .filter((item): item is PreviousConviction => (PREVIOUS_CONVICTIONS as readonly string[]).includes(item))
 
     return validPreviousConvictions.length > 0 ? validPreviousConvictions : null
+  }
+
+  private readonly UNEMPLOYMENT_MAP: Record<EmploymentOption, boolean> = {
+    [EmploymentOption.employed]: false,
+    [EmploymentOption.self_employed]: false,
+    [EmploymentOption.retired]: false,
+    [EmploymentOption.currently_unavailable_for_work]: false,
+    [EmploymentOption.unemployed_actively_looking_for_work]: true,
+    [EmploymentOption.unemployed_not_actively_looking_for_work]: true,
+  }
+
+  private parseEmploymentStatus(employmentStatus: unknown): boolean | null {
+    if (typeof employmentStatus !== 'string' || employmentStatus === CommonOption.unknown) {
+      return null
+    }
+
+    return this.UNEMPLOYMENT_MAP[employmentStatus as EmploymentOption] ?? null
   }
 }

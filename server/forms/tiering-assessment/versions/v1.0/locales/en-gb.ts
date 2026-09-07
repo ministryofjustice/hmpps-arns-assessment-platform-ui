@@ -15,6 +15,7 @@ export const english = {
     [Step.sexual_offending.code]: 'Sexual offending',
     [Step.date_of_current_supervision.code]: 'Date of current supervision',
     [Step.offences_since_community_date.code]: 'Offences since community date',
+    [Step.employment.code]: 'Employment and education',
     [Step.check_your_answers.code]: 'Check your answers',
   },
   validation: {

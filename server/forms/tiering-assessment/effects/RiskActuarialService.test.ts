@@ -9,6 +9,8 @@ import {
   RiskScores,
   SupervisionStatus,
 } from '../../../interfaces/risk-actuarial-api/riskScores'
+import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
+import { CommonOption } from '../versions/v1.0/constants/commonOption'
 
 describe('RiskActuarialService', () => {
   let service: RiskActuarialService
@@ -158,12 +160,12 @@ describe('RiskActuarialService', () => {
       'supervision-status': 'COMMUNITY',
       'most-recent-offence-date': '2024-11-30',
       has_ever_committed_sexual_offence: 'YES',
-      'number-of-contact-sexual-sanctions': 1,
-      'number-of-contact-child-sexual-sanctions': 0,
-      'indecent-child-images': 0,
-      'non-contact': 0,
-      'date-of-most-recent-sexual-offence': '2010-06-20',
-      'victim-stranger': 'true',
+      number_of_contact_sexual_sanctions: 1,
+      number_of_contact_child_sexual_sanctions: 0,
+      indecent_child_images: 0,
+      non_contact: 0,
+      date_of_most_recent_sexual_offence: '2010-06-20',
+      victim_stranger: 'true',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -297,14 +299,14 @@ describe('RiskActuarialService', () => {
       'supervision-status': 'COMMUNITY',
       'most-recent-offence-date': '2024-11-30',
       has_ever_committed_sexual_offence: 'YES',
-      'number-of-contact-sexual-sanctions': 1,
-      'number-of-contact-child-sexual-sanctions': 0,
-      'indecent-child-images': 0,
-      'non-contact': 0,
-      'date-of-most-recent-sexual-offence': '2010-06-20',
-      'victim-stranger': 'true',
+      number_of_contact_sexual_sanctions: 1,
+      number_of_contact_child_sexual_sanctions: 0,
+      indecent_child_images: 0,
+      non_contact: 0,
+      date_of_most_recent_sexual_offence: '2010-06-20',
+      victim_stranger: 'true',
       suitability_of_accommodation: 'SOME_PROBLEMS',
-      'is-unemployed': 'true',
+      is_unemployed: EmploymentOption.unemployed_not_actively_looking_for_work,
       'drug-misuse': [
         'amphetamines',
         'benzodiazepines',
@@ -1213,4 +1215,26 @@ describe('RiskActuarialService', () => {
     )
   })
 
+  it.each([
+    [EmploymentOption.employed, false],
+    [EmploymentOption.self_employed, false],
+    [EmploymentOption.retired, false],
+    [EmploymentOption.currently_unavailable_for_work, false],
+    [EmploymentOption.unemployed_actively_looking_for_work, true],
+    [EmploymentOption.unemployed_not_actively_looking_for_work, true],
+    [CommonOption.unknown, null],
+    [undefined, null],
+    [null, null],
+    ['INVALID_STATUS', null],
+  ])('should map employment status "%s" to isUnemployed: %s', async (input, expectedIsUnemployed) => {
+    mockContext.getAnswer.mockImplementation((key: string) => (key === 'is_unemployed' ? input : undefined))
+
+    await service.calculateAndSaveScores(mockContext)
+
+    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isUnemployed: expectedIsUnemployed,
+      }),
+    )
+  })
 })
