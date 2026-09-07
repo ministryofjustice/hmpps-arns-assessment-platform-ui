@@ -56,7 +56,7 @@ jobs:
         if: '!cancelled()'
         uses: actions/upload-artifact@v7
         with:
-          name: test_results-component-tests
+          name: test_playwright-component-results
           path: |
             test_results/
 
@@ -64,7 +64,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots-components
+          name: component-test-screenshots
           path: |
             test_results/playwright/test-output/**/*
 
