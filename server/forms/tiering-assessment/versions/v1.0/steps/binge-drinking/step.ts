@@ -3,9 +3,10 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { bingeDrinkingField } from './fields'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { Step } from '../../constants/page'
 
 export const bingeDrinkingStep = step({
-  path: '/binge-drinking',
+  path: `/${Step.binge_drinking.path}`,
   title: Format(
     'Has %1 shown evidence of binge drinking or excessive alcohol use in the last 6 months?',
     CaseData.Forename,
@@ -24,7 +25,7 @@ export const bingeDrinkingStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'personal-relationships-and-community' })],
+        next: [redirect({ goto: Step.personal_relationships_and_community.path })],
       },
     }),
   ],

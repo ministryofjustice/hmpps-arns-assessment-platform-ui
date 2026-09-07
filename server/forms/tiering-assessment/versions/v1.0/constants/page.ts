@@ -27,6 +27,22 @@ export const Step = {
     code: 'employment',
     path: 'employment',
   },
+  alcohol_ever_used: {
+    code: 'alcohol_ever_used',
+    path: 'alcohol-ever-used',
+  },
+  alcohol: {
+    code: 'alcohol',
+    path: 'alcohol',
+  },
+  binge_drinking: {
+    code: 'binge_drinking',
+    path: 'binge-drinking',
+  },
+  personal_relationships_and_community: {
+    code: 'personal_relationships_and_community',
+    path: 'personal-relationships-and-community',
+  },
   check_your_answers: {
     code: 'check_your_answers',
     path: 'check-your-answers',

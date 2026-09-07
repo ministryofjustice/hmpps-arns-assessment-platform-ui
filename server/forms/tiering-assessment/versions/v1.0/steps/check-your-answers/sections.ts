@@ -8,6 +8,7 @@ import { interviewFields } from '../interview-question/fields'
 import { offencesSinceSupervisionFields } from '../offences-since-supervision/fields'
 import { sexualOffendingFields } from '../sexual-offending/fields'
 import { employmentFields } from '../employment/fields'
+import { alcoholEverUsedFields } from '../alcohol-ever-used/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -21,6 +22,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.offences_since_community_date, config: offencesSinceSupervisionFields },
   { step: Step.interview_question, config: interviewFields },
   { step: Step.accommodation, config: accommodationFields },
+  { step: Step.alcohol_ever_used, config: alcoholEverUsedFields },
   { step: Step.employment, config: employmentFields },
 ]
 
