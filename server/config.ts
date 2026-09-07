@@ -169,39 +169,6 @@ export default {
     region: get('SNS_REGION', 'eu-west-2'),
     topicArn: get('SNS_TOPIC_ARN', ''),
   },
-  forms: {
-    sentencePlan: {
-      enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
-    },
-    trainingSessionLauncher: {
-      enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
-    },
-    dataDeletionTool: {
-      enabled: get('FORM_DATA_DELETION_TOOL_ENABLED', 'false') === 'true',
-      environments: {
-        local: {
-          authUrl: 'http:///hmpps-auth:9090/auth',
-          apiUrl: 'http://aap-api:8080',
-        },
-        dev: {
-          authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
-          apiUrl: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk',
-        },
-        test: {
-          authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
-          apiUrl: 'https://arns-assessment-platform-api-test.hmpps.service.justice.gov.uk',
-        },
-        preprod: {
-          authUrl: 'https://sign-in-preprod.hmpps.service.justice.gov.uk/auth',
-          apiUrl: 'https://arns-assessment-platform-api-preprod.hmpps.service.justice.gov.uk',
-        },
-        prod: {
-          authUrl: 'https://sign-in.hmpps.service.justice.gov.uk/auth',
-          apiUrl: 'https://arns-assessment-platform-api.hmpps.service.justice.gov.uk',
-        },
-      },
-    },
-  },
   ingressUrl,
   logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
@@ -213,20 +180,4 @@ export default {
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
   featureFlagUrl: get('FEATURE_FLAG_URL', ''),
   appInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', ''),
-
-  // Target service OAuth client IDs for handover
-  handoverTargets: {
-    'sentence-plan': {
-      clientId: get('SP_HANDOVER_CLIENT_ID', 'sentence-plan'),
-      displayName: 'Sentence Plan',
-    },
-    'strengths-and-needs': {
-      clientId: get('SAN_HANDOVER_CLIENT_ID', 'strengths-and-needs-assessment'),
-      displayName: 'Strengths and Needs (SAN)',
-    },
-    'tiering-assessment': {
-      clientId: get('TIERING_ASSESSMENT_CLIENT_ID', 'tiering-assessment'),
-      displayName: 'Tiering Assessment',
-    },
-  },
 }

@@ -22,6 +22,7 @@
   "exclude": [
     "node_modules",
     "assets/**/*.js",
+    "server/forms/sentence-plan",
     "integration_tests",
     "dist",
     "esbuild",
