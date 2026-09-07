@@ -1,0 +1,64 @@
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import { AgentConfig, asSystem, asUser, type ApiConfig } from '@ministryofjustice/hmpps-rest-client'
+import type { AssessmentNeedsDto } from './ArnsAssessmentNeeds.type'
+import type { AssessmentNeedsDetailsDto } from './ArnsAssessmentNeedsDetails.type'
+import ArnsApiClient from './ArnsApiClient'
+
+describe('ArnsApiClient', () => {
+  let client: ArnsApiClient
+  let mockGet: jest.SpyInstance
+
+  const mockAuthenticationClient = {} as AuthenticationClient
+  const apiConfig: ApiConfig = {
+    url: 'http://localhost:9091',
+    timeout: { response: 5000, deadline: 5000 },
+    agent: new AgentConfig(),
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+
+    client = new ArnsApiClient(apiConfig, mockAuthenticationClient, console)
+    mockGet = jest.spyOn(client as unknown as { get: jest.Mock }, 'get')
+  })
+
+  describe('getCriminogenicNeeds()', () => {
+    it('should fetch criminogenic needs by CRN with the user token', async () => {
+      const crn = 'X123456'
+      const userToken = 'user-jwt-token'
+      const expectedNeeds: AssessmentNeedsDto = {
+        identifiedNeeds: [],
+        notIdentifiedNeeds: [],
+        unansweredNeeds: [],
+        assessmentVersion: 'SAN',
+      }
+
+      mockGet.mockResolvedValue(expectedNeeds)
+
+      const result = await client.getCriminogenicNeeds(crn, userToken)
+
+      expect(result).toEqual(expectedNeeds)
+      expect(mockGet).toHaveBeenCalledWith(
+        { path: `/needs/crn/${crn}`, query: { excludeIncomplete: false } },
+        asUser(userToken),
+      )
+    })
+  })
+
+  describe('getCriminogenicNeedsDetails()', () => {
+    it('should fetch criminogenic needs details by CRN with a system token', async () => {
+      const crn = 'X123456'
+      const expectedDetails: AssessmentNeedsDetailsDto = {
+        needs: [],
+        assessmentVersion: 'SAN',
+      }
+
+      mockGet.mockResolvedValue(expectedDetails)
+
+      const result = await client.getCriminogenicNeedsDetails(crn)
+
+      expect(result).toEqual(expectedDetails)
+      expect(mockGet).toHaveBeenCalledWith({ path: `/needs/${crn}`, query: { excludeIncomplete: false } }, asSystem())
+    })
+  })
+})

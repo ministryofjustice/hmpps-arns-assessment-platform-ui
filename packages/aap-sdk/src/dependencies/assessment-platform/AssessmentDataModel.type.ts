@@ -1,0 +1,66 @@
+export interface Value {
+  type: string
+}
+
+export interface SingleValue extends Value {
+  type: 'Single'
+  value: string
+}
+
+export interface MultiValue extends Value {
+  type: 'Multi'
+  values: string[]
+}
+
+export type Values = SingleValue | MultiValue
+
+export interface Answers {
+  [key: string]: Values
+}
+
+export interface Properties {
+  [key: string]: Values
+}
+
+export type QuestionCodes = Array<string>
+
+export type PropertyKeys = Array<string>
+
+export interface CollectionItem {
+  uuid: string
+  createdAt: string
+  updatedAt: string
+  answers: Answers
+  properties: Properties
+  collections?: Collection[]
+}
+
+export interface Collection {
+  uuid: string
+  createdAt: string
+  updatedAt: string
+  name: string
+  items: CollectionItem[]
+}
+
+export interface TimelineItem {
+  uuid: string
+  position: number
+  event: string
+  timestamp: string
+  assessment: string
+  data: Record<string, unknown>
+  customType?: string
+  customData?: Record<string, unknown>
+  user?: {
+    id: string
+    name: string
+  }
+}
+
+export interface EventDTO {
+  uuid: string
+  createdAt: string
+  position: number
+  data: Record<string, unknown>
+}

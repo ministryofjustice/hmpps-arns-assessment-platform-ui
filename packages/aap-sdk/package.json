@@ -1,0 +1,56 @@
+{
+  "name": "@ministryofjustice/hmpps-aap-sdk",
+  "version": "0.0.0-development",
+  "description": "Journey-facing SDK for the HMPPS ARNS Assessment Platform",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ministryofjustice/hmpps-arns-assessment-platform-ui.git",
+    "directory": "packages/aap-sdk"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./utils/browser/telemetry.mjs": {
+      "types": "./dist/esm/utils/browser/telemetry.d.mts",
+      "default": "./dist/esm/utils/browser/telemetry.mjs"
+    },
+    "./*": {
+      "import": {
+        "types": "./dist/esm/*.d.mts",
+        "default": "./dist/esm/*.mjs"
+      },
+      "require": {
+        "types": "./dist/cjs/*.d.cts",
+        "default": "./dist/cjs/*.cjs"
+      }
+    }
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "npm run clean && rollup -c rollup.config.ts --bundleConfigAsCjs && rm -rf dist/declarations",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": "20 || 22 || 24"
+  },
+  "dependencies": {
+    "@ministryofjustice/hmpps-auth-clients": "^1.0.1",
+    "@ministryofjustice/hmpps-forge": "0.4.0",
+    "@ministryofjustice/hmpps-mpop-frontend-components-lib": "0.0.14",
+    "@ministryofjustice/hmpps-rest-client": "^1.0.0",
+    "@types/bunyan": "^1.8.11",
+    "bunyan": "^1.8.15"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "24.0.4",
+    "typescript": "^5.9.2"
+  }
+}
