@@ -26,7 +26,7 @@ export const accommodationStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'employment' })],
+        next: [redirect({ goto: Step.employment.path })],
       },
     }),
   ],

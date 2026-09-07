@@ -1,26 +1,21 @@
-import {
-  access,
-  Answer,
-  Condition,
-  Format,
-  redirect,
-  step,
-  submit,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { alcoholEverUsedField } from './fields'
+import { access, Answer, Condition, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { continueButton } from '../../common'
+import { alcoholEverUsedFields } from './fields'
+import { Option } from './constants/option'
+import { Step } from '../../constants/page'
+import { stepTitle } from '../../locales'
+import { Question } from './constants/question'
 
 export const alcoholEverUsedStep = step({
-  path: '/alcohol-ever-used',
-  title: Format('Has %1 ever drunk alcohol?', CaseData.Forename),
+  path: `/${Step.alcohol_ever_used.path}`,
+  title: stepTitle(Step.alcohol_ever_used),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [alcoholEverUsedField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [alcoholEverUsedFields.questions.hasEverDrunkAlcoholQuestion.displayModes.field, continueButton],
   onSubmission: [
     submit({
       validate: true,
@@ -28,14 +23,14 @@ export const alcoholEverUsedStep = step({
         effects: [TieringAssessmentEffects.SaveAssessmentData()],
         next: [
           redirect({
-            when: Answer('has-ever-drunk-alcohol').match(Condition.Equals('YES_IN_LAST_THREE_MONTHS')),
-            goto: 'alcohol',
+            when: Answer(Question.has_ever_drunk_alcohol).match(Condition.Equals(Option.YES_IN_LAST_THREE_MONTHS)),
+            goto: Step.alcohol.path,
           }),
           redirect({
-            when: Answer('has-ever-drunk-alcohol').match(Condition.Equals('YES_NOT_IN_LAST_THREE_MONTHS')),
-            goto: 'binge-drinking',
+            when: Answer(Question.has_ever_drunk_alcohol).match(Condition.Equals(Option.YES_NOT_IN_LAST_THREE_MONTHS)),
+            goto: Step.binge_drinking.path,
           }),
-          redirect({ goto: 'personal-relationships-and-community' }),
+          redirect({ goto: Step.personal_relationships_and_community.path }),
         ],
       },
     }),

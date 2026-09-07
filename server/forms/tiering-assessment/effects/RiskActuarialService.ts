@@ -95,7 +95,7 @@ export class RiskActuarialService {
   }
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
-    const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has-ever-drunk-alcohol'))
+    const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has_ever_drunk_alcohol'))
     const currentAlcoholUseFrequency = this.parseNumber(context.getAnswer('current-alcohol-use-frequency'))
     const unitsOfAlcohol = this.parseNumber(context.getAnswer('units-of-alcohol'))
 
@@ -106,7 +106,7 @@ export class RiskActuarialService {
   }
 
   private getExcessiveAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
-    const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has-ever-drunk-alcohol'))
+    const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has_ever_drunk_alcohol'))
 
     return this.parseProblemLevel(
       hasEverDrunkAlcohol === 'YES_IN_LAST_THREE_MONTHS'

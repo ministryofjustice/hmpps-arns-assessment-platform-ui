@@ -341,7 +341,7 @@ describe('RiskActuarialService', () => {
       'other-drug-radio': 'true',
       'ever-misused-drugs': 'true',
       'motivation-to-tackle-drug-misuse': 'PARTIAL_MOTIVATION',
-      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
       'units-of-alcohol': 2,
       'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
@@ -650,7 +650,7 @@ describe('RiskActuarialService', () => {
       'other-drug-radio': 'unknown',
       'ever-misused-drugs': 'unknown',
       'motivation-to-tackle-drug-misuse': 'unknown',
-      'has-ever-drunk-alcohol': 'unknown',
+      has_ever_drunk_alcohol: 'unknown',
       'alcohol-use-binge-drinking': 'unknown',
       'binge-drinking': 'unknown',
       who_are_they_living_with: 'unknown',
@@ -766,9 +766,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return "NO_PROBLEMS" if "has-ever-drunk-alcohol" is YES_NOT_IN_LAST_THREE_MONTHS', async () => {
+  it('should return "NO_PROBLEMS" if "has_ever_drunk_alcohol" is YES_NOT_IN_LAST_THREE_MONTHS', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_NOT_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_NOT_IN_LAST_THREE_MONTHS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -782,9 +782,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-frequency is unknown', async () => {
+  it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and current-alcohol-use-frequency is unknown', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 'unknown',
       'units-of-alcohol': 4,
     }
@@ -800,9 +800,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and units-of-alcohol is unknown', async () => {
+  it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and units-of-alcohol is unknown', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,
       'units-of-alcohol': 'unknown',
     }
@@ -818,9 +818,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has-ever-drunk-alcohol" is YES_NOT_LAST_THREE_MONTHS', async () => {
+  it('should return null if "has_ever_drunk_alcohol" is YES_NOT_LAST_THREE_MONTHS', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_NOT_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_NOT_LAST_THREE_MONTHS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -834,9 +834,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 4', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 4', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
       'units-of-alcohol': 1,
     }
@@ -852,9 +852,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 7', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol <= 7', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 3,
       'units-of-alcohol': 4,
     }
@@ -870,9 +870,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol => 8', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current-alcohol-use-frequency and units-of-alcohol => 8', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_IN_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       'current-alcohol-use-frequency': 4,
       'units-of-alcohol': 4,
     }
@@ -888,9 +888,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return "NO_PROBLEMS" if "has-ever-drunk-alcohol" is NO', async () => {
+  it('should return "NO_PROBLEMS" if "has_ever_drunk_alcohol" is NO', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'NO',
+      has_ever_drunk_alcohol: 'NO',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -904,9 +904,9 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has-ever-drunk-alcohol" is YES_NOT_LAST_THREE_MONTHS and binge-drinking is set', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_NOT_LAST_THREE_MONTHS and binge-drinking is set', async () => {
     const answers: Record<string, unknown> = {
-      'has-ever-drunk-alcohol': 'YES_NOT_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_NOT_LAST_THREE_MONTHS',
       'alcohol-use-binge-drinking': 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
       'binge-drinking': 'SIGNIFICANT_PROBLEMS',
     }

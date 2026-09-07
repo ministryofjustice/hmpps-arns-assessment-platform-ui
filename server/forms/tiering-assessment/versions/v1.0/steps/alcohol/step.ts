@@ -2,10 +2,12 @@ import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/c
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { currentAlcoholUseFrequencyField, bingeDrinkingField, unitsOfAlcoholField, alcoholUnitsTable } from './fields'
 import { continueButton } from '../../common'
+import { Step } from '../../constants/page'
+import { stepTitle } from '../../locales'
 
 export const alcoholStep = step({
-  path: '/alcohol',
-  title: 'Alcohol',
+  path: `/${Step.alcohol.path}`,
+  title: stepTitle(Step.alcohol),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
@@ -20,7 +22,7 @@ export const alcoholStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'personal-relationships-and-community' })],
+        next: [redirect({ goto: Step.personal_relationships_and_community.path })],
       },
     }),
   ],

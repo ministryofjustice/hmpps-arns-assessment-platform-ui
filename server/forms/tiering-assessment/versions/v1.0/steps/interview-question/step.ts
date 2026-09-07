@@ -4,6 +4,8 @@ import { Step } from '../../constants/page'
 import { continueButton } from '../../common'
 import { interviewFields } from './fields'
 import { stepTitle } from '../../locales'
+import { Question } from './constants/question'
+import { CommonOption } from '../../constants/commonOption'
 
 export const interviewQuestionStep = step({
   path: `${Step.interview_question.path}`,
@@ -21,7 +23,7 @@ export const interviewQuestionStep = step({
         effects: [TieringAssessmentEffects.SaveAssessmentData()],
         next: [
           redirect({
-            when: Answer('have_you_done_an_interview').match(Condition.Equals('true')),
+            when: Answer(Question.have_you_done_an_interview).match(Condition.Equals(CommonOption.yes)),
             goto: Step.accommodation.path,
           }),
           redirect({ goto: Step.check_your_answers.path }),

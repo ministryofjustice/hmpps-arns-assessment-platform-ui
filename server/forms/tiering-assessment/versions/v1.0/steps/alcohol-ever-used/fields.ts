@@ -1,33 +1,44 @@
-import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Step } from '../../constants/page'
+import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
+import { commonContentFor } from '../../locales'
+import { CommonOption } from '../../constants/commonOption'
+import { contentFor } from './locales'
+import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { Question } from './constants/question'
+import { Option } from './constants/option'
 
-export const alcoholEverUsedField = GovUKRadioInput({
-  code: 'has-ever-drunk-alcohol',
-  items: [
-    {
-      value: 'YES_IN_LAST_THREE_MONTHS',
-      text: 'Yes, including in the last 3 months',
-    },
-    {
-      value: 'YES_NOT_IN_LAST_THREE_MONTHS',
-      text: 'Yes, but not in the last 3 months',
-    },
-    {
-      value: 'NO',
-      text: 'No',
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'unknown',
-      text: 'Unknown',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
-    }),
-  ],
+export const hasEverDrunkAlcoholQuestion = question({
+  content: {
+    code: Question.has_ever_drunk_alcohol,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.has_ever_drunk_alcohol.text', CaseData.Forename),
+    options: [
+      {
+        value: Option.YES_IN_LAST_THREE_MONTHS,
+        text: contentFor('question.has_ever_drunk_alcohol.option.YES_IN_LAST_THREE_MONTHS'),
+      },
+      {
+        value: Option.YES_NOT_IN_LAST_THREE_MONTHS,
+        text: contentFor('question.has_ever_drunk_alcohol.option.YES_NOT_IN_LAST_THREE_MONTHS'),
+      },
+      {
+        value: CommonOption.no,
+        text: commonContentFor('option.NO'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
+  },
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol_ever_used.path }),
+  },
 })
+
+export const alcoholEverUsedFields = {
+  code: Step.alcohol_ever_used.code,
+  questions: {
+    hasEverDrunkAlcoholQuestion,
+  },
+}
