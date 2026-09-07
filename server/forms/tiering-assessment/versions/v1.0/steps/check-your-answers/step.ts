@@ -1,4 +1,4 @@
-import { access, Data, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Data, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { commonContentFor, stepTitle } from '../../locales'
 import { checkYourAnswersBlock } from './fields'
@@ -40,5 +40,14 @@ export const checkYourAnswersStep = step({
     currentOffenceSummaryListQuestion,
     ...checkYourAnswersBlock,
     GovUKButton({ text: contentFor('view_reoffending_predictor_scores') }),
+  ],
+  onSubmission: [
+    submit({
+      validate: false,
+      onAlways: {
+        effects: [TieringAssessmentEffects.CalculateRiskActuarialScores()],
+        next: [redirect({ goto: 'reoffending-predictor-scores' })],
+      },
+    }),
   ],
 })
