@@ -38,10 +38,9 @@
     subArea          - Sub-area data object (for example, Lifestyle within Thinking, behaviours and attitudes) with title, score, upperBound, threshold
     hasSubArea       - True if sub-area data is available
     fullWidth        - True to skip the two-thirds wrapper
-    showAsDetails    - True (default) wraps in govukDetails (used for create/change goal page), false renders content directly (used for about page)
+    showAsDetails    - True (default) wraps in a collapsible details disclosure (used for create/change goal page), false renders content directly (used for about page)
 #}
 
-{% from "govuk/components/details/macro.njk" import govukDetails %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "sentence-plan/components/score-bar/needsScore.njk" import needsScore %}
@@ -160,14 +159,14 @@
 
 {% if params.showAsDetails %}
   {% set detailsComponent %}
-    {{ govukDetails({
-      summaryText: "View information from " + params.personName + "'s assessment",
-      html: detailsContent,
-      attributes: {
-        "data-qa": "assessment-info-details",
-        "data-ai-id": "assessment-info-details"
-      }
-    }) }}
+    <details class="govuk-details" data-qa="assessment-info-details">
+      <summary class="govuk-details__summary" data-ai-id="assessment-info-details">
+        <span class="govuk-details__summary-text">View information from {{ params.personName }}'s assessment</span>
+      </summary>
+      <div class="govuk-details__text">
+        {{ detailsContent | safe }}
+      </div>
+    </details>
   {% endset %}
 
   {% if params.fullWidth %}
