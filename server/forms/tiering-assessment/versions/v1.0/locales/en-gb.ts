@@ -17,6 +17,7 @@ export const english = {
     [Step.offences_since_community_date.code]: 'Offences since community date',
     [Step.interview_question.code]: 'Interview',
     [Step.employment.code]: 'Employment and education',
+    [Step.drug_misuse.code]: 'Drug use',
     [Step.alcohol_ever_used.code]: 'Alcohol use',
     [Step.alcohol.code]: 'Alcohol use',
     [Step.binge_drinking.code]: 'Alcohol use',
