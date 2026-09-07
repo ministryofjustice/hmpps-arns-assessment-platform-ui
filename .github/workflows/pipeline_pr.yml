@@ -46,6 +46,9 @@ jobs:
       - name: Run setup
         run: npm run setup
 
+      - name: Install Playwright
+        run: npx playwright install
+
       - name: Run Component Tests
         run: npm run component-test
 
