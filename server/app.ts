@@ -6,6 +6,8 @@ import { Forge } from '@ministryofjustice/hmpps-forge/core'
 import { createExpressRouter } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { mojComponents } from '@ministryofjustice/hmpps-forge/moj-components'
+import type { JourneyServices } from '@ministryofjustice/hmpps-aap-sdk/JourneyServices.type'
+import { aapPackageManifests } from 'aap:package-manifests'
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './routes/error/errorHandler'
 import authorisationMiddleware from './middleware/authorisationMiddleware'
@@ -28,11 +30,6 @@ import type { Services } from './services'
 import logger from '../logger'
 import { forgeDevToolsInstrumentationSink } from './forgeDevTools'
 
-// Form packages
-import platformPoliciesFormPackage from './forms/platform'
-import trainingSessionLauncher from './forms/training-session-launcher'
-import dataDeletionTool from './forms/data-deletion-tool'
-
 export default function createApp(services: Services): express.Application {
   const app = express()
 
@@ -41,22 +38,29 @@ export default function createApp(services: Services): express.Application {
   app.set('port', process.env.PORT || 3000)
 
   const nunjucksEnv = nunjucksSetup(app)
-  const formEngine = new Forge({
+  const journeyServices: JourneyServices = {
+    arnsApi: services.arnsApiClient,
+    assessmentPlatformApi: services.assessmentPlatformApiClient,
+    assessmentPlatformApiFactory: services.assessmentPlatformApiFactory,
+    audit: services.auditService,
+    coordinatorApi: services.coordinatorApiClient,
+    deliusApi: services.deliusApiClient,
+    domainEvents: services.domainEventsService,
+    featureFlags: services.featureFlagService,
+    handoverApi: services.handoverApiClient,
     logger,
-    instrumentation: forgeDevToolsInstrumentationSink ? { sinks: [forgeDevToolsInstrumentationSink] } : undefined,
-  })
-    .registerGlobalComponents(govukComponents)
-    .registerGlobalComponents(mojComponents)
-    .registerPackage(trainingSessionLauncher, {
-      coordinatorApiClient: services.coordinatorApiClient,
-      handoverApiClient: services.handoverApiClient,
+    mpopComponents: services.mpopComponents,
+    preferences: services.preferencesStore,
+  }
+  const formEngine = aapPackageManifests.reduce(
+    (forge, manifest) => manifest.registerWith(forge, journeyServices),
+    new Forge({
       logger,
-      preferencesStore: services.preferencesStore,
+      instrumentation: forgeDevToolsInstrumentationSink ? { sinks: [forgeDevToolsInstrumentationSink] } : undefined,
     })
-    .registerPackage(dataDeletionTool, {
-      assessmentPlatformApiFactory: services.assessmentPlatformApiFactory,
-    })
-    .registerPackage(platformPoliciesFormPackage)
+      .registerGlobalComponents(govukComponents)
+      .registerGlobalComponents(mojComponents),
+  )
 
   // Setup middleware
   app.use(setUpHealthChecks(services.applicationInfo))
@@ -66,15 +70,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpWebRequestParsing())
   app.use(setUpPreferencesCookie())
   app.use(setUpStaticResources())
-  app.use(
-    setUpAuthentication({
-      bypassPaths: [
-        '/training-session-launcher',
-        '/data-deletion-tool',
-        '/platform',
-      ],
-    }),
-  )
+  app.use(setUpAuthentication({ bypassPaths: aapPackageManifests.flatMap(manifest => manifest.getAuthBypassPaths()) }))
   app.use(authorisationMiddleware([], services.deliusApiClient))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())

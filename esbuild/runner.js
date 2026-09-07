@@ -5,13 +5,16 @@ const { getAppConfig } = require('./app.config')
 const { getAssetsConfig } = require('./assets.config')
 const { getFormAssetsConfig } = require('./formAssets.config')
 const { getBuildConfig } = require('./build.config')
+const { AapPackageManifestPlugin } = require('./AapPackageManifestPlugin')
 
 /**
  * Run ESBuild process, if `--watch` provided, run in watch mode.
  */
 async function main() {
-  const buildConfig = getBuildConfig()
-  const appConfig = getAppConfig(buildConfig)
+  const aapPackageManifestPlugin = new AapPackageManifestPlugin()
+  const aapPackages = await aapPackageManifestPlugin.loadResources()
+  const buildConfig = getBuildConfig(aapPackages)
+  const appConfig = getAppConfig(buildConfig, aapPackageManifestPlugin)
   const assetsConfig = getAssetsConfig(buildConfig)
   const formAssetsConfig = getFormAssetsConfig(buildConfig)
 

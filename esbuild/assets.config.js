@@ -19,6 +19,7 @@ const getAssetsConfig = buildConfig => ({
   target: 'es2018',
   external: ['/assets/*'],
   bundle: true,
+  preserveSymlinks: true,
   plugins: [
     clean({
       patterns: globSync(buildConfig.assets.clear),
