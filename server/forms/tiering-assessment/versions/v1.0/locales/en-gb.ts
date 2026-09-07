@@ -18,6 +18,7 @@ export const english = {
     [Step.interview_question.code]: 'Interview',
     [Step.employment.code]: 'Employment and education',
     [Step.check_your_answers.code]: 'Check your answers',
+    [Step.reoffending_predictor_scores.code]: 'Reoffending Predictor scores',
   },
   validation: {
     this_is_a_required_field: 'This is a required field.',

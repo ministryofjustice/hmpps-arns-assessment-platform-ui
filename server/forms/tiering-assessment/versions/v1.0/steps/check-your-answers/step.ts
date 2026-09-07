@@ -46,7 +46,7 @@ export const checkYourAnswersStep = step({
       validate: false,
       onAlways: {
         effects: [TieringAssessmentEffects.CalculateRiskActuarialScores()],
-        next: [redirect({ goto: 'reoffending-predictor-scores' })],
+        next: [redirect({ goto: Step.reoffending_predictor_scores.path })],
       },
     }),
   ],

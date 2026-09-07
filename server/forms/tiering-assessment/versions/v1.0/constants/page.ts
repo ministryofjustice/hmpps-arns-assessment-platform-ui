@@ -31,4 +31,8 @@ export const Step = {
     code: 'check_your_answers',
     path: 'check-your-answers',
   },
+  reoffending_predictor_scores: {
+    code: 'reoffending_predictor_scores',
+    path: 'reoffending-predictor-scores',
+  },
 } as const
