@@ -1,6 +1,4 @@
 import { FliptClient, type ClientOptions } from '@flipt-io/flipt-client-js'
-import config from '../config'
-import logger from '../../logger'
 import {
   BooleanFeatureFlagsResult,
   FEATURE_FLAG_NAMESPACE,
@@ -8,7 +6,9 @@ import {
   FeatureFlagsConfig,
   UPDATE_INTERVAL_SECONDS,
   getFallbackFeatureFlags,
-} from '../utils/featureFlagsUtils'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/feature-flags/featureFlags'
+import config from '../config'
+import logger from '../../logger'
 
 const getConfig = (): FeatureFlagConfig => {
   return {

@@ -1,12 +1,12 @@
 import { test } from '@playwright/test'
-import type { CreateHandoverLinkRequest } from '@server/interfaces/handover-api/request'
+import type { CreateHandoverLinkRequest } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverRequest.type'
 import type {
   HandoverPrincipalDetails,
   HandoverSubjectDetails,
   CriminogenicNeedsData,
   AccessMode,
   Location,
-} from '@server/interfaces/handover-api/shared'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
 import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
 import type { CoordinatorAssociation } from './CoordinatorBuilder'
 import { generateUserId } from './utils'

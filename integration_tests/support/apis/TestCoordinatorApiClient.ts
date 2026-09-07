@@ -5,9 +5,12 @@ import type {
   OasysCreateRequest,
   OasysCreateResponse,
   OasysUserDetails,
-} from '../../../server/interfaces/coordinator-api/oasysCreate'
-import type { OasysSignRequest, OasysSignResponse } from '../../../server/interfaces/coordinator-api/oasysSign'
-import type { PreviousVersionsResponse } from '../../../server/interfaces/coordinator-api/previousVersions'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysCreate.type'
+import type {
+  OasysSignRequest,
+  OasysSignResponse,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysSign.type'
+import type { PreviousVersionsResponse } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorPreviousVersions.type'
 import { noopLogger } from './noopLogger'
 
 export interface TestCoordinatorApiClientConfig {

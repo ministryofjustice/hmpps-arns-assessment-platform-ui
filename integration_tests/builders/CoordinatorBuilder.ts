@@ -7,8 +7,11 @@ import type {
   AssessmentType,
   UserLocation,
   SubjectDetails,
-} from '@server/interfaces/coordinator-api/oasysCreate'
-import type { SignType, OasysSignResponse } from '@server/interfaces/coordinator-api/oasysSign'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysCreate.type'
+import type {
+  SignType,
+  OasysSignResponse,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysSign.type'
 import type { TestCoordinatorApiClient } from '../support/apis/TestCoordinatorApiClient'
 import { generateUserId } from './utils'
 

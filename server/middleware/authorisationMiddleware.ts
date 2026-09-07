@@ -1,8 +1,8 @@
 import { jwtDecode } from 'jwt-decode'
 import type { RequestHandler } from 'express'
 
+import { AccessPermissions } from '@ministryofjustice/hmpps-aap-sdk/dependencies/delius/DeliusAccessPermissions.type'
 import logger from '../../logger'
-import { AccessPermissions } from '../interfaces/delius-api/accessPermissions'
 
 type FineGrainedAccessClient = {
   getUserAccess: (username: string, crn: string) => Promise<AccessPermissions>

@@ -1,5 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
-import { PreviousVersionsResponse } from '@server/interfaces/coordinator-api/previousVersions'
+import { PreviousVersionsResponse } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorPreviousVersions.type'
 import { stubFor } from './wiremock'
 
 export interface AnswerDto {

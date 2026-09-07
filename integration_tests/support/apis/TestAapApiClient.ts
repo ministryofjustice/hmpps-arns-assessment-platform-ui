@@ -2,9 +2,9 @@ import { RestClient, asSystem, AgentConfig } from '@ministryofjustice/hmpps-rest
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import type { TestInfo } from '@playwright/test'
 import { Client } from 'pg'
-import type { Commands } from '../../../server/interfaces/aap-api/command'
-import type { CommandsResponse } from '../../../server/interfaces/aap-api/response'
-import type { CommandResults } from '../../../server/interfaces/aap-api/commandResult'
+import type { Commands } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
+import type { CommandsResponse } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentResponse.type'
+import type { CommandResults } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommandResult.type'
 import { noopLogger } from './noopLogger'
 
 export interface TestAapApiClientConfig {

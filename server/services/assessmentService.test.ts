@@ -1,15 +1,15 @@
+import { User } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/User.type'
+import { HmppsUser } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/HmppsUser.type'
+import { CreateAssessmentCommand } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
+import { AssessmentVersionQuery } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentQuery.type'
+import { AssessmentVersionQueryResult } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentQueryResult.type'
+import { CreateAssessmentCommandResult } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommandResult.type'
+import type { AssessmentPlatformApi } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentPlatformApi.type'
 import AssessmentService from './assessmentService'
-import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
-import { User } from '../interfaces/user'
-import { HmppsUser } from '../interfaces/hmppsUser'
-import { CreateAssessmentCommand } from '../interfaces/aap-api/command'
-import { AssessmentVersionQuery } from '../interfaces/aap-api/query'
-import { AssessmentVersionQueryResult } from '../interfaces/aap-api/queryResult'
-import { CreateAssessmentCommandResult } from '../interfaces/aap-api/commandResult'
 
 describe('AssessmentService', () => {
   let assessmentService: AssessmentService
-  let mockAssessmentPlatformApiClient: jest.Mocked<AssessmentPlatformApiClient>
+  let mockAssessmentPlatformApi: jest.Mocked<AssessmentPlatformApi>
 
   const mockHmppsUser: HmppsUser = {
     name: 'Test User',
@@ -31,12 +31,15 @@ describe('AssessmentService', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockAssessmentPlatformApiClient = {
+    mockAssessmentPlatformApi = {
+      executeCommand: jest.fn(),
       executeCommands: jest.fn(),
-      executeQueries: jest.fn(),
-    } as unknown as jest.Mocked<AssessmentPlatformApiClient>
+      executeQuery: jest.fn(),
+      getDataDeletionData: jest.fn(),
+      postDataDeletionRequest: jest.fn(),
+    }
 
-    assessmentService = new AssessmentService(mockAssessmentPlatformApiClient)
+    assessmentService = new AssessmentService(mockAssessmentPlatformApi)
   })
 
   describe('command', () => {
@@ -56,18 +59,18 @@ describe('AssessmentService', () => {
         success: true,
       }
 
-      mockAssessmentPlatformApiClient.executeCommands.mockResolvedValue([expectedResult])
+      mockAssessmentPlatformApi.executeCommands.mockResolvedValue([expectedResult])
 
       // Act
       const result = await assessmentService.command(command)
 
       // Assert
       expect(result).toEqual(expectedResult)
-      expect(mockAssessmentPlatformApiClient.executeCommands).toHaveBeenCalledWith(command)
+      expect(mockAssessmentPlatformApi.executeCommands).toHaveBeenCalledWith(command)
     })
 
     it('should throw error when API call fails', async () => {
-      mockAssessmentPlatformApiClient.executeCommands.mockRejectedValue(new Error('API Error'))
+      mockAssessmentPlatformApi.executeCommands.mockRejectedValue(new Error('API Error'))
 
       await expect(assessmentService.command(command)).rejects.toThrow('API Error')
     })
@@ -101,18 +104,18 @@ describe('AssessmentService', () => {
         flags: [],
       }
 
-      mockAssessmentPlatformApiClient.executeQueries.mockResolvedValue([expectedResult])
+      mockAssessmentPlatformApi.executeQuery.mockResolvedValue(expectedResult)
 
       // Act
       const result = await assessmentService.query(query)
 
       // Assert
       expect(result).toEqual(expectedResult)
-      expect(mockAssessmentPlatformApiClient.executeQueries).toHaveBeenCalledWith(query)
+      expect(mockAssessmentPlatformApi.executeQuery).toHaveBeenCalledWith(query)
     })
 
     it('should throw error when API call fails', async () => {
-      mockAssessmentPlatformApiClient.executeQueries.mockRejectedValue(new Error('API Error'))
+      mockAssessmentPlatformApi.executeQuery.mockRejectedValue(new Error('API Error'))
 
       await expect(assessmentService.query(query)).rejects.toThrow('API Error')
     })

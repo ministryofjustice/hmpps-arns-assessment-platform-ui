@@ -1,7 +1,9 @@
-import { HmppsUser } from '../../interfaces/hmppsUser'
-import { HandoverContext } from '../../interfaces/handover-api/response'
-import { CaseDetails } from '../../interfaces/delius-api/caseDetails'
-import { SessionDetails } from '../../interfaces/sessionDetails'
+import { HmppsUser } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/HmppsUser.type'
+import { HandoverContext } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverResponse.type'
+import { CaseDetails } from '@ministryofjustice/hmpps-aap-sdk/dependencies/delius/DeliusCaseDetails.type'
+import { SessionDetails } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/SessionDetails.type'
+import { AccessDetails } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/AccessDetails.type'
+import { PractitionerDetails } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/PractitionerDetails.type'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -22,6 +24,8 @@ export declare module 'express-session' {
     telemetryId?: string
     handoverContext?: HandoverContext
     caseDetails?: CaseDetails
+    practitionerDetails?: PractitionerDetails
+    accessDetails?: AccessDetails
     sessionDetails?: SessionDetails
   }
 }
