@@ -3,6 +3,8 @@ import {
   Answer,
   ChainableExpr,
   Condition,
+  Format,
+  not,
   or,
   PredicateExpr,
   Self,
@@ -522,6 +524,59 @@ export const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockD
     ),
   )
 
+// Inline the answer and revealed question answer separated by hyphen.
+// Useful when displaying a check answers row where there is an array of answers with an array of revealed question answers
+// e.g. checkbox with revealed questions
+const isOptionSelected = (content: QuestionContent, value: string) =>
+  content.format === QuestionFormat.RADIO
+    ? Answer(content.code).match(Condition.Equals(value))
+    : Answer(content.code).match(Condition.Array.Contains(value))
+
+export const inlineItemisedAnswerBlocksOf = (content: OptionedQuestionContent): BlockDefinition[] =>
+  optionsOf(content).flatMap(option => {
+    const revealedQuestions = revealedQuestionsOf(option)
+
+    if (revealedQuestions.length === 0) {
+      return getDisplayTextForSpecificItem(content.code, summaryItemsOf(content.options), option.value)
+    }
+
+    const optionText = option.summaryText ?? option.text
+    const parentSelected = isOptionSelected(content, option.value)
+
+    return revealedQuestions.flatMap(revealed => {
+      const revealedContent = revealed.content
+      const revealedAnswered = isAnswered(revealedContent)
+
+      if (isOptioned(revealedContent)) {
+        const optionBlocks = optionsOf(revealedContent).map(revOption =>
+          GovUKBody({
+            text: Format('%1 - %2', optionText, revOption.summaryText ?? revOption.text),
+            visibleWhen: and(parentSelected, isOptionSelected(revealedContent, revOption.value)),
+          }),
+        )
+
+        return [
+          ...optionBlocks,
+          GovUKBody({
+            text: optionText,
+            visibleWhen: and(parentSelected, not(revealedAnswered)),
+          }),
+        ]
+      }
+
+      return [
+        GovUKBody({
+          text: Format('%1 - %2', optionText, answerTextOf(revealedContent)),
+          visibleWhen: and(parentSelected, revealedAnswered),
+        }),
+        GovUKBody({
+          text: optionText,
+          visibleWhen: and(parentSelected, not(revealedAnswered)),
+        }),
+      ]
+    })
+  })
+
 export const hasAnyDatePart = () =>
   and(
     Self().match(Condition.Object.IsObject()),
@@ -788,16 +843,19 @@ export const itemisedSummaryRow =
     visibleWhen?: PredicateExpr
     changeVisuallyHiddenText?: boolean
     hideRevealedQuestions?: boolean
+    inlineRevealedQuestions?: boolean
   }) =>
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { text: content.text },
       visibleWhen: placement.visibleWhen,
       value: {
-        blocks: [
-          ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
-          ...(placement.hideRevealedQuestions ? [] : revealedAnswerBlocksOf(content)),
-        ],
+        blocks: placement.inlineRevealedQuestions
+          ? inlineItemisedAnswerBlocksOf(content)
+          : [
+              ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
+              ...(placement.hideRevealedQuestions ? [] : revealedAnswerBlocksOf(content)),
+            ],
       },
       actions: when(isEditMode)
         .then({

@@ -8,4 +8,7 @@ export const CommonOption = {
   no_problems: 'NO_PROBLEMS',
   some_problems: 'SOME_PROBLEMS',
   significant_problems: 'SIGNIFICANT_PROBLEMS',
+  full_motivation: 'FULL_MOTIVATION',
+  partial_motivation: 'PARTIAL_MOTIVATION',
+  no_motivation: 'NO_MOTIVATION',
 } as const

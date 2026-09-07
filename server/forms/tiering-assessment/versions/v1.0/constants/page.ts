@@ -31,6 +31,10 @@ export const Step = {
     code: 'drug_misuse',
     path: 'drug-misuse',
   },
+  drug_use: {
+    code: 'drug_use',
+    path: 'drug-use',
+  },
   alcohol_ever_used: {
     code: 'alcohol_ever_used',
     path: 'alcohol-ever-used',

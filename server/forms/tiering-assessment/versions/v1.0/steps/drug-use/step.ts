@@ -1,17 +1,23 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { motivationToStopMisuseField, whatDrugsMisusedField } from './fields'
+import { drugUseFields } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { continueButton } from '../../common'
+import { Step } from '../../constants/page'
+import { stepTitle } from '../../locales'
 
 export const drugUseStep = step({
-  path: '/drug-use',
-  title: 'Drug use',
+  path: `/${Step.drug_use.path}`,
+  title: stepTitle(Step.drug_misuse),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [whatDrugsMisusedField, motivationToStopMisuseField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [
+    drugUseFields.questions.whatDrugsMisusedQuestion.displayModes.field,
+    drugUseFields.questions.motivationToStopMisuseQuestion.displayModes.field,
+    continueButton,
+  ],
   onSubmission: [
     submit({
       validate: true,
@@ -21,7 +27,7 @@ export const drugUseStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'alcohol-ever-used' })],
+        next: [redirect({ goto: Step.alcohol_ever_used.path })],
       },
     }),
   ],

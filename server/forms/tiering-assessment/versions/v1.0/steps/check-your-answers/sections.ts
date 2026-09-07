@@ -8,9 +8,11 @@ import { interviewFields } from '../interview-question/fields'
 import { offencesSinceSupervisionFields } from '../offences-since-supervision/fields'
 import { sexualOffendingFields } from '../sexual-offending/fields'
 import { employmentFields } from '../employment/fields'
+import { drugMisuseFields } from '../drug-misuse/fields'
 import { alcoholEverUsedFields } from '../alcohol-ever-used/fields'
 import { alcoholFields } from '../alcohol/fields'
 import { bingeDrinkingFields } from '../binge-drinking/fields'
+import { drugUseFields } from '../drug-use/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -25,6 +27,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.interview_question, config: interviewFields },
   { step: Step.accommodation, config: accommodationFields },
   { step: Step.employment, config: employmentFields },
+  { step: Step.drug_misuse, config: [drugMisuseFields, drugUseFields] },
   { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields, bingeDrinkingFields] },
 ]
 
