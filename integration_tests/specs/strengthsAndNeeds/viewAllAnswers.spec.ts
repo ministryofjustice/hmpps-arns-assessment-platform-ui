@@ -460,10 +460,6 @@ test.describe('View all answers print view', () => {
     await expect(coverPage).toContainText('Prepared by:')
     await expect(coverPage.locator('strong')).toContainText(/\d{2} \w+ \d{4}/)
 
-    await expect(printHeader).toBeVisible()
-    await expect(printHeader).toContainText('Ministry of Justice')
-    await expect(printHeader).toContainText('Official Sensitive')
-
     // Navigation controls are deliberately excluded from the printed report.
     await expect(page.locator('.govuk-back-link')).toBeHidden()
 

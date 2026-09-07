@@ -1,0 +1,17 @@
+{% from "strengths-and-needs/views/components/moj-crest/macro.njk" import renderMojCrest %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+<div class="pdf-header">
+  <div class="pdf-header__left">
+    <div class="pdf-header__logo" data-qa="header-logo">
+      {{ renderMojCrest('#000000', 60) }}
+    </div>
+    <div class="pdf-header__title" data-qa="header-title">
+      <span>Ministry of Justice</span>
+      <span>Strengths and needs</span>
+    </div>
+  </div>
+  <div class="pdf-header__right" data-qa="header-tag">
+    {{ govukTag({ text: "Official Sensitive", classes: "govuk-tag--red" }) }}
+  </div>
+</div>
