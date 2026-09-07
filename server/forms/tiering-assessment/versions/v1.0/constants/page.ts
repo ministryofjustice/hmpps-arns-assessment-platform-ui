@@ -19,6 +19,10 @@ export const Step = {
     code: 'offences_since_community_date',
     path: 'offences-since-supervision',
   },
+  interview_question: {
+    code: 'interview_question',
+    path: 'interview-question',
+  },
   employment: {
     code: 'employment',
     path: 'employment',
