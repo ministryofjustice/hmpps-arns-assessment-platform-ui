@@ -5,6 +5,7 @@ import { alcoholEverUsedFields } from './fields'
 import { Option } from './constants/option'
 import { Step } from '../../constants/page'
 import { stepTitle } from '../../locales'
+import { Question } from './constants/question'
 
 export const alcoholEverUsedStep = step({
   path: `/${Step.alcohol_ever_used.path}`,
@@ -22,11 +23,11 @@ export const alcoholEverUsedStep = step({
         effects: [TieringAssessmentEffects.SaveAssessmentData()],
         next: [
           redirect({
-            when: Answer('has_ever_drunk_alcohol').match(Condition.Equals(Option.YES_IN_LAST_THREE_MONTHS)),
+            when: Answer(Question.has_ever_drunk_alcohol).match(Condition.Equals(Option.YES_IN_LAST_THREE_MONTHS)),
             goto: Step.alcohol.path,
           }),
           redirect({
-            when: Answer('has_ever_drunk_alcohol').match(Condition.Equals(Option.YES_NOT_IN_LAST_THREE_MONTHS)),
+            when: Answer(Question.has_ever_drunk_alcohol).match(Condition.Equals(Option.YES_NOT_IN_LAST_THREE_MONTHS)),
             goto: Step.binge_drinking.path,
           }),
           redirect({ goto: Step.personal_relationships_and_community.path }),

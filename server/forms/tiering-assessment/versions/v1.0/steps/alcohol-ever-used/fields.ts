@@ -23,7 +23,7 @@ export const hasEverDrunkAlcoholQuestion = question({
       },
       {
         value: CommonOption.no,
-        text: commonContentFor('option.UNKNOWN'),
+        text: commonContentFor('option.NO'),
       },
       { divider: commonContentFor('or') },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
