@@ -1,5 +1,5 @@
+import { DataDeletionOperation } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataDeletion.type'
 import { DataDeletionToolContext, DataDeletionToolEffectsDeps } from '../types'
-import { DataDeletionOperation } from '../../../../interfaces/aap-api/dataDeletion'
 
 export const createDeletionRequest =
   (_deps: DataDeletionToolEffectsDeps) => async (context: DataDeletionToolContext) => {

@@ -56,7 +56,7 @@ export default function createApp(services: Services): express.Application {
       preferencesStore: services.preferencesStore,
     })
     .registerPackage(dataDeletionTool, {
-      api: services.assessmentPlatformApiClient,
+      assessmentPlatformApiFactory: services.assessmentPlatformApiFactory,
     })
     .registerPackage(platformPoliciesFormPackage)
     .registerPackage(accessFormPackage, {
