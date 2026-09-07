@@ -12,6 +12,7 @@ export const CaseData = {
   RiskOfSexualHarm: Data('caseData.r'),
   Gender: Data('caseData.gender'),
 }
-export const basePath = `/strengths-and-needs/${formVersion}`
+export const formRootPath = '/strengths-and-needs'
+export const basePath = `${formRootPath}/${formVersion}`
 
 export const sectionTitleClass = 'govuk-body-l'

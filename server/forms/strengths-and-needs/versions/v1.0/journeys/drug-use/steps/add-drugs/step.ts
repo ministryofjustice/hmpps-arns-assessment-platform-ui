@@ -5,6 +5,7 @@ import { Step } from '../../constants/step'
 import { sectionPath } from '../../../../constants/path'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 
 export const addDrugsStep = step({
@@ -17,6 +18,7 @@ export const addDrugsStep = step({
   },
   cleardownFieldCodes: ['^trip_*$'],
   blocks: [drugUseSection.questions.selectMisusedDrugs.displayModes.field, saveButton],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.add_drugs)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -25,6 +27,7 @@ export const addDrugsStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.add_drugs),
         ],
         next: [redirect({ goto: Step.drug_details.path })],
       },

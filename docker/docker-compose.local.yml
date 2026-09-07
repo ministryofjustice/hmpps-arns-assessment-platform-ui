@@ -52,6 +52,16 @@ services:
     ports:
       - '5432:5432'
 
+  aap-api:
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_JPA_SHOW_SQL=true
+
+  coordinator-api:
+    ports:
+      - '6060:8080'
+
 volumes:
   node_modules:
     external: true

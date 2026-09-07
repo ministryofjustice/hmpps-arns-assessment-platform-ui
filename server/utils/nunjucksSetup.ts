@@ -4,6 +4,7 @@ import express from 'express'
 import fs from 'fs'
 import { mpopNunjucksSetup } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
+import { DateTime } from 'luxon'
 import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
@@ -117,9 +118,15 @@ export default function nunjucksSetup(app?: express.Express) {
     return true
   }
 
+  const displayDateForToday = (today: DateTime = DateTime.now()) => {
+    return today.toFormat('dd MMMM y')
+  }
+
   njkEnv.addFilter('mapNavItem', mapNavItem)
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
+
+  njkEnv.addGlobal('displayDateForToday', displayDateForToday)
 
   njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
     errors.map(error => ({

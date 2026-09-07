@@ -16,6 +16,7 @@ import { updateItemFromCollection } from './assessment/updateItemFromCollection'
 import { removeItemFromCollection } from './assessment/removeItemFromCollection'
 import { emptyCollection } from './assessment/emptyCollection'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
+import { sendAuditEvent } from './audit/sendAuditEvent'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -36,4 +37,8 @@ export const StrengthsAndNeedsEffects = {
   loadItemFromCollection: sanEffects.register('loadItemFromCollection', loadItemFromCollection),
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
 }
+
+export { CommonAuditEvent } from '../../shared'
+export { SanAuditEvent } from '../auditEvents'

@@ -6,6 +6,7 @@ import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient } from '../../../data'
+import AuditService from '../../../services/auditService'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -46,6 +47,8 @@ export interface StrengthsAndNeedsState extends Record<string, unknown> {
   user: User & {
     token: string
   }
+  /** Per request id, used as the audit correlationId. Set by setUpWebSession. */
+  requestId: string
 }
 
 /**
@@ -60,4 +63,5 @@ export type StrengthsAndNeedsContext = EffectFunctionContext<
 
 export interface StrengthsAndNeedsEffectsDeps {
   api: AssessmentPlatformApiClient
+  auditService: AuditService
 }

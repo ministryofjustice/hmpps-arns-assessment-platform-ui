@@ -25,9 +25,12 @@ const renderPage = async (
     Object.entries(data).forEach(([code, value]) => context.setData(code, value))
   })
 
+  /* The step audits the view, so the effects need an audit service */
+  const deps = { auditService: { send: jest.fn() } } as unknown as StrengthsAndNeedsEffectsDeps
+
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
-    .registerGlobalFunctions([testEffects, sanEffects, sanGenerators, sanTransformers, sanConditions])
+    .registerGlobalFunctions([testEffects, sanEffects, sanGenerators, sanTransformers, sanConditions], deps)
     .registerPackage({
       journey: journey({
         code: 'strengths-and-needs-v1',

@@ -1,0 +1,38 @@
+{% from "strengths-and-needs/views/components/moj-crest/macro.njk" import renderMojCrest %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+
+<div class="pdf-header">
+  <div class="pdf-header__left">
+    <div class="pdf-header__logo">
+      {{ renderMojCrest('#000000', 60) }}
+    </div>
+    <div class="pdf-header__title">
+      <span>Ministry of Justice</span>
+      <span>Strengths and needs</span>
+    </div>
+  </div>
+  <div class="pdf-header__right">
+    {{ govukTag({ text: "Official Sensitive", classes: "govuk-tag--red" }) }}
+  </div>
+</div>
+
+<div class="govuk-grid-row pdf-cover-page">
+  <div class="govuk-grid-column-two-thirds">
+    <img class="pdf-cover-page__logo" src="/assets/images/moj-logo-large.png" height="95"/>
+    <div class="pdf-cover-page__body page-break-after">
+      <div class="pdf-cover-page__title">
+        <p class="pdf-cover-page__subheading">His Majesty's Prison &amp; Probation Service</p>
+        <p class="pdf-cover-page__heading">Strengths and needs</p>
+      </div>
+      <div class="pdf-cover-page__details">
+        <p>Prepared by:</p>
+        <p>
+          <strong>
+            {{ practitionerName }}<br/>
+            {{ displayDateForToday() }}
+          </strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

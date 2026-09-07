@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Create a Goal', () => {
   test('saving goal without steps', async ({ page, createSession, auditQueue }) => {
@@ -19,7 +19,7 @@ test.describe('Create a Goal', () => {
     await createGoalPage.clickSaveWithoutSteps()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.CREATE_GOAL)
     expectAuditEvent(event)
     expect(event.details.areaOfNeed).toBe('accommodation')
   })
@@ -41,7 +41,7 @@ test.describe('Create a Goal', () => {
     await addStepsPage.clickSaveAndContinue()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CREATE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.CREATE_GOAL)
     expectAuditEvent(event)
     expect(event.details.areaOfNeed).toBe('accommodation')
   })

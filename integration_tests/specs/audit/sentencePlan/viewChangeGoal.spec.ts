@@ -2,7 +2,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Change a Goal page', () => {
   test('visiting change goal page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -16,7 +16,7 @@ test.describe('View Change a Goal page', () => {
     await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
     await ChangeGoalPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_CHANGE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_CHANGE_GOAL)
     expectAuditEvent(event, goalUuid)
   })
 })
