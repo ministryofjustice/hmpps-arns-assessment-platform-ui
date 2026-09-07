@@ -454,11 +454,21 @@ test.describe('View all answers print view', () => {
 
     // Printing produces a report cover containing the practitioner attribution and
     // classification header, while retaining the assessment content after the cover.
+    const today = new Date()
+    const formattedDate = today.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    })
     await expect(coverPage).toBeVisible()
-    await expect(coverPage).toContainText("His Majesty's Prison & Probation Service")
-    await expect(coverPage).toContainText('Strengths and needs')
-    await expect(coverPage).toContainText('Prepared by:')
-    await expect(coverPage.locator('strong')).toContainText(/\d{2} \w+ \d{4}/)
+    await expect(coverPage).toMatchAriaSnapshot(`
+      - img
+      - paragraph: His Majesty's Prison & Probation Service
+      - paragraph: Strengths and needs
+      - paragraph: "Prepared by:"
+      - paragraph: 
+        - strong: Test User ${formattedDate}
+    `)
 
     // Navigation controls are deliberately excluded from the printed report.
     await expect(page.locator('.govuk-back-link')).toBeHidden()
