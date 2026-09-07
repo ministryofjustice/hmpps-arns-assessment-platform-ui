@@ -22,7 +22,7 @@ export const employmentStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'drug-misuse' })],
+        next: [redirect({ goto: Step.drug_misuse.path })],
       },
     }),
   ],

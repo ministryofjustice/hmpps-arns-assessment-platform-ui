@@ -1,26 +1,21 @@
-import {
-  access,
-  Answer,
-  Condition,
-  Format,
-  redirect,
-  step,
-  submit,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { access, Answer, Condition, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { drugMisuseField } from './fields'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { drugMisuseFields } from './fields'
+import { Step } from '../../constants/page'
+import { stepTitle } from '../../locales'
+import { continueButton } from '../../common'
+import { Question } from './constants/question'
+import { CommonOption } from '../../constants/commonOption'
 
 export const drugMisuseStep = step({
-  path: '/drug-misuse',
-  title: Format('Has %1 ever misused drugs?', CaseData.Forename),
+  path: `/${Step.drug_misuse.path}`,
+  title: stepTitle(Step.drug_misuse),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [drugMisuseField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [drugMisuseFields.questions.drugMisuseQuestion.displayModes.field, continueButton],
   onSubmission: [
     submit({
       validate: true,
@@ -31,7 +26,7 @@ export const drugMisuseStep = step({
         ],
         next: [
           redirect({
-            when: Answer('ever-misused-drugs').match(Condition.Equals('true')),
+            when: Answer(Question.ever_misused_drugs).match(Condition.Equals(CommonOption.yes)),
             goto: 'drug-use',
           }),
           redirect({ goto: 'alcohol-ever-used' }),
