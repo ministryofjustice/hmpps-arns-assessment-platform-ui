@@ -18,6 +18,8 @@ export const english = {
     [Step.interview_question.code]: 'Interview',
     [Step.employment.code]: 'Employment and education',
     [Step.alcohol_ever_used.code]: 'Alcohol use',
+    [Step.alcohol.code]: 'Alcohol use',
+    [Step.binge_drinking.code]: 'Alcohol use',
     [Step.personal_relationships_and_community.code]: 'Personal relationships and community',
     [Step.check_your_answers.code]: 'Check your answers',
     [Step.reoffending_predictor_scores.code]: 'Reoffending Predictor scores',

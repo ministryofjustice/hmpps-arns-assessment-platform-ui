@@ -7,7 +7,7 @@ import { stepTitle } from '../../locales'
 
 export const alcoholStep = step({
   path: `/${Step.alcohol.path}`,
-  title: stepTitle(Step.alcohol_ever_used),
+  title: stepTitle(Step.alcohol),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
