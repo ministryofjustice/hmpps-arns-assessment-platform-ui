@@ -29,7 +29,6 @@ import logger from '../logger'
 import { forgeDevToolsInstrumentationSink } from './forgeDevTools'
 
 // Form packages
-import accessFormPackage from './forms/access'
 import platformPoliciesFormPackage from './forms/platform'
 import sentencePlanFormPackage from './forms/sentence-plan'
 import trainingSessionLauncher from './forms/training-session-launcher'
@@ -59,10 +58,6 @@ export default function createApp(services: Services): express.Application {
       assessmentPlatformApiFactory: services.assessmentPlatformApiFactory,
     })
     .registerPackage(platformPoliciesFormPackage)
-    .registerPackage(accessFormPackage, {
-      deliusApi: services.deliusApiClient,
-      handoverApi: services.handoverApiClient,
-    })
     .registerPackage(sentencePlanFormPackage, {
       api: services.assessmentPlatformApiClient,
       coordinatorApi: services.coordinatorApiClient,
