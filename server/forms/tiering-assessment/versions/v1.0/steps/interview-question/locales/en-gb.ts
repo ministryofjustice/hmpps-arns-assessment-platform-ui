@@ -16,4 +16,4 @@ export const english = {
   },
 } as const
 
-export type AccommodationLocale = Locale<typeof english>
+export type InterviewLocale = Locale<typeof english>

@@ -4,4 +4,4 @@ export const english = {
   view_reoffending_predictor_scores: 'View reoffending predictors scores',
 } as const
 
-export type AccommodationLocale = Locale<typeof english>
+export type CheckYourAnswersLocale = Locale<typeof english>
