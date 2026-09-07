@@ -1,6 +1,6 @@
-import config from '../../../config'
-import { CreateHandoverLinkRequest } from '../../../interfaces/handover-api/request'
-import { OasysCreateRequest } from '../../../interfaces/coordinator-api/oasysCreate'
+import { CreateHandoverLinkRequest } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverRequest.type'
+import { OasysCreateRequest } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysCreate.type'
+import { trainingSessionLauncherConfig } from '../config'
 import { TrainingScenarioFlag } from '../constants'
 import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
 import { randomOasysAssessmentPk } from '../scenarios/helpers'
@@ -64,7 +64,7 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       modifyRequest: request => ({ ...request, assessmentType: 'SAN_SP' }),
     },
     handover: {
-      availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
+      availableServices: Object.keys(trainingSessionLauncherConfig.handoverTargets) as TargetApplication[],
     },
   },
 
@@ -110,7 +110,7 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
   },
   TIERING_ASSESSMENT: {
     handover: {
-      availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
+      availableServices: Object.keys(trainingSessionLauncherConfig.handoverTargets) as TargetApplication[],
     },
   },
 }

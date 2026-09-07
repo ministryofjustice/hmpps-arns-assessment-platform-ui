@@ -1,5 +1,9 @@
 import { fakerEN_GB as faker } from '@faker-js/faker'
-import { AccessMode, Location, YesNoNull } from '../../../interfaces/handover-api/shared'
+import {
+  AccessMode,
+  Location,
+  YesNoNull,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
 
 /**
  * Generate a seed for reproducible randomization.

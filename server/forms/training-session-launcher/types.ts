@@ -1,5 +1,5 @@
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
-import { YesNoNullOrNA } from '../../interfaces/handover-api/shared'
+import { YesNoNullOrNA } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
 import { TrainingScenarioFlag } from './constants'
 import { TrainingLauncherNotification } from './effects/types'
 import { ScenarioFieldKey, ScenarioValues, ResolvedScenario } from './scenarios'

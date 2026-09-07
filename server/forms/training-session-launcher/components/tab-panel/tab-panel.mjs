@@ -276,10 +276,15 @@ export function initTabPanels() {
  */
 export class TabPanelController {
   #element
+
   #tabs
+
   #panels
+
   #hiddenClass = 'tab-panel__panel--active'
+
   #selectedClass = 'tab-panel__item-btn--selected'
+
   #queryParam = null
 
   /**

@@ -1,5 +1,8 @@
 import type { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { OasysCreateRequest, OasysCreateResponse } from '../../../../interfaces/coordinator-api/oasysCreate'
+import {
+  OasysCreateRequest,
+  OasysCreateResponse,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysCreate.type'
 import {
   applyCreateSessionModifiers,
   runBeforeCreateSessionHooks,
@@ -7,7 +10,6 @@ import {
 } from '../../flags/handlers'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
 import { TrainingSessionLauncherEffectsDeps, TrainingLauncherNotification } from '../types'
-import logger from '../../../../../logger'
 
 /**
  * Default empty preferences
@@ -69,7 +71,7 @@ export async function createInCoordinatorAndUpdatePreferences(
     const sanitisedError = error as SanitisedError
 
     if (sanitisedError.responseStatus === 409) {
-      logger.info(
+      deps.logger.info(
         `OASys association already exists for PK ${coordinatorRequest.oasysAssessmentPk}, continuing without creating new association`,
       )
 

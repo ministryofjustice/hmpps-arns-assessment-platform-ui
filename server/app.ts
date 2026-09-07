@@ -52,6 +52,7 @@ export default function createApp(services: Services): express.Application {
     .registerPackage(trainingSessionLauncher, {
       coordinatorApiClient: services.coordinatorApiClient,
       handoverApiClient: services.handoverApiClient,
+      logger,
       preferencesStore: services.preferencesStore,
     })
     .registerPackage(dataDeletionTool, {
