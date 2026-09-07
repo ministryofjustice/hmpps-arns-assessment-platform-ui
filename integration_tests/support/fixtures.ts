@@ -2,8 +2,11 @@ import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
-import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
-import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import type {
+  AccessMode,
+  CriminogenicNeedsData,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
+import type { AssessmentType } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysCreate.type'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -11,13 +14,10 @@ import { TestHandoverApiClient } from './apis/TestHandoverApiClient'
 import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
 import { AssessmentBuilder } from '../builders/AssessmentBuilder'
 import type { AssessmentBuilderFactory } from '../builders/AssessmentBuilder'
-import { SentencePlanBuilder } from '../builders/SentencePlanBuilder'
-import type { SentencePlanBuilderFactory } from '../builders/SentencePlanBuilder'
 import { CoordinatorBuilder } from '../builders/CoordinatorBuilder'
 import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
-import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
 import arnsApi, { criminogenicNeedsToArnsDetails } from '../mockApis/arnsApi'
 
@@ -142,11 +142,9 @@ type TestApiFixtures = {
   handoverClient: TestHandoverApiClient
   coordinatorClient: TestCoordinatorApiClient
   assessmentBuilder: AssessmentBuilderFactory
-  sentencePlanBuilder: SentencePlanBuilderFactory
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
-  auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
 }
 
@@ -238,10 +236,6 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(AssessmentBuilder(aapClient))
   },
 
-  sentencePlanBuilder: async ({ aapClient }, use) => {
-    await use(SentencePlanBuilder(aapClient))
-  },
-
   coordinatorBuilder: async ({ coordinatorClient }, use) => {
     await use(CoordinatorBuilder(coordinatorClient))
   },
@@ -310,15 +304,6 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
     await use(createSessionFn)
   },
-  auditQueue: async ({ apis }, use) => {
-    const client = AuditQueueClient.getInstance({
-      queueUrl: apis.localstack.queueUrl,
-      region: apis.localstack.region,
-      endpoint: apis.localstack.url,
-    })
-    await use(client)
-  },
-
   makeAxeBuilder: async ({ page }, use) => {
     const makeAxeBuilder = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
 

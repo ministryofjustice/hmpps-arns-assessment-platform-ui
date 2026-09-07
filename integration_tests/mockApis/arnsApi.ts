@@ -1,6 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
-import type { CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
-import { areasOfNeed, subAreasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
+import type { CriminogenicNeedsData } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
 import { stubFor } from './wiremock'
 
 export interface AssessmentNeedDetail {
@@ -26,6 +25,18 @@ const ARNS_SECTION_BY_KEY: Record<string, string> = {
   healthAndWellbeing: 'HEALTH_AND_WELLBEING',
 }
 
+const CRIMINOGENIC_NEED_FIELDS = [
+  { crimNeedsKey: 'accommodation', handoverPrefix: 'acc' },
+  { crimNeedsKey: 'educationTrainingEmployability', handoverPrefix: 'ete' },
+  { crimNeedsKey: 'finance', handoverPrefix: 'finance' },
+  { crimNeedsKey: 'drugMisuse', handoverPrefix: 'drug' },
+  { crimNeedsKey: 'alcoholMisuse', handoverPrefix: 'alcohol' },
+  { crimNeedsKey: 'healthAndWellbeing', handoverPrefix: 'emo' },
+  { crimNeedsKey: 'personalRelationshipsAndCommunity', handoverPrefix: 'rel' },
+  { crimNeedsKey: 'thinkingBehaviourAndAttitudes', handoverPrefix: 'think' },
+  { crimNeedsKey: 'lifestyleAndAssociates', handoverPrefix: 'lifestyle' },
+] as const
+
 const toBool = (value: string | undefined): boolean | null => {
   if (value === 'YES') return true
   if (value === 'NO') return false
@@ -34,13 +45,13 @@ const toBool = (value: string | undefined): boolean | null => {
 
 /**
  * Translate the handover-shaped criminogenic-needs test data (accLinkedToHarm: 'YES', etc.) into the
- * ARNS integration DTO's `needs` array, using the crimNeedsKey/handoverPrefix pairs from areasOfNeed.
+ * ARNS integration DTO's `needs` array.
  * An area omitted from the input produces no entry, so the app treats it as having no data.
  */
 export const criminogenicNeedsToArnsDetails = (data: CriminogenicNeedsData | null): AssessmentNeedDetail[] => {
   if (!data) return []
 
-  return [...areasOfNeed, ...subAreasOfNeed].flatMap(({ crimNeedsKey, handoverPrefix }) => {
+  return CRIMINOGENIC_NEED_FIELDS.flatMap(({ crimNeedsKey, handoverPrefix }) => {
     const area = data[crimNeedsKey] as Record<string, string | undefined> | undefined
     if (!area) return []
 

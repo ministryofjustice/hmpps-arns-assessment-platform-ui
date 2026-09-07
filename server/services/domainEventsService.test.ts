@@ -1,6 +1,7 @@
 import { mockClient } from 'aws-sdk-client-mock'
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns'
-import DomainEventsService, { DomainEvent } from './domainEventsService'
+import type { DomainEvent } from '@ministryofjustice/hmpps-aap-sdk/dependencies/domain-events/DomainEvents.type'
+import DomainEventsService from './domainEventsService'
 
 jest.mock('../../logger', () => ({
   info: jest.fn(),

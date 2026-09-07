@@ -30,7 +30,6 @@ import { forgeDevToolsInstrumentationSink } from './forgeDevTools'
 
 // Form packages
 import platformPoliciesFormPackage from './forms/platform'
-import sentencePlanFormPackage from './forms/sentence-plan'
 import trainingSessionLauncher from './forms/training-session-launcher'
 import dataDeletionTool from './forms/data-deletion-tool'
 
@@ -58,16 +57,6 @@ export default function createApp(services: Services): express.Application {
       assessmentPlatformApiFactory: services.assessmentPlatformApiFactory,
     })
     .registerPackage(platformPoliciesFormPackage)
-    .registerPackage(sentencePlanFormPackage, {
-      api: services.assessmentPlatformApiClient,
-      coordinatorApi: services.coordinatorApiClient,
-      arnsApi: services.arnsApiClient,
-      deliusApi: services.deliusApiClient,
-      mpopComponents: services.mpopComponents,
-      auditService: services.auditService,
-      featureFlagService: services.featureFlagService,
-      domainEventsService: services.domainEventsService,
-    })
 
   // Setup middleware
   app.use(setUpHealthChecks(services.applicationInfo))
@@ -83,9 +72,6 @@ export default function createApp(services: Services): express.Application {
         '/training-session-launcher',
         '/data-deletion-tool',
         '/platform',
-        // Allow access to session timeout page even with expired session
-        // so we can show the "information deleted" message and re-auth link
-        '/sentence-plan/unsaved-information-deleted',
       ],
     }),
   )

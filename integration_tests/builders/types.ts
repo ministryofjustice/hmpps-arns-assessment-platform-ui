@@ -1,7 +1,11 @@
-import { Answers, Properties } from '@server/interfaces/aap-api/dataModel'
-import { GoalStatus, StepStatus, AreaOfNeedSlug } from '@server/forms/sentence-plan/effects/types'
+import {
+  Answers,
+  Properties,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 
-export { GoalStatus, StepStatus, AreaOfNeedSlug }
+export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
+export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANNOT_BE_DONE_YET' | 'NO_LONGER_NEEDED'
+export type AreaOfNeedSlug = string
 
 /**
  * Plan agreement status
