@@ -48,7 +48,7 @@ export const strengthsAndNeedsV1Journey = journey({
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
-      basePath,
+      basePath: createRoute(baseSanRoute),
       assessmentVersionDate: Data('sessionDetails.assessmentVersion').pipe(
         StrengthsAndNeedsTransformers.FormatFullDateTime(),
       ),
