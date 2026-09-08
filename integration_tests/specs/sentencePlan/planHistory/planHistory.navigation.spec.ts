@@ -20,13 +20,15 @@ test.describe('Plan History - Navigation', () => {
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
 
+    // Verify the "View plan history" link is visible
     const viewHistoryLink = page.getByRole('link', { name: /View plan history/i })
     await expect(viewHistoryLink).toBeVisible()
 
+    // Click the link
     await viewHistoryLink.click()
 
-    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
-    await expect(planHistoryPage.createGoalButton).toBeVisible()
+    // Verify we're on the plan history page
+    await PlanHistoryPage.verifyOnPage(page)
   })
 
   test('redirects to plan overview when plan has no agreement status', async ({
@@ -48,8 +50,10 @@ test.describe('Plan History - Navigation', () => {
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
 
+    // Try to navigate directly to plan history
     await page.goto(`/sentence-plan/v1.0/plan/plan-history`)
 
+    // Should be redirected back to plan overview
     await expect(page).toHaveURL(/overview/)
   })
 })

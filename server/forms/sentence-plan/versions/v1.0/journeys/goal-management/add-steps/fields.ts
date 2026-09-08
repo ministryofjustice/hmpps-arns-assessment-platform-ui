@@ -26,8 +26,14 @@ import { actorLabelOptions, CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 
 const stepActorLabelText = 'Who will do the step?'
+const stepActorHintText = 'Add one person or agency.'
 const stepDescriptionLabelText = 'What should they do to achieve the goal?'
+const stepDescriptionHintText = 'Enter one step at a time.'
 const stepStatusLabelText = 'What is the status?'
+const stepStatusHintText = 'For example, not started.'
+const stepActorHintId = 'step-actor-hint'
+const stepDescriptionHintId = 'step-description-hint'
+const stepStatusHintId = 'step-status-hint'
 
 const stepStatusOptions = [
   { value: '', text: 'Choose status' },
@@ -106,7 +112,14 @@ export const columnHeaders = GovUKGridRow({
   columns: [
     {
       width: 'one-sixth',
-      blocks: [GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' })],
+      blocks: [
+        GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
+        GovUKBody({
+          text: stepActorHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepActorHintId },
+        }),
+      ],
     },
     {
       width: 'one-half',
@@ -114,6 +127,11 @@ export const columnHeaders = GovUKGridRow({
         GovUKBody({
           text: stepDescriptionLabelText,
           classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
+        }),
+        GovUKBody({
+          text: stepDescriptionHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepDescriptionHintId },
         }),
       ],
     },
@@ -123,6 +141,11 @@ export const columnHeaders = GovUKGridRow({
         GovUKBody({
           text: stepStatusLabelText,
           classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
+        }),
+        GovUKBody({
+          text: stepStatusHintText,
+          classes: 'govuk-hint govuk-!-margin-bottom-0',
+          attributes: { id: stepStatusHintId },
         }),
       ],
     },
@@ -154,6 +177,7 @@ export const stepRows = HtmlBlock({
                     text: stepActorLabelText,
                     classes: 'govuk-visually-hidden',
                   },
+                  describedBy: stepActorHintId,
                   items: actorLabelOptions,
                   defaultValue: Item().path('actor'),
                   validWhen: [
@@ -176,6 +200,7 @@ export const stepRows = HtmlBlock({
                   classes: 'govuk-visually-hidden',
                 },
                 autocomplete: 'off',
+                describedBy: stepDescriptionHintId,
                 rows: '1',
                 classes: 'govuk-!-width-full app-autosize-textarea',
                 attributes: {
@@ -201,6 +226,7 @@ export const stepRows = HtmlBlock({
                     text: stepStatusLabelText,
                     classes: 'govuk-visually-hidden',
                   },
+                  describedBy: stepStatusHintId,
                   items: stepStatusOptions,
                   defaultValue: Item().path('status'),
                   validWhen: [
