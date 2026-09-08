@@ -10,6 +10,7 @@ import { sexualOffendingFields } from '../sexual-offending/fields'
 import { employmentFields } from '../employment/fields'
 import { drugMisuseFields } from '../drug-misuse/fields'
 import { alcoholEverUsedFields } from '../alcohol-ever-used/fields'
+import { alcoholFields } from '../alcohol/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -26,6 +27,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.employment, config: employmentFields },
   { step: Step.drug_misuse, config: drugMisuseFields },
   { step: Step.alcohol_ever_used, config: alcoholEverUsedFields },
+  { step: Step.alcohol, config: alcoholFields },
 ]
 
 export interface Answerable {
