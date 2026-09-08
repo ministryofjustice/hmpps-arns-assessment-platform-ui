@@ -26,7 +26,6 @@ export const viewAllAnswersStep = step({
       backlink: Data('dynamicBacklink'),
       viewAllAnswersPage: true,
       practitionerName: Session('practitionerDetails.displayName'),
-      sectionTitle: commonContentFor('all_answers_heading', CaseData.ForenamePossessive),
     },
   },
   blocks: viewAllAnswersBlocks,

@@ -240,7 +240,7 @@ describe('view all answers', () => {
       }
 
       await setDynamicBacklink()(context as never, basePath)
-      return context.data.viewAllAnswersBacklink
+      return context.data.dynamicBacklink
     }
 
     it('returns to the page the user opened this one from', async () => {
