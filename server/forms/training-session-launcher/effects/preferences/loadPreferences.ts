@@ -12,16 +12,7 @@ import {
   ServiceOption,
 } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
-
-/**
- * Gender code to display label mapping
- */
-const GENDER_LABELS: Record<string, string> = {
-  '0': 'Not Known',
-  '1': 'Male',
-  '2': 'Female',
-  '9': 'Not Specified',
-}
+import { handoverGenderLabel } from '../../../shared/constants/gender'
 
 /**
  * Location code to display label mapping
@@ -179,7 +170,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
     givenName: values.givenName || '',
     familyName: values.familyName || '',
     dateOfBirth: formatDateOfBirth(values.dateOfBirth),
-    gender: GENDER_LABELS[values.gender] || values.gender || '',
+    gender: handoverGenderLabel(values.gender),
     location: LOCATION_LABELS[values.location] || values.location || '',
     crn: values.crn || '',
     pnc: values.pnc || '',
@@ -213,7 +204,7 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     givenName: values.givenName || '',
     familyName: values.familyName || '',
     dateOfBirth: formatDateOfBirth(values.dateOfBirth),
-    gender: GENDER_LABELS[values.gender] || values.gender || '',
+    gender: handoverGenderLabel(values.gender),
     location: LOCATION_LABELS[values.location] || values.location || '',
     crn: values.crn || '',
     pnc: values.pnc || '',

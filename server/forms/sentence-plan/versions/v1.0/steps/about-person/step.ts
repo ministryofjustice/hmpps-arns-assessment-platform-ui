@@ -1,5 +1,5 @@
-import { Format, step, access, when } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { isOasysAccess, isReadWriteAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
+import { Format, step, access, not, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { isOasysAccess, isReadOnlyAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
 import {
   assessmentDataLoadFailureWarning,
   incompleteAssessmentWarning,
@@ -19,7 +19,7 @@ import {
   isSentenceInformationAndAssessmentLoadingError,
 } from './fields'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
-import { AuditEvent, SentencePlanEffects } from '../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../effects'
 
 export const aboutPersonStep = step({
   path: '/about-person',
@@ -31,7 +31,7 @@ export const aboutPersonStep = step({
         .else(Format(`About %1`, CaseData.Forename)),
       buttons: {
         showReturnToOasysButton: isOasysAccess,
-        showCreateGoalButton: isReadWriteAccess,
+        showCreateGoalButton: not(isReadOnlyAccess),
       },
     },
   },
@@ -57,7 +57,7 @@ export const aboutPersonStep = step({
     redirectUnlessSanSp(sentencePlanOverviewPath),
     access({
       effects: [
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ABOUT_PERSON),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_ABOUT_PERSON),
         SentencePlanEffects.loadSentenceInformation(),
         SentencePlanEffects.loadAllAreasAssessmentInfo(),
       ],

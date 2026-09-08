@@ -10,7 +10,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { redirectIfGoalNotFound, redirectIfPostAgreement } from '../../../guards'
 
@@ -27,8 +27,8 @@ export const confirmDeleteGoalStep = step({
   view: {
     locals: {
       backlink: when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
-        .then('../../plan/overview?type=future')
-        .else('../../plan/overview?type=current'),
+        .then('../../plan/overview?goalStatusTab=future')
+        .else('../../plan/overview?goalStatusTab=current'),
     },
   },
 
@@ -38,7 +38,7 @@ export const confirmDeleteGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_DELETE_GOAL),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_DELETE_GOAL),
       ],
     }),
     // Redirect if plan is no longer in draft (delete is only for draft plans)
@@ -46,7 +46,7 @@ export const confirmDeleteGoalStep = step({
     redirectIfGoalNotFound('../../plan/overview'),
     access({
       when: Data('activeGoal.status').match(Condition.Equals('ACHIEVED')),
-      next: [redirect({ goto: '../../plan/overview?type=achieved' })],
+      next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
     }),
   ],
 
@@ -56,7 +56,7 @@ export const confirmDeleteGoalStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.deleteActiveGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.DELETE_GOAL),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.DELETE_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You deleted a goal from %1 plan', CaseData.ForenamePossessive),
@@ -66,9 +66,9 @@ export const confirmDeleteGoalStep = step({
         next: [
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

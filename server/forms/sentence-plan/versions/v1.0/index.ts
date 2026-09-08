@@ -11,15 +11,22 @@ import {
 import { planOverviewJourney } from './journeys/plan-overview'
 import { goalManagementJourney } from './journeys/goal-management'
 import { aboutPersonStep } from './steps/about-person/step'
-import { actorLabels, areasOfNeed, formVersion } from './constants'
+import { supervisionPackageStep } from './steps/supervision-package/step'
+import { actorLabels, areasOfNeed, formVersion, sentencePlanBasePath, sentencePlanOverviewPath } from './constants'
 import { SentencePlanEffects } from '../../effects'
 import { NAV_KEY_PATTERNS } from '../../effects/navigation'
 import {
   canAccessSanContent,
+  canAccessSupervisionPackage,
   hasPostAgreementStatus,
+  isSupervisionPackageEnabled,
   redirectIfMergedMpopPlan,
   redirectToPrivacyUnlessAccepted,
 } from './guards'
+import config from '../../../../config'
+import { createPlatformPages } from '../../../platform'
+
+const feedbackUrl = config.nationalRolloutFeedbackUrl
 
 /**
  * Sentence Plan v1.0 Journey
@@ -38,11 +45,12 @@ export const sentencePlanV1Journey = journey({
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
-      footerBaseUrl: '/platform',
-      basePath: '/sentence-plan/v1.0',
-      hmppsHeaderServiceNameLink: '/sentence-plan/v1.0/plan/overview',
+      basePath: sentencePlanBasePath,
+      hmppsHeaderServiceNameLink: sentencePlanOverviewPath,
       showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
+      showSupervisionPackageTab: canAccessSupervisionPackage,
+      feedbackUrl,
     },
   },
   data: {
@@ -69,7 +77,10 @@ export const sentencePlanV1Journey = journey({
       ),
       next: [
         redirect({
-          goto: Format('/sentence-plan/v1.0/plan/view-historic/%1?type=current', Data('sessionDetails.planVersion')),
+          goto: Format(
+            `${sentencePlanBasePath}/plan/view-historic/%1?type=current`,
+            Data('sessionDetails.planVersion'),
+          ),
         }),
       ],
     }),
@@ -77,7 +88,18 @@ export const sentencePlanV1Journey = journey({
     redirectIfMergedMpopPlan(),
     // READ_ONLY users skip privacy and go straight to overview; edit users must accept privacy first.
     redirectToPrivacyUnlessAccepted(),
+    // Load the supervision package (only when the feature is on) so the nav can decide, on every
+    // page, whether to show the Supervision package tab based on the case's supervision phase.
+    // Runs after the redirects so it is skipped for redirected requests (e.g. privacy not accepted).
+    access({
+      when: isSupervisionPackageEnabled,
+      effects: [SentencePlanEffects.loadSupervisionPackage()],
+    }),
   ],
-  steps: [aboutPersonStep],
+  steps: [
+    aboutPersonStep,
+    supervisionPackageStep,
+    ...createPlatformPages({ baseUrl: sentencePlanBasePath, feedbackUrl }),
+  ],
   children: [planOverviewJourney, goalManagementJourney],
 })

@@ -1,4 +1,4 @@
-import { Section } from '../constants/section'
+import { Section, SectionComplete } from '../constants/section'
 import { CommonOption } from '../constants/commonOption'
 import { Locale } from '../../../i18n'
 
@@ -18,6 +18,11 @@ export const english = {
   go_to_practitioner_analysis: 'Go to practitioner analysis',
   summary: 'Summary',
   practitioner_analysis: 'Practitioner analysis',
+  all_answers_heading: '%1 strengths and needs',
+  status: {
+    complete: 'Complete',
+    incomplete: 'Incomplete',
+  },
   sectionTitle: {
     [Section.accommodation.code]: 'Accommodation',
     [Section.offence_analysis.code]: 'Offence analysis',
@@ -26,8 +31,19 @@ export const english = {
     [Section.alcohol_use.code]: 'Alcohol use',
     [Section.drug_use.code]: 'Drug use',
     [Section.employment_and_education.code]: 'Employment and education',
-    [Section.finance.code]: 'Finance',
+    [Section.finance.code]: 'Finances',
     [Section.health_and_wellbeing.code]: 'Health and wellbeing',
+  },
+  sectionComplete: {
+    [SectionComplete.yes]: 'Complete',
+    [SectionComplete.no]: 'Incomplete',
+  },
+  // Page titles derive from sectionTitle above, so a section is named in one place.
+  pageTitle: {
+    summary: '%1 summary',
+    analysis: '%1 analysis',
+    privacy: 'Close other applications',
+    view_all_answers: 'View all answers',
   },
   validation: {
     details_must_be_less_than: 'Details must be %1 characters or less',
@@ -37,13 +53,15 @@ export const english = {
     valid_date_year: 'Date must include a year',
     future_date: 'The date must be in the future',
     enter_details: 'Enter details',
-    details_character_limit: `Details must be %1 characters or less`,
+    select_at_least_one_option: 'Select at least one option',
+    select_changes: 'Select if they want to make changes to their %1',
+    must_answer: '%1 must answer this question.',
   },
   option: {
-    [CommonOption.has_made_changes]: 'I have already made positive changes and want to maintain them',
-    [CommonOption.is_making_changes]: 'I am actively making changes',
-    [CommonOption.wants_to_make_changes_knows_how_to]: 'I want to make changes and know how to',
-    [CommonOption.wants_to_make_changes_needs_help]: 'I want to make changes but need help',
+    [CommonOption.made_changes]: 'I have already made positive changes and want to maintain them',
+    [CommonOption.making_changes]: 'I am actively making changes',
+    [CommonOption.want_to_make_changes]: 'I want to make changes and know how to',
+    [CommonOption.needs_help_to_make_changes]: 'I want to make changes but need help',
     [CommonOption.thinking_about_making_changes]: 'I am thinking about making changes',
     [CommonOption.does_not_want_to_make_changes]: 'I do not want to make changes',
     [CommonOption.does_not_want_to_answer]: 'I do not want to answer',
@@ -51,7 +69,7 @@ export const english = {
     [CommonOption.not_applicable]: 'Not applicable',
     [CommonOption.yes]: 'Yes',
     [CommonOption.no]: 'No',
-    [CommonOption.non_of_these]: 'None of these',
+    [CommonOption.none_of_these]: 'None of these',
     [CommonOption.other]: 'Other',
     [CommonOption.unknown]: 'Unknown',
     [CommonOption.none]: 'None',
@@ -79,6 +97,7 @@ export const english = {
     '19': 'nineteenth',
     '20': 'twentieth',
   },
+  section_has_not_been_started: 'This section has not been started',
 } as const
 
 export type CommonLocale = Locale<typeof english>

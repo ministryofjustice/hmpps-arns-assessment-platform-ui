@@ -1,7 +1,10 @@
 import { InternalServerError } from 'http-errors'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { buildAnswerDelta } from './answerDelta'
+import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
+import { sendFormAuditEvent } from '../../../shared'
+import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 export const saveCurrentStepAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
@@ -16,7 +19,8 @@ export const saveCurrentStepAnswers =
       throw new InternalServerError('Assessment UUID is required to save strengths and needs answers')
     }
 
-    const delta = buildAnswerDelta(context.getAllAnswerHistories())
+    const histories = context.getAllAnswerHistories()
+    const delta = buildAnswerDelta(histories)
 
     if (!Object.keys(delta.added).length && !delta.removed.length) {
       return
@@ -28,5 +32,15 @@ export const saveCurrentStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: delta.removed,
+      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
+
+    const changedFields = buildChangedAnswerCodes(histories)
+
+    if (changedFields.length) {
+      /* Field codes only, answers do not belong in the audit log. */
+      await sendFormAuditEvent(deps.auditService, context, SAN_AUDIT_FORM, SanAuditEvent.EDIT_ANSWERS, {
+        changedFields,
+      })
+    }
   }

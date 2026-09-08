@@ -59,7 +59,7 @@ export interface FlagHandler {
  * Registry mapping flags to their handlers
  */
 const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
-  SAN_PRIVATE_BETA: {
+  SAN_BETA: {
     session: {
       modifyRequest: request => ({ ...request, assessmentType: 'SAN_SP' }),
     },
@@ -175,10 +175,10 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
  * Excluded fields remain undefined (not fixed, not randomized).
  *
  * By default, criminogenic needs fields are excluded.
- * The SAN_PRIVATE_BETA flag includes them.
+ * The SAN_BETA flag includes them.
  */
 export function getExcludedFields(flags: TrainingScenarioFlag[]): Set<ScenarioFieldKey> {
-  if (flags.includes('SAN_PRIVATE_BETA')) {
+  if (flags.includes('SAN_BETA')) {
     return new Set<ScenarioFieldKey>()
   }
 
@@ -240,7 +240,7 @@ export async function runAfterCreateSessionHooks(
 
 export function mapFlagToTargetApplication(flag: TrainingScenarioFlag): TargetApplication {
   switch (flag) {
-    case 'SAN_PRIVATE_BETA':
+    case 'SAN_BETA':
       return 'strengths-and-needs'
 
     case 'TIERING_ASSESSMENT':

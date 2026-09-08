@@ -1,7 +1,7 @@
 import { test, TargetService } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Delete Goal page', () => {
   test('visiting delete goal page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -14,7 +14,7 @@ test.describe('View Delete Goal page', () => {
     await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_DELETE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_DELETE_GOAL)
     expectAuditEvent(event, goalUuid)
   })
 })

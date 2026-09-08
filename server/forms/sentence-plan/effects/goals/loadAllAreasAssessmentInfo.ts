@@ -1,15 +1,15 @@
 import logger from '../../../../../logger'
 import { transformAssessmentData } from '../../../../utils/assessmentUtils'
-import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { AssessmentArea } from '../../../../interfaces/coordinator-api/entityAssessment'
 import { canAccessSanInfo } from '../helpers'
+import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 
 // Loads assessment information for ALL areas of need and groups them by scoring category.
 
 // Data sources:
 // - coordinator API (sanAssessmentData): section complete status, practitioner analysis details, motivation
-// - handover service (session): linked indicators (YES/NO), scores
+// - ARNS API (via resolveCriminogenicNeedsData): linked indicators (YES/NO), scores
 
 // Groups areas into:
 // - incompleteAreas: section not marked as complete
@@ -24,7 +24,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
 
   const assessmentUuid = context.getData('assessmentUuid')
   const session = context.getSession()
-  const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
+  const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
   const crn = session.caseDetails?.crn
 
   if (!assessmentUuid) {
@@ -33,12 +33,10 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     return
   }
 
-  if (!handoverCriminogenicNeeds) {
-    logger.error(
-      { assessmentUuid, crn },
-      'Cannot load all areas assessment info: missing handover criminogenic needs data',
-    )
-    setErrorState(context)
+  // An OASys case with no CRN can't be looked up in ARNS; the eligibility guard already hides
+  // the tab, so this is just a backstop.
+  if (!isMpop && !crn) {
+    setUnavailableState(context)
     return
   }
 
@@ -46,7 +44,13 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     const entityAssessment = await deps.coordinatorApi.getEntityAssessment(assessmentUuid)
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
-    const criminogenicNeedsData = mapHandoverToCriminogenicNeeds(handoverCriminogenicNeeds)
+    const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
+    if (!criminogenicNeedsData) {
+      logger.error({ assessmentUuid, crn }, 'Cannot load all areas assessment info: ARNS API returned no needs data')
+      setErrorState(context)
+      return
+    }
+
     const allAreas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // group areas by scoring category

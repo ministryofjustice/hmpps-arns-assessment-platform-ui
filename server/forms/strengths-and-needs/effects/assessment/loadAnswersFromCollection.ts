@@ -1,20 +1,10 @@
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Answers } from '../../../../interfaces/aap-api/dataModel'
+import { StrengthsAndNeedsContext } from '../types'
+import { Collection, storeCollectionUuid } from '../../constants/collection'
 
-export const loadAnswersFromCollection =
-  (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, collectionCode: string, collectionName: string) => {
-    const assessment = context.getData('assessment')
-    const collections = assessment.collections
-    context.setData(
-      collectionCode,
-      collections
-        .find(collection => collection.name === collectionName)?.items ?? [],
-    )
-    context.setData(
-      'victimCollectionUuid',
-      collections
-        .find(collection => collection.name === collectionName)?.uuid ?? '',
-    )
-  }
+export const loadAnswersFromCollection = () => async (context: StrengthsAndNeedsContext, collection: Collection) => {
+  const assessment = context.getData('assessment')
+  const collectionData = assessment.collections.find(it => it.name === collection.name)
+
+  context.setData(collection.name, collectionData?.items ?? [])
+  storeCollectionUuid(collection.name, collectionData?.uuid, context)
+}

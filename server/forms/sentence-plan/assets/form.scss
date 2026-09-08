@@ -9,6 +9,7 @@
 @import '../components/button-as-link/buttonAsLink';
 @import '../components/goal-summary-card/goal-summary-card';
 @import '../components/goal-summary-card/goal-list';
+@import '../components/print-goal-summary-card/print-goal-summary-card';
 @import '../components/sentence-information-table/sentence-information-table';
 @import '../components/about-accordion/about-accordion';
 @import '../components/score-bar/needs-score';
@@ -18,6 +19,12 @@
 // default main wrapper top padding creates an extra visual gap above them.
 .govuk-main-wrapper {
   padding-top: 0;
+}
+
+// Render a field hint in standard body text colour rather than the muted grey hint
+// colour (design decision SP2-2263: goal-detail field labels match body text).
+.govuk-hint.app-label--body-text {
+  @include govuk-text-colour;
 }
 
 // Add-steps page row layout: actor / description / status / remove.
@@ -77,6 +84,27 @@
   resize: none;
 }
 
+/*
+ * Fixed to the viewport on screen, then repeated once on every printed page by Chromium.
+ * Because this is real text rather than a background image, print settings cannot hide it.
+ */
+.draft-plan-watermark {
+  position: fixed;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  color: rgba(govuk-colour('black'), 0.13);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 180px;
+  font-weight: bold;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(45deg);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 // Plan history accordion - only the action label (e.g., "Goal created") is bold via <strong>.
 // GOV.UK's default applies bold to the whole section heading; we override to normal so the
 // trailing "on [date] by [person]" renders at regular weight.
@@ -113,12 +141,134 @@
 }
 
 // Plan overview sub-navigation - position "Removed goals" tab on the right
-.moj-sub-navigation__list > li:has(> a[href$='type=removed']) {
+.moj-sub-navigation__list > li:has(> a[href$='goalStatusTab=removed']) {
   float: right;
 }
 
 // Print styles
+//
+// The repeated page header reads its text from attr(data-print-*) on <html>,
+// which print-sentence-plan.mjs sets at runtime.
+
+// Keep the service-header bar at the printable width, then inset its contents and the plan itself.
+$print-content-inset: 5mm;
+$print-content-zoom: 0.75;
+// The service-header contents are zoomed, so compensate to produce a 5mm inset on the page.
+$print-scaled-content-inset: 6.667mm;
+
+@page {
+  // 5mm side margin = the printable width, where the service-header bar and @page boxes sit.
+  margin: 12mm 5mm 14mm;
+
+  @top-left {
+    content: attr(data-print-plan-title);
+    padding-left: $print-content-inset;
+    border-bottom: 1px solid $govuk-border-colour;
+    font-family: Arial, sans-serif;
+    font-size: 9pt;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  @top-center {
+    content: attr(data-print-person-name);
+    border-bottom: 1px solid $govuk-border-colour;
+    font-family: Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  @top-right {
+    content: attr(data-print-identifiers);
+    width: max-content;
+    padding-left: 3mm;
+    padding-right: $print-content-inset;
+    border-bottom: 1px solid $govuk-border-colour;
+    font-family: Arial, sans-serif;
+    font-size: 7pt;
+    font-weight: normal;
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  @bottom-left {
+    content: '';
+    border-top: 1px solid $govuk-border-colour;
+  }
+
+  @bottom-center {
+    content: '';
+    border-top: 1px solid $govuk-border-colour;
+  }
+
+  @bottom-right {
+    content: 'page ' counter(page);
+    padding-top: 3mm;
+    padding-right: $print-content-inset;
+    border-top: 1px solid $govuk-border-colour;
+    font-family: Arial, sans-serif;
+    font-size: 8pt;
+    font-weight: bold;
+    vertical-align: top;
+  }
+}
+
 @media print {
+  .govuk-template {
+    background-color: govuk-colour('white');
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  // Scale the printed plan content down
+  .govuk-main-wrapper {
+    zoom: $print-content-zoom;
+  }
+
+  // The DRAFT watermark is inside the zoomed main wrapper, so enlarge it again for print.
+  .draft-plan-watermark {
+    zoom: 1.5;
+  }
+
+  // Remove the normal responsive width and spacing so nested containers do not add extra insets.
+  .govuk-width-container {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  // Create the content-width column once, on the unscaled container around the main element.
+  .govuk-template__body > .govuk-width-container {
+    padding: 0 $print-content-inset;
+  }
+
+  .arns-common-header {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  // Keep the service header bar at printable width, but align its contents with the plan column.
+  .arns-common-header .govuk-width-container {
+    padding: 0 $print-scaled-content-inset;
+    zoom: $print-content-zoom;
+  }
+
+  .plan-header--print-preview {
+    .plan-header__subject-details-row {
+      display: none;
+    }
+
+    .plan-header__header-actions .moj-page-header-actions {
+      margin-top: 0;
+    }
+  }
+
   .moj-primary-navigation {
     display: none !important;
   }
@@ -145,31 +295,17 @@
     text-decoration: none !important;
   }
 
-  // Hide the GOV.UK footer when printing
-  .govuk-footer {
-    display: none !important;
-  }
-
   #plan-history-accordion {
-    //Hide the "Show all sections" / "Hide all sections" control
-    .govuk-accordion__controls {
-      display: none !important;
-    }
-
-    //Hide the "Show" / "Hide" toggle text and chevron
+    // Hide interactive controls that are not useful in print.
+    .govuk-accordion__controls,
     .govuk-accordion__section-toggle {
       display: none !important;
     }
 
-    //Make the heading button read as plain text, not an interactive link
+    // Make the heading button read as plain text, not an interactive link.
     .govuk-accordion__section-button {
       cursor: text !important;
       pointer-events: none !important;
-    }
-
-    //Hide the "Update {name}'s agreement" link
-    [data-qa='plan-history-update-agreement-link'] {
-      display: none !important;
     }
   }
 }

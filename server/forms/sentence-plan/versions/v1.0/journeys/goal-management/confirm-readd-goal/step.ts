@@ -10,7 +10,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
@@ -41,7 +41,7 @@ export const confirmAddGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_RE_ADD_GOAL),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CONFIRM_RE_ADD_GOAL),
       ],
     }),
     // Only allow re-adding goals if plan is agreed
@@ -61,7 +61,7 @@ export const confirmAddGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.readdGoalToPlan(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_RE_ADD_GOAL),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.CREATE_RE_ADD_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal back into %1 plan', CaseData.ForenamePossessive),
@@ -71,9 +71,9 @@ export const confirmAddGoalStep = step({
         next: [
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

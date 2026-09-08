@@ -18,7 +18,6 @@ const createPrivacyContent = (personForename: ResolvableString) =>
 const privacyCheckbox = field<GovUKCheckboxInput>({
   variant: 'govukCheckboxInput',
   code: 'confirm_privacy',
-  multiple: true,
   items: [
     {
       value: 'confirmed',

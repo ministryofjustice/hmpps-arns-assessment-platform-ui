@@ -1,12 +1,10 @@
-import type nunjucks from 'nunjucks'
 import {
   BlockDefinition,
+  ResolvableArray,
   ResolvableString,
-  EvaluatedBlock,
   RenderedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
-import { ChainableExpr, ChainableIterable, ChainableRef, block } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 
 /**
  * A single item in the TabPanel sidebar
@@ -26,9 +24,10 @@ export interface TabPanelItem {
 }
 
 /**
- * Props for the TabPanel block component.
+ * TabPanel block component.
+ * A generic two-column layout with selectable items on the left and content panels on the right.
  */
-export interface TabPanelProps {
+export interface TabPanel extends BlockDefinition {
   /** Unique ID for the component */
   id?: ResolvableString
 
@@ -39,7 +38,7 @@ export interface TabPanelProps {
    * Array of selectable items.
    * Can be a static array or a Data reference with Iterator.Map
    */
-  items: TabPanelItem[] | ChainableRef | ChainableExpr<TabPanelItem[]> | ChainableIterable
+  items: ResolvableArray<TabPanelItem>
 
   /** ID of the initially selected item (defaults to first item) */
   defaultSelected?: ResolvableString
@@ -60,14 +59,6 @@ export interface TabPanelProps {
 }
 
 /**
- * TabPanel block component definition.
- * A generic two-column layout with selectable items on the left and content panels on the right.
- */
-export interface TabPanel extends BlockDefinition, TabPanelProps {
-  variant: 'tabPanel'
-}
-
-/**
  * Evaluated item with rendered panel content
  */
 interface EvaluatedTabPanelItem {
@@ -76,38 +67,6 @@ interface EvaluatedTabPanelItem {
   sublabel?: string
   panel: RenderedBlock[]
 }
-
-/**
- * Renders the TabPanel block component
- */
-export const tabPanel = buildNunjucksComponent<TabPanel>(
-  'tabPanel',
-  (evaluated: EvaluatedBlock<TabPanel>, nunjucksEnv: nunjucks.Environment) => {
-    const id = evaluated.id || 'tab-panel'
-    const classes = ['tab-panel', evaluated.classes].filter(Boolean).join(' ')
-
-    // Cast to evaluated items (form-engine has already rendered the panel blocks)
-    const items = evaluated.items as EvaluatedTabPanelItem[]
-
-    // Get the selected item - either from prop or default to first item
-    const selectedId = evaluated.defaultSelected || items[0]?.id || ''
-
-    // Render sidebar footer blocks if provided
-    const sidebarFooter = evaluated.sidebarFooter as RenderedBlock[] | undefined
-
-    return nunjucksEnv.render('training-session-launcher/components/tab-panel/template.njk', {
-      params: {
-        id,
-        selectedId,
-        classes,
-        sidebarTitle: evaluated.sidebarTitle || 'Options',
-        items,
-        sidebarFooter,
-        queryParam: evaluated.queryParam,
-      },
-    })
-  },
-)
 
 /**
  * Creates a TabPanel block for displaying selectable items with associated content panels.
@@ -135,6 +94,30 @@ export const tabPanel = buildNunjucksComponent<TabPanel>(
  * })
  * ```
  */
-export function TabPanel(props: TabPanelProps): TabPanel {
-  return block<TabPanel>({ ...props, variant: 'tabPanel' })
-}
+export const TabPanel = nunjucksComponent<TabPanel>('tabPanel', {
+  render: (props, nunjucksEnv) => {
+    const id = props.id || 'tab-panel'
+    const classes = ['tab-panel', props.classes].filter(Boolean).join(' ')
+
+    // Cast to evaluated items (form-engine has already rendered the panel blocks)
+    const items = props.items as EvaluatedTabPanelItem[]
+
+    // Get the selected item - either from prop or default to first item
+    const selectedId = props.defaultSelected || items[0]?.id || ''
+
+    // Render sidebar footer blocks if provided
+    const sidebarFooter = props.sidebarFooter as RenderedBlock[] | undefined
+
+    return nunjucksEnv.render('training-session-launcher/components/tab-panel/template.njk', {
+      params: {
+        id,
+        selectedId,
+        classes,
+        sidebarTitle: props.sidebarTitle || 'Options',
+        items,
+        sidebarFooter,
+        queryParam: props.queryParam,
+      },
+    })
+  },
+})

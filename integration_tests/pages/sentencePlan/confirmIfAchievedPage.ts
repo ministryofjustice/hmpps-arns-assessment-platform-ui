@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class ConfirmIfAchievedPage extends AbstractPage {
+export default class ConfirmIfAchievedPage extends SentencePlanPage {
   readonly header: Locator
 
   readonly allStepsCompletedMessage: Locator

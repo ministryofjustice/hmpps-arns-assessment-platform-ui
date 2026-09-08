@@ -9,7 +9,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { redirectToOverviewIfReadOnly } from '../../../../guards'
 
 export const agreePlanStep = step({
@@ -19,9 +19,9 @@ export const agreePlanStep = step({
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('overview?type=%1', Query('type')))
-        .else('overview?type=current'),
+      backlink: when(Query('goalStatusTab').match(Condition.IsRequired()))
+        .then(Format('overview?goalStatusTab=%1', Query('goalStatusTab')))
+        .else('overview?goalStatusTab=current'),
     },
   },
   onAccess: [redirectToOverviewIfReadOnly()],
@@ -32,7 +32,7 @@ export const agreePlanStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.updatePlanAgreementStatus(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_PLAN_AGREEMENT, {
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT, {
             agreementStatus: Post('plan_agreement_question'),
           }),
         ],

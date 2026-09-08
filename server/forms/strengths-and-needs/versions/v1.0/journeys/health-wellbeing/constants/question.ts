@@ -1,45 +1,62 @@
 export const Question = {
-  health_conditions: 'health_conditions',
-  has_health_conditions_details: 'has_health_conditions_details',
-  severe_mental_health_problems_details: 'severe_mental_health_problems_details',
-  ongoing_duration_unknown_mental_health_problems_details: 'ongoing_duration_unknown_mental_health_problems_details',
-  past_mental_health_problems_details: 'past_mental_health_problems_details',
-  mental_health_problems: 'mental_health_problems',
-  prescribed_physical_health_medications_treatments: 'prescribed_physical_health_medications_treatments',
-  prescribed_mental_health_medications_treatments: 'prescribed_mental_health_medications_treatments',
-  psychiatric_treatment: 'psychiatric_treatment',
-  head_injuries: 'head_injuries',
-  neurodiverse_conditions_details: 'neurodiverse_conditions_details',
-  neurodiverse_conditions: 'neurodiverse_conditions',
-  learning_abilities_impacted_significantly_details: 'learning_abilities_impacted_significantly_details',
-  learning_abilities_impacted_slightly_details: 'learning_abilities_impacted_slightly_details',
-  impact_on_learning_abilities: 'impact_on_learning_abilities',
-  cope_with_day_to_day_life: 'cope_with_day_to_day_life',
-  attitude_towards_self: 'attitude_towards_self',
-  self_harm_details: 'self_harm_details',
-  self_harm: 'self_harm',
-  suicidal_tendencies_details: 'suicidal_tendencies_details',
-  suicidal_tendencies: 'suicidal_tendencies',
-  feeling_about_future_health_wellbeing: 'feeling_about_future_health_wellbeing',
-  helped_during_periods_good_health_wellbeing_details: 'helped_during_periods_good_health_wellbeing_details',
-  helped_during_periods_good_health_wellbeing: 'helped_during_periods_good_health_wellbeing',
-  has_made_positive_changes_health_wellbeing_details: 'has_made_positive_changes_health_wellbeing_details',
-  actively_making_changes_health_wellbeing_details: 'actively_making_changes_health_wellbeing_details',
-  wants_to_make_changes_knows_how_to_health_wellbeing_details:
-    'wants_to_make_changes_knows_how_to_health_wellbeing_details',
-  wants_to_make_changes_needs_help_health_wellbeing_details:
-    'wants_to_make_changes_needs_help_health_wellbeing_details',
-  thinking_about_making_changes_health_wellbeing_details: 'thinking_about_making_changes_health_wellbeing_details',
-  does_not_want_to_make_changes_health_wellbeing_details: 'does_not_want_to_make_changes_health_wellbeing_details',
-  does_not_want_to_answer_health_wellbeing_details: 'does_not_want_to_answer_health_wellbeing_details',
-  changes_to_health_wellbeing: 'changes_to_health_wellbeing',
-  strengths_protective_factors_health_wellbeing_details: 'strengths_protective_factors_health_wellbeing_details',
-  no_strengths_protective_factors_health_wellbeing_details: 'no_strengths_protective_factors_health_wellbeing_details',
-  strengths_protective_factors_health_wellbeing: 'strengths_protective_factors_health_wellbeing',
-  serious_harm_health_wellbeing_details: 'serious_harm_health_wellbeing_details',
-  no_serious_harm_health_wellbeing_details: 'no_serious_harm_health_wellbeing_details',
-  serious_harm_health_wellbeing: 'serious_harm_health_wellbeing',
-  risk_of_reoffending_health_wellbeing_details: 'risk_of_reoffending_health_wellbeing_details',
-  no_risk_of_reoffending_health_wellbeing_details: 'no_risk_of_reoffending_health_wellbeing_details',
-  risk_of_reoffending_health_wellbeing: 'risk_of_reoffending_health_wellbeing',
+  health_wellbeing_physical_health_condition: 'health_wellbeing_physical_health_condition',
+  health_wellbeing_physical_health_condition_yes_details: 'health_wellbeing_physical_health_condition_yes_details',
+  health_wellbeing_mental_health_condition_yes_ongoing_severe_details:
+    'health_wellbeing_mental_health_condition_yes_ongoing_severe_details',
+  health_wellbeing_mental_health_condition_yes_ongoing_details:
+    'health_wellbeing_mental_health_condition_yes_ongoing_details',
+  health_wellbeing_mental_health_condition_yes_in_the_past_details:
+    'health_wellbeing_mental_health_condition_yes_in_the_past_details',
+  health_wellbeing_mental_health_condition: 'health_wellbeing_mental_health_condition',
+  health_wellbeing_prescribed_medication_physical_conditions:
+    'health_wellbeing_prescribed_medication_physical_conditions',
+  health_wellbeing_prescribed_medication_mental_conditions: 'health_wellbeing_prescribed_medication_mental_conditions',
+  health_wellbeing_psychiatric_treatment: 'health_wellbeing_psychiatric_treatment',
+  health_wellbeing_head_injury_or_illness: 'health_wellbeing_head_injury_or_illness',
+  health_wellbeing_neurodiverse_conditions_yes_details: 'health_wellbeing_neurodiverse_conditions_yes_details',
+  health_wellbeing_neurodiverse_conditions: 'health_wellbeing_neurodiverse_conditions',
+  health_wellbeing_learning_difficulties_yes_significant_difficulties_details:
+    'health_wellbeing_learning_difficulties_yes_significant_difficulties_details',
+  health_wellbeing_learning_difficulties_yes_some_difficulties_details:
+    'health_wellbeing_learning_difficulties_yes_some_difficulties_details',
+  health_wellbeing_learning_difficulties: 'health_wellbeing_learning_difficulties',
+  health_wellbeing_coping_day_to_day_life: 'health_wellbeing_coping_day_to_day_life',
+  health_wellbeing_attitude_towards_self: 'health_wellbeing_attitude_towards_self',
+  health_wellbeing_self_harmed_yes_details: 'health_wellbeing_self_harmed_yes_details',
+  health_wellbeing_self_harmed: 'health_wellbeing_self_harmed',
+  health_wellbeing_attempted_suicide_or_suicidal_thoughts_yes_details:
+    'health_wellbeing_attempted_suicide_or_suicidal_thoughts_yes_details',
+  health_wellbeing_attempted_suicide_or_suicidal_thoughts: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts',
+  health_wellbeing_outlook: 'health_wellbeing_outlook',
+  health_wellbeing_positive_factors_other_details: 'health_wellbeing_positive_factors_other_details',
+  health_wellbeing_positive_factors: 'health_wellbeing_positive_factors',
+  health_wellbeing_changes_made_changes_details: 'health_wellbeing_changes_made_changes_details',
+  health_wellbeing_changes_making_changes_details: 'health_wellbeing_changes_making_changes_details',
+  health_wellbeing_changes_want_to_make_changes_details: 'health_wellbeing_changes_want_to_make_changes_details',
+  health_wellbeing_changes_needs_help_to_make_changes_details:
+    'health_wellbeing_changes_needs_help_to_make_changes_details',
+  health_wellbeing_changes_thinking_about_making_changes_details:
+    'health_wellbeing_changes_thinking_about_making_changes_details',
+  health_wellbeing_changes_does_not_want_to_make_changes_details:
+    'health_wellbeing_changes_does_not_want_to_make_changes_details',
+  health_wellbeing_changes_does_not_want_to_answer_details: 'health_wellbeing_changes_does_not_want_to_answer_details',
+  health_wellbeing_changes: 'health_wellbeing_changes',
+  health_wellbeing_practitioner_analysis_strengths_or_protective_factors_yes_details:
+    'health_wellbeing_practitioner_analysis_strengths_or_protective_factors_yes_details',
+  health_wellbeing_practitioner_analysis_strengths_or_protective_factors_no_details:
+    'health_wellbeing_practitioner_analysis_strengths_or_protective_factors_no_details',
+  health_wellbeing_practitioner_analysis_strengths_or_protective_factors:
+    'health_wellbeing_practitioner_analysis_strengths_or_protective_factors',
+  health_wellbeing_practitioner_analysis_risk_of_serious_harm_yes_details:
+    'health_wellbeing_practitioner_analysis_risk_of_serious_harm_yes_details',
+  health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details:
+    'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details',
+  health_wellbeing_practitioner_analysis_risk_of_serious_harm:
+    'health_wellbeing_practitioner_analysis_risk_of_serious_harm',
+  health_wellbeing_practitioner_analysis_risk_of_reoffending_yes_details:
+    'health_wellbeing_practitioner_analysis_risk_of_reoffending_yes_details',
+  health_wellbeing_practitioner_analysis_risk_of_reoffending_no_details:
+    'health_wellbeing_practitioner_analysis_risk_of_reoffending_no_details',
+  health_wellbeing_practitioner_analysis_risk_of_reoffending:
+    'health_wellbeing_practitioner_analysis_risk_of_reoffending',
 } as const

@@ -1,16 +1,27 @@
-import { Data, Format, Item, Iterator, Loop, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKInsetText, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  Answer,
+  Condition,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  Loop,
+  Transformer,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKBody, GovUKInsetText, GovUKSummaryList } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { Question } from '../../constants/question'
 import { contentFor } from '../../locales'
 import { SANGenerators } from '../../../../../../generators'
-import { victimAge, victimEthnicity, victimSex, victimType } from '../offence-analysis-victim/fields'
+import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
 import { Modal } from '../../../../../../components/modal/modalComponent'
 import { commonContentFor } from '../../../../locales'
+import { Option } from '../../constants/option'
+import { victimsCollection } from '../../constants/collections'
 
 export const victimCards = CollectionBlock({
-  collection: Data('victims').each(
+  collection: Data(victimsCollection.name).each(
     Iterator.Map(
       HtmlBlock({
         content: [
@@ -32,7 +43,6 @@ export const victimCards = CollectionBlock({
                   {
                     href: Format(Step.offence_analysis_victim_edit.path, Loop.Index0()),
                     text: 'Change',
-                    visuallyHiddenText: Item().path('contactName'),
                   },
                   {
                     href: '#',
@@ -41,28 +51,37 @@ export const victimCards = CollectionBlock({
                       'data-toggle': 'modal',
                       'data-target': Loop.Index(),
                     },
-                    visuallyHiddenText: Item().path('contactName'),
                   },
                 ],
               },
             },
             rows: [
               {
-                key: { text: contentFor('question.offence_analysis_victim_type.text') },
+                key: { text: contentFor('question.offence_analysis_victim_relationship.text') },
                 value: {
-                  text: SANGenerators.getTextFromListDefinition(
-                    victimType.items,
-                    Item().path('answers')
-                      .path(Question.offence_analysis_victim_type)
-                      .path('value'),
-                  ),
+                  blocks: [
+                    GovUKBody({
+                      text: SANGenerators.getTextFromListDefinition(
+                        victimQuestions.victimType.content.options,
+                        Item().path('answers')
+                          .path(Question.offence_analysis_victim_relationship)
+                          .path('value'),
+                      ),
+                    }),
+                    GovUKBody({
+                      text: Item().path('answers')
+                        .path(Question.offence_analysis_victim_relationship_other_details)
+                        .path('value'),
+                      size: 's',
+                    }),
+                  ],
                 },
               },
               {
                 key: { text: contentFor('question.offence_analysis_victim_age.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimAge.items,
+                    victimQuestions.victimAge.content.options,
                     Item().path('answers').path(Question.offence_analysis_victim_age).path('value'),
                   ),
                 },
@@ -71,17 +90,17 @@ export const victimCards = CollectionBlock({
                 key: { text: contentFor('question.offence_analysis_victim_sex.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimSex.items,
+                    victimQuestions.victimSex.content.options,
                     Item().path('answers').path(Question.offence_analysis_victim_sex).path('value'),
                   ),
                 },
               },
               {
-                key: { text: contentFor('question.offence_analysis_victim_ethnicity.text') },
+                key: { text: contentFor('question.offence_analysis_victim_race.text') },
                 value: {
                   text: SANGenerators.getTextFromListDefinition(
-                    victimEthnicity.items,
-                    Item().path('answers').path(Question.offence_analysis_victim_ethnicity).path('value'),
+                    victimQuestions.victimEthnicity.content.options,
+                    Item().path('answers').path(Question.offence_analysis_victim_race).path('value'),
                   ),
                 },
               },
@@ -92,5 +111,8 @@ export const victimCards = CollectionBlock({
 
     ),
   ),
-  fallback: [GovUKInsetText({ text: 'There are no victims.' })],
+  fallback: [GovUKInsetText({ text: contentFor('fallback.there_are_no_victims') })],
+  visibleWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
+    Condition.Array.Contains(Option.one_or_more_person),
+  ),
 })

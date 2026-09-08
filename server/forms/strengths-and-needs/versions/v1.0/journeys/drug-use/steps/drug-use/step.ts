@@ -1,28 +1,26 @@
-import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { step, submit, redirect, Post, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { drugUse } from './fields'
+import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
-import { Section, SectionStatus } from '../../../../constants/section'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
+import { Section, SectionComplete } from '../../../../constants/section'
+import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { saveButton } from '../../../../constants/buttons'
 
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
-  title: 'Drug use',
+  title: sectionPageTitle(Section.drug_use),
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass: 'govuk-body-l',
+      sectionTitleClass,
     },
   },
-  blocks: [drugUse, saveButton],
+  blocks: [drugUseSection.questions.drugUse.displayModes.field, saveButton],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -30,7 +28,8 @@ export const drugUseStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use.statusKey, SectionStatus.incomplete),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use),
         ],
         next: [
           redirect({

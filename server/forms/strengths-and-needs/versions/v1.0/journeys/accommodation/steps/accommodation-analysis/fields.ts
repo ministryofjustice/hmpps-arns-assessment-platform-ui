@@ -1,118 +1,46 @@
-import { Answer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKBody, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { SANGenerators } from '../../../../../../generators'
-import { CaseData } from '../../../../constants/formVersion'
-import { Question } from '../../constants/question'
-import { Step } from '../../constants/step'
-import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
-import {
-  accommodationLinkedReoffending,
-  accommodationLinkedToSeriousHarm,
-  accommodationStrengthsProtectiveFactors,
-  accommodationSummary,
-} from '../accommodation-summary/fields'
-import { contentFor } from '../../locales'
+import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { commonContentFor } from '../../../../locales'
-
-// --- Practitioner Analysis Summary Group ---
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
+import { accommodationSection } from '../../section'
+import { questions, summary } from '../accommodation-summary/fields'
+import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
+import { Step } from '../../constants/step'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
-    {
-      key: {
-        text: contentFor('question.accommodation_strengths_protective_factors.text', CaseData.ForenamePossessive),
-      },
-      value: {
-        blocks: [
-          GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(
-              accommodationStrengthsProtectiveFactors.items,
-              Answer(Question.accommodation_strengths_protective_factors),
-            ),
-          }),
-          GovUKBody({ text: Answer(Question.accommodation_strengths_protective_factors_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.accommodation_no_strengths_protective_factors_details), size: 's' }),
-        ],
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.accommodation_summary.path}#practitioner-analysis`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
-          },
-        ],
-      },
-    },
-    {
-      key: {
-        text: contentFor('question.accommodation_linked_to_serious_harm.text', CaseData.ForenamePossessive),
-      },
-      value: {
-        blocks: [
-          GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(
-              accommodationLinkedToSeriousHarm.items,
-              Answer(Question.accommodation_linked_to_serious_harm),
-            ),
-          }),
-          GovUKBody({ text: Answer(Question.accommodation_serious_harm_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.accommodation_no_serious_harm_details), size: 's' }),
-        ],
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.accommodation_summary.path}#practitioner-analysis`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
-          },
-        ],
-      },
-    },
-    {
-      key: {
-        text: contentFor('question.accommodation_linked_to_reoffending.text', CaseData.ForenamePossessive),
-      },
-      value: {
-        blocks: [
-          GovUKBody({
-            text: SANGenerators.getTextFromListDefinition(
-              accommodationLinkedReoffending.items,
-              Answer(Question.accommodation_linked_to_reoffending),
-            ),
-          }),
-          GovUKBody({ text: Answer(Question.accommodation_risk_of_reoffending_details), size: 's' }),
-          GovUKBody({ text: Answer(Question.accommodation_no_risk_of_reoffending_details), size: 's' }),
-        ],
-      },
-      actions: {
-        items: [
-          {
-            href: `${Step.accommodation_summary.path}#practitioner-analysis`,
-            text: commonContentFor('change'),
-            visuallyHiddenText: 'name',
-          },
-        ],
-      },
-    },
+    accommodationSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.summaryRow,
+    accommodationSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.summaryRow,
+    accommodationSection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
   ],
 })
 
-export const accommodationPractitionerAnalysisSummaryTab = GovUKTabs({
-  id: 'final-accommodation-practitioner-analysis',
-  items: [
-    {
-      id: 'summary-analysis',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [accommodationSummary, goToPractitionerAnalysisButton(Step.accommodation_analysis.path)],
-      },
-    },
-    {
-      id: 'practitioner-analysis-summary',
-      label: commonContentFor('practitioner_analysis'),
-      panel: { blocks: [practitionerAnalysisSummary] },
-    },
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.accommodation_analysis.path)]
+
+export const accommodationPractitionerAnalysisSummaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: { blocks: summaryPanel },
+        },
+        {
+          id: 'practitioner-analysis',
+          label: commonContentFor('practitioner_analysis'),
+          panel: { blocks: [practitionerAnalysisSummary] },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

@@ -10,7 +10,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectUnlessAllStepsCompleted } from '../../../guards'
 import { CaseData } from '../../../constants'
 
@@ -36,13 +36,13 @@ export const confirmIfAchievedStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
     access({
       when: Data('activeGoal.status').match(Condition.Equals('ACHIEVED')),
-      next: [redirect({ goto: '../../plan/overview?type=achieved' })],
+      next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
     }),
     // Block direct access until every step on the goal is completed
     redirectUnlessAllStepsCompleted('../../plan/overview'),
@@ -56,7 +56,7 @@ export const confirmIfAchievedStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.markGoalAsAchieved(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_GOAL_ACHIEVED),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),
@@ -65,7 +65,7 @@ export const confirmIfAchievedStep = step({
             clearOtherNotifications: true,
           }),
         ],
-        next: [redirect({ goto: '../../plan/overview?type=achieved' })],
+        next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
       },
     }),
     // when 'no' is selected: don't mark as achieved, go back to plan overview and land on current/future tab based on goal status
@@ -76,9 +76,9 @@ export const confirmIfAchievedStep = step({
         next: [
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

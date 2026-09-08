@@ -4,7 +4,7 @@ import { currentGoals } from '../../../builders/sentencePlanFactories'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Add or Change Steps', () => {
   test('saving steps on an existing goal sends EDIT_STEPS audit event', async ({
@@ -27,7 +27,7 @@ test.describe('Add or Change Steps', () => {
     await addStepsPage.clickSaveAndContinue()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_STEPS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_STEPS)
     expectAuditEvent(event, goalUuid)
   })
 
@@ -48,7 +48,7 @@ test.describe('Add or Change Steps', () => {
     await addStepsPage.clickSaveAndContinue()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.ADD_STEPS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.ADD_STEPS)
     expectAuditEvent(event)
   })
 })

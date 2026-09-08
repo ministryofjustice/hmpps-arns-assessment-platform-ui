@@ -6,7 +6,7 @@ export const Option = {
   offending: 'OFFENDING',
   pension: 'PENSION',
   student_loan: 'STUDENT_LOAN',
-  undeclared: 'UNDECLARED',
+  undeclared: 'Undeclared',
   work_related_benefits: 'WORK_RELATED_BENEFITS',
   no_money: 'NO_MONEY',
   good: 'GOOD',

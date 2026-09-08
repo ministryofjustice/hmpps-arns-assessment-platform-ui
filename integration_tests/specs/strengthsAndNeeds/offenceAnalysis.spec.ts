@@ -377,7 +377,7 @@ test.describe('Offence Analysis Page', () => {
                 - /url: "#offence_analysis_commited_against"
       `)
 
-      await offenceAnalysisPage.enterDetails.click()
+      await offenceAnalysisPage.enterDetailsError.click()
       await expect(offenceAnalysisPage.enterDescription).toBeFocused()
       await offenceAnalysisPage.enterDetailsWhy.click()
       await expect(offenceAnalysisPage.enterWhy).toBeFocused()

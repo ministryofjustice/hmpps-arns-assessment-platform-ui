@@ -23,6 +23,8 @@ const createMockContext = (
 
 const createTimelineItem = (overrides: Partial<TimelineItem> = {}): TimelineItem => ({
   uuid: 'timeline-uuid-1',
+  position: 0,
+  assessment: 'assessment-uuid-1',
   event: 'CUSTOM',
   timestamp: '2024-06-15T10:00:00Z',
   data: {},

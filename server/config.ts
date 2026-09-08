@@ -13,6 +13,7 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 }
 
 const requiredInProduction = { requireInProduction: true }
+const ingressUrl = get('INGRESS_URL', 'http://localhost:3000', requiredInProduction)
 
 const auditConfig = () => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
@@ -57,6 +58,16 @@ export default {
     countdownMinutes: Number(get('SESSION_COUNTDOWN_MINUTES', 10)),
   },
   apis: {
+    gotenberg: {
+      url: get('GOTENBERG_API_URL', 'http://localhost:3001', requiredInProduction),
+      healthPath: '/health',
+      renderUrl: get('GOTENBERG_RENDER_URL', ingressUrl),
+      timeout: {
+        response: Number(get('GOTENBERG_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('GOTENBERG_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('GOTENBERG_TIMEOUT_RESPONSE', 30000))),
+    },
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
       healthPath: '/health/ping',
@@ -129,10 +140,34 @@ export default {
       },
       agent: new AgentConfig(Number(get('COORDINATOR_API_TIMEOUT_RESPONSE', 10000))),
     },
+    // HMPPS Tier — supplies the tier score and its status tag on the supervision package page
+    tierApi: {
+      url: get('TIER_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('TIER_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('TIER_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('TIER_API_TIMEOUT_RESPONSE', 5000))),
+    },
+    // Supervision Packages — supplies the phase, appointment allowance and sentence details
+    supervisionPackageApi: {
+      url: get('SUPERVISION_PACKAGE_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_RESPONSE', 5000))),
+    },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
     audit: auditConfig(),
+  },
+  sns: {
+    region: get('SNS_REGION', 'eu-west-2'),
+    topicArn: get('SNS_TOPIC_ARN', ''),
   },
   forms: {
     sentencePlan: {
@@ -144,11 +179,36 @@ export default {
     trainingSessionLauncher: {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
     },
+    dataDeletionTool: {
+      enabled: get('FORM_DATA_DELETION_TOOL_ENABLED', 'false') === 'true',
+      environments: {
+        local: {
+          authUrl: 'http:///hmpps-auth:9090/auth',
+          apiUrl: 'http://aap-api:8080',
+        },
+        dev: {
+          authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk',
+        },
+        test: {
+          authUrl: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api-test.hmpps.service.justice.gov.uk',
+        },
+        preprod: {
+          authUrl: 'https://sign-in-preprod.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api-preprod.hmpps.service.justice.gov.uk',
+        },
+        prod: {
+          authUrl: 'https://sign-in.hmpps.service.justice.gov.uk/auth',
+          apiUrl: 'https://arns-assessment-platform-api.hmpps.service.justice.gov.uk',
+        },
+      },
+    },
   },
-  ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
-  logLevel: get('LOG_LEVEL', 'debug'),
+  ingressUrl,
+  logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
-  feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  privateBetaFeedbackUrl: get('PRIVATE_BETA_FEEDBACK_URL', '#'),
   nationalRolloutFeedbackUrl: get('NATIONAL_ROLLOUT_FEEDBACK_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),

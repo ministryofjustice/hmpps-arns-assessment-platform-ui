@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class PlanOverviewPage extends AbstractPage {
+export default class PlanOverviewPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly createGoalLink: Locator
@@ -23,6 +23,8 @@ export default class PlanOverviewPage extends AbstractPage {
   readonly noFutureGoalsMessage: Locator
 
   readonly agreePlanButton: Locator
+
+  readonly printAllGoalsButton: Locator
 
   readonly updateAgreementLink: Locator
 
@@ -58,6 +60,7 @@ export default class PlanOverviewPage extends AbstractPage {
     this.updateAgreementLink = page.getByRole('link', { name: /update .+'s agreement/i })
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
     this.agreePlanButton = page.getByRole('button', { name: /agree plan/i })
+    this.printAllGoalsButton = page.getByRole('button', { name: 'Print all goals' })
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')
     this.banner = page.getByTestId('hmpps-header')
@@ -110,15 +113,15 @@ export default class PlanOverviewPage extends AbstractPage {
     return card.locator('[data-qa="goal-area-of-need"]')
   }
 
-  async goalCardHasChangeLink(index: number): Promise<boolean> {
+  async goalCardHasUpdateGoalLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const changeLink = card.getByRole('link', { name: /change goal/i })
-    return (await changeLink.count()) > 0
+    const updateLink = card.getByRole('link', { name: /update goal/i })
+    return (await updateLink.count()) > 0
   }
 
-  async goalCardHasAddStepsLink(index: number): Promise<boolean> {
+  async goalCardHasAddUpdateStepsLink(index: number): Promise<boolean> {
     const card = await this.getGoalCardByIndex(index)
-    const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
+    const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     return (await addStepsLink.count()) > 0
   }
 
@@ -176,9 +179,9 @@ export default class PlanOverviewPage extends AbstractPage {
     return (await targetDateText.count()) > 0
   }
 
-  async clickAddOrChangeSteps(index: number): Promise<void> {
+  async clickAddOrUpdateSteps(index: number): Promise<void> {
     const card = await this.getGoalCardByIndex(index)
-    const addStepsLink = card.getByRole('link', { name: /add or change steps/i })
+    const addStepsLink = card.getByRole('link', { name: /add or update steps/i })
     await addStepsLink.click()
   }
 

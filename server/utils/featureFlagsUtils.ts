@@ -12,6 +12,26 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'smartSurveyInNationalRolloutEnabled',
     fallbackState: false,
   },
+  ENABLE_PRINT_AND_SHARE: {
+    fliptKey: 'sp-enable-print-and-share',
+    nunjucksKey: 'printAndShareEnabled',
+    fallbackState: false,
+  },
+  ENABLE_SUPERVISION_PACKAGE: {
+    fliptKey: 'sp-enable-supervision-package',
+    nunjucksKey: 'supervisionPackageEnabled',
+    fallbackState: false,
+  },
+  ENABLE_MPOP_ASSESSMENT_INFO: {
+    fliptKey: 'sp-enable-mpop-assessment-info',
+    nunjucksKey: 'mpopAssessmentInfoEnabled',
+    fallbackState: false,
+  },
+  DOWNTIME_NOTIFICATION_BANNER: {
+    fliptKey: 'sp-downtime-notification-banner',
+    nunjucksKey: 'downtimeNotificationBanner',
+    fallbackState: false,
+  },
 }
 
 export interface FeatureFlagConfig {

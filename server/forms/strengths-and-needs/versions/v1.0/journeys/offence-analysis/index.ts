@@ -5,9 +5,9 @@ import { offenceAnalysisVictimSummaryStep } from './steps/offence-analysis-victi
 import { Section } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { offenceAnalysisEditVictimStep } from './steps/offence-analysis-edit-victim/step'
-import {offenceAnalysisInvolvedPartiesStep} from "./steps/offence-analysis-involved-parties/step";
-import {offenceAnalysisImpactStep} from "./steps/offence-analysis-impact/step";
-import {offenceAnalysisSummaryStep} from "./steps/offence_analysis_summary/step";
+import { offenceAnalysisInvolvedPartiesStep } from './steps/offence-analysis-involved-parties/step'
+import { offenceAnalysisImpactStep } from './steps/offence-analysis-impact/step'
+import { offenceAnalysisSummaryStep } from './steps/offence_analysis_summary/step'
 
 /**
  * Offence Analysis Journey

@@ -61,6 +61,17 @@ export interface PrivacyScreenConfig {
    * (e.g., Data('caseData.name.forename'))
    */
   personForename: ResolvableString
+
+  /**
+   * The page title
+   * (e.g., 'Close other applications')
+   */
+  title: ResolvableString
+
+  /**
+   * Url for the feedback form
+   */
+  feedbackUrl: string
 }
 
 /**
@@ -99,24 +110,26 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
     basePath,
     headerServiceNameLink,
     personForename,
+    title,
   } = config
 
   return step({
     path: '/privacy',
-    title: 'Close other applications',
+    title,
     reachability: { entryWhen: true },
     view: {
       template,
       locals: {
         basePath,
         hideNavigation: true,
+        hideNavigationLinks: true,
         hidePreviousVersions: true,
         hideBackToTop: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,
         backlink: when(Data('accessDetails.accessType').match(Condition.Equals('OASYS')))
           .then(Data('accessDetails.oasysRedirectUrl'))
           .else(null),
-        backlinkAiId: 'privacy-page-back-link',
+        feedbackUrl: config.feedbackUrl,
       },
     },
     blocks: [createFormContent(personForename)],

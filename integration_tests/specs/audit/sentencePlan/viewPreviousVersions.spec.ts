@@ -2,7 +2,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import { navigateToSentencePlan } from '../../sentencePlan/sentencePlanUtils'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Previous Versions List Page', () => {
   test('visiting previous versions page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -23,7 +23,7 @@ test.describe('View Previous Versions List Page', () => {
     await navigateToSentencePlan(page, handoverLink)
     await page.getByRole('link', { name: 'View previous versions' }).click()
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PREVIOUS_VERSIONS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PREVIOUS_VERSIONS)
     expectAuditEvent(event)
   })
 })

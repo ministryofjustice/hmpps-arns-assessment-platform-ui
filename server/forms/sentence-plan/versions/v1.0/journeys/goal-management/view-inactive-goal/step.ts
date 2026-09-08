@@ -9,7 +9,7 @@ import {
   viewAllNotesSection,
   addToPlanButton,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound } from '../../../guards'
 
 /**
@@ -34,8 +34,8 @@ export const viewInactiveGoalStep = step({
         .then('../../plan/plan-history')
         .else(
           when(Data('activeGoal.status').match(Condition.Equals('ACHIEVED')))
-            .then('../../plan/overview?type=achieved')
-            .else('../../plan/overview?type=removed'),
+            .then('../../plan/overview?goalStatusTab=achieved')
+            .else('../../plan/overview?goalStatusTab=removed'),
         ),
       dynamicTitle: Format('View %1 goal', Data('activeGoal.status').pipe(Transformer.String.ToLowerCase())),
     },
@@ -54,7 +54,9 @@ export const viewInactiveGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_INACTIVE_GOAL, { goalStatus: Data('activeGoal.status') }),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_INACTIVE_GOAL, {
+          goalStatus: Data('activeGoal.status'),
+        }),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),

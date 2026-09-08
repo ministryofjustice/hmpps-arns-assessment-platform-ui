@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import { employment, navigateToStrengthsAndNeeds, sanFormPath, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
-import AbstractPage from '../abstractPage'
+import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
-export default class EmploymentAndEducationPage extends AbstractPage {
+export default class EmploymentAndEducationPage extends StrengthsAndNeedsPage {
   readonly incomplete: Locator
 
   readonly currentEmploymentStatus: Locator
@@ -22,14 +22,14 @@ export default class EmploymentAndEducationPage extends AbstractPage {
     this.incomplete = page.getByText('Incomplete')
     this.currentEmploymentStatus = page.getByTestId('main-form')
     this.mainSection = page.getByText('Back Employment and education')
-    this.selectTypeOfEmployment = page.getByRole('link', { name: 'Select the type of employment' })
+    this.selectTypeOfEmployment = page.getByRole('link', { name: 'Select one option' })
     this.fullTime = page.getByLabel('Full-time')
     this.selectOneOption = page.getByRole('link', { name: 'Select one option' })
     this.yesHasBeenEmployedBefore = page.getByRole('radio', { name: 'Yes, has been employed before' })
   }
 
   /**
-   * Navigates to a employment and education via handover link and handles the privacy screen.
+   * Navigates to an employment and education via handover link and handles the privacy screen.
    */
   static async navigateToEmploymentAndEducation(
     page: Page,

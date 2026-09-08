@@ -1,12 +1,4 @@
-import {
-  and,
-  Answer,
-  ChainableExpr,
-  Condition,
-  or,
-  PipelineExpr,
-  Request,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, ChainableExpr, Condition, or, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsTransformers } from '../transformers'
 import { StrengthsAndNeedsConditions } from '../conditions'
@@ -25,7 +17,7 @@ export type Locale<T> = {
 
 export const contentFrom =
   <T>(locales: Locales) =>
-  (code: Paths<T>, ...replacements: any[]): ChainableExpr<PipelineExpr> =>
+  (code: Paths<T>, ...replacements: any[]): ChainableExpr =>
     Request.Headers('accept-language').pipe(StrengthsAndNeedsTransformers.ContentFor(locales, code, ...replacements))
 
 export const getDisplayTextForItems = (fieldCode: string, items: any[], options: { size?: 's' | 'l' } = {}) =>
@@ -43,11 +35,11 @@ export const getDisplayTextForSpecificItem = (
 
 export const getDisplayTextForItem = (
   fieldCode: string,
-  item: { text: string; value: string },
+  item: { text?: string; html?: string; value: string },
   options: { size?: 's' | 'l' } = {},
 ) =>
   GovUKBody({
-    text: item.text,
+    text: item.text ?? item.html?.replace(/<[^>]*>/g, ''),
     visibleWhen: or(
       and(
         Answer(fieldCode).match(StrengthsAndNeedsConditions.IsArray()),
@@ -58,5 +50,5 @@ export const getDisplayTextForItem = (
         Answer(fieldCode).match(Condition.Equals(item.value)),
       ),
     ),
-    size: options.size,
+    ...(options.size && { size: options.size }),
   })

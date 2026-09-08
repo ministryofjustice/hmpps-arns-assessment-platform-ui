@@ -47,3 +47,26 @@ export const buildAnswerDelta = (histories: Record<string, AnswerHistory>): Answ
     { added: {}, removed: [] },
   )
 }
+
+const persistedValue = (history: AnswerHistory): unknown => {
+  const persistedMutations = history.mutations.filter(mutation => !isUserMutationSource(mutation.source))
+
+  return persistedMutations[persistedMutations.length - 1]?.value
+}
+
+const isSameAnswer = (a: unknown, b: unknown): boolean => {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((item, index) => item === b[index])
+  }
+
+  return a === b
+}
+
+/**
+ * Codes the user actually changed on this submission.
+ */
+export const buildChangedAnswerCodes = (histories: Record<string, AnswerHistory>): string[] =>
+  Object.entries(histories)
+    .filter(([, history]) => history.mutations.some(mutation => isUserMutationSource(mutation.source)))
+    .filter(([, history]) => !isSameAnswer(history.current, persistedValue(history)))
+    .map(([code]) => code)

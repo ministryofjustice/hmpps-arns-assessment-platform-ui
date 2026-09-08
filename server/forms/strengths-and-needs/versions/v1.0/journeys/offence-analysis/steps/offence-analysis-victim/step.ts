@@ -1,34 +1,24 @@
 import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { victimAge, victimEthnicity, victimSex, victimType } from './fields'
+import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
-import { Question } from '../../constants/question'
-
-const saveButton = GovUKButton({
-  text: 'Save and continue',
-  name: 'action',
-  value: 'save',
-})
-
-const collectionName = 'victims'
-const collectionCode = 'OFFENCE_ANALYSIS_VICTIM'
-
-const VICTIM_FIELD_CODES = [
-  Question.offence_analysis_victim_type,
-  Question.offence_analysis_victim_age,
-  Question.offence_analysis_victim_sex,
-  Question.offence_analysis_victim_ethnicity,
-]
+import { saveButton } from '../../../../constants/buttons'
+import { victimsCollection } from '../../constants/collections'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
   title: 'Add victim',
   reachability: { entryWhen: true },
-  blocks: [victimType, victimAge, victimSex, victimEthnicity, saveButton],
+  blocks: [
+    victimQuestions.victimType.displayModes.field,
+    victimQuestions.victimAge.displayModes.field,
+    victimQuestions.victimSex.displayModes.field,
+    victimQuestions.victimEthnicity.displayModes.field,
+    saveButton,
+  ],
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection('victims', 'OFFENCE_ANALYSIS_VICTIM')],
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
     }),
   ],
   onSubmission: [
@@ -36,7 +26,7 @@ export const offenceAnalysisVictimStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        effects: [StrengthsAndNeedsEffects.addItemToCollection(collectionName, collectionCode, VICTIM_FIELD_CODES)],
+        effects: [StrengthsAndNeedsEffects.addItemToCollection(victimsCollection)],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),

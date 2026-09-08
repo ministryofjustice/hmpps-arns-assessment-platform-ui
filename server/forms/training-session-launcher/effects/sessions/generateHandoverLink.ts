@@ -267,7 +267,7 @@ export const generateHandoverLink =
 
     const response = await deps.handoverApiClient.createHandoverLink(request)
 
-    if (targetApplication === 'strengths-and-needs' && session.flags.includes('SAN_PRIVATE_BETA')) {
+    if (targetApplication === 'strengths-and-needs' && session.flags.includes('SAN_BETA')) {
       await updateHandoverAssessmentContext(deps, response, request, session)
     }
 

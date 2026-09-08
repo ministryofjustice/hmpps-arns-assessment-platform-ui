@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
 import { AssessmentInfoHelper } from '../helpers'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class AddStepsPage extends AbstractPage {
+export default class AddStepsPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly addStepButton: Locator
@@ -10,6 +10,8 @@ export default class AddStepsPage extends AbstractPage {
   readonly saveAndContinueButton: Locator
 
   readonly backLink: Locator
+
+  readonly goalContextInset: Locator
 
   private assessmentInfo: AssessmentInfoHelper
 
@@ -19,6 +21,7 @@ export default class AddStepsPage extends AbstractPage {
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
     this.backLink = page.locator('.govuk-back-link')
+    this.goalContextInset = page.locator('.govuk-inset-text').filter({ hasText: 'Area of need' })
     this.assessmentInfo = new AssessmentInfoHelper(page)
   }
 
@@ -32,7 +35,7 @@ export default class AddStepsPage extends AbstractPage {
 
   static async verifyOnPage(page: Page): Promise<AddStepsPage> {
     const addStepsPage = new AddStepsPage(page)
-    await expect(addStepsPage.pageHeading).toContainText(/Add or change steps/i)
+    await expect(addStepsPage.pageHeading).toContainText(/Add( or update)? steps/i)
     return addStepsPage
   }
 

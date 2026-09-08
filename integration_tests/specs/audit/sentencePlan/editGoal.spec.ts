@@ -3,7 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
 import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Change a Goal', () => {
   test('changing goal in pre-agree plan', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -21,7 +21,7 @@ test.describe('Change a Goal', () => {
     await changeGoalPage.saveGoal()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_GOAL)
     expectAuditEvent(event, goalUuid)
     expect(event.details.planStatus).toBe('PRE_AGREE')
   })
@@ -44,7 +44,7 @@ test.describe('Change a Goal', () => {
     await changeGoalPage.setGoalTitle('Updated goal title post-agree')
     await changeGoalPage.saveGoal()
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_GOAL)
     expectAuditEvent(event, goalUuid)
     expect(event.details.planStatus).toBe('POST_AGREE')
   })

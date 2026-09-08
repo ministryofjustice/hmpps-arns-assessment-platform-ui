@@ -1,24 +1,12 @@
 import type { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
 import { User } from '../../../interfaces/user'
-import {
-  CommandResult,
-  CreateAssessmentCommandResult,
-  CreateCollectionCommandResult,
-} from '../../../interfaces/aap-api/commandResult'
-import {
-  CreateAssessmentCommand,
-  CreateCollectionCommand,
-  UpdateAssessmentAnswersCommand,
-  UpdateAssessmentPropertiesCommand,
-} from '../../../interfaces/aap-api/command'
-import { AssessmentVersionQuery } from '../../../interfaces/aap-api/query'
 import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient } from '../../../data'
-import { Collection, CollectionItem } from '../../../interfaces/aap-api/dataModel'
+import AuditService from '../../../services/auditService'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -34,6 +22,7 @@ export interface StrengthsAndNeedsSession {
   accessDetails?: AccessSessionDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
+  privacyAccepted?: boolean
   patternDrafts?: Record<string, Record<string, unknown>>
 }
 
@@ -41,12 +30,13 @@ export interface StrengthsAndNeedsSession {
  * Data context for SAN effects.
  */
 export interface StrengthsAndNeedsData {
-  victimCollectionUuid: string
   caseData?: CaseDetails
   sessionDetails?: StrengthsAndNeedsSessionDetails
+  accessDetails?: AccessSessionDetails
+  privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
-  victims?: CollectionItem[]
+  collectionUuids?: Record<string, string>
   [key: string]: unknown
 }
 
@@ -57,6 +47,8 @@ export interface StrengthsAndNeedsState extends Record<string, unknown> {
   user: User & {
     token: string
   }
+  /** Per request id, used as the audit correlationId. Set by setUpWebSession. */
+  requestId: string
 }
 
 /**
@@ -71,4 +63,5 @@ export type StrengthsAndNeedsContext = EffectFunctionContext<
 
 export interface StrengthsAndNeedsEffectsDeps {
   api: AssessmentPlatformApiClient
+  auditService: AuditService
 }

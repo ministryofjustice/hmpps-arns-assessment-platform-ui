@@ -9,11 +9,10 @@ import {
   redirect,
   step,
   submit,
-  when,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { sideNav, contentBlocks } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { contentBlocks, backLinkHref } from './fields'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -21,25 +20,24 @@ import { CaseData } from '../../../constants'
  */
 export const createGoalStep = step({
   path: '/add-goal/:areaOfNeed',
-  title: 'Create a goal',
+  title: 'Add goal details',
   reachability: { entryWhen: true },
   view: {
     locals: {
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('../../../plan/overview?type=%1', Query('type')))
-        .else('../../../plan/overview?type=current'),
-      twoColumnLayout: {
-        sidebarBlockIndex: 0,
-      },
+      // Back returns to area selection with the current area pre-selected, preserving the
+      // originating plan tab so the user can keep backing out to where they started.
+      backlink: backLinkHref,
     },
   },
-  blocks: [sideNav, ...contentBlocks],
+  blocks: contentBlocks,
   onAccess: [
     access({
       effects: [
         SentencePlanEffects.setAreaDataFromUrlParam(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CREATE_GOAL, {
+          areaOfNeed: Params('areaOfNeed'),
+        }),
       ],
     }),
 
@@ -49,10 +47,17 @@ export const createGoalStep = step({
       next: [redirect({ goto: Format('../new/add-goal/%1', Params('areaOfNeed')) })],
     }),
 
-    // If area of need is not a valid slug, redirect them to `accommodation` by default.
+    // If the area of need is not a valid slug, send them back to pick one rather than
+    // silently defaulting to a single area.
     access({
       when: Params('areaOfNeed').not.match(Condition.Array.IsIn(Data('areaOfNeedSlugs'))),
-      next: [redirect({ goto: 'add-goal/accommodation' })],
+      next: [
+        redirect({
+          when: Query('goalStatusTab').match(Condition.IsRequired()),
+          goto: Format('../select-area-of-need?goalStatusTab=%1', Query('goalStatusTab')),
+        }),
+        redirect({ goto: '../select-area-of-need' }),
+      ],
     }),
   ],
   onSubmission: [
@@ -62,7 +67,7 @@ export const createGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.createGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
@@ -78,7 +83,7 @@ export const createGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.createGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
 
@@ -89,9 +94,9 @@ export const createGoalStep = step({
         next: [
           redirect({
             when: Answer('can_start_now').match(Condition.Equals('no')),
-            goto: '../../../plan/overview?type=future',
+            goto: '../../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../../plan/overview?type=current' }),
+          redirect({ goto: '../../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

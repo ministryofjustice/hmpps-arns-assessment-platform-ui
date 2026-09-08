@@ -10,18 +10,29 @@ export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
 export const offence = '/offence-analysis'
+export const drugUse = '/drug-use'
+export const alcohol = '/alcohol-use'
+export const personal = '/personal-relationships-and-community'
+export const thinking = '/thinking-behaviours-and-attitudes'
+export const finances = '/finances'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
   ACCOMODATION: sanFormPath + v1Path + accommodation,
   EMPLOYMENT_AND_EDUCATION: sanFormPath + v1Path + employment,
+  ALCOHOL_USE: sanFormPath + v1Path + alcohol,
 }
 
 // Page titles for san
 export const sanPageTitles = {
-  accommodation: 'Current accommodation',
-  employmentAndEducation: 'Employed',
-  healthAndWellbeing: 'Health Wellbeing',
+  accommodation: 'Accommodation',
+  employmentAndEducation: 'Employment and education',
+  healthAndWellbeing: 'Health and wellbeing',
+  drugUse: 'Drug use',
+  personal: 'Personal relationships and community',
+  thinking: 'Thinking, behaviours and attitudes',
+  alcoholUse: 'Alcohol use',
+  finances: 'Finances',
   offenceAnalysis: 'Offence analysis',
 }
 
@@ -75,9 +86,10 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  url: string = 'current-accommodation',
+  expectedPath = '/strengths-and-needs/v1.0/',
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  expect(page.url()).toContain(url)
+  // Wait for the redirect from the handover link to land on the expected page
+  await page.waitForURL(url => url.pathname.includes(expectedPath))
 }

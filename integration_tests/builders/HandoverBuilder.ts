@@ -6,6 +6,7 @@ import type {
   CriminogenicNeedsData,
   AccessMode,
   Location,
+  YesNoNull,
 } from '@server/interfaces/handover-api/shared'
 import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
 import type { CoordinatorAssociation } from './CoordinatorBuilder'
@@ -66,9 +67,13 @@ export class HandoverBuilderInstance {
 
   private subject: Partial<HandoverSubjectDetails> = {}
 
+  private omitCrn = false
+
   private criminogenicNeeds: CriminogenicNeedsData | undefined
 
   private planVersion: number | undefined
+
+  private sexuallyMotivatedOffenceHistory: YesNoNull | undefined
 
   // Generate unique user ID to avoid "duplicate key" errors in parallel tests
   private defaultPrincipal: HandoverPrincipalDetails = {
@@ -121,6 +126,12 @@ export class HandoverBuilderInstance {
     return this
   }
 
+  withAccessMode(accessMode: AccessMode): this {
+    this.principal.accessMode = accessMode
+
+    return this
+  }
+
   /**
    * Set the return URL for after handover
    */
@@ -136,6 +147,16 @@ export class HandoverBuilderInstance {
    */
   withSubject(subject: Partial<HandoverSubjectDetails>): this {
     this.subject = { ...this.subject, ...subject }
+
+    return this
+  }
+
+  /**
+   * Send the handover with no subject CRN. The handover service allows a null CRN but rejects an
+   * empty string, so the field is omitted entirely.
+   */
+  withoutCrn(): this {
+    this.omitCrn = true
 
     return this
   }
@@ -197,6 +218,17 @@ export class HandoverBuilderInstance {
   }
 
   /**
+   * Set sexually motivated offence history
+   * @param yesNo
+   * @returns
+   */
+  withSexuallyMotivatedOffenceHistory(yesNo: YesNoNull): this {
+    this.sexuallyMotivatedOffenceHistory = yesNo
+
+    return this
+  }
+
+  /**
    * Save the handover session via the handover API.
    */
   async save(): Promise<HandoverSession> {
@@ -214,7 +246,12 @@ export class HandoverBuilderInstance {
         gender: this.subject.gender ?? '1',
         dateOfBirth: this.subject.dateOfBirth ?? '1990-01-01',
         location: this.subject.location ?? 'COMMUNITY',
+        sexuallyMotivatedOffenceHistory: this.sexuallyMotivatedOffenceHistory,
         ...this.subject,
+      }
+
+      if (this.omitCrn) {
+        delete (subjectDetails as Partial<HandoverSubjectDetails>).crn
       }
 
       const createRequest: CreateHandoverLinkRequest = {
@@ -223,6 +260,7 @@ export class HandoverBuilderInstance {
         oasysAssessmentPk: this.association.oasysAssessmentPk,
         sentencePlanVersion: this.planVersion,
         criminogenicNeedsData: this.criminogenicNeeds,
+        sexuallyMotivatedOffenceHistory: this.sexuallyMotivatedOffenceHistory,
       }
 
       const handoverResponse = await test.step('POST /handover (createHandoverLink)', () =>

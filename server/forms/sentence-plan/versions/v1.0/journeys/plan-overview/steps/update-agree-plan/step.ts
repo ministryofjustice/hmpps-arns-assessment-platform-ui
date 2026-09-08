@@ -1,6 +1,6 @@
 import { Data, Post, redirect, step, submit, when, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { updatePlanAgreementQuestion, buttonGroup, notesField } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { sentencePlanOverviewPath } from '../../../../constants'
 import { redirectUnlessCouldNotAnswer, redirectToOverviewIfReadOnly } from '../../../../guards'
 
@@ -13,7 +13,7 @@ export const updateAgreePlanStep = step({
     locals: {
       backlink: when(Data('navigationReferrer').match(Condition.Equals('plan-history')))
         .then('plan-history')
-        .else('overview?type=current'),
+        .else('overview?goalStatusTab=current'),
     },
   },
   onSubmission: [
@@ -23,11 +23,11 @@ export const updateAgreePlanStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.updatePlanAgreement(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_PLAN_AGREEMENT_UPDATE, {
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT_UPDATE, {
             agreementStatus: Post('update_plan_agreement_question'),
           }),
         ],
-        next: [redirect({ goto: 'overview?type=current' })],
+        next: [redirect({ goto: 'overview?goalStatusTab=current' })],
       },
     }),
   ],

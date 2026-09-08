@@ -5,7 +5,7 @@ import AbstractPage from '../abstractPage'
 export default class OffenceAnalysisPage extends AbstractPage {
   readonly mainSection: Locator
 
-  readonly enterDetails: Locator
+  readonly enterDetailsError: Locator
 
   readonly enterDetailsWhy: Locator
 
@@ -44,7 +44,7 @@ export default class OffenceAnalysisPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.mainSection = page.getByTestId('main-form')
-    this.enterDetails = page.getByRole('link', { name: 'Enter details' }).first()
+    this.enterDetailsError = page.getByRole('link', { name: 'Enter details' }).first()
     this.enterDetailsWhy = page.getByRole('link', { name: 'Enter details' }).nth(1)
     this.enterDescription = page.getByRole('textbox', { name: 'Enter a brief description of' })
     this.enterWhy = page.getByRole('textbox', { name: 'Why did the current index' })

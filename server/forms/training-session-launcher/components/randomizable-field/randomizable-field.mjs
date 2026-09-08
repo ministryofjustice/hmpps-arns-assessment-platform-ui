@@ -106,7 +106,7 @@ class RandomizableFieldWrapper extends HTMLElement {
     input.name = fieldCode
     input.value = '__RANDOM__'
     input.dataset.randomizeOption = 'true'
-    input.setAttribute('aria-label', `Randomize ${fieldLabel.toLowerCase()}`)
+    input.setAttribute('aria-label', `Randomise ${fieldLabel.toLowerCase()}`)
 
     const labelEl = document.createElement('label')
     labelEl.className = 'govuk-label govuk-radios__label'

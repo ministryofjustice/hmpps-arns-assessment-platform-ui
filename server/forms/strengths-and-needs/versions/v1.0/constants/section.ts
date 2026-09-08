@@ -1,63 +1,63 @@
 import { basePath } from './formVersion'
 
-export const SectionStatus = {
-  complete: 'COMPLETE',
-  incomplete: 'INCOMPLETE',
-} as const
+export enum SectionComplete {
+  yes = 'YES',
+  no = 'NO',
+}
 
 export const Section = {
   accommodation: {
     code: 'accommodation',
     path: '/accommodation',
-    sideNavHref: `${basePath}/accommodation/current-accommodation?resume=true`,
-    statusKey: 'accommodation_section_status',
+    sideNavHref: `${basePath}/accommodation/current-accommodation`,
+    statusKey: 'accommodation_section_complete',
   },
   employment_and_education: {
     code: 'employment-and-education',
     path: '/employment-and-education',
-    sideNavHref: `${basePath}/employment-and-education/current-employment?resume=true`,
-    statusKey: 'employment_section_status',
+    sideNavHref: `${basePath}/employment-and-education/current-employment`,
+    statusKey: 'employment_education_section_complete',
   },
   finance: {
     code: 'finance',
     path: '/finances',
-    sideNavHref: `${basePath}/finances/finance?resume=true`,
-    statusKey: 'finance_section_status',
+    sideNavHref: `${basePath}/finances/finance`,
+    statusKey: 'finance_section_complete',
   },
   drug_use: {
     code: 'drug-use',
     path: '/drug-use',
-    sideNavHref: `${basePath}/drug-use/drug-use?resume=true`,
-    statusKey: 'drugs_section_status',
+    sideNavHref: `${basePath}/drug-use/drug-use`,
+    statusKey: 'drug_use_section_complete',
   },
   alcohol_use: {
     code: 'alcohol-use',
-    path: '',
-    sideNavHref: `${basePath}/alcohol-use/alcohol-use?resume=true`,
-    statusKey: 'alcohol_section_status',
+    path: '/alcohol-use',
+    sideNavHref: `${basePath}/alcohol-use/alcohol-use`,
+    statusKey: 'alcohol_use_section_complete',
   },
   health_and_wellbeing: {
     code: 'health-and-wellbeing',
     path: '/health-and-wellbeing',
-    sideNavHref: `${basePath}/health-and-wellbeing/health-wellbeing?resume=true`,
-    statusKey: 'health_section_status',
+    sideNavHref: `${basePath}/health-and-wellbeing/health-wellbeing`,
+    statusKey: 'health_wellbeing_section_complete',
   },
   personal_relationships_and_community: {
     code: 'personal-relationships-and-community',
-    path: '',
-    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships?resume=true`,
-    statusKey: 'relationship_section_status',
+    path: '/personal-relationships-and-community',
+    sideNavHref: `${basePath}/personal-relationships-and-community/personal-relationships-children-information`,
+    statusKey: 'personal_relationships_community_section_complete',
   },
   thinking_behaviours_and_attitudes: {
     code: 'thinking-behaviours-and-attitudes',
-    path: '',
-    sideNavHref: `${basePath}/thinking-behaviours-and-attitudes/thinking-behaviours?resume=true`,
-    statusKey: 'thinking_behaviour_section_status',
+    path: '/thinking-behaviours-and-attitudes',
+    sideNavHref: `${basePath}/thinking-behaviours-and-attitudes/thinking-behaviours`,
+    statusKey: 'thinking_behaviours_attitudes_section_complete',
   },
   offence_analysis: {
     code: 'offence-analysis',
     path: '/offence-analysis',
-    sideNavHref: `${basePath}/offence-analysis/offence-analysis?resume=true`,
-    statusKey: 'offences_section_status',
+    sideNavHref: `${basePath}/offence-analysis/offence-analysis`,
+    statusKey: 'offence_analysis_section_complete',
   },
 } as const

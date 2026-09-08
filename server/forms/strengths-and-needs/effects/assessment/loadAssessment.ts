@@ -73,7 +73,6 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
   const properties = unwrapAll<Record<string, unknown>>(assessment.properties)
-  const collections = assessment.collections
 
   Object.entries(answers).forEach(([code, value]) => {
     context.setAnswer(code, value)

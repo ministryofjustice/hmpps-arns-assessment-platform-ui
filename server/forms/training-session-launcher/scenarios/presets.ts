@@ -60,8 +60,8 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'default',
     name: 'Default',
-    shortDescription: 'All fields randomized',
-    description: 'Scenario with fully randomized subject details and practitioner details.',
+    shortDescription: 'All fields randomised',
+    description: 'Scenario with fully randomised subject details and practitioner details.',
     flags: [],
     fixedValues: {
       accessMode: 'READ_WRITE',
@@ -85,7 +85,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     name: 'SP Private Beta',
     shortDescription: 'Private Beta scenario',
     description: 'Scenario configured for Sentence Plan with private beta access.',
-    flags: ['SAN_PRIVATE_BETA'],
+    flags: ['SAN_BETA'],
     fixedValues: {
       location: 'COMMUNITY',
       accessMode: 'READ_WRITE',

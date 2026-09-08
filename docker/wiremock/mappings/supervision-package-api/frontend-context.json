@@ -1,0 +1,263 @@
+{
+  "mappings": [
+    {
+      "name": "Supervision Package API - X444444 - standard (STD) phase, early engagement complete",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X444444",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "currentPhase": {
+            "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+            "phase": { "code": "STD", "description": "Standard" },
+            "eventNumber": "1",
+            "startDate": "2026-01-05",
+            "endDate": "2027-01-04"
+          },
+          "earlyEngagement": { "startDate": "2026-01-05", "endDate": "2026-03-01", "weeks": 8, "completed": 8 },
+          "currentYear": {
+            "startDate": "2026-01-05",
+            "endDate": "2027-01-04",
+            "proRataFromDate": "2026-01-05",
+            "isFirstYear": true,
+            "appointments": { "allowance": 20, "scheduled": 3, "completed": 11 }
+          },
+          "nextAppointment": {
+            "id": 10001,
+            "date": "2026-08-12",
+            "startTime": "10:30",
+            "type": { "code": "OFF", "description": "Planned office visit" },
+            "description": "Planned office visit"
+          },
+          "createdAt": "2026-01-05T09:00:00Z",
+          "updatedAt": "2026-07-27T09:00:00Z",
+          "context": {
+            "name": { "forename": "Buster", "middleNames": "", "surname": "Sanford" },
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2026-01-05",
+                "endDate": "2027-01-04",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X222222 - no appointments scheduled",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X222222",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "currentPhase": {
+            "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+            "phase": { "code": "STD", "description": "Standard" },
+            "eventNumber": "1",
+            "startDate": "2025-09-01",
+            "endDate": "2026-08-31"
+          },
+          "earlyEngagement": { "startDate": "2025-09-01", "endDate": "2025-10-27", "weeks": 8, "completed": 8 },
+          "currentYear": {
+            "startDate": "2025-09-01",
+            "endDate": "2026-08-31",
+            "proRataFromDate": "2025-09-01",
+            "isFirstYear": true,
+            "appointments": { "allowance": 20, "scheduled": 0, "completed": 20 }
+          },
+          "nextAppointment": null,
+          "createdAt": "2025-09-01T09:00:00Z",
+          "updatedAt": "2026-07-27T09:00:00Z",
+          "context": {
+            "name": { "forename": "Buster", "middleNames": "", "surname": "Sanford" },
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2025-09-01",
+                "endDate": "2026-08-31",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X333333 - in breach with OPD pathway",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X333333",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "currentPhase": {
+            "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+            "phase": { "code": "STD", "description": "Standard" },
+            "eventNumber": "1",
+            "startDate": "2025-11-01",
+            "endDate": "2026-10-31"
+          },
+          "earlyEngagement": { "startDate": "2025-11-01", "endDate": "2025-12-27", "weeks": 8, "completed": 8 },
+          "currentYear": {
+            "startDate": "2025-11-01",
+            "endDate": "2026-10-31",
+            "proRataFromDate": "2025-11-01",
+            "isFirstYear": true,
+            "appointments": { "allowance": 24, "scheduled": 1, "completed": 12 }
+          },
+          "nextAppointment": {
+            "id": 10002,
+            "date": "2026-08-12",
+            "startTime": "10:30",
+            "type": { "code": "OFF", "description": "Planned office visit" },
+            "description": "Planned office visit"
+          },
+          "createdAt": "2025-11-01T09:00:00Z",
+          "updatedAt": "2026-07-27T09:00:00Z",
+          "context": {
+            "name": { "forename": "Buster", "middleNames": "", "surname": "Sanford" },
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": true,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2025-11-01",
+                "endDate": "2026-10-31",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": true
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X666666 - server error (degraded component)",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X666666",
+        "method": "GET"
+      },
+      "response": {
+        "status": 500
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X888888 - not found (person has no supervision package)",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X888888",
+        "method": "GET"
+      },
+      "response": {
+        "status": 404
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X555555 - not calculated yet (pairs with the provisional tier)",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X555555",
+        "method": "GET"
+      },
+      "response": {
+        "status": 404
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - default early engagement (fully populated view)",
+      "request": {
+        "urlPattern": "/supervision-package-api/frontend-context/[A-Z0-9]+",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "currentPhase": {
+            "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+            "phase": { "code": "INIT", "description": "Early engagement" },
+            "eventNumber": "1",
+            "startDate": "2026-06-15",
+            "endDate": "2026-08-10"
+          },
+          "earlyEngagement": { "startDate": "2026-06-15", "endDate": "2026-08-10", "weeks": 8, "completed": 3 },
+          "currentYear": {
+            "startDate": "2026-06-15",
+            "endDate": "2027-06-14",
+            "proRataFromDate": "2026-06-15",
+            "isFirstYear": true,
+            "appointments": { "allowance": 24, "scheduled": 2, "completed": 3 }
+          },
+          "nextAppointment": {
+            "id": 10000,
+            "date": "2026-08-12",
+            "startTime": "10:30",
+            "type": { "code": "OFF", "description": "Planned office visit" },
+            "description": "Planned office visit"
+          },
+          "createdAt": "2026-06-15T09:00:00Z",
+          "updatedAt": "2026-07-27T09:00:00Z",
+          "context": {
+            "name": { "forename": "Buster", "middleNames": "", "surname": "Sanford" },
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": { "eligible": false, "since": "" },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2026-06-15",
+                "endDate": "2027-06-14",
+                "supervisionPackage": { "code": "SP1", "description": "Standard supervision" },
+                "type": { "code": "SP", "description": "ORA Community Order", "isCustodial": false },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 20
+    }
+  ]
+}
