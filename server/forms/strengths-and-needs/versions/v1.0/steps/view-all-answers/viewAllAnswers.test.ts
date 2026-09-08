@@ -229,7 +229,7 @@ describe('view all answers', () => {
   describe('back link tests', () => {
     const backlinkFor = async (previousPageUrl?: string, fallback = Section.accommodation.sideNavHref) => {
       const context = {
-        data: { viewAllAnswersBacklinkFallback: fallback } as Record<string, unknown>,
+        data: { dynamicBacklinkFallback: fallback } as Record<string, unknown>,
         getState: () => previousPageUrl,
         getData(key: string) {
           return this.data[key]

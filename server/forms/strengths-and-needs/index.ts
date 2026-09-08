@@ -18,7 +18,6 @@ import { createPrivacyScreen } from '../shared'
 import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
 import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
-import { baseSanRoute } from './versions/v1.0/constants/path'
 import { modalComponent } from './components/modal/modalComponent'
 
 const { createRoute } = SANGenerators

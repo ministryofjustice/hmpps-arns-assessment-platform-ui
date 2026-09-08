@@ -1,3 +1,4 @@
+import { BadRequest } from 'http-errors'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { Collection } from '../../constants/collection'
 
@@ -8,17 +9,20 @@ export const emptyCollection =
 
     const assessment = context.getData('assessment')
     const collections = assessment.collections
+    const foundCollection = collections.find(it => it.name === collection.name) ?? null
 
-    collections
-      .find(it => it.name === collection.name)
-      .items.forEach(async item => {
-        if (item) {
-          await deps.api.executeCommand({
-            type: 'RemoveCollectionItemCommand',
-            collectionItemUuid: item.uuid,
-            assessmentUuid,
-            user,
-          })
-        }
-      })
+    if (!foundCollection) {
+      throw BadRequest(`Collection ${collection.name} not found`)
+    }
+
+    await Promise.all(
+      foundCollection.items.map(async item =>
+        deps.api.executeCommand({
+          type: 'RemoveCollectionItemCommand',
+          collectionItemUuid: item.uuid,
+          assessmentUuid,
+          user,
+        }),
+      ),
+    )
   }

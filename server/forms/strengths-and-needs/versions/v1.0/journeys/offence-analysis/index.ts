@@ -1,13 +1,15 @@
-import { Condition, Data, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { offenceAnalysisStep } from './steps/offence-analysis/step'
 import { offenceAnalysisVictimStep } from './steps/offence-analysis-victim/step'
 import { offenceAnalysisVictimSummaryStep } from './steps/offence-analysis-victim-summary/step'
 import { Section } from '../../constants/section'
-import { commonContentFor } from '../../locales'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { offenceAnalysisEditVictimStep } from './steps/offence-analysis-edit-victim/step'
 import { offenceAnalysisInvolvedPartiesStep } from './steps/offence-analysis-involved-parties/step'
 import { offenceAnalysisImpactStep } from './steps/offence-analysis-impact/step'
 import { offenceAnalysisSummaryStep } from './steps/offence_analysis_summary/step'
+import { redirectToAnalysisIfReadOnly } from '../../guards'
+import { Step } from './constants/step'
 
 /**
  * Offence Analysis Journey
@@ -26,10 +28,11 @@ export const offenceAnalysisJourney = journey({
   title: 'Offence analysis',
   path: Section.offence_analysis.path,
   reachability: { resumeWhen: Query('resume').match(Condition.Equals('true')) },
+  onAccess: [redirectToAnalysisIfReadOnly(Section.offence_analysis.path, Step.offence_analysis_summary.path)],
   view: {
     locals: {
-      sectionTitle: commonContentFor('sectionTitle.offence-analysis'),
-      sectionStatus: Data(Section.offence_analysis.statusKey),
+      sectionTitle: sectionPageTitle(Section.offence_analysis),
+      sectionStatusTag: sectionStatusTag(Section.offence_analysis),
     },
   },
   steps: [

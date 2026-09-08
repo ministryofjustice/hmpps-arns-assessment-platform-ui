@@ -3,6 +3,9 @@ import {
   and,
   Answer,
   Condition,
+  Data,
+  Item,
+  Iterator,
   Post,
   redirect,
   step,
@@ -54,7 +57,15 @@ export const offenceAnalysisStep = step({
       },
     }),
     submit({
-      when: Post('action').match(Condition.Equals('save')),
+      when: and(
+        Post('action').match(Condition.Equals('save')),
+        Answer(Question.offence_analysis_who_was_the_victim).not.match(
+          Condition.Array.Contains(Option.one_or_more_person),
+        ),
+        Data('assessment.collections')
+          .each(Iterator.Find(Item().path('name').match(Condition.Equals(victimsCollection.name))))
+          .match(Condition.IsRequired()),
+      ),
       validate: true,
       onValid: {
         effects: [

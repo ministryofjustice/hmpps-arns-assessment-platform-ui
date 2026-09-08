@@ -1,6 +1,6 @@
 import { access, Data, Session, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../effects'
-import { basePath, CaseData } from '../../constants/formVersion'
+import { basePath } from '../../constants/formVersion'
 import { commonContentFor } from '../../locales'
 import { viewAllAnswersBlocks } from './fields'
 
