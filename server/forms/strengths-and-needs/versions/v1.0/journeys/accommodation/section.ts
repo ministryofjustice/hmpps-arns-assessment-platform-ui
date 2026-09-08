@@ -294,7 +294,7 @@ const livingWith = question({
     field: checkboxField({ dependentWhen: livingWithApplies, visibleWhen: livingWithApplies }),
     summaryRow: itemisedSummaryRow({
       changePath: Step.accommodation_details.path,
-      visibleWhen: livingWithApplies
+      visibleWhen: livingWithApplies,
     }),
   },
 })
