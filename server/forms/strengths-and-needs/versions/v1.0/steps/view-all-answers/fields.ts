@@ -70,13 +70,12 @@ const blocksFor = (entry: ViewAllAnswersSection, includePageTitle = false): Bloc
     sectionHeader(entry.section),
   ]
 
-  if (questions.length > 0 || analysis.length > 0) {
-    content.push(
-      groupHeading(commonContentFor('summary'), questions),
-      answersFor(questions),
-      groupHeading(commonContentFor('practitioner_analysis'), analysis),
-      answersFor(analysis),
-    )
+  if (questions.length > 0) {
+    content.push(groupHeading(commonContentFor('summary'), questions), answersFor(questions))
+  }
+
+  if (analysis.length > 0) {
+    content.push(groupHeading(commonContentFor('practitioner_analysis'), analysis), answersFor(analysis))
   }
 
   return [

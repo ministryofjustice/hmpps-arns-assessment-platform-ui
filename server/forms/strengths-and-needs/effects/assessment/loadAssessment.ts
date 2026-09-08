@@ -10,7 +10,7 @@ const isMissingAssessmentQueryError = (error: unknown): boolean =>
 
 const isNotFoundApiError = (error: unknown): boolean => error instanceof SanitisedError && error.responseStatus === 404
 
-const loadAssessmentQuery = async (deps: StrengthsAndNeedsEffectsDeps, query: AssessmentVersionQuery) => {
+export const loadAssessmentQuery = async (deps: StrengthsAndNeedsEffectsDeps, query: AssessmentVersionQuery) => {
   try {
     return await deps.api.executeQuery(query)
   } catch (error) {

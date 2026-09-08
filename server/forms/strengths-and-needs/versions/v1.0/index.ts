@@ -11,6 +11,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import { isEditMode, isOasysAccess } from './guards'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
@@ -78,5 +79,6 @@ export const strengthsAndNeedsV1Journey = journey({
     healthWellbeingJourney,
     personalRelationshipsJourney,
     thinkingBehavioursAndAttitudesJourney,
+    offenceAnalysisJourney,
   ],
 })

@@ -81,6 +81,7 @@ export enum QuestionFormat {
   CHECKBOX = 'CHECKBOX',
   TEXT = 'TEXT',
   DATE = 'DATE',
+  SELECT = 'SELECT',
 }
 
 /**
@@ -639,6 +640,23 @@ export const questionTemplate = (definition: {
 
 type SectionFields = Record<string, { content: QuestionContent }>
 
+/**
+ * A repeatable item collection (e.g. victims): one set of question codes,
+ * answered once per item rather than once per assessment. Distinct from
+ * `collectionQuestions` — those are one templated field with a separate code
+ * per static parameter value (e.g. one `has_been_employed`-style code per
+ * drug); a collection is one shared set of codes, repeated across however
+ * many items the user adds, each item's answers keyed by item id rather than
+ * by a static parameter. Not read by view-all-answers (which renders each
+ * item's answers itself, however the section chooses to group them); included
+ * so `stableQuestionsOf`/`FormConfig` still know the codes exist, tagged with
+ * which collection they belong to.
+ */
+export interface CollectionDefinition {
+  name: string
+  questions: SectionFields
+}
+
 export interface SectionDefinition {
   code: string
   questions: SectionFields
@@ -649,6 +667,7 @@ export interface SectionDefinition {
   // those instances itself, grouped under the drug they belong to); included
   // only so `stableQuestionsOf` has a complete inventory of stable codes.
   collectionQuestions?: SectionFields
+  collections?: CollectionDefinition[]
 }
 
 export const questionsWithin = (content: QuestionContent): QuestionContent[] => withRevealedQuestions(content)
@@ -683,3 +702,13 @@ export const stableQuestionsOf = (section: SectionDefinition): QuestionContent[]
     ...Object.values(section.practitionerAnalysis),
     ...Object.values(section.collectionQuestions ?? {}),
   ].flatMap(field => withRevealedQuestions(field.content))
+
+/**
+ * Every question asked once per item of a section's collections (e.g. once
+ * per victim), tagged with the collection they belong to.
+ */
+export const collectionsOf = (section: SectionDefinition): { name: string; questions: QuestionContent[] }[] =>
+  (section.collections ?? []).map(collectionDef => ({
+    name: collectionDef.name,
+    questions: Object.values(collectionDef.questions).flatMap(field => withRevealedQuestions(field.content)),
+  }))
