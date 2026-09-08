@@ -7,10 +7,12 @@ import { unwrapAll, wrapAll } from '../../../data/aap-api/wrappers'
 import { TieringAssessmentEffectsDeps } from '../@types/TieringAssessmentEffectsDeps'
 import { TieringAssessmentEffectContext } from '../@types/TieringAssessmentEffectContext'
 import { OffenceCodeDetails } from '../../../interfaces/risk-actuarial-api/offenceCodes'
+import { buildAnswerDelta } from './answerDelta'
 
 export interface TieringAssessmentEffectShape {
   InitialiseAssessment: () => EffectFunctionExpr
   SetupUUIDInData: () => EffectFunctionExpr
+  CleardownAssessmentData: () => EffectFunctionExpr
   LoadAssessmentData: () => EffectFunctionExpr
   SaveAssessmentData: () => EffectFunctionExpr
   SetAssessmentComplete: () => EffectFunctionExpr
@@ -48,6 +50,11 @@ export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
     const assessmentUuid = session.assessmentUuid
     context.setData('assessment-uuid', assessmentUuid)
   },
+  CleardownAssessmentData: () => (context: TieringAssessmentEffectContext) => {
+    for (const field of context.getFieldsToClear()) {
+      context.clearAnswer(field)
+    }
+  },
   LoadAssessmentData: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
     const session = context.getSession()
     const assessmentUuid = session.assessmentUuid
@@ -69,12 +76,18 @@ export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
     const session = context.getSession()
     const assessmentUuid = session.assessmentUuid
 
+    const delta = buildAnswerDelta(context.getAllAnswerHistories())
+    if (!Object.keys(delta.added).length && !delta.removed.length) {
+      return
+    }
+    delta.removed.push(...context.getFieldsToClear())
+
     await deps.api.executeCommand({
       type: 'UpdateAssessmentAnswersCommand',
       assessmentUuid,
       user: context.getState('user'),
       added: wrapAll(context.getAllAnswers()),
-      removed: [],
+      removed: delta.removed,
     })
   },
   SetAssessmentComplete: (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
@@ -149,6 +162,10 @@ export const TieringAssessmentEffects: TieringAssessmentEffectShape = {
   SetupUUIDInData: TieringAssessmentEffectsRegistry.register(
     'SetupUUIDInData',
     TieringAssessmentEffectsImplementations.implementations.SetupUUIDInData,
+  ),
+  CleardownAssessmentData: TieringAssessmentEffectsRegistry.register(
+    'CleardownAssessmentData',
+    TieringAssessmentEffectsImplementations.implementations.CleardownAssessmentData,
   ),
   LoadAssessmentData: TieringAssessmentEffectsRegistry.register(
     'LoadAssessmentData',

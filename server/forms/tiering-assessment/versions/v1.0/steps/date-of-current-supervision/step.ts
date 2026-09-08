@@ -10,7 +10,7 @@ import {
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { continueButton, redirectToCheckYourAnswers } from '../../common'
+import { continueButton } from '../../common'
 import { dateOfCurrentSupervisionFields } from './fields'
 import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
@@ -32,11 +32,11 @@ export const dateOfCurrentSupervisionStep = step({
       validate: true,
       onValid: {
         effects: [
+          TieringAssessmentEffects.CleardownAssessmentData(),
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
         next: [
-          redirectToCheckYourAnswers,
           redirect({
             when: and(
               Answer('gender').match(Condition.Equals('MALE')),

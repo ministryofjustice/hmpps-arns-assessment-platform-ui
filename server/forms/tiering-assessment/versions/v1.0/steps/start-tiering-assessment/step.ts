@@ -9,6 +9,7 @@ import {
   supervisionStatusField,
 } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
+import { Step } from '../../constants/page'
 
 export const startTieringAssessmentStep = step({
   path: '/startTieringAssessment',
@@ -32,7 +33,7 @@ export const startTieringAssessmentStep = step({
           TieringAssessmentEffects.InitialiseAssessment(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'current-offence-and-offending-history' })],
+        next: [redirect({ goto: Step.current_offence_and_offending_history.path })],
       },
     }),
   ],

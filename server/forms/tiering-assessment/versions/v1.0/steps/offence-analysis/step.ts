@@ -17,6 +17,7 @@ export const offenceAnalysisStep = step({
       validate: true,
       onValid: {
         effects: [
+          TieringAssessmentEffects.CleardownAssessmentData(),
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],

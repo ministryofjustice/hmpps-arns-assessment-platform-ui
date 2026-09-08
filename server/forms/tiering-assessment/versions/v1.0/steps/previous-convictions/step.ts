@@ -18,6 +18,7 @@ export const previousConvictionsStep = step({
       validate: true,
       onValid: {
         effects: [
+          TieringAssessmentEffects.CleardownAssessmentData(),
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
