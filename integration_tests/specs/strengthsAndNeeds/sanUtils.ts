@@ -9,6 +9,7 @@ const privacyStepPath = '/privacy'
 export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
+export const offence = '/offence-analysis'
 export const drugUse = '/drug-use'
 export const alcohol = '/alcohol-use'
 export const personal = '/personal-relationships-and-community'
@@ -32,6 +33,7 @@ export const sanPageTitles = {
   thinking: 'Thinking, behaviours and attitudes',
   alcoholUse: 'Alcohol use',
   finances: 'Finances',
+  offenceAnalysis: 'Offence analysis',
 }
 
 export const sanServiceName = 'Strengths and needs'
