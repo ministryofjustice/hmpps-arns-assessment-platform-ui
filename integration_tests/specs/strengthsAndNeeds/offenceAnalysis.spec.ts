@@ -50,8 +50,8 @@ test.describe('Offence Analysis Page', () => {
           - text: Addictions or perceived needs
           - checkbox "Being pressurised or led into offending by others"
           - text: Being pressurised or led into offending by others
-          - checkbox "Emotional state of Christy"
-          - text: Emotional state of Christy
+          - checkbox "Emotional state of Test"
+          - text: Emotional state of Test
           - checkbox "Financial motivation"
           - text: Financial motivation
           - checkbox "Hatred of identifiable groups"
@@ -224,7 +224,7 @@ test.describe('Offence Analysis Page', () => {
 
       expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
         - group "How many other people were involved with committing the current index offence(s)?":
-          - text: How many other people were involved with committing the current index offence(s)? Select all that apply.
+          - text: How many other people were involved with committing the current index offence(s)?
           - radio "None"
           - text: None
           - radio "1"
@@ -256,7 +256,7 @@ test.describe('Offence Analysis Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           {
-            question: 'offence_analysis_index_offence_description',
+            question: 'offence_analysis_description_of_offence',
             value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
                     Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
                     when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
@@ -332,15 +332,33 @@ test.describe('Offence Analysis Page', () => {
 
       await expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
         - group "Did the current index offence(s) involve any of the following motivations?":
+          - text: Did the current index offence(s) involve any of the following motivations? Select all that apply.
+          - checkbox "Addictions or perceived needs"
+          - text: Addictions or perceived needs
+          - checkbox "Being pressurised or led into offending by others"
+          - text: Being pressurised or led into offending by others
+          - checkbox "Emotional state of Test"
+          - text: Emotional state of Test
+          - checkbox "Financial motivation"
+          - text: Financial motivation
+          - checkbox "Hatred of identifiable groups"
+          - text: Hatred of identifiable groups
+          - checkbox "Seeking or exerting power"
+          - text: Seeking or exerting power
+          - checkbox "Sexual motivation"
+          - text: Sexual motivation
+          - checkbox "Thrill seeking"
+          - text: Thrill seeking
           - checkbox "Other" [checked] [expanded]
           - text: Other Give details
           - textbox "Give details"
-          - text: You can enter up to 128 characters You have 128 characters remaining
+          - text: You can enter up to 200 characters You have 200 characters remaining
         - group "Who was the offence committed against?":
-          - checkbox "Other" [checked] [expanded]
-          - text: Other For example, a business or the wider community. Give details
-          - textbox "Give details"
-          - text: You can enter up to 2000 characters You have 2,000 characters remaining
+          - text: Who was the offence committed against? Select all that apply.
+          - checkbox "One or more people"
+          - text: One or more people
+          - checkbox "Other"
+          - text: Other For example, a business or the wider community.
       `)
     })
 
@@ -362,19 +380,19 @@ test.describe('Offence Analysis Page', () => {
             - /children: equal
             - listitem:
               - link "Enter details":
-                - /url: "#offence_analysis_index_offence_description"
+                - /url: "#offence_analysis_description_of_offence"
             - listitem:
               - link "Select if the offence(s) had any of the elements":
-                - /url: "#offence_analysis_offence_elements"
+                - /url: "#offence_analysis_elements"
             - listitem:
               - link "Enter details":
-                - /url: "#offence_analysis_why_offence_happened"
+                - /url: "#offence_analysis_reason"
             - listitem:
               - link "Select if the offence(s) involved any of the following motivations":
                 - /url: "#offence_analysis_motivations"
             - listitem:
               - link "Select who the offence was committed against":
-                - /url: "#offence_analysis_commited_against"
+                - /url: "#offence_analysis_who_was_the_victim"
       `)
 
       await offenceAnalysisPage.enterDetailsError.click()
@@ -430,7 +448,7 @@ test.describe('Offence Analysis Page', () => {
             - /children: equal
             - listitem:
               - link "Select who the victim is":
-                - /url: "#offence_analysis_victim_type"
+                - /url: "#offence_analysis_victim_relationship"
             - listitem:
               - link "Select approximate age":
                 - /url: "#offence_analysis_victim_age"
@@ -439,7 +457,7 @@ test.describe('Offence Analysis Page', () => {
                 - /url: "#offence_analysis_victim_sex"
             - listitem:
               - link "Select the victim's ethnicity":
-                - /url: "#offence_analysis_victim_ethnicity"
+                - /url: "#offence_analysis_victim_race"
       `)
 
       await offenceAnalysisPage.selectWhoTheVictim.click()
