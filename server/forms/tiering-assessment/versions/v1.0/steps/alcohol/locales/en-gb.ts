@@ -1,5 +1,5 @@
 import { Question } from '../constants/question'
-import { Option } from '../constants/option'
+import { AlcoholUnitsOption, FrequencyOption } from '../constants/option'
 import { Locale } from '../../../../../i18n'
 import { CommonOption } from '../../../constants/commonOption'
 
@@ -8,20 +8,20 @@ export const english = {
     [Question.current_alcohol_use]: {
       text: 'How often has %1 drank alcohol in the last 3 months?',
       option: {
-        [Option.ONCE_A_MONTH]: 'Once a month or less',
-        [Option.TWO_TO_FOUR_TIMES_A_MONTH]: '2 to 4 times a month',
-        [Option.TWO_TO_THREE_TIMES_A_WEEK]: '2 to 3 times a week',
-        [Option.MORE_THAN_FOUR_TIME_A_WEEK]: 'More than 4 times a week',
+        [FrequencyOption.ONCE_A_MONTH]: 'Once a month or less',
+        [FrequencyOption.TWO_TO_FOUR_TIMES_A_MONTH]: '2 to 4 times a month',
+        [FrequencyOption.TWO_TO_THREE_TIMES_A_WEEK]: '2 to 3 times a week',
+        [FrequencyOption.MORE_THAN_FOUR_TIME_A_WEEK]: 'More than 4 times a week',
       },
     },
     [Question.units_of_alcohol]: {
       text: 'How many units of alcohol does %1 have on a typical day of drinking?',
       option: {
-        [Option.ONE_TO_TWO_UNITS]: '1 to 2 units',
-        [Option.THREE_TO_FOUR_UNITS]: '3 to 4 units',
-        [Option.FIVE_TO_SIX_UNITS]: '5 to 6 units',
-        [Option.SEVEN_TO_NINE_UNITS]: '7 to 9 units',
-        [Option.TEN_OR_MORE_UNITS]: '10 or more units',
+        [AlcoholUnitsOption.ONE_TO_TWO_UNITS]: '1 to 2 units',
+        [AlcoholUnitsOption.THREE_TO_FOUR_UNITS]: '3 to 4 units',
+        [AlcoholUnitsOption.FIVE_TO_SIX_UNITS]: '5 to 6 units',
+        [AlcoholUnitsOption.SEVEN_TO_NINE_UNITS]: '7 to 9 units',
+        [AlcoholUnitsOption.TEN_OR_MORE_UNITS]: '10 or more units',
       },
     },
     [Question.alcohol_use_binge_drinking]: {

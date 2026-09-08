@@ -15,9 +15,10 @@ import {
 import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils/utils'
 import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
 import { CommonOption } from '../versions/v1.0/constants/commonOption'
+import { AlcoholUnitsOption, FrequencyOption } from '../versions/v1.0/steps/alcohol/constants/option'
 
 export class RiskActuarialService {
-  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
+  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) { }
 
   async calculateAndSaveScores(context: TieringAssessmentEffectContext): Promise<void> {
     const input: RiskScoreInput = this.buildRiskScoreInput(context)
@@ -96,8 +97,8 @@ export class RiskActuarialService {
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
     const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has_ever_drunk_alcohol'))
-    const currentAlcoholUseFrequency = this.parseNumber(context.getAnswer('current-alcohol-use-frequency'))
-    const unitsOfAlcohol = this.parseNumber(context.getAnswer('units-of-alcohol'))
+    const currentAlcoholUseFrequency = this.parseString(context.getAnswer('current_alcohol_use_frequency'))
+    const unitsOfAlcohol = this.parseString(context.getAnswer('units_of_alcohol'))
 
     if (hasEverDrunkAlcohol === null || hasEverDrunkAlcohol === 'unknown') return null
     if (hasEverDrunkAlcohol === 'YES_NOT_IN_LAST_THREE_MONTHS' || hasEverDrunkAlcohol === 'NO') return 'NO_PROBLEMS'
@@ -330,14 +331,14 @@ export class RiskActuarialService {
   }
 
   private currentAlcoholUseAndUnitsToProblemLevel(
-    frequency: number | null,
-    unitsOfAlcohol: number | null,
+    frequency: string | null,
+    unitsOfAlcohol: string | null,
   ): ProblemLevel | null {
     if (frequency === null || unitsOfAlcohol === null) {
       return null
     }
 
-    const alcoholSummary = frequency + unitsOfAlcohol
+    const alcoholSummary = this.FREQUENCY_MAP[frequency as FrequencyOption] + this.ALCOHOL_UNITS_MAP[unitsOfAlcohol as AlcoholUnitsOption]
 
     if (alcoholSummary <= 4) return this.parseProblemLevel('NO_PROBLEMS')
     if (alcoholSummary <= 7) return this.parseProblemLevel('SOME_PROBLEMS')
@@ -360,6 +361,21 @@ export class RiskActuarialService {
     [EmploymentOption.currently_unavailable_for_work]: false,
     [EmploymentOption.unemployed_actively_looking_for_work]: true,
     [EmploymentOption.unemployed_not_actively_looking_for_work]: true,
+  }
+
+  private readonly FREQUENCY_MAP: Record<FrequencyOption, number> = {
+    [FrequencyOption.ONCE_A_MONTH]: 0,
+    [FrequencyOption.TWO_TO_FOUR_TIMES_A_MONTH]: 1,
+    [FrequencyOption.TWO_TO_THREE_TIMES_A_WEEK]: 3,
+    [FrequencyOption.MORE_THAN_FOUR_TIME_A_WEEK]: 4,
+  }
+
+  private readonly ALCOHOL_UNITS_MAP: Record<AlcoholUnitsOption, number> = {
+    [AlcoholUnitsOption.ONE_TO_TWO_UNITS]: 0,
+    [AlcoholUnitsOption.THREE_TO_FOUR_UNITS]: 1,
+    [AlcoholUnitsOption.FIVE_TO_SIX_UNITS]: 2,
+    [AlcoholUnitsOption.SEVEN_TO_NINE_UNITS]: 3,
+    [AlcoholUnitsOption.TEN_OR_MORE_UNITS]: 4,
   }
 
   private parseEmploymentStatus(employmentStatus: unknown): boolean | null {
