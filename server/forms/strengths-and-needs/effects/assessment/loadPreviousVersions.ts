@@ -14,7 +14,7 @@ export interface PreviousVersionDisplay {
   planVersionStatus?: string
 }
 
-const buildPreviousVersions = (versions: VersionsTable): PreviousVersionDisplay[] =>
+export const buildPreviousVersions = (versions: VersionsTable): PreviousVersionDisplay[] =>
   Object.entries(versions)
     .filter(([, entry]) => Boolean(entry.assessmentVersion))
     .sort(([timestampA], [timestampB]) => timestampB.localeCompare(timestampA))
@@ -32,6 +32,21 @@ const buildPreviousVersions = (versions: VersionsTable): PreviousVersionDisplay[
       }
     })
 
+export const storePreviousVersionsInSession = async (
+  deps: StrengthsAndNeedsEffectsDeps,
+  assessmentUuid: string,
+  session: any,
+): Promise<void> => {
+  const previousVersions = await deps.coordinatorApi.getVersionsByEntityId(assessmentUuid)
+
+  if (!previousVersions) {
+    throw new NotFound('Previous versions not found')
+  }
+
+  session.countersignedVersions = buildPreviousVersions(previousVersions.countersignedVersions)
+  session.previousVersions = buildPreviousVersions(previousVersions.allVersions)
+}
+
 export const loadPreviousVersions =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
     const assessmentUuid = context.getData('assessmentUuid')
@@ -40,13 +55,6 @@ export const loadPreviousVersions =
       throw new InternalServerError('Assessment UUID is required to load previous versions')
     }
 
-    const previousVersions = await deps.coordinatorApi.getVersionsByEntityId(assessmentUuid)
-
-    if (!previousVersions) {
-      throw new NotFound('Previous versions not found')
-    }
-
     const session = context.getSession()
-    session.countersignedVersions = buildPreviousVersions(previousVersions.countersignedVersions)
-    session.previousVersions = buildPreviousVersions(previousVersions.allVersions)
+    await storePreviousVersionsInSession(deps, assessmentUuid, session)
   }

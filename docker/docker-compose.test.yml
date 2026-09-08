@@ -40,7 +40,7 @@ services:
       SERVICE_NOW_FORM_URL: '#service-now-link'
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
-      SAN_URL: http://aap-ui:3000
+      SAN_URL: http://localhost:3000/strengths-and-needs/v1.0
 
   playwright:
     image: mcr.microsoft.com/playwright:v1.60.0-noble # Must match version in package-lock

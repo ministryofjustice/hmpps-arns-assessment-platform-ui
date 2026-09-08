@@ -7,6 +7,7 @@ import { QueryError } from '../../../../errors/aap-api/QueryError'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 import { HandoverContext } from '../../../../interfaces/handover-api/response'
+import { storePreviousVersionsInSession } from './loadPreviousVersions'
 
 const isMissingAssessmentQueryError = (error: unknown): boolean =>
   error instanceof QueryError && error.queryType === 'AssessmentVersionQuery' && error.result === undefined
@@ -67,6 +68,10 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   // Check if viewing a previous version via URL (uuid and mode are set on the session by an effect)
   if (session.uuid && session.mode && ['view-historic'].includes(session.mode)) {
+    if (!session.previousVersions || session.countersignedVersions) {
+      await storePreviousVersionsInSession(deps, session.handoverContext.assessmentContext.assessmentId, session)
+    }
+
     const previousVersions = [...session.previousVersions, ...session.countersignedVersions]
     const previousVersion = previousVersions.find(it => it.assessmentVersionId === session.uuid)
 
