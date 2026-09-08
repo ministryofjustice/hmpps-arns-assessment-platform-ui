@@ -19,19 +19,20 @@ test.describe('Errors', () => {
     await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
   })
 
-  test('Access denied', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-    const { handoverLink, sanAssessmentId } = await createSession({
+  test('Access denied', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
       accessMode: 'READ_ONLY',
       planAccessMode: 'READ_WRITE',
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/view/${sanAssessmentId}/accommodation/current-accommodation`)
-    const accommodationPage = new AccommodationPage(page)
+    await page.goto(handoverLink)
     await page.goto(handoverLink)
 
     await expect(page.getByRole('heading', { name: 'You need to sign in to use this service' })).toBeVisible()
+
+    const accommodationPage = new AccommodationPage(page)
     await expect(accommodationPage.returnToOASys).toBeVisible()
   })
 })
