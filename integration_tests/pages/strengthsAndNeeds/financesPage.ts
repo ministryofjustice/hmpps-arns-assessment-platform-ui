@@ -47,10 +47,11 @@ export default class FinancesPage extends StrengthsAndNeedsPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     subPage: string = 'finance',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${finances}/${subPage}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${finances}/${subPage}`)
     expect(page.url()).toContain(subPage)
   }
 

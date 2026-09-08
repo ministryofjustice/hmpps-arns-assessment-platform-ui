@@ -148,10 +148,11 @@ export default class ThinkingBehavioursAndAttitudesPage extends StrengthsAndNeed
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     url: string = 'thinking-behaviours',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${thinking}/${url}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${thinking}/${url}`)
     expect(page.url()).toContain(url)
   }
 
