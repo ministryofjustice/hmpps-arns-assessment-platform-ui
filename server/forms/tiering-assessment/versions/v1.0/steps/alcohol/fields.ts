@@ -3,7 +3,7 @@ import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { Step } from '../../constants/page'
 import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
 import { Question } from './constants/question'
-import { AlcoholUnitsOption, FrequencyOption } from './constants/option'
+import { UnitsOfAlcoholOption, FrequencyOption } from './constants/option'
 import { commonContentFor } from '../../locales'
 import { CommonOption } from '../../constants/commonOption'
 import { contentFor } from './locales'
@@ -52,23 +52,23 @@ export const unitsOfAlcoholQuestion = question({
     text: contentFor('question.units_of_alcohol.text', CaseData.Forename),
     options: [
       {
-        value: AlcoholUnitsOption.ONE_TO_TWO_UNITS,
+        value: UnitsOfAlcoholOption.ONE_TO_TWO_UNITS,
         text: contentFor('question.units_of_alcohol.option.ONE_TO_TWO_UNITS'),
       },
       {
-        value: AlcoholUnitsOption.THREE_TO_FOUR_UNITS,
+        value: UnitsOfAlcoholOption.THREE_TO_FOUR_UNITS,
         text: contentFor('question.units_of_alcohol.option.THREE_TO_FOUR_UNITS'),
       },
       {
-        value: AlcoholUnitsOption.FIVE_TO_SIX_UNITS,
+        value: UnitsOfAlcoholOption.FIVE_TO_SIX_UNITS,
         text: contentFor('question.units_of_alcohol.option.FIVE_TO_SIX_UNITS'),
       },
       {
-        value: AlcoholUnitsOption.SEVEN_TO_NINE_UNITS,
+        value: UnitsOfAlcoholOption.SEVEN_TO_NINE_UNITS,
         text: contentFor('question.units_of_alcohol.option.SEVEN_TO_NINE_UNITS'),
       },
       {
-        value: AlcoholUnitsOption.TEN_OR_MORE_UNITS,
+        value: UnitsOfAlcoholOption.TEN_OR_MORE_UNITS,
         text: contentFor('question.units_of_alcohol.option.TEN_OR_MORE_UNITS'),
       },
       { divider: commonContentFor('or') },

@@ -342,8 +342,8 @@ describe('RiskActuarialService', () => {
       ever_misused_drugs: 'YES',
       'motivation-to-tackle-drug-misuse': 'PARTIAL_MOTIVATION',
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      'current_alcohol_use_frequency': 'TWO_TO_THREE_TIMES_A_WEEK',
-      'units_of_alcohol': 'FIVE_TO_SIX_UNITS',
+      current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
+      units_of_alcohol: 'FIVE_TO_SIX_UNITS',
       'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
       who_are_they_living_with: 'partner',
       'important-relationships': 'partner',
@@ -785,8 +785,8 @@ describe('RiskActuarialService', () => {
   it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and current_alcohol_use_frequency is unknown', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      'current_alcohol_use_frequency': 'unknown',
-      'units_of_alcohol': 'TEN_OR_MORE_UNITS',
+      current_alcohol_use_frequency: 'unknown',
+      units_of_alcohol: 'TEN_OR_MORE_UNITS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -803,8 +803,8 @@ describe('RiskActuarialService', () => {
   it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and units_of_alcohol is unknown', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      'current_alcohol_use_frequency': 'MORE_THAN_FOUR_TIME_A_WEEK',
-      'units_of_alcohol': 'unknown',
+      current_alcohol_use_frequency: 'MORE_THAN_FOUR_TIME_A_WEEK',
+      units_of_alcohol: 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -837,8 +837,8 @@ describe('RiskActuarialService', () => {
   it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol <= 4', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      'current_alcohol_use_frequency': 'TWO_TO_THREE_TIMES_A_WEEK',
-      'units_of_alcohol': 'THREE_TO_FOUR_UNITS',
+      current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
+      units_of_alcohol: 'THREE_TO_FOUR_UNITS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -855,8 +855,8 @@ describe('RiskActuarialService', () => {
   it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol <= 7', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      'current_alcohol_use_frequency': 'TWO_TO_THREE_TIMES_A_WEEK',
-      'units_of_alcohol': 'TEN_OR_MORE_UNITS',
+      current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
+      units_of_alcohol: 'TEN_OR_MORE_UNITS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -873,8 +873,8 @@ describe('RiskActuarialService', () => {
   it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol => 8', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      'current_alcohol_use_frequency': 'MORE_THAN_FOUR_TIME_A_WEEK',
-      'units_of_alcohol': 'TEN_OR_MORE_UNITS',
+      current_alcohol_use_frequency: 'MORE_THAN_FOUR_TIME_A_WEEK',
+      units_of_alcohol: 'TEN_OR_MORE_UNITS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])

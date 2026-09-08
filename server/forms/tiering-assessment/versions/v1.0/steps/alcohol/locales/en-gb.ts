@@ -1,5 +1,5 @@
 import { Question } from '../constants/question'
-import { AlcoholUnitsOption, FrequencyOption } from '../constants/option'
+import { UnitsOfAlcoholOption, FrequencyOption } from '../constants/option'
 import { Locale } from '../../../../../i18n'
 import { CommonOption } from '../../../constants/commonOption'
 
@@ -17,11 +17,11 @@ export const english = {
     [Question.units_of_alcohol]: {
       text: 'How many units of alcohol does %1 have on a typical day of drinking?',
       option: {
-        [AlcoholUnitsOption.ONE_TO_TWO_UNITS]: '1 to 2 units',
-        [AlcoholUnitsOption.THREE_TO_FOUR_UNITS]: '3 to 4 units',
-        [AlcoholUnitsOption.FIVE_TO_SIX_UNITS]: '5 to 6 units',
-        [AlcoholUnitsOption.SEVEN_TO_NINE_UNITS]: '7 to 9 units',
-        [AlcoholUnitsOption.TEN_OR_MORE_UNITS]: '10 or more units',
+        [UnitsOfAlcoholOption.ONE_TO_TWO_UNITS]: '1 to 2 units',
+        [UnitsOfAlcoholOption.THREE_TO_FOUR_UNITS]: '3 to 4 units',
+        [UnitsOfAlcoholOption.FIVE_TO_SIX_UNITS]: '5 to 6 units',
+        [UnitsOfAlcoholOption.SEVEN_TO_NINE_UNITS]: '7 to 9 units',
+        [UnitsOfAlcoholOption.TEN_OR_MORE_UNITS]: '10 or more units',
       },
     },
     [Question.alcohol_use_binge_drinking]: {

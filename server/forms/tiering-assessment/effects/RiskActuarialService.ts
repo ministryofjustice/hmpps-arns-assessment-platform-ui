@@ -15,10 +15,10 @@ import {
 import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils/utils'
 import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
 import { CommonOption } from '../versions/v1.0/constants/commonOption'
-import { AlcoholUnitsOption, FrequencyOption } from '../versions/v1.0/steps/alcohol/constants/option'
+import { UnitsOfAlcoholOption, FrequencyOption } from '../versions/v1.0/steps/alcohol/constants/option'
 
 export class RiskActuarialService {
-  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) { }
+  constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
 
   async calculateAndSaveScores(context: TieringAssessmentEffectContext): Promise<void> {
     const input: RiskScoreInput = this.buildRiskScoreInput(context)
@@ -338,7 +338,8 @@ export class RiskActuarialService {
       return null
     }
 
-    const alcoholSummary = this.FREQUENCY_MAP[frequency as FrequencyOption] + this.ALCOHOL_UNITS_MAP[unitsOfAlcohol as AlcoholUnitsOption]
+    const alcoholSummary =
+      this.FREQUENCY_MAP[frequency as FrequencyOption] + this.ALCOHOL_UNITS_MAP[unitsOfAlcohol as UnitsOfAlcoholOption]
 
     if (alcoholSummary <= 4) return this.parseProblemLevel('NO_PROBLEMS')
     if (alcoholSummary <= 7) return this.parseProblemLevel('SOME_PROBLEMS')
@@ -370,12 +371,12 @@ export class RiskActuarialService {
     [FrequencyOption.MORE_THAN_FOUR_TIME_A_WEEK]: 4,
   }
 
-  private readonly ALCOHOL_UNITS_MAP: Record<AlcoholUnitsOption, number> = {
-    [AlcoholUnitsOption.ONE_TO_TWO_UNITS]: 0,
-    [AlcoholUnitsOption.THREE_TO_FOUR_UNITS]: 1,
-    [AlcoholUnitsOption.FIVE_TO_SIX_UNITS]: 2,
-    [AlcoholUnitsOption.SEVEN_TO_NINE_UNITS]: 3,
-    [AlcoholUnitsOption.TEN_OR_MORE_UNITS]: 4,
+  private readonly ALCOHOL_UNITS_MAP: Record<UnitsOfAlcoholOption, number> = {
+    [UnitsOfAlcoholOption.ONE_TO_TWO_UNITS]: 0,
+    [UnitsOfAlcoholOption.THREE_TO_FOUR_UNITS]: 1,
+    [UnitsOfAlcoholOption.FIVE_TO_SIX_UNITS]: 2,
+    [UnitsOfAlcoholOption.SEVEN_TO_NINE_UNITS]: 3,
+    [UnitsOfAlcoholOption.TEN_OR_MORE_UNITS]: 4,
   }
 
   private parseEmploymentStatus(employmentStatus: unknown): boolean | null {
