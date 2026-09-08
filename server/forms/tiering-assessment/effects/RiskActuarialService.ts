@@ -112,7 +112,7 @@ export class RiskActuarialService {
     return this.parseProblemLevel(
       hasEverDrunkAlcohol === 'YES_IN_LAST_THREE_MONTHS'
         ? context.getAnswer('alcohol-use-binge-drinking')
-        : context.getAnswer('binge-drinking'),
+        : context.getAnswer('binge_drinking'),
     )
   }
 
