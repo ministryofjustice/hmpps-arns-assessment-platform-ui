@@ -35,7 +35,7 @@
   "dependencies": {
     "@aws-sdk/client-sns": "3.1097.0",
     "@aws-sdk/client-sqs": "^3.863.0",
-    "@faker-js/faker": "10.2.0",
+    "@faker-js/faker": "10.5.0",
     "@flipt-io/flipt-client-js": "0.4.0",
     "@microsoft/applicationinsights-clickanalytics-js": "3.4.1",
     "@microsoft/applicationinsights-web": "3.4.1",
