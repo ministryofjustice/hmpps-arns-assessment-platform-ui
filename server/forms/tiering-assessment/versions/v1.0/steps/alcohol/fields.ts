@@ -1,137 +1,169 @@
-import { GovUKDetails, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKDetails } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { Step } from '../../constants/page'
+import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
+import { Question } from './constants/question'
+import { UnitsOfAlcoholOption, FrequencyOption } from './constants/option'
+import { commonContentFor } from '../../locales'
+import { CommonOption } from '../../constants/commonOption'
+import { contentFor } from './locales'
+import { AlcoholLocale } from './locales/en-gb'
+import { ContentFormatter } from '../../../../generators/htmlContentFormatters'
 
-export const currentAlcoholUseFrequencyField = GovUKRadioInput({
-  code: 'current-alcohol-use-frequency',
-  fieldset: {
-    legend: {
-      text: Format('How often has %1 drank alcohol in the last 3 months?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const formatter = new ContentFormatter<AlcoholLocale>(contentFor)
+
+export const currentAlcoholUseFrequencyQuestion = question({
+  content: {
+    code: Question.current_alcohol_use,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.current_alcohol_use.text', CaseData.Forename),
+    options: [
+      {
+        value: FrequencyOption.ONCE_A_MONTH,
+        text: contentFor('question.current_alcohol_use.option.ONCE_A_MONTH'),
+      },
+      {
+        value: FrequencyOption.TWO_TO_FOUR_TIMES_A_MONTH,
+        text: contentFor('question.current_alcohol_use.option.TWO_TO_FOUR_TIMES_A_MONTH'),
+      },
+      {
+        value: FrequencyOption.TWO_TO_THREE_TIMES_A_WEEK,
+        text: contentFor('question.current_alcohol_use.option.TWO_TO_THREE_TIMES_A_WEEK'),
+      },
+      {
+        value: FrequencyOption.MORE_THAN_FOUR_TIME_A_WEEK,
+        text: contentFor('question.current_alcohol_use.option.MORE_THAN_FOUR_TIME_A_WEEK'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    { value: '0', text: 'Once a month or less' },
-    { value: '1', text: '2 to 4 times a month' },
-    { value: '3', text: '2 to 3 times a week' },
-    { value: '4', text: 'More than 4 times a week' },
-    { divider: 'or' },
-    { value: 'unknown', text: 'Unknown' },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
-    }),
-  ],
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol.path }),
+  },
 })
 
-export const unitsOfAlcoholField = GovUKRadioInput({
-  code: 'units-of-alcohol',
-  fieldset: {
-    legend: {
-      text: Format('How many units of alcohol does %1 have on a typical day of drinking?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+export const unitsOfAlcoholQuestion = question({
+  content: {
+    code: Question.units_of_alcohol,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.units_of_alcohol.text', CaseData.Forename),
+    options: [
+      {
+        value: UnitsOfAlcoholOption.ONE_TO_TWO_UNITS,
+        text: contentFor('question.units_of_alcohol.option.ONE_TO_TWO_UNITS'),
+      },
+      {
+        value: UnitsOfAlcoholOption.THREE_TO_FOUR_UNITS,
+        text: contentFor('question.units_of_alcohol.option.THREE_TO_FOUR_UNITS'),
+      },
+      {
+        value: UnitsOfAlcoholOption.FIVE_TO_SIX_UNITS,
+        text: contentFor('question.units_of_alcohol.option.FIVE_TO_SIX_UNITS'),
+      },
+      {
+        value: UnitsOfAlcoholOption.SEVEN_TO_NINE_UNITS,
+        text: contentFor('question.units_of_alcohol.option.SEVEN_TO_NINE_UNITS'),
+      },
+      {
+        value: UnitsOfAlcoholOption.TEN_OR_MORE_UNITS,
+        text: contentFor('question.units_of_alcohol.option.TEN_OR_MORE_UNITS'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    { value: '0', text: '1 to 2 units' },
-    { value: '1', text: '3 to 4 units' },
-    { value: '2', text: '5 to 6 units' },
-    { value: '3', text: '7 to 9 units' },
-    { value: '4', text: '10 or more units' },
-    { divider: 'or' },
-    { value: 'unknown', text: 'Unknown' },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
-    }),
-  ],
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol.path }),
+  },
 })
 
-export const bingeDrinkingField = GovUKRadioInput({
-  code: 'alcohol-use-binge-drinking',
-  fieldset: {
-    legend: {
-      text: Format(
-        'Has %1 shown evidence of binge drinking or excessive alcohol use in the last 6 months?',
-        CaseData.Forename,
-      ),
-      classes: 'govuk-fieldset__legend--s',
-    },
+export const bingeDrinkingQuestion = question({
+  content: {
+    code: Question.alcohol_use_binge_drinking,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.alcohol_use_binge_drinking.text', CaseData.Forename),
+    options: [
+      {
+        value: CommonOption.no_problems,
+        text: contentFor('question.alcohol_use_binge_drinking.option.NO_PROBLEMS.text'),
+      },
+      {
+        value: CommonOption.some_problems,
+        text: contentFor('question.alcohol_use_binge_drinking.option.SOME_PROBLEMS.text'),
+        hint: contentFor('question.alcohol_use_binge_drinking.option.SOME_PROBLEMS.hint'),
+      },
+      {
+        value: CommonOption.significant_problems,
+        text: contentFor('question.alcohol_use_binge_drinking.option.SIGNIFICANT_PROBLEMS.text'),
+        hint: contentFor('question.alcohol_use_binge_drinking.option.SIGNIFICANT_PROBLEMS.hint'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    { value: 'NO_PROBLEMS', text: 'No evidence of binge drinking or excessive alcohol use' },
-    {
-      value: 'SOME_PROBLEMS',
-      text: 'Some evidence of binge drinking or excessive alcohol use',
-      hint: 'There is a pattern of alcohol use but has not caused any serious problems.',
-    },
-    {
-      value: 'SIGNIFICANT_PROBLEMS',
-      text: 'Evidence of binge drinking or excessive alcohol use',
-      hint: 'There is a detrimental effect on other areas of their life and is often directly related to offending.',
-    },
-    { divider: 'or' },
-    { value: 'unknown', text: 'Unknown' },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
-    }),
-  ],
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol.path }),
+  },
 })
 
 export const alcoholUnitsTable = GovUKDetails({
-  summaryText: 'Check how many units are consumed',
-  html: `
-<table class="govuk-table goal-summary-card__steps">
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header">Type of drink</th>
-      <th scope="col" class="govuk-table__header">Number of alcohol units</th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Single small shot of spirits (25ml, ABV 40%) For example, whisky or vodka.</td>
-      <td class="govuk-table__cell">1 unit</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Alcopop (275ml, ABV 5.5%)</td>
-      <td class="govuk-table__cell">1.5 units</td>
-    </tr>
-   <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Small glass of red/white/rosé wine (125ml, ABV 12%)</td>
-      <td class="govuk-table__cell">1.5 units</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Bottle of lager/beer/cider (330ml, ABV 5%)</td>
-      <td class="govuk-table__cell">1.7 units</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Can of lager/beer/cider (440ml, ABV 5.5%)</td>
-      <td class="govuk-table__cell">2.4 units</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Pint of lower-strength lager/beer/cider (ABV 3.6%)</td>
-      <td class="govuk-table__cell">2 units</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Standard glass of red/white/rosé wine (175ml, ABV 12%)</td>
-      <td class="govuk-table__cell">2.1 units</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Pint of higher-strength lager/beer/cider (ABV 5.2%)</td>
-      <td class="govuk-table__cell">3 units</td>
-    </tr>
-    <tr class="govuk-table__row">
-      <td class="govuk-table__cell">Large glass of red/white/rosé wine (250ml, ABV 12%)</td>
-      <td class="govuk-table__cell">3 units</td>
-    </tr>
-  </tbody>
-</table>`,
+  summaryText: contentFor('alcohol_units_table.summary_text'),
+  html: formatter.concat(
+    formatter.table(
+      formatter.thead(
+        formatter.tr(
+          formatter.th('alcohol_units_table.type_of_drink_header'),
+          formatter.th('alcohol_units_table.number_of_alcohol_units_header'),
+        ),
+      ),
+      formatter.tbody(
+        formatter.tr(
+          formatter.td('alcohol_units_table.single_small_shot_spirit'),
+          formatter.td(1, 'alcohol_units_table.unit'),
+        ),
+        formatter.tr(formatter.td('alcohol_units_table.alcopop'), formatter.td(1.5, 'alcohol_units_table.units')),
+        formatter.tr(
+          formatter.td('alcohol_units_table.small_glass_wine'),
+          formatter.td(1.5, 'alcohol_units_table.units'),
+        ),
+        formatter.tr(
+          formatter.td('alcohol_units_table.bottle_of_beer'),
+          formatter.td(1.7, 'alcohol_units_table.units'),
+        ),
+        formatter.tr(formatter.td('alcohol_units_table.can_of_beer'), formatter.td(2.4, 'alcohol_units_table.units')),
+        formatter.tr(
+          formatter.td('alcohol_units_table.pint_lower_strength_beer'),
+          formatter.td(2, 'alcohol_units_table.units'),
+        ),
+        formatter.tr(
+          formatter.td('alcohol_units_table.standard_glass_wine'),
+          formatter.td(2.1, 'alcohol_units_table.units'),
+        ),
+        formatter.tr(
+          formatter.td('alcohol_units_table.pint_higher_strength_beer'),
+          formatter.td(3, 'alcohol_units_table.units'),
+        ),
+        formatter.tr(
+          formatter.td('alcohol_units_table.larger_glass_wine'),
+          formatter.td(3, 'alcohol_units_table.units'),
+        ),
+      ),
+    ),
+  ),
 })
+
+export const alcoholFields = {
+  code: Step.alcohol.code,
+  questions: {
+    currentAlcoholUseFrequencyQuestion,
+    unitsOfAlcoholQuestion,
+    bingeDrinkingQuestion,
+  },
+}

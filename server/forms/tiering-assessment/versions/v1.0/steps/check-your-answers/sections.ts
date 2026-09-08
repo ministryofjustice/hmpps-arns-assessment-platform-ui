@@ -8,12 +8,12 @@ import { interviewFields } from '../interview-question/fields'
 import { offencesSinceSupervisionFields } from '../offences-since-supervision/fields'
 import { sexualOffendingFields } from '../sexual-offending/fields'
 import { employmentFields } from '../employment/fields'
-import { drugMisuseFields } from '../drug-misuse/fields'
 import { alcoholEverUsedFields } from '../alcohol-ever-used/fields'
+import { alcoholFields } from '../alcohol/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
-  config?: SectionDefinition
+  config?: SectionDefinition | SectionDefinition[]
 }
 
 export const checkYourAnswersSections: CheckYourAnswersSection[] = [
@@ -24,8 +24,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.interview_question, config: interviewFields },
   { step: Step.accommodation, config: accommodationFields },
   { step: Step.employment, config: employmentFields },
-  { step: Step.drug_misuse, config: drugMisuseFields },
-  { step: Step.alcohol_ever_used, config: alcoholEverUsedFields },
+  { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields] },
 ]
 
 export interface Answerable {
@@ -35,4 +34,8 @@ export interface Answerable {
 
 const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)
 
-export const questionsOf = ({ config }: CheckYourAnswersSection): Answerable[] => fieldsOf(config?.questions)
+export const questionsOf = ({ config }: CheckYourAnswersSection): Answerable[] => {
+  if (!config) return []
+  const configs = Array.isArray(config) ? config : [config]
+  return configs.flatMap(c => fieldsOf(c?.questions))
+}
