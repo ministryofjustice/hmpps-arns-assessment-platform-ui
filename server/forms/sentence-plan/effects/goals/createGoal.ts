@@ -13,6 +13,7 @@ import {
 import { GoalSnapshotData } from './goalSnapshot'
 import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
 import { areasOfNeed } from '../../versions/v1.0/constants'
+import { publishGoalsAddedEvent } from '../domain-events/publishGoalsDomainEvent'
 
 /**
  * Create a new goal
@@ -125,4 +126,6 @@ export const createGoal = (deps: SentencePlanEffectsDeps) => async (context: Sen
         ? (goalMatch.suggestedGoalTitle ?? '')
         : 'N/A',
   })
+
+  await publishGoalsAddedEvent(deps, context, addResult.collectionItemUuid)
 }

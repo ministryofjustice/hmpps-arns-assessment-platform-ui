@@ -67,6 +67,8 @@ export class HandoverBuilderInstance {
 
   private subject: Partial<HandoverSubjectDetails> = {}
 
+  private omitCrn = false
+
   private criminogenicNeeds: CriminogenicNeedsData | undefined
 
   private planVersion: number | undefined
@@ -145,6 +147,16 @@ export class HandoverBuilderInstance {
    */
   withSubject(subject: Partial<HandoverSubjectDetails>): this {
     this.subject = { ...this.subject, ...subject }
+
+    return this
+  }
+
+  /**
+   * Send the handover with no subject CRN. The handover service allows a null CRN but rejects an
+   * empty string, so the field is omitted entirely.
+   */
+  withoutCrn(): this {
+    this.omitCrn = true
 
     return this
   }
@@ -236,6 +248,10 @@ export class HandoverBuilderInstance {
         location: this.subject.location ?? 'COMMUNITY',
         sexuallyMotivatedOffenceHistory: this.sexuallyMotivatedOffenceHistory,
         ...this.subject,
+      }
+
+      if (this.omitCrn) {
+        delete (subjectDetails as Partial<HandoverSubjectDetails>).crn
       }
 
       const createRequest: CreateHandoverLinkRequest = {

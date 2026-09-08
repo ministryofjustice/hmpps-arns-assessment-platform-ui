@@ -9,7 +9,7 @@ import {
   viewAllNotesSection,
   addToPlanButton,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound } from '../../../guards'
 
 /**
@@ -54,7 +54,9 @@ export const viewInactiveGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_INACTIVE_GOAL, { goalStatus: Data('activeGoal.status') }),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_INACTIVE_GOAL, {
+          goalStatus: Data('activeGoal.status'),
+        }),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),

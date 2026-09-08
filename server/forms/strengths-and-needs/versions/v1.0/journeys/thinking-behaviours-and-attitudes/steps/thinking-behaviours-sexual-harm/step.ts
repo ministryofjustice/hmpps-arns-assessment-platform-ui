@@ -7,6 +7,7 @@ import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
 import { sectionPath } from '../../../../constants/path'
 import { thinkingBehavioursAttitudesSection } from '../../section'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const thinkingBehavioursSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursSexualHarm.path}`,
@@ -24,6 +25,13 @@ export const thinkingBehavioursSexualHarmStep = step({
     thinkingBehavioursAttitudesSection.questions.emotionalIntimacy.displayModes.field,
     saveButton,
   ],
+  onAccess: [
+    auditPageView(
+      SanAuditEvent.VIEW_QUESTION_PAGE,
+      Section.thinking_behaviours_and_attitudes,
+      Step.thinkingBehavioursSexualHarm,
+    ),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -32,6 +40,11 @@ export const thinkingBehavioursSexualHarmStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.thinking_behaviours_and_attitudes,
+            Step.thinkingBehavioursSexualHarm,
+          ),
         ],
         next: [
           redirect({

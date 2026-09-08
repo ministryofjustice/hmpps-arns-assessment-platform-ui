@@ -20,7 +20,7 @@ import {
   subNavigation,
   notificationBanners,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import { isOasysAccess } from '../../../../guards'
 
@@ -67,7 +67,7 @@ export const viewHistoricStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.loadHistoricPlan(),
         SentencePlanEffects.derivePlanLastUpdatedForHistoric(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_HISTORIC_PLAN, {
           planVersionTimestamp: Params('timestamp'),
         }),
       ],

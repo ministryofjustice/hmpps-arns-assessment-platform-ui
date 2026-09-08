@@ -1,6 +1,6 @@
 import { createForgePackage, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { sentencePlanV1Journey } from './versions/v1.0'
-import { AuditEvent, SentencePlanEffects, sentencePlanEffectRegistry } from './effects'
+import { CommonAuditEvent, SentencePlanEffects, sentencePlanEffectRegistry } from './effects'
 import { SentencePlanEffectsDeps } from './effects/types'
 import { sentencePlanComponents } from './components'
 import { sentencePlanTransformerRegistry } from './transformers'
@@ -19,7 +19,7 @@ const privacyScreenStep = createPrivacyScreen({
   loadEffects: [SentencePlanEffects.loadSessionData()],
   submitEffects: [
     SentencePlanEffects.setPrivacyAccepted(),
-    SentencePlanEffects.sendAuditEvent(AuditEvent.CONFIRM_PRIVACY_SCREEN),
+    SentencePlanEffects.sendAuditEvent(CommonAuditEvent.CONFIRM_PRIVACY_SCREEN),
   ],
   submitRedirectPath: 'v1.0/plan/overview',
   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',

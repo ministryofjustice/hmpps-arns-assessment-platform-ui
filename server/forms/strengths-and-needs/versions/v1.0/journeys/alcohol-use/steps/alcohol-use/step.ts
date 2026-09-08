@@ -7,6 +7,7 @@ import { Question } from '../../constants/question'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { CommonOption } from '../../../../constants/commonOption'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const alcoholUseStep = step({
   path: `/${Step.alcohol_use.path}`,
@@ -18,6 +19,7 @@ export const alcoholUseStep = step({
     },
   },
   blocks: [alcoholUseSection.questions.alcoholUse.displayModes.field, saveButton],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -26,6 +28,7 @@ export const alcoholUseStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use),
         ],
         next: [
           redirect({

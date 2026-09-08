@@ -6,6 +6,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const personalRelationshipsChildrenInformationStep = step({
   path: `/${Step.personal_relationships_children_information.path}`,
@@ -17,6 +18,13 @@ export const personalRelationshipsChildrenInformationStep = step({
     },
   },
   blocks: [personalRelationshipsCommunitySection.questions.childrenDetails.displayModes.field, saveButton],
+  onAccess: [
+    auditPageView(
+      SanAuditEvent.VIEW_QUESTION_PAGE,
+      Section.personal_relationships_and_community,
+      Step.personal_relationships_children_information,
+    ),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -25,6 +33,11 @@ export const personalRelationshipsChildrenInformationStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.personal_relationships_and_community,
+            Step.personal_relationships_children_information,
+          ),
         ],
         next: [
           redirect({

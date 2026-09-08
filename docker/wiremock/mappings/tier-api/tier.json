@@ -1,0 +1,64 @@
+{
+  "mappings": [
+    {
+      "name": "Tier API - X555555 - provisional tier (package not calculated yet)",
+      "request": {
+        "url": "/tier-api/v3/crn/X555555/tier",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "tierScore": "C2",
+          "calculationId": "8f0e2a25-4a4d-49a1-8a1e-000000000001",
+          "calculationDate": "2026-07-20T09:30:00Z",
+          "changeReason": "Initial calculation",
+          "provisional": true
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Tier API - X666666 - server error (tier unavailable)",
+      "request": {
+        "url": "/tier-api/v3/crn/X666666/tier",
+        "method": "GET"
+      },
+      "response": {
+        "status": 500
+      },
+      "priority": 10
+    },
+    {
+      "name": "Tier API - X777777 - server error with supervision package available (Unavailable tag)",
+      "request": {
+        "url": "/tier-api/v3/crn/X777777/tier",
+        "method": "GET"
+      },
+      "response": {
+        "status": 500
+      },
+      "priority": 10
+    },
+    {
+      "name": "Tier API - default confirmed tier",
+      "request": {
+        "urlPattern": "/tier-api/v3/crn/[A-Z0-9]+/tier",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "jsonBody": {
+          "tierScore": "B2",
+          "calculationId": "8f0e2a25-4a4d-49a1-8a1e-000000000000",
+          "calculationDate": "2026-07-01T09:30:00Z",
+          "changeReason": "Reassessment",
+          "provisional": false
+        }
+      },
+      "priority": 20
+    }
+  ]
+}

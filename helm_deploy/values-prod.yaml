@@ -36,6 +36,8 @@ generic-service:
     COORDINATOR_API_URL: 'https://arns-coordinator-api.hmpps.service.justice.gov.uk'
     DELIUS_API_URL: 'https://sentence-plan-and-delius.hmpps.service.justice.gov.uk'
     ARNS_API_URL: 'https://assess-risks-and-needs.hmpps.service.justice.gov.uk'
+    TIER_API_URL: 'https://hmpps-tier.hmpps.service.justice.gov.uk'
+    SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api.hmpps.service.justice.gov.uk'
     SAN_URL: 'https://strengths-based-needs-assessments.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
@@ -49,6 +51,10 @@ generic-service:
   autoscaling:
     minReplicas: 4
     maxReplicas: 8
+
+  namespace_secrets:
+    hmpps-domain-events-topic:
+      SNS_TOPIC_ARN: 'topic_arn'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui

@@ -9,7 +9,7 @@ import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 
 // Data sources:
 // - coordinator API (sanAssessmentData): section complete status, practitioner analysis details, motivation
-// - handover service (session): linked indicators (YES/NO), scores
+// - ARNS API (via resolveCriminogenicNeedsData): linked indicators (YES/NO), scores
 
 // Groups areas into:
 // - incompleteAreas: section not marked as complete
@@ -24,7 +24,6 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
 
   const assessmentUuid = context.getData('assessmentUuid')
   const session = context.getSession()
-  const handoverCriminogenicNeeds = session.handoverContext?.criminogenicNeedsData
   const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
   const crn = session.caseDetails?.crn
 
@@ -34,12 +33,10 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     return
   }
 
-  if (!isMpop && !handoverCriminogenicNeeds) {
-    logger.error(
-      { assessmentUuid, crn },
-      'Cannot load all areas assessment info: missing handover criminogenic needs data',
-    )
-    setErrorState(context)
+  // An OASys case with no CRN can't be looked up in ARNS; the eligibility guard already hides
+  // the tab, so this is just a backstop.
+  if (!isMpop && !crn) {
+    setUnavailableState(context)
     return
   }
 
@@ -48,6 +45,12 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
     const sanAssessmentData = entityAssessment.sanAssessmentData
 
     const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
+    if (!criminogenicNeedsData) {
+      logger.error({ assessmentUuid, crn }, 'Cannot load all areas assessment info: ARNS API returned no needs data')
+      setErrorState(context)
+      return
+    }
+
     const allAreas = transformAssessmentData(sanAssessmentData, criminogenicNeedsData)
 
     // group areas by scoring category

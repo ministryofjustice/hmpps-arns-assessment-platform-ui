@@ -1,15 +1,12 @@
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
-import { mapHandoverToCriminogenicNeeds } from '../../../../utils/handoverApiMapper'
 import { mapArnsNeedsToCriminogenicNeeds } from '../../../../utils/arnsApiMapper'
+import { mapArnsIntegrationNeedsToCriminogenicNeeds } from '../../../../utils/arnsIntegrationMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 /**
- * Resolves criminogenic needs from the correct source for the current user.
- *
- * MPoP users have no handover context, so their needs come from the ARNS API
- * (called with the user's own token so the endpoint's LAO checks run against them).
- * OASys users keep using the handover-supplied data. Both map to the same
- * CriminogenicNeedsData shape, so callers stay source-agnostic.
+ * MPoP users have a user token, so their needs come from the ARNS assessment endpoint (called as
+ * the user). OASys users have no user token, so theirs come from the ARNS integration endpoint
+ * (system token) keyed by the handover CRN. Both map to the same shape for source-agnostic callers.
  */
 export const resolveCriminogenicNeedsData = async (
   deps: SentencePlanEffectsDeps,
@@ -31,6 +28,14 @@ export const resolveCriminogenicNeedsData = async (
     return mapArnsNeedsToCriminogenicNeeds(needs)
   }
 
-  const handoverCriminogenicNeeds = context.getSession().handoverContext?.criminogenicNeedsData
-  return mapHandoverToCriminogenicNeeds(handoverCriminogenicNeeds)
+  // Only ever the handover-scoped CRN, never a route param, so a practitioner can only pull the
+  // case OASys authorised.
+  const handoverCrn = context.getSession().handoverContext?.subject?.crn
+  if (!handoverCrn) {
+    // Null rather than throw: a CRN-less OASys handover is expected, and callers treat null as "no data".
+    return null
+  }
+
+  const needs = await deps.arnsApi.getCriminogenicNeedsDetails(handoverCrn)
+  return mapArnsIntegrationNeedsToCriminogenicNeeds(needs)
 }

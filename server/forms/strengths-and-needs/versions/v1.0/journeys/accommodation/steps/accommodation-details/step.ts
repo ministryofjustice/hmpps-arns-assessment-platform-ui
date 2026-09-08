@@ -6,6 +6,7 @@ import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPath } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
+import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,
@@ -25,6 +26,7 @@ export const accommodationDetailsStep = step({
     accommodationSection.questions.changes.displayModes.field,
     saveButton,
   ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.accommodation_details)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
@@ -33,6 +35,7 @@ export const accommodationDetailsStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.accommodation_details),
         ],
         next: [redirect({ goto: Step.accommodation_summary.path })],
       },

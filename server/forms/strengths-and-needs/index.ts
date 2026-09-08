@@ -1,6 +1,6 @@
 import { access, createForgePackage, journey, redirect, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
-import { sanEffects, StrengthsAndNeedsEffects } from './effects'
+import { CommonAuditEvent, sanEffects, StrengthsAndNeedsEffects } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
 import { sanTransformers } from './transformers'
@@ -8,12 +8,15 @@ import { sanConditions } from './conditions'
 import { Section } from './versions/v1.0/constants/section'
 import { commonContentFor } from './versions/v1.0/locales'
 import { createPrivacyScreen } from '../shared'
-import { basePath, CaseData } from './versions/v1.0/constants/formVersion'
+import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
 import { sanGenerators } from './generators'
 
 const privacyScreenStep = createPrivacyScreen({
   loadEffects: [StrengthsAndNeedsEffects.loadSessionData()],
-  submitEffects: [StrengthsAndNeedsEffects.setPrivacyAccepted()],
+  submitEffects: [
+    StrengthsAndNeedsEffects.setPrivacyAccepted(),
+    StrengthsAndNeedsEffects.sendAuditEvent(CommonAuditEvent.CONFIRM_PRIVACY_SCREEN),
+  ],
   submitRedirectPath: `${Section.accommodation.sideNavHref}?resume=true`,
   alreadyAcceptedRedirectPath: `${Section.accommodation.sideNavHref}?resume=true`,
   template: 'strengths-and-needs/views/san-step',
@@ -41,7 +44,7 @@ const versionRedirectStep = step({
 export const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
   title: commonContentFor('strengths_and_needs'),
-  path: '/strengths-and-needs',
+  path: formRootPath,
   steps: [versionRedirectStep, privacyScreenStep],
   children: [strengthsAndNeedsV1Journey],
 })

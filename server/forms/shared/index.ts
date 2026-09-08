@@ -1,2 +1,5 @@
 export { createPrivacyScreen } from './privacy-screen'
 export type { PrivacyScreenConfig } from './privacy-screen'
+export { CommonAuditEvent } from './audit/auditEvents'
+export { sendFormAuditEvent } from './audit/sendFormAuditEvent'
+export type { AuditEffectContext } from './audit/sendFormAuditEvent'

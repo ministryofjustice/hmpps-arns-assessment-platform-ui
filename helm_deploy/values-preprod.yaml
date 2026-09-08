@@ -36,6 +36,8 @@ generic-service:
     COORDINATOR_API_URL: 'https://arns-coordinator-api-preprod.hmpps.service.justice.gov.uk'
     DELIUS_API_URL: 'https://sentence-plan-and-delius-preprod.hmpps.service.justice.gov.uk'
     ARNS_API_URL: 'https://assess-risks-and-needs-preprod.hmpps.service.justice.gov.uk'
+    TIER_API_URL: 'https://hmpps-tier-preprod.hmpps.service.justice.gov.uk'
+    SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-preprod.hmpps.service.justice.gov.uk'
     SAN_URL: 'https://strengths-based-needs-assessments-preprod.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://pp.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation-preprod.hmpps.service.justice.gov.uk'
@@ -46,6 +48,10 @@ generic-service:
     NATIONAL_ROLLOUT_FEEDBACK_URL: 'https://www.smartsurvey.co.uk/t/AAGPPN?service=ARNS%20Sentence%20Plan'
     SERVICE_NOW_FORM_URL: 'https://mojprod.service-now.com/moj_sp?id=sc_cat_item&sys_id=276572591bce4910a93242ead34bcb53'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+
+  namespace_secrets:
+    hmpps-domain-events-topic:
+      SNS_TOPIC_ARN: 'topic_arn'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui

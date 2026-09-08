@@ -1,0 +1,100 @@
+{
+  "name": "ARNS API - Get Criminogenic Needs Details (integration endpoint, OASys users)",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/arns-api/needs/[A-Z][0-9]{6}"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "assessmentVersion": "SAN",
+      "assessedOn": "{{now}}",
+      "needs": [
+        {
+          "section": "ACCOMMODATION",
+          "name": "Accommodation",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 6,
+          "oasysThreshold": { "standard": 1 }
+        },
+        {
+          "section": "EMPLOYMENT_AND_EDUCATION",
+          "name": "Employment and education",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 4,
+          "oasysThreshold": { "standard": 1 }
+        },
+        {
+          "section": "PERSONAL_RELATIONSHIPS_AND_COMMUNITY",
+          "name": "Personal relationships and community",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 6,
+          "oasysThreshold": { "standard": 1 }
+        },
+        {
+          "section": "LIFESTYLE_AND_ASSOCIATES",
+          "name": "Lifestyle and associates",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 4,
+          "oasysThreshold": { "standard": 1 }
+        },
+        {
+          "section": "DRUG_USE",
+          "name": "Drug use",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 6,
+          "oasysThreshold": { "standard": 0 }
+        },
+        {
+          "section": "ALCOHOL_USE",
+          "name": "Alcohol use",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 4,
+          "oasysThreshold": { "standard": 1 }
+        },
+        {
+          "section": "THINKING_ATTITUDES_AND_BEHAVIOUR",
+          "name": "Thinking, behaviours and attitudes",
+          "needStatus": "IDENTIFIED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "score": 8,
+          "oasysThreshold": { "standard": 2 }
+        },
+        {
+          "section": "FINANCE",
+          "name": "Finance",
+          "needStatus": "UNSCORED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "oasysThreshold": {}
+        },
+        {
+          "section": "HEALTH_AND_WELLBEING",
+          "name": "Health and wellbeing",
+          "needStatus": "UNSCORED_NEED",
+          "riskOfHarm": true,
+          "riskOfReoffending": true,
+          "oasysThreshold": {}
+        }
+      ]
+    },
+    "transformers": ["response-template"]
+  },
+  "priority": 50
+}

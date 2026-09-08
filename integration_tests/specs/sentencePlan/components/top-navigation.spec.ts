@@ -65,4 +65,26 @@ test.describe('Top navigation', () => {
 
     await expect(planOverviewPage.pageHeading).toHaveText("Test's plan")
   })
+
+  test('displays supervision package tab last and navigates to the supervision package page', async ({
+    page,
+    createSession,
+  }) => {
+    const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+    await navigateToSentencePlan(page, handoverLink)
+
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+    const supervisionPackageLink = planOverviewPage.primaryNavigation.getByRole('link', {
+      name: 'Supervision package',
+    })
+    await expect(supervisionPackageLink).toHaveAttribute('data-ai-id', 'supervision-package-primary-nav-link')
+    await expect(planOverviewPage.primaryNavigation.getByRole('listitem').last()).toContainText('Supervision package')
+
+    await supervisionPackageLink.click()
+
+    await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
+    await expect(page.getByRole('button', { name: 'Return to OASys' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Create goal' })).toBeVisible()
+  })
 })

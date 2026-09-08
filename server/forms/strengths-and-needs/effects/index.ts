@@ -10,6 +10,7 @@ import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
 import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
+import { sendAuditEvent } from './audit/sendAuditEvent'
 import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
@@ -25,8 +26,12 @@ export const StrengthsAndNeedsEffects = {
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
   saveCurrentAccommodationStepAnswers: sanEffects.register(
     'saveCurrentAccommodationStepAnswers',
     saveCurrentAccommodationStepAnswers,
   ),
 }
+
+export { CommonAuditEvent } from '../../shared'
+export { SanAuditEvent } from '../auditEvents'

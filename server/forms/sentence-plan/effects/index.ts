@@ -37,6 +37,7 @@ import { loadPreviousVersions } from './plan/loadPreviousVersions'
 import { loadHistoricPlan } from './plan/loadHistoricPlan'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { loadFeatureFlags } from './feature-flags/loadFeatureFlags'
+import { loadSupervisionPackage } from './supervision-package/loadSupervisionPackage'
 import { sendTelemetryEvent } from './telemetry/sendTelemetryEvent'
 import { SentencePlanEffectsDeps } from './types'
 
@@ -51,7 +52,8 @@ export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
 export { Nav } from './navigation'
 export type { NavigationReferrer } from './navigation'
-export { AuditEvent } from '../../../services/auditService'
+export { CommonAuditEvent } from '../../shared'
+export { SentencePlanAuditEvent } from '../auditEvents'
 
 /**
  * Sentence Plan Effects
@@ -117,4 +119,5 @@ export const SentencePlanEffects = {
   sendAuditEvent: sentencePlanEffectRegistry.register(sendAuditEvent),
   sendTelemetryEvent: sentencePlanEffectRegistry.register(sendTelemetryEvent),
   loadFeatureFlags: sentencePlanEffectRegistry.register(loadFeatureFlags),
+  loadSupervisionPackage: sentencePlanEffectRegistry.register(loadSupervisionPackage),
 }

@@ -6,7 +6,7 @@ import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
-import { basePath, formVersion } from './constants/formVersion'
+import { basePath, formRootPath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
@@ -65,7 +65,7 @@ export const strengthsAndNeedsV1Journey = journey({
     // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
     access({
       when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
-      next: [redirect({ goto: '/strengths-and-needs/privacy' })],
+      next: [redirect({ goto: `${formRootPath}/privacy` })],
     }),
   ],
   steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],

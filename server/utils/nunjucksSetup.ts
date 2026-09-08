@@ -2,7 +2,9 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { mpopNunjucksSetup } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
+import { DateTime } from 'luxon'
 import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
@@ -60,12 +62,16 @@ export default function nunjucksSetup(app?: express.Express) {
       'node_modules/@ministryofjustice/hmpps-forge/dist/moj-components/',
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
+      'node_modules/@ministryofjustice/hmpps-mpop-frontend-components-lib/dist/',
     ],
     {
       autoescape: true,
       express: app,
     },
   )
+
+  // Filters required by the MPoP components library's templates
+  mpopNunjucksSetup(njkEnv)
 
   njkEnv.addFilter('possessive', possessive)
 
@@ -112,9 +118,15 @@ export default function nunjucksSetup(app?: express.Express) {
     return true
   }
 
+  const displayDateForToday = (today: DateTime = DateTime.now()) => {
+    return today.toFormat('dd MMMM y')
+  }
+
   njkEnv.addFilter('mapNavItem', mapNavItem)
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
+
+  njkEnv.addGlobal('displayDateForToday', displayDateForToday)
 
   njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
     errors.map(error => ({

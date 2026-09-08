@@ -6,6 +6,7 @@ import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, get
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 import { snapshotFromGoal } from './goalSnapshot'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
+import { publishGoalsAddedEvent } from '../domain-events/publishGoalsDomainEvent'
 
 /**
  * Re-add a removed goal back to the plan
@@ -137,4 +138,6 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
       })
     }
   }
+
+  await publishGoalsAddedEvent(deps, context, activeGoal.uuid)
 }
