@@ -80,5 +80,9 @@ export const offenceAnalysisStep = step({
         ],
       },
     }),
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+    }),
   ],
 })
