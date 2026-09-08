@@ -1,5 +1,8 @@
 import { StrengthsAndNeedsContext } from '../types'
 
+// UUID v4 format: 8-4-4-4-12 hexadecimal digits
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 /**
  * Extracts mode and UUID from the URL path: /strengths-and-needs/v1.0/{mode}/{uuid}
  * Validates mode is 'edit', 'view', or 'view-historic', and stores both in session.
@@ -27,6 +30,13 @@ export const extractModeAndVersionUuidFromUrl = () => (context: StrengthsAndNeed
   // Validate mode
   if (mode !== 'edit' && mode !== 'view' && mode !== 'view-historic') {
     throw new Error(`Invalid mode parameter: ${mode}. Must be 'edit', 'view', or 'view-historic'`)
+  }
+
+  // Validate UUID structure
+  if (!UUID_REGEX.test(uuid)) {
+    throw new Error(
+      `Invalid UUID format: ${uuid}. Must be a valid UUID v4 (e.g., 550e8400-e29b-41d4-a716-446655440000)`,
+    )
   }
 
   session.mode = mode
