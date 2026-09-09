@@ -18,6 +18,7 @@ import { removeItemFromCollection } from './assessment/removeItemFromCollection'
 import { emptyCollection } from './assessment/emptyCollection'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
 import { sendAuditEvent } from './audit/sendAuditEvent'
+import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
 import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
 import { generateInitialFormUrl } from './session/generateInitialFormUrl'
 
@@ -47,6 +48,10 @@ export const StrengthsAndNeedsEffects = {
   ),
   generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
+  saveCurrentAccommodationStepAnswers: sanEffects.register(
+    'saveCurrentAccommodationStepAnswers',
+    saveCurrentAccommodationStepAnswers,
+  ),
 }
 
 export { CommonAuditEvent } from '../../shared'

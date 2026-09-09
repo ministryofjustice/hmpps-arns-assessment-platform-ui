@@ -39,6 +39,8 @@ export default class AbstractPage {
 
   readonly yesAlreadyMadePositiveChanges: Locator
 
+  readonly yes: Locator
+
   protected constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
@@ -63,6 +65,7 @@ export default class AbstractPage {
     this.yesAlreadyMadePositiveChanges = page.getByRole('radio', {
       name: 'I have already made positive changes and want to maintain them',
     })
+    this.yes = page.getByRole('radio', { name: 'Yes' })
   }
 
   async signOut() {
