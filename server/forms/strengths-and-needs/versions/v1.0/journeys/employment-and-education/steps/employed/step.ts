@@ -4,16 +4,17 @@ import { employmentEducationSection } from '../../section'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { createRoute } from '../../../../../../generators'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
   title: sectionPageTitle(Section.employment_and_education),
   view: {
     locals: {
-      backlink: sectionPath(Section.employment_and_education),
+      backlink: createRoute([...baseSanRoute, Section.employment_and_education.path]),
     },
   },
   blocks: [

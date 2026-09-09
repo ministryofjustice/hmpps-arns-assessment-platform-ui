@@ -3,7 +3,8 @@ import { test, TargetService } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
 import { expectSanAuditEvent, SanAuditEvent } from './helpers'
 
-const CURRENT_ACCOMMODATION = '/strengths-and-needs/v1.0/accommodation/current-accommodation'
+const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
+  `/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/current-accommodation`
 
 const settledAnswers = [
   { question: 'current_accommodation', value: 'SETTLED' },
@@ -24,7 +25,7 @@ test.describe('User changes an answer', () => {
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
-    await page.goto(CURRENT_ACCOMMODATION)
+    await page.goto(buildCurrentAccommodationUrl(sanAssessmentId))
 
     await page.getByLabel('Renting privately').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -49,7 +50,7 @@ test.describe('User changes an answer', () => {
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
-    await page.goto(CURRENT_ACCOMMODATION)
+    await page.goto(buildCurrentAccommodationUrl(sanAssessmentId))
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await expect(page).toHaveURL(/accommodation-details/)

@@ -4,8 +4,9 @@ import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
+import { createRoute } from '../../../../../../generators'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const accommodationDetailsStep = step({
@@ -13,7 +14,7 @@ export const accommodationDetailsStep = step({
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
-      backlink: sectionPath(Section.accommodation),
+      backlink: createRoute([...baseSanRoute, Section.accommodation.path]),
     },
   },
   blocks: [

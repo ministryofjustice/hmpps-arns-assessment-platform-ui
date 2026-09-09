@@ -41,10 +41,11 @@ export default class DrugUsePage extends StrengthsAndNeedsPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     url: string = 'drug-use',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${drugUse}/${url}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${drugUse}/${url}`)
     expect(page.url()).toContain(url)
   }
 

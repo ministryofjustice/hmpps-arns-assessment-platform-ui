@@ -6,10 +6,17 @@ import { buildPageTitle, checkAccessibility, sanPageTitles } from './sanUtils'
 test.describe('Thinking behaviours and attitudes Page', () => {
   test.describe('Questions', () => {
     test('shows thinking behaviours', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(page, handoverLink, baseURL)
+      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+      )
 
       const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
         page,
@@ -188,6 +195,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'thinking-behaviours-risk-of-sexual-harm',
       )
 
@@ -240,6 +248,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'thinking-behaviours-risk-of-sexual-harm',
       )
 
@@ -294,6 +303,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'thinking-behaviours-sexual-harm',
       )
 
@@ -377,6 +387,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'thinking-behaviours-summary',
       )
 
@@ -540,6 +551,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'thinking-behaviours-summary',
       )
 
@@ -598,6 +610,7 @@ test.describe('Thinking behaviours and attitudes Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'thinking-behaviours-summary#practitioner-analysis',
       )
       const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
@@ -614,10 +627,17 @@ test.describe('Thinking behaviours and attitudes Page', () => {
 
   test.describe('Validation', () => {
     test('validation thinking behaviours', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(page, handoverLink, baseURL)
+      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+      )
 
       const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
         page,
@@ -660,9 +680,16 @@ test.describe('Thinking behaviours and attitudes Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
 
-      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(page, handoverLink, baseURL)
+      await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+      )
       await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
         disableRules: ['aria-allowed-attr'],

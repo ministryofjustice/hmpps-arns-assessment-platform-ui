@@ -3,10 +3,10 @@ import { ForgeTestHarness, TestRenderResult } from '@ministryofjustice/hmpps-for
 import { GovUKBody, govukComponents, GovUKHeading, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { sanEffects } from '../../../../effects'
-import { sanGenerators } from '../../../../generators'
+import { sanGeneratorRegistry } from '../../../../generators'
 import { sanTransformers } from '../../../../transformers'
 import { sanConditions } from '../../../../conditions'
-import { setViewAllAnswersBacklink } from '../../../../effects/session/setViewAllAnswersBacklink'
+import { setDynamicBacklink } from '../../../../effects/session/setDynamicBacklink'
 import { Section, SectionComplete } from '../../constants/section'
 import { basePath } from '../../constants/formVersion'
 import { viewAllAnswersStep } from './step'
@@ -30,7 +30,7 @@ const renderPage = async (
 
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
-    .registerGlobalFunctions([testEffects, sanEffects, sanGenerators, sanTransformers, sanConditions], deps)
+    .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions], deps)
     .registerPackage({
       journey: journey({
         code: 'strengths-and-needs-v1',
@@ -227,17 +227,20 @@ describe('view all answers', () => {
   })
 
   describe('back link tests', () => {
-    const backlinkFor = async (previousPageUrl?: string) => {
+    const backlinkFor = async (previousPageUrl?: string, fallback = Section.accommodation.sideNavHref) => {
       const context = {
-        data: {} as Record<string, unknown>,
+        data: { dynamicBacklinkFallback: fallback } as Record<string, unknown>,
         getState: () => previousPageUrl,
+        getData(key: string) {
+          return this.data[key]
+        },
         setData(key: string, value: unknown) {
           this.data[key] = value
         },
       }
 
-      await setViewAllAnswersBacklink()(context as never, basePath, Section.accommodation.sideNavHref)
-      return context.data.viewAllAnswersBacklink
+      await setDynamicBacklink()(context as never, basePath)
+      return context.data.dynamicBacklink
     }
 
     it('returns to the page the user opened this one from', async () => {

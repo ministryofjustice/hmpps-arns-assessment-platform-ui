@@ -9,8 +9,9 @@ test.describe('Strengths and needs privacy screen', () => {
     page,
     createSession,
     strengthsAndNeedsBuilder,
+    baseURL,
   }) => {
-    const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await strengthsAndNeedsBuilder.fresh().save()
 
     await page.goto(handoverLink)
@@ -22,7 +23,7 @@ test.describe('Strengths and needs privacy screen', () => {
     await privacyPage.confirmAndContinue()
     await expect(page).toHaveURL(/current-accommodation/)
 
-    await page.goto('/strengths-and-needs/v1.0/accommodation/current-accommodation')
+    await page.goto(`${baseURL}/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/current-accommodation`)
     await expect(page).toHaveURL(/current-accommodation/)
   })
 

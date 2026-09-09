@@ -4,8 +4,9 @@ import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
+import { createRoute } from '../../../../../../generators'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 
 export const alcoholUseDetailsStep = step({
@@ -13,7 +14,7 @@ export const alcoholUseDetailsStep = step({
   title: sectionPageTitle(Section.alcohol_use),
   view: {
     locals: {
-      backlink: sectionPath(Section.alcohol_use),
+      backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),
     },
   },
   blocks: [

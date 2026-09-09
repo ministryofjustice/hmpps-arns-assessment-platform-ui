@@ -16,7 +16,7 @@ test.describe("Selects 'Mark as Complete' for each Criminogenic Needs section", 
     })
     await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(financeAnswers).save()
 
-    await walkToFinanceSummary(page, handoverLink)
+    await walkToFinanceSummary(page, handoverLink, sanAssessmentId)
     await markSectionComplete(page)
     await expect(page).toHaveURL(/finance-analysis/)
 

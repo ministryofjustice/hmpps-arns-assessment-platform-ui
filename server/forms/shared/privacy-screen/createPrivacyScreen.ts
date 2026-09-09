@@ -28,15 +28,17 @@ export interface PrivacyScreenConfig {
 
   /**
    * Path to redirect to after successful submission
+   * Can be a string or a Data expression (e.g., Data('privacyScreenRedirectPath'))
    * Relative to the current journey (e.g., 'v1.0/plan/overview')
    */
-  submitRedirectPath: string
+  submitRedirectPath: ResolvableString
 
   /**
    * Path to redirect to if privacy has already been accepted this session
+   * Can be a string or a Data expression (e.g., Data('privacyScreenRedirectPath'))
    * Relative to the current journey (e.g., 'v1.0/plan/overview')
    */
-  alreadyAcceptedRedirectPath: string
+  alreadyAcceptedRedirectPath: ResolvableString
 
   /**
    * Nunjucks template to use for rendering
@@ -52,9 +54,10 @@ export interface PrivacyScreenConfig {
 
   /**
    * URL for the HMPPS header service name link
+   * Can be a string or a Data expression
    * (e.g., '/forms/sentence-plan/v1.0/plan/overview')
    */
-  headerServiceNameLink: string
+  headerServiceNameLink: ResolvableString
 
   /**
    * Expression to resolve the person's forename for display in the privacy screen content

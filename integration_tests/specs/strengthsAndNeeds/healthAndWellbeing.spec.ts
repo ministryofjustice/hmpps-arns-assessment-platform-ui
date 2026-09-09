@@ -11,10 +11,12 @@ test.describe('Health and wellbeing Page', () => {
       strengthsAndNeedsBuilder,
       baseURL,
     }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL)
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 
@@ -62,7 +64,13 @@ test.describe('Health and wellbeing Page', () => {
           { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
         ]).save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'physical-mental-health',
+      )
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(
         page,
@@ -233,7 +241,7 @@ test.describe('Health and wellbeing Page', () => {
           },
         ]).save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL)
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 
@@ -255,7 +263,13 @@ test.describe('Health and wellbeing Page', () => {
           { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
         ]).save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'physical-mental-health',
+      )
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
 
@@ -302,7 +316,13 @@ test.describe('Health and wellbeing Page', () => {
           { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
         ]).save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'health-wellbeing-summary')
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'health-wellbeing-summary',
+      )
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
 
@@ -403,7 +423,13 @@ test.describe('Health and wellbeing Page', () => {
           { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
         ]).save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'health-wellbeing-summary')
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'health-wellbeing-summary',
+      )
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
 
@@ -442,6 +468,7 @@ test.describe('Health and wellbeing Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'health-wellbeing-summary#practitioner-analysis',
       )
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'strengths or protective factors')
@@ -455,9 +482,11 @@ test.describe('Health and wellbeing Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL)
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
       await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
         disableRules: ['aria-allowed-attr'],

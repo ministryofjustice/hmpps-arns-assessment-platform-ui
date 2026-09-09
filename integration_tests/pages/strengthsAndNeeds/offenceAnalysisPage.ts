@@ -73,10 +73,11 @@ export default class OffenceAnalysisPage extends AbstractPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    sanAssessmentId: string,
     url: string = 'offence-analysis',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${offence}/${url}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${offence}/${url}`)
     expect(page.url()).toContain(url)
   }
 

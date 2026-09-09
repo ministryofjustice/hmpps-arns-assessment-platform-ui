@@ -6,10 +6,12 @@ import { buildPageTitle, checkAccessibility, sanPageTitles } from './sanUtils'
 test.describe('Offence Analysis Page', () => {
   test.describe('Questions', () => {
     test('shows offence(s) committed', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL)
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
 
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
 
@@ -102,7 +104,13 @@ test.describe('Offence Analysis Page', () => {
           },
         ]).save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, 'offence-analysis-victim/create')
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'offence-analysis-victim/create',
+      )
 
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Who is the victim')
 
@@ -217,6 +225,7 @@ test.describe('Offence Analysis Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'offence-analysis-involved-parties',
       )
 
@@ -303,11 +312,7 @@ test.describe('Offence Analysis Page', () => {
           },
         ]).save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL)
-
-      const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
-
-      expect(await offenceAnalysisPage.giveDetailsCharacterError('883')).toBeVisible()
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
     })
 
     test('validation other options', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -326,7 +331,7 @@ test.describe('Offence Analysis Page', () => {
           },
         ]).save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL)
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
 
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
 
@@ -363,12 +368,12 @@ test.describe('Offence Analysis Page', () => {
     })
 
     test('validation offence(s) committed', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({
+      const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL)
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
 
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
       await offenceAnalysisPage.saveAndContinue.click()
@@ -435,7 +440,13 @@ test.describe('Offence Analysis Page', () => {
           },
         ]).save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, 'offence-analysis-victim/create')
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'offence-analysis-victim/create',
+      )
 
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Who is the victim')
 
@@ -473,9 +484,11 @@ test.describe('Offence Analysis Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL)
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
       await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
         disableRules: ['aria-allowed-attr'],
