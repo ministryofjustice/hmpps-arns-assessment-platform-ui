@@ -8,6 +8,8 @@ import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { questions, summary } from '../employment-education-summary/fields'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { analysisOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -40,6 +42,9 @@ export const employmentStatusAnalysisSummaryTab = HtmlBlock({
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
           panel: { blocks: [practitionerAnalysisSummary] },
+          visibleWhen: anyAnswered(
+            analysisOf({ section: Section.employment_and_education, config: employmentEducationSection }),
+          ),
         },
       ],
       visibleWhen: anyAnswered(questions),
