@@ -5,7 +5,7 @@ import { commonContentFor, stepTitle, StepDefinition } from '../../locales'
 import { Answerable, questionsOf, checkYourAnswersSections, CheckYourAnswersSection } from './sections'
 import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 
-const sectionHeader = (step: StepDefinition) =>
+const sectionHeader = (step: StepDefinition, visibleWhen?: ReturnType<typeof anyAnswered>) =>
   TemplateWrapper({
     template:
       '<div class="govuk-grid-row govuk-!-margin-top-8">' +
@@ -21,6 +21,7 @@ const sectionHeader = (step: StepDefinition) =>
         }),
       ],
     },
+    visibleWhen,
   })
 
 const anyAnswered = (fields: Answerable[]) =>
@@ -34,7 +35,12 @@ const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answera
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })
 
 const answersFor = (fields: Answerable[]) =>
-  GovUKSummaryList({ rows: fields.map(field => field.displayModes?.summaryRow ?? answerRow(field.content)) })
+  GovUKSummaryList({
+    rows: fields.map(field => ({
+      ...(field.displayModes?.summaryRow ?? answerRow(field.content)),
+      visibleWhen: anyAnswered([field]),
+    })),
+  })
 
 const blocksFor = (entry: CheckYourAnswersSection): BlockDefinition[] => {
   const questions = questionsOf(entry)
@@ -44,7 +50,7 @@ const blocksFor = (entry: CheckYourAnswersSection): BlockDefinition[] => {
   }
 
   return [
-    sectionHeader(entry.step),
+    sectionHeader(entry.step, anyAnswered(questions)),
     groupHeading(commonContentFor('summary'), questions),
     answersFor(questions),
   ] as BlockDefinition[]
