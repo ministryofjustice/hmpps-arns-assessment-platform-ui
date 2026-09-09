@@ -33,9 +33,7 @@ export interface Answerable {
   displayModes?: { summaryRow?: SummaryRow }
 }
 
-const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => {
-  return Object.values(fields)
-}
+const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)
 
 export const questionsOf = ({ config }: CheckYourAnswersSection): Answerable[] => {
   if (!config) return []
