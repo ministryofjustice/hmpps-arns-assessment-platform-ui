@@ -38,6 +38,8 @@ import { getDisplayTextForItems } from '../../../i18n'
 import { SANGenerators } from '../../../generators'
 import { isEditMode } from '../guards'
 
+const isPresent = <T>(value: T | null | undefined): value is T => value != null
+
 const characterCountValidationsOf = (content: QuestionContent, maxLength: number) => [
   ...(requiredValidationOf(content) ?? []),
   validation({
@@ -236,7 +238,13 @@ export const itemisedSummaryRow =
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { text: content.text },
-      visibleWhen: placement.visibleWhen,
+      visibleWhen: and(
+        [
+          placement.visibleWhen,
+          Answer(content.code).match(Condition.IsRequired()),
+          Answer(content.code).match(Condition.String.HasMinLength(1)),
+        ].filter(isPresent),
+      ),
       value: {
         blocks: [
           ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
@@ -265,7 +273,13 @@ export const checkboxSummaryRow =
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { html: content.text },
-      visibleWhen: placement.visibleWhen,
+      visibleWhen: and(
+        [
+          placement.visibleWhen,
+          Answer(content.code).match(Condition.IsRequired()),
+          Answer(content.code).match(Condition.String.HasMinLength(1)),
+        ].filter(isPresent),
+      ),
       value: {
         blocks: optionsOf(content).map(option =>
           GovUKBody({
@@ -286,7 +300,13 @@ export const textSummaryRow =
   (content: QuestionContent): SummaryRow =>
     definedPropsOf({
       key: { html: content.text },
-      visibleWhen: placement.visibleWhen,
+      visibleWhen: and(
+        [
+          placement.visibleWhen,
+          Answer(content.code).match(Condition.IsRequired()),
+          Answer(content.code).match(Condition.String.HasMinLength(1)),
+        ].filter(isPresent),
+      ),
       value: {
         blocks: [GovUKBody({ text: Answer(content.code) })],
       },

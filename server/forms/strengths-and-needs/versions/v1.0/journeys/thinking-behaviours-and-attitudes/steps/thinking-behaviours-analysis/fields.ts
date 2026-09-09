@@ -8,6 +8,8 @@ import { questions, summary } from '../thinking-behaviours-summary/fields'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { analysisOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -40,6 +42,12 @@ export const thinkingBehavioursAnalysisSummaryTab = HtmlBlock({
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
           panel: { blocks: [practitionerAnalysisSummary] },
+          visibleWhen: anyAnswered(
+            analysisOf({
+              section: Section.thinking_behaviours_and_attitudes,
+              config: thinkingBehavioursAttitudesSection,
+            }),
+          ),
         },
       ],
       visibleWhen: anyAnswered(questions),
