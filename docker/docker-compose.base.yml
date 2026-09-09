@@ -192,7 +192,7 @@ services:
       TIER_API_URL: http://wiremock:8080/tier-api
       SUPERVISION_PACKAGE_API_URL: http://wiremock:8080/supervision-package-api
       FEATURE_FLAG_URL: http://wiremock:8080/flipt
-      SAN_URL: http://localhost:3000
+      SAN_URL: http://localhost:3000/strengths-and-needs/v1.0
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
       HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:7070
       HMPPS_ARNS_HANDOVER_CLIENT_ID: sentence-plan

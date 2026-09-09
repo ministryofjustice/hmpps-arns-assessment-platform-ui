@@ -79,10 +79,11 @@ export default class HealthAndWellbeingPage extends StrengthsAndNeedsPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     url: string = 'health-wellbeing',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${health}/${url}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${health}/${url}`)
     expect(page.url()).toContain(url)
   }
 

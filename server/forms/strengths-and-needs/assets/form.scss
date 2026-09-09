@@ -2,6 +2,8 @@
 
 @import 'navigation/side-nav';
 
+@import '../components/modal/modal';
+
 @import 'print-cover-page/print-cover-page';
 
 .page-sub-heading {
@@ -109,7 +111,8 @@
     &__bottom {
       display: flex;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: start;
+      min-height: govuk-spacing(9);
 
       &__actions {
         display: flex;
@@ -121,4 +124,21 @@
       }
     }
   }
+}
+
+.button-as-link {
+  @include govuk-link-common;
+  @include govuk-font-size(19, $line-height: 1.6, $important: false);
+
+  background: none;
+  color: govuk-functional-colour(link);
+  border: none;
+  cursor: pointer;
+  outline: inherit;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.previous-version-status {
+  max-width: max-content;
 }

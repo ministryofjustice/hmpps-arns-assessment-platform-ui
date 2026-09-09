@@ -78,10 +78,11 @@ export default class PersonalRelationshipsAndCommunityPage extends StrengthsAndN
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     url: string = 'personal-relationships-children-information',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${personal}/${url}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${personal}/${url}`)
     expect(page.url()).toContain(url)
   }
 

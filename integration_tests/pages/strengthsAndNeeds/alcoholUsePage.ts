@@ -83,10 +83,11 @@ export default class AlcoholUsePage extends StrengthsAndNeedsPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     subPage: string = 'alcohol-use',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${alcohol}/${subPage}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${alcohol}/${subPage}`)
     expect(page.url()).toContain(subPage)
   }
 

@@ -99,10 +99,11 @@ export default class EmploymentAndEducationPage extends StrengthsAndNeedsPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     subPage: string = 'current-employment',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${employment}/${subPage}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${employment}/${subPage}`)
     expect(page.url()).toContain(subPage)
   }
 

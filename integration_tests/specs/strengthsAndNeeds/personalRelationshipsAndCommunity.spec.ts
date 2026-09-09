@@ -6,13 +6,16 @@ import { buildPageTitle, checkAccessibility, sanPageTitles } from './sanUtils'
 test.describe('Personal relationships and community Page', () => {
   test.describe('Questions', () => {
     test('shows any children', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
       await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
       )
 
       const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -54,6 +57,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships',
       )
 
@@ -103,6 +107,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community',
       )
 
@@ -200,6 +205,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
       )
 
       const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -250,6 +256,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships',
       )
 
@@ -395,6 +402,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community-summary',
       )
 
@@ -503,6 +511,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community-summary',
       )
 
@@ -567,6 +576,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community-summary#practitioner-analysis',
       )
       const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -583,12 +593,15 @@ test.describe('Personal relationships and community Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
 
       await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
       )
       await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330

@@ -1,7 +1,7 @@
 import { expect, Page } from '@playwright/test'
 import { Section, SectionComplete } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../support/fixtures'
-import { checkAccessibility, navigateToStrengthsAndNeeds } from './sanUtils'
+import { checkAccessibility, navigateToStrengthsAndNeeds, sanFormPath, v1Path, viewAllAnswers } from './sanUtils'
 
 type Answer = { question: string; value: string | string[] }
 
@@ -307,8 +307,6 @@ const statuses: Record<string, string> = {
   [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
 
-const viewAllAnswersPath = '/strengths-and-needs/v1.0/view-all-answers'
-
 const pageText = (page: Page) => page.locator('#main-content').innerText()
 
 test.describe('View all answers', () => {
@@ -317,6 +315,7 @@ test.describe('View all answers', () => {
     createSession,
     strengthsAndNeedsBuilder,
     assessmentBuilder,
+    baseURL,
   }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
 
@@ -339,7 +338,7 @@ test.describe('View all answers', () => {
     await withStatuses.save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, '/strengths-and-needs/')
-    await page.goto(viewAllAnswersPath)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
     // Every section, and a status against each.
     expect(page.getByText('Accommodation\nIncomplete', { exact: true })).toBeVisible()
@@ -385,11 +384,11 @@ test.describe('View all answers', () => {
     expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
-  test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+  test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(viewAllAnswersPath)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
     // Nothing answered: the sections, their statuses, and nothing else.
     expect(await pageText(page)).toContain('Accommodation\nIncomplete\nEmployment and education')
@@ -406,7 +405,7 @@ test.describe('View all answers', () => {
       ])
       .save()
 
-    await page.goto(viewAllAnswersPath)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
     expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
     expect(page.getByText('No accommodation', { exact: true })).toBeVisible()
@@ -419,10 +418,10 @@ test.describe('View all answers', () => {
 })
 
 test.describe('Accessibility', () => {
-  test('should be accessible', async ({ page, createSession }) => {
-    const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+  test('should be accessible', async ({ baseURL, createSession, page }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(viewAllAnswersPath)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
     await checkAccessibility(page, {
       // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
       disableRules: ['aria-allowed-attr'],
@@ -432,15 +431,16 @@ test.describe('Accessibility', () => {
 
 test.describe('View all answers print view', () => {
   test('shows the print cover page and header only when printing', async ({
+    baseURL,
     page,
     createSession,
     strengthsAndNeedsBuilder,
   }) => {
-    const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(viewAllAnswersPath)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
     const coverPage = page.locator('.pdf-cover-page')
     const printHeader = page.locator('.pdf-header')
@@ -466,7 +466,7 @@ test.describe('View all answers print view', () => {
       - paragraph: His Majesty's Prison & Probation Service
       - paragraph: Strengths and needs
       - paragraph: "Prepared by:"
-      - paragraph: 
+      - paragraph:
         - strong: Test User ${formattedDate}
     `)
 

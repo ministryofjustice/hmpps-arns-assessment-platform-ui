@@ -6,10 +6,11 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
-import { sectionPath } from '../../../../constants/path'
 import { CommonOption } from '../../../../constants/commonOption'
 import { thinkingBehavioursAttitudesSection } from '../../section'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { createRoute } from '../../../../../../generators'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { baseSanRoute } from '../../../../constants/path'
 
 export const thinkingBehavioursRiskOfSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursRiskOfSexualHarm.path}`,
@@ -19,7 +20,11 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
       sectionTitle: contentFor('step.thinking_behaviours_sexual_harm'),
       pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
       sectionTitleClass: 'govuk-body-l',
-      backlink: sectionPath(Section.thinking_behaviours_and_attitudes) + Step.thinkingBehaviours.path,
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.thinking_behaviours_and_attitudes.path,
+        Step.thinkingBehaviours.path,
+      ]),
     },
   },
   blocks: [thinkingBehavioursAttitudesSection.questions.riskSexualHarm.displayModes.field, saveButton],

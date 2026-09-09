@@ -9,11 +9,13 @@ const privacyStepPath = '/privacy'
 export const accommodation = '/accommodation'
 export const employment = '/employment-and-education'
 export const health = '/health-and-wellbeing'
+export const offence = '/offence-analysis'
 export const drugUse = '/drug-use'
 export const alcohol = '/alcohol-use'
 export const personal = '/personal-relationships-and-community'
 export const thinking = '/thinking-behaviours-and-attitudes'
 export const finances = '/finances'
+export const viewAllAnswers = '/view-all-answers'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
@@ -32,6 +34,7 @@ export const sanPageTitles = {
   thinking: 'Thinking, behaviours and attitudes',
   alcoholUse: 'Alcohol use',
   finances: 'Finances',
+  offenceAnalysis: 'Offence analysis',
 }
 
 export const sanServiceName = 'Strengths and needs'
@@ -84,7 +87,7 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  expectedPath = '/strengths-and-needs/v1.0/',
+  expectedPath: string = 'current-accommodation',
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)

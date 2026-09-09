@@ -6,10 +6,12 @@ import { buildPageTitle, checkAccessibility, sanPageTitles } from './sanUtils'
 test.describe('Drug use Page', () => {
   test.describe('Questions', () => {
     test('shows ever misused drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL)
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId)
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'ever misused drugs')
 
@@ -27,11 +29,11 @@ test.describe('Drug use Page', () => {
     })
 
     test('validation ever misused drugs', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({
+      const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL)
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId)
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'ever misused drugs')
 
@@ -51,7 +53,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_section_status', value: 'INCOMPLETE' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'add-drugs')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
@@ -107,7 +109,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_section_status', value: 'INCOMPLETE' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
 
@@ -136,7 +138,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_section_status', value: 'INCOMPLETE' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'add-drugs')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
@@ -157,7 +159,7 @@ test.describe('Drug use Page', () => {
           { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-details')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Not used in the last 6 months')
 
@@ -221,7 +223,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-history')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'use drugs?')
 
@@ -319,7 +321,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-history')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'use drugs?')
 
@@ -365,7 +367,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_section_status', value: 'INCOMPLETE' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
 
@@ -393,7 +395,7 @@ test.describe('Drug use Page', () => {
           { question: 'drugs_section_status', value: 'INCOMPLETE' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary')
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
 
@@ -415,7 +417,13 @@ test.describe('Drug use Page', () => {
           { question: 'drug_use_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
         ]).save()
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, 'drug-use-summary#practitioner-analysis')
+      await DrugUsePage.navigateToDrugUse(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'drug-use-summary#practitioner-analysis',
+      )
 
       const drugUsePage = await DrugUsePage.verifyOnPage(page, 'strengths or protective factors')
 
@@ -428,9 +436,11 @@ test.describe('Drug use Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
 
-      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL)
+      await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId)
       await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
         disableRules: ['aria-allowed-attr'],
