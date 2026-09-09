@@ -55,6 +55,10 @@ export const Step = {
     code: 'thinking_attitudes_and_behaviours',
     path: 'thinking-attitudes-and-behaviours',
   },
+  offence_analysis: {
+    code: 'offence_analysis',
+    path: 'offence-analysis',
+  },
   check_your_answers: {
     code: 'check_your_answers',
     path: 'check-your-answers',
