@@ -1,3 +1,4 @@
+import { Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { CommonOption } from '../../constants/commonOption'
@@ -33,7 +34,10 @@ export const bingeDrinkingQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.binge_drinking.path }),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.binge_drinking).match(Condition.IsRequired()),
+      changePath: Step.binge_drinking.path,
+    }),
   },
 })
 

@@ -10,6 +10,7 @@ import { sexualOffendingFields } from '../sexual-offending/fields'
 import { employmentFields } from '../employment/fields'
 import { alcoholEverUsedFields } from '../alcohol-ever-used/fields'
 import { alcoholFields } from '../alcohol/fields'
+import { bingeDrinkingFields } from '../binge-drinking/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -24,7 +25,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.interview_question, config: interviewFields },
   { step: Step.accommodation, config: accommodationFields },
   { step: Step.employment, config: employmentFields },
-  { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields] },
+  { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields, bingeDrinkingFields] },
 ]
 
 export interface Answerable {
@@ -32,7 +33,9 @@ export interface Answerable {
   displayModes?: { summaryRow?: SummaryRow }
 }
 
-const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)
+const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => {
+  return Object.values(fields)
+}
 
 export const questionsOf = ({ config }: CheckYourAnswersSection): Answerable[] => {
   if (!config) return []
