@@ -56,7 +56,7 @@ const healthConditions = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.health_wellbeing.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.health_wellbeing.path }),
   },
 })
 
@@ -90,7 +90,7 @@ const mentalHealthProblems = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.health_wellbeing.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.health_wellbeing.path }),
   },
 })
 
@@ -155,7 +155,7 @@ const psychiatricTreatment = question({
   displayModes: {
     field: radioField({ dependentWhen: mayHaveMentalHealthProblems, visibleWhen: mayHaveMentalHealthProblems }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.physical_mental_health.path,
+      changeHref: Step.physical_mental_health.path,
       visibleWhen: Answer(Question.health_wellbeing_psychiatric_treatment).match(Condition.IsRequired()),
     }),
   },
@@ -177,7 +177,7 @@ const headInjuries = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.physical_mental_health.path,
+      changeHref: Step.physical_mental_health.path,
       visibleWhen: Answer(Question.health_wellbeing_head_injury_or_illness).match(Condition.IsRequired()),
     }),
   },
@@ -202,7 +202,7 @@ const neurodiverseConditions = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -235,7 +235,7 @@ const impactOnLearningAbilities = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -262,7 +262,7 @@ const copeWithDayToDayLife = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -290,7 +290,7 @@ const attitudeTowardsSelf = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -310,7 +310,7 @@ const selfHarm = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -330,7 +330,7 @@ const suicidalTendencies = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -367,7 +367,7 @@ const feelingsAboutFuture = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -416,7 +416,7 @@ const helpedDuringPeriodsGoodHealthWellbeing = question({
   displayModes: {
     field: checkboxField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.physical_mental_health.path,
+      changeHref: Step.physical_mental_health.path,
       visibleWhen: Answer(Question.health_wellbeing_positive_factors).match(Condition.IsRequired()),
     }),
   },
@@ -472,7 +472,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.physical_mental_health.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.physical_mental_health.path }),
   },
 })
 
@@ -505,7 +505,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.health_wellbeing_summary.path,
+      changeHref: Step.health_wellbeing_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -537,7 +537,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.health_wellbeing_summary.path,
+      changeHref: Step.health_wellbeing_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -569,7 +569,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.health_wellbeing_summary.path,
+      changeHref: Step.health_wellbeing_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },

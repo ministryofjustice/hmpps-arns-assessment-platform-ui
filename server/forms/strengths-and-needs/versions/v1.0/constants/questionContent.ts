@@ -4,6 +4,7 @@ import {
   Answer,
   Condition,
   not,
+  or,
   PredicateExpr,
   Self,
   validation,
@@ -225,6 +226,20 @@ export const summaryRow =
       actions: createSummaryRowActions(placement.changeHref),
     })
 
+const selectedOrAnswered = (content: OptionedQuestionContent, placement: SummaryRowPlacement) =>
+  and(
+    [
+      placement.visibleWhen,
+      or(
+        and(
+          Answer(content.code).match(Condition.Array.IsArray()),
+          Answer(content.code).match(Condition.Array.ContainsAny(optionsOf(content).map(option => option.value))),
+        ),
+        Answer(content.code).match(Condition.IsRequired()),
+      ),
+    ].filter(isPresent),
+  )
+
 /**
  * Read-only summary row in the itemised style: every option label rendered
  * as its own conditionally-visible body (single- and multi-select alike),
@@ -234,17 +249,11 @@ export const summaryRow =
  * its step, and can carry the question text as visually hidden context.
  */
 export const itemisedSummaryRow =
-  (placement: { changePath: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
+  (placement: { changeHref: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { text: content.text },
-      visibleWhen: and(
-        [
-          placement.visibleWhen,
-          Answer(content.code).match(Condition.IsRequired()),
-          Answer(content.code).match(Condition.String.HasMinLength(1)),
-        ].filter(isPresent),
-      ),
+      visibleWhen: selectedOrAnswered(content, placement),
       value: {
         blocks: [
           ...getDisplayTextForItems(content.code, summaryItemsOf(content.options)),
@@ -255,7 +264,7 @@ export const itemisedSummaryRow =
         .then({
           items: [
             definedPropsOf({
-              href: `${placement.changePath}#${content.code}`,
+              href: `${placement.changeHref}#${content.code}`,
               text: commonContentFor('change'),
               visuallyHiddenText: placement.changeVisuallyHiddenText ? content.text : undefined,
             }),
@@ -273,13 +282,7 @@ export const checkboxSummaryRow =
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { html: content.text },
-      visibleWhen: and(
-        [
-          placement.visibleWhen,
-          Answer(content.code).match(Condition.IsRequired()),
-          Answer(content.code).match(Condition.String.HasMinLength(1)),
-        ].filter(isPresent),
-      ),
+      visibleWhen: selectedOrAnswered(content, placement),
       value: {
         blocks: optionsOf(content).map(option =>
           GovUKBody({
@@ -291,7 +294,7 @@ export const checkboxSummaryRow =
           }),
         ),
       },
-      actions: createSummaryRowActions(placement.changeHref),
+      actions: createSummaryRowActions(`${placement.changeHref}#${content.code}`),
     })
 
 /** Read-only summary row for a free-text question: the answer, verbatim. */
@@ -310,5 +313,5 @@ export const textSummaryRow =
       value: {
         blocks: [GovUKBody({ text: Answer(content.code) })],
       },
-      actions: createSummaryRowActions(placement.changeHref),
+      actions: createSummaryRowActions(`${placement.changeHref}#${content.code}`),
     })

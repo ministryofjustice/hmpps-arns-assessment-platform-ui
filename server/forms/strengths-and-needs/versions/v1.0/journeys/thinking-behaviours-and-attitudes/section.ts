@@ -47,7 +47,7 @@ const consequences = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -75,7 +75,7 @@ const stableBehaviour = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -104,7 +104,7 @@ const offendingActivities = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -134,7 +134,7 @@ const peerPressure = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -161,7 +161,7 @@ const problemSolving = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -188,7 +188,7 @@ const peoplesViews = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -215,7 +215,7 @@ const manipulativePredatoryBehaviour = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -243,7 +243,7 @@ const temperManagement = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -270,7 +270,7 @@ const violenceControllingBehaviour = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -297,7 +297,7 @@ const impulsiveBehaviour = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -328,7 +328,7 @@ const positiveAttitude = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -356,7 +356,7 @@ const hostileOrientation = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -383,7 +383,7 @@ const supervision = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -410,7 +410,7 @@ const criminalBehaviour = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -474,7 +474,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehaviours.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehaviours.path }),
   },
 })
 
@@ -507,7 +507,7 @@ const riskSexualHarm = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.thinkingBehavioursRiskOfSexualHarm.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinkingBehavioursRiskOfSexualHarm.path }),
   },
 })
 
@@ -537,7 +537,7 @@ const sexualPreoccupation = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.thinkingBehavioursSexualHarm.path,
+      changeHref: Step.thinkingBehavioursSexualHarm.path,
       visibleWhen: riskOfSexualHarmConfirmed,
     }),
   },
@@ -580,7 +580,7 @@ const offenceRelatedSexualInterest = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.thinkingBehavioursSexualHarm.path,
+      changeHref: Step.thinkingBehavioursSexualHarm.path,
       visibleWhen: riskOfSexualHarmConfirmed,
     }),
   },
@@ -611,7 +611,7 @@ const emotionalIntimacy = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.thinkingBehavioursSexualHarm.path,
+      changeHref: Step.thinkingBehavioursSexualHarm.path,
       visibleWhen: riskOfSexualHarmConfirmed,
     }),
   },
@@ -648,7 +648,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.thinkingBehavioursSummary.path,
+      changeHref: Step.thinkingBehavioursSummary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -682,7 +682,7 @@ const linkedToSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.thinkingBehavioursSummary.path,
+      changeHref: Step.thinkingBehavioursSummary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -716,7 +716,7 @@ const linkedToReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.thinkingBehavioursSummary.path,
+      changeHref: Step.thinkingBehavioursSummary.path,
       changeVisuallyHiddenText: true,
     }),
   },

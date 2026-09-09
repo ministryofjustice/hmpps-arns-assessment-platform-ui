@@ -83,7 +83,7 @@ const alcoholUse = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol_use.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.alcohol_use.path }),
   },
 })
 
@@ -118,7 +118,7 @@ const frequency = question({
       visibleWhen: drankInLastThreeMonths,
     }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankInLastThreeMonths,
     }),
   },
@@ -145,7 +145,7 @@ const units = question({
       visibleWhen: drankInLastThreeMonths,
     }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankInLastThreeMonths,
     }),
   },
@@ -172,7 +172,7 @@ const bingeDrinking = question({
       visibleWhen: drankInLastThreeMonths,
     }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankInLastThreeMonths,
     }),
   },
@@ -204,7 +204,7 @@ const evidenceOfExcessDrinking = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -231,7 +231,7 @@ const pastIssues = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -279,7 +279,7 @@ const reasonsForUse = question({
   displayModes: {
     field: checkboxField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -341,7 +341,7 @@ const impactOfUse = question({
   displayModes: {
     field: checkboxField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -369,7 +369,7 @@ const stoppedOrReduced = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -425,7 +425,7 @@ const changes = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_details.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -458,7 +458,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_summary.path,
+      changeHref: Step.alcohol_use_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -486,7 +486,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_summary.path,
+      changeHref: Step.alcohol_use_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -514,7 +514,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.alcohol_use_summary.path,
+      changeHref: Step.alcohol_use_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },

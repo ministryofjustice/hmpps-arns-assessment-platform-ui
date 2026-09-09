@@ -444,7 +444,7 @@ test.describe('Personal relationships and community Page', () => {
             - paragraph: test
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_challenges_intimate_relationship
           - term: What is Test's current relationship like with their family?
           - definition:
             - paragraph: Stable, supportive, positive and rewarding relationship

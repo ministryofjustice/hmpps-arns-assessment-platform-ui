@@ -12,7 +12,6 @@ import {
   radioField,
   revealedQuestion,
   SummaryRow,
-
 } from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { SANGenerators } from '../../../../generators'
@@ -293,7 +292,7 @@ const livingWith = question({
   displayModes: {
     field: checkboxField({ dependentWhen: livingWithApplies, visibleWhen: livingWithApplies }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_details.path,
+      changeHref: Step.accommodation_details.path,
       visibleWhen: livingWithApplies,
     }),
   },
@@ -329,7 +328,7 @@ const noAccommodationReason = question({
   displayModes: {
     field: checkboxField({ dependentWhen: noAccommodation, visibleWhen: noAccommodation }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_details.path,
+      changeHref: Step.accommodation_details.path,
       visibleWhen: noAccommodation,
     }),
   },
@@ -405,7 +404,7 @@ const suitableHousingLocation = question({
   displayModes: {
     field: radioField({ dependentWhen: hasAccommodation, visibleWhen: hasAccommodation }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_details.path,
+      changeHref: Step.accommodation_details.path,
       visibleWhen: hasAccommodation,
     }),
   },
@@ -475,7 +474,7 @@ const suitableHousing = question({
   displayModes: {
     field: radioField({ dependentWhen: hasAccommodation, visibleWhen: hasAccommodation }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_details.path,
+      changeHref: Step.accommodation_details.path,
       visibleWhen: hasAccommodation,
     }),
   },
@@ -550,7 +549,7 @@ const suitableHousingPlanned = question({
   displayModes: {
     field: radioField({ dependentWhen: suitableHousingPlannedApplies, visibleWhen: suitableHousingPlannedApplies }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_details.path,
+      changeHref: Step.accommodation_details.path,
       visibleWhen: Answer(Question.suitable_housing_planned).match(Condition.IsRequired()),
     }),
   },
@@ -606,7 +605,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.accommodation_details.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.accommodation_details.path }),
   },
 })
 
@@ -639,7 +638,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_summary.path,
+      changeHref: Step.accommodation_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -671,7 +670,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_summary.path,
+      changeHref: Step.accommodation_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -703,7 +702,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.accommodation_summary.path,
+      changeHref: Step.accommodation_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
