@@ -1,6 +1,6 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { continueButton, redirectToCheckYourAnswers } from '../../common'
+import { continueButton } from '../../common'
 import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 import { offencesSinceSupervisionFields } from './fields'
@@ -19,10 +19,11 @@ export const offencesSinceSupervisionStep = step({
       validate: true,
       onValid: {
         effects: [
+          TieringAssessmentEffects.CleardownAssessmentData(),
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirectToCheckYourAnswers, redirect({ goto: Step.interview_question.path })],
+        next: [redirect({ goto: Step.interview_question.path })],
       },
     }),
   ],

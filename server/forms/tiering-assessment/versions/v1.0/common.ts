@@ -1,14 +1,9 @@
-import { Condition, Conditional, Query, redirect } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Conditional, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 
 export const checkYourAnswersQuery = Query('returnTo').match(Condition.Equals('check-your-answers'))
 export const returnToAnswersQueryText = '?returnTo=check-your-answers'
-
-export const redirectToCheckYourAnswers = redirect({
-  when: checkYourAnswersQuery,
-  goto: 'check-your-answers',
-})
 
 export const continueButton = GovUKButton({
   text: Conditional({

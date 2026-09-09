@@ -13,7 +13,7 @@ import {
   sexualOffendingFields,
   victimStrangerDetailsField,
 } from './fields'
-import { continueButton, redirectToCheckYourAnswers } from '../../common'
+import { continueButton } from '../../common'
 import { stepTitle } from '../../locales'
 import { Step } from '../../constants/page'
 
@@ -51,10 +51,11 @@ export const sexualOffendingStep = step({
       validate: true,
       onValid: {
         effects: [
+          TieringAssessmentEffects.CleardownAssessmentData(),
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirectToCheckYourAnswers, redirect({ goto: Step.date_of_current_supervision.path })],
+        next: [redirect({ goto: Step.date_of_current_supervision.path })],
       },
     }),
   ],
