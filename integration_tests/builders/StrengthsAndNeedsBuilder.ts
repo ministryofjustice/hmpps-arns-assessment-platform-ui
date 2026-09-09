@@ -1,5 +1,5 @@
 import { AssessmentBuilder } from './AssessmentBuilder'
-import type { AssessmentBuilderInstance } from './AssessmentBuilder'
+import type { AssessmentBuilderInstance, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
 import type { AnswerConfig, CreatedAssessment } from './types'
 
@@ -65,6 +65,25 @@ export class StrengthsAndNeedsBuilderInstance {
    */
   withAnswers(answer: AnswerConfig[]): this {
     answer.forEach(a => this.answers.push(a))
+
+    return this
+  }
+
+  /**
+   * Add a collection to the assessment
+   */
+  withCollectionItems(name: string, answer: AnswerConfig[]): this {
+
+    this.assessmentBuilder.withCollection(name, (victimsCollection: CollectionBuilder) => {
+      victimsCollection.withItem((victim: CollectionItemBuilder) => {
+        answer.forEach(a => {
+          victim.withAnswer(a.question, a.value)
+        })
+        return victim
+      })
+
+      return victimsCollection
+    })
 
     return this
   }
