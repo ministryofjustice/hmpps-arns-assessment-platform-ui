@@ -13,6 +13,7 @@ import { alcoholEverUsedFields } from '../alcohol-ever-used/fields'
 import { alcoholFields } from '../alcohol/fields'
 import { bingeDrinkingFields } from '../binge-drinking/fields'
 import { drugUseFields } from '../drug-use/fields'
+import { personalRelationshipsFields } from '../personal-relationships-and-community/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -29,6 +30,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.employment, config: employmentFields },
   { step: Step.drug_misuse, config: [drugMisuseFields, drugUseFields] },
   { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields, bingeDrinkingFields] },
+  { step: Step.personal_relationships_and_community, config: personalRelationshipsFields },
 ]
 
 export interface Answerable {

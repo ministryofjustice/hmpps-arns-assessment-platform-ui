@@ -70,7 +70,7 @@ export class RiskActuarialService {
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
       excessiveAlcoholUse: this.getExcessiveAlcoholUseProblems(context),
       currentRelationshipStatus: this.getCurrentRelationshipStatus(context),
-      currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship-satisfaction')),
+      currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship_satisfaction')),
       regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular-offending-activities')),
       temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
@@ -83,7 +83,7 @@ export class RiskActuarialService {
 
   private getCurrentRelationshipStatus(context: TieringAssessmentEffectContext): CurrentRelationshipStatus | null {
     const whoAreTheyLivingWith = this.parseString(context.getAnswer('who_are_they_living_with'))
-    const importantRelationships = this.parseString(context.getAnswer('important-relationships'))
+    const importantRelationships = this.parseString(context.getAnswer('important_relationships'))
 
     const isInvalid = (val: string | null) => val === null || val === 'unknown'
 

@@ -348,8 +348,8 @@ describe('RiskActuarialService', () => {
       units_of_alcohol: 'FIVE_TO_SIX_UNITS',
       'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
       who_are_they_living_with: 'partner',
-      'important-relationships': 'partner',
-      'relationship-satisfaction': 'SOME_PROBLEMS',
+      important_relationships: 'PARTNER',
+      relationship_satisfaction: 'SOME_PROBLEMS',
       'regular-offending-activities': 'NO_PROBLEMS',
       'temper-control': 'SOME_PROBLEMS',
       'impulsivity-problems': 'NO_PROBLEMS',
@@ -700,10 +700,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" include "partner"', async () => {
+  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" and "important_relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
       who_are_they_living_with: 'partner,family',
-      'important-relationships': 'partner,family-members',
+      important_relationships: 'PARTNER,FAMILY_MEMBER',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -717,10 +717,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" not include "partner" and "important-relationships" include "partner"', async () => {
+  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" not include "partner" and "important_relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
       who_are_they_living_with: 'friends,family',
-      'important-relationships': 'partner,family',
+      important_relationships: 'PARTNER,FAMILY_MEMBERS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -734,10 +734,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" not include "partner"', async () => {
+  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who_are_they_living_with" and "important_relationships" not include "partner"', async () => {
     const answers: Record<string, unknown> = {
       who_are_they_living_with: 'friends,family',
-      'important-relationships': 'friends,family',
+      important_relationships: 'FRIENDS,FAMILY_MEMBERS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
