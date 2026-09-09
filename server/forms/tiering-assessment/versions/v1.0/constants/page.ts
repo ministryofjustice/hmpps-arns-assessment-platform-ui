@@ -51,6 +51,10 @@ export const Step = {
     code: 'personal_relationships_and_community',
     path: 'personal-relationships-and-community',
   },
+  thinking_attitudes_and_behaviours: {
+    code: 'thinking_attitudes_and_behaviours',
+    path: 'thinking-attitudes-and-behaviours',
+  },
   check_your_answers: {
     code: 'check_your_answers',
     path: 'check-your-answers',
