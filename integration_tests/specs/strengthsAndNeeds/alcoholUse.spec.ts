@@ -306,7 +306,7 @@ test.describe('Alcohol use Page', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-details')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'drunk alcohol in the last 3 months')
 

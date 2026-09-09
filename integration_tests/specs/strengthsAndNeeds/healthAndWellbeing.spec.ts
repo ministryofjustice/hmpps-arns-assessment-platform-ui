@@ -220,7 +220,13 @@ test.describe('Health and wellbeing Page', () => {
           { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
         ]).save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, 'physical-mental-health')
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'physical-mental-health',
+      )
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
 
@@ -250,10 +256,12 @@ test.describe('Health and wellbeing Page', () => {
       strengthsAndNeedsBuilder,
       baseURL,
     }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL)
+      await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
 
       const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 

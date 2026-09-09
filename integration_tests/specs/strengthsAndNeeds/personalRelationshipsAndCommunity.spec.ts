@@ -308,6 +308,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community',
       )
 
