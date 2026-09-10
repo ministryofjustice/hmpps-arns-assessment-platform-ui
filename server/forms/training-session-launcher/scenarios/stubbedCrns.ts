@@ -1,0 +1,22 @@
+/**
+ * CRNs that Wiremock answers for in local, dev and test instead of the real Delius, ARNS, Tier
+ * and Supervision Package APIs. Keep in step with the mapping files under
+ * helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings and docker/wiremock/mappings.
+ */
+export interface StubbedCrn {
+  crn: string
+  description: string
+}
+
+export const stubbedCrns: StubbedCrn[] = [
+  { crn: 'X444444', description: 'Tier B2 confirmed. Standard supervision phase, early engagement complete.' },
+  { crn: 'X222222', description: 'Tier B2 confirmed. Standard supervision phase, no appointments booked.' },
+  { crn: 'X333333', description: 'Tier B2 confirmed. In breach, on the OPD pathway.' },
+  { crn: 'X555555', description: 'Tier C2 provisional. Supervision package not calculated yet.' },
+  { crn: 'X666666', description: 'Tier and supervision package both unavailable (server error).' },
+  { crn: 'X888888', description: 'Tier B2 confirmed. No supervision package.' },
+]
+
+export function isStubbedCrn(crn: string | undefined): boolean {
+  return stubbedCrns.some(stubbedCrn => stubbedCrn.crn === crn)
+}
