@@ -337,7 +337,7 @@ export const goalsSection = TemplateWrapper({
                                     .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
                                 )
                                   .then('view-inactive-goal-inline-link')
-                                  .else('update-goal-inline-link'),
+                                  .else('update-goal-link'),
                               },
                             ],
                             isReadOnly: when(isReadOnlyAccess),
@@ -393,7 +393,7 @@ export const blankPlanOverviewContent = HtmlBlock({
         Format(
           `<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
       <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
-        <li><a href="../goal/new/select-area-of-need" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
+        <li><a href="../goal/new/select-area-of-need" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-overview-create-goal-link">create a goal with %1</a></li>
         <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state" data-ai-id="about-page-blank-plan-link">view information from %1's assessment</a></li>
       </ul>`,
           CaseData.Forename,
@@ -401,7 +401,7 @@ export const blankPlanOverviewContent = HtmlBlock({
       )
       .else(
         Format(
-          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/select-area-of-need" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a>.</p>',
+          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/select-area-of-need" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-overview-create-goal-link">create a goal with %1</a>.</p>',
           CaseData.Forename,
         ),
       ),
