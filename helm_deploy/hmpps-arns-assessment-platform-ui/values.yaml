@@ -131,3 +131,9 @@ gotenberg:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
+
+# Wiremock is a test-only proxy in front of Delius, ARNS, Tier and Supervision Package.
+# All of its configuration lives in values-dev.yaml and values-test.yaml. Keep turned off here
+# to avoid Wiremock being enabled in preprod and prod.
+wiremock:
+  enabled: false

@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to Tier API",
+  "request": {
+    "urlPattern": "/tier-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "{{systemValue type='ENVIRONMENT' key='WIREMOCK_TIER_API_URL'}}",
+    "proxyUrlPrefixToRemove": "/tier-api"
+  },
+  "priority": 100
+}

@@ -34,10 +34,10 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
     AAP_API_URL: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk'
     COORDINATOR_API_URL: 'https://arns-coordinator-api-dev.hmpps.service.justice.gov.uk'
-    DELIUS_API_URL: 'https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk'
-    ARNS_API_URL: 'https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk'
-    TIER_API_URL: 'https://hmpps-tier-dev.hmpps.service.justice.gov.uk'
-    SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-dev.hmpps.service.justice.gov.uk'
+    DELIUS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/delius'
+    ARNS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/arns-api'
+    TIER_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/tier-api'
+    SUPERVISION_PACKAGE_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/supervision-package-api'
     SAN_URL: 'https://strengths-based-needs-assessments-dev.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions'
     MPOP_URL: 'https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk'
@@ -54,6 +54,63 @@ generic-service:
   namespace_secrets:
     hmpps-domain-events-topic:
       SNS_TOPIC_ARN: 'topic_arn'
+
+# Delius, ARNS, Tier and Supervision Package calls go via Wiremock. Any CRN that is not one of the
+# magic CRNs in helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings is forwarded, unchanged,
+# to the real API at the URL below. Only the magic CRNs get a canned response.
+wiremock:
+  enabled: true
+  nameOverride: wiremock
+  replicaCount: 2
+
+  image:
+    repository: wiremock/wiremock
+    tag: 3.13.2
+    port: 8080
+
+  containerArgs: ['--global-response-templating']
+
+  ingress:
+    enabled: false
+
+  livenessProbe:
+    httpGet:
+      path: /__admin/health
+    periodSeconds: 30
+    initialDelaySeconds: 20
+
+  readinessProbe:
+    httpGet:
+      path: /__admin/health
+    periodSeconds: 20
+    initialDelaySeconds: 20
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  securityContext:
+    runAsUser: 1001
+    runAsNonRoot: true
+    privileged: false
+
+  volumes:
+    - name: mappings
+      configMap:
+        name: hmpps-arns-assessment-platform-ui-wiremock-mappings
+  volumeMounts:
+    - name: mappings
+      mountPath: /home/wiremock/mappings
+      readOnly: true
+  env:
+    WIREMOCK_DELIUS_URL: 'https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk'
+    WIREMOCK_ARNS_API_URL: 'https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk'
+    WIREMOCK_TIER_API_URL: 'https://hmpps-tier-dev.hmpps.service.justice.gov.uk'
+    WIREMOCK_SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-dev.hmpps.service.justice.gov.uk'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
