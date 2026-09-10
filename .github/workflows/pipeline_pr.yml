@@ -36,6 +36,38 @@ jobs:
     needs: [node_build]
     secrets: inherit
 
+  playwright_component_tests:
+    name: Component tests
+    runs-on: ubuntu-latest
+    needs: [node_build]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run setup
+        run: npm run setup
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Run Component Tests
+        run: npm run component-test
+
+      - name: Upload test results
+        if: '!cancelled()'
+        uses: actions/upload-artifact@v7
+        with:
+          name: test_playwright-component-results
+          path: |
+            test_results/
+
+      - name: Archive screenshots
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: component-test-screenshots
+          path: |
+            test_results/playwright/test-output/**/*
+
   build_docker:
     name: Build docker image
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2

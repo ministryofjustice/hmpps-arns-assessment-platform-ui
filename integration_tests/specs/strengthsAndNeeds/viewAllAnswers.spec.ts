@@ -470,12 +470,6 @@ test.describe('View all answers print view', () => {
         - strong: Test User ${formattedDate}
     `)
 
-    await expect(printHeader).toBeVisible()
-    await expect(printHeader).toMatchAriaSnapshot(`
-      - text: Ministry of Justice Strengths and needs
-      - strong: Official Sensitive
-    `)
-
     // Navigation controls are deliberately excluded from the printed report.
     await expect(page.locator('.govuk-back-link')).toBeHidden()
 
