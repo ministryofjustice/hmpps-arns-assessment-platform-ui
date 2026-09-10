@@ -75,7 +75,7 @@ export const planLastUpdatedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
     Data('lastUpdatedDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
     Data('lastUpdatedByName'),
   ),
@@ -89,7 +89,7 @@ export const planAgreedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
     CaseData.Forename,
     Data('latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
@@ -103,7 +103,7 @@ export const planCreatedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
     Data('latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
 })
