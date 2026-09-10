@@ -120,7 +120,6 @@ export const planStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.derivePlanLastUpdated(),
         SentencePlanEffects.loadNotifications('plan-overview'),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
       ],
       next: [
         redirect({
@@ -128,6 +127,10 @@ export const planStep = step({
           goto: 'overview?goalStatusTab=current',
         }),
       ],
+    }),
+    // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
+    access({
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') })],
     }),
   ],
   onSubmission: [
