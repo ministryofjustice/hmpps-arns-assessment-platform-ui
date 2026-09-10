@@ -248,17 +248,16 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [
                               {
-                                text: when(isAchievedGoal).then('View details').else('Update goal'),
-                                href: when(isAchievedGoal)
-                                  .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
-                                  .else(Format('../goal/%1/change-goal', Item().path('uuid'))),
-                                dataAiId: when(isAchievedGoal)
-                                  .then('view-inactive-goal-inline-link')
-                                  .else('update-draft-goal-inline-link'),
+                                text: isAchievedGoal ? 'View details' : 'Update goal',
+                                href: isAchievedGoal
+                                  ? Format('../goal/%1/view-inactive-goal', Item().path('uuid'))
+                                  : Format('../goal/%1/change-goal', Item().path('uuid')),
+                                dataAiId: isAchievedGoal ? 'view-inactive-goal-link' : 'update-draft-goal-link',
                               },
                               {
                                 text: 'Add or update steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
+                                dataAiId: 'add-or-update-goal-steps-link',
                                 hidden: or(
                                   isAchievedGoal,
                                   Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
@@ -267,6 +266,7 @@ export const goalsSection = TemplateWrapper({
                               {
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
+                                dataAiId: 'delete-goal-link',
                                 hidden: isAchievedGoal,
                               },
                             ],
