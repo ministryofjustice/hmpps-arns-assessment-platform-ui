@@ -67,14 +67,19 @@ export const viewHistoricStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.loadHistoricPlan(),
         SentencePlanEffects.derivePlanLastUpdatedForHistoric(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
-          planVersionTimestamp: Params('timestamp'),
-        }),
       ],
       next: [
         redirect({
           when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
           goto: Format('view-historic/%1?goalStatusTab=current', Params('timestamp')),
+        }),
+      ],
+    }),
+    // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
+    access({
+      effects: [
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
+          planVersionTimestamp: Params('timestamp'),
         }),
       ],
     }),

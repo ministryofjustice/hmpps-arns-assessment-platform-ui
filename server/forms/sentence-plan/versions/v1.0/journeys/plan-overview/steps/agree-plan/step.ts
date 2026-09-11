@@ -1,4 +1,5 @@
 import {
+  access,
   redirect,
   step,
   submit,
@@ -24,7 +25,12 @@ export const agreePlanStep = step({
         .else('overview?goalStatusTab=current'),
     },
   },
-  onAccess: [redirectToOverviewIfReadOnly()],
+  onAccess: [
+    redirectToOverviewIfReadOnly(),
+    access({
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT)],
+    }),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),
