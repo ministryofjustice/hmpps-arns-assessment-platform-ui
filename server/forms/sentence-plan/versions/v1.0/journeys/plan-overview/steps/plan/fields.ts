@@ -248,13 +248,15 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [
                               {
-                                text: isAchievedGoal ? 'View details' : 'Update goal',
-                                href: isAchievedGoal
-                                  ? Format('../goal/%1/view-inactive-goal', Item().path('uuid'))
-                                  : Format('../goal/%1/change-goal', Item().path('uuid')),
-                                dataAiId: isAchievedGoal
-                                  ? 'goal-summary-card-view-inactive-goal-link'
-                                  : 'goal-summary-card-update-draft-goal-link',
+                                text: when(isAchievedGoal)
+                                  .then('View details')
+                                  .else('Update goal'),
+                                href: when(isAchievedGoal)
+                                  .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
+                                  .else(Format('../goal/%1/change-goal', Item().path('uuid'))),
+                                dataAiId: when(isAchievedGoal)
+                                  .then('goal-summary-card-view-inactive-goal-link')
+                                  .else('goal-summary-card-update-draft-goal-link'),
                               },
                               {
                                 text: 'Add or update steps',
