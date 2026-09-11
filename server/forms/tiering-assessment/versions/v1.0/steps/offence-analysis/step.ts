@@ -2,6 +2,7 @@ import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/c
 import { evidenceOfDomesticAbuseField, offenceElementsField } from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { continueButton } from '../../common'
+import { Step } from '../../constants/page'
 
 export const offenceAnalysisStep = step({
   path: '/offence-analysis',
@@ -21,7 +22,7 @@ export const offenceAnalysisStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'previous-convictions' })],
+        next: [redirect({ goto: Step.previous_convictions.path })],
       },
     }),
   ],

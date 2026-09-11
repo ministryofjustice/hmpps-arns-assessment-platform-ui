@@ -25,6 +25,7 @@ export const english = {
     [Step.personal_relationships_and_community.code]: 'Personal relationships and community',
     [Step.thinking_attitudes_and_behaviours.code]: 'Thinking, attitudes and behaviours',
     [Step.offence_analysis.code]: 'Offence analysis',
+    [Step.previous_convictions.code]: 'Risk of serious harm',
     [Step.check_your_answers.code]: 'Check your answers',
     [Step.reoffending_predictor_scores.code]: 'Reoffending Predictor scores',
   },

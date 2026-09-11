@@ -59,6 +59,10 @@ export const Step = {
     code: 'offence_analysis',
     path: 'offence-analysis',
   },
+  previous_convictions: {
+    code: 'previous_convictions',
+    path: 'previous-convictions',
+  },
   check_your_answers: {
     code: 'check_your_answers',
     path: 'check-your-answers',
