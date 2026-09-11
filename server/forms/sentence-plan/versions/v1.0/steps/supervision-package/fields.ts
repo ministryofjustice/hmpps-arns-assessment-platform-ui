@@ -1,14 +1,17 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKWarningText } from '@ministryofjustice/hmpps-forge/govuk-components'
+import config from '../../../../../../config'
 import { SupervisionPackage } from '../../../../components'
 import { CaseData } from '../../constants'
-import { canDisplaySupervisionPackage, hasSupervisionPackageError } from '../../guards'
+import { canDisplaySupervisionPackage, hasSupervisionPackageError, isMpopAccess } from '../../guards'
 
 export const supervisionPackageSection = SupervisionPackage({
   visibleWhen: canDisplaySupervisionPackage,
   crn: CaseData.Crn,
   tierCalculation: Data('tierCalculation'),
   supervisionPackageDetails: Data('supervisionPackageDetails'),
+  oasysReviewHref: config.oasysReviewUrl,
+  openInNewTab: isMpopAccess,
 })
 
 // Shown on a load failure (500/503). We use our own message because MPoP's "unavailable"

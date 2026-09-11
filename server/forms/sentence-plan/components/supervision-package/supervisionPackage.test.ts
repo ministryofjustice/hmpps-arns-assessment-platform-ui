@@ -30,26 +30,27 @@ const supervisionPackageDetails = {
   context: {},
 } as unknown as SupervisionPackageDetails
 
+const OASYS_REVIEW_HREF = 'https://t2.oasys.service.justice.gov.uk'
+
 function createBlock(overrides: Partial<SupervisionPackage> = {}) {
   return {
     variant: 'supervisionPackage',
     crn: 'X123456',
     tierCalculation: undefined,
     supervisionPackageDetails: undefined,
+    oasysReviewHref: OASYS_REVIEW_HREF,
+    openInNewTab: false,
     ...overrides,
   } as unknown as ResolvedPropsOf<SupervisionPackage>
 }
 
 describe('buildParams()', () => {
   it('should spread the supervision package frontend context over the tier props when data is loaded', () => {
-    // Arrange
     const tierCalculation = { tierScore: 'B2', provisional: false, tag: { text: null, color: null } } as TierCalculation
     const block = createBlock({ tierCalculation, supervisionPackageDetails })
 
-    // Act
     const params = buildParams(block)
 
-    // Assert
     expect(params).toEqual({
       tierScore: 'B2',
       tag: { text: null, color: null },
@@ -61,22 +62,29 @@ describe('buildParams()', () => {
       createdAt: supervisionPackageDetails.createdAt,
       updatedAt: supervisionPackageDetails.updatedAt,
       context: supervisionPackageDetails.context,
+      oasysReviewHref: OASYS_REVIEW_HREF,
+      openInNewTab: false,
     })
   })
 
-  it('should pass the next appointment through as part of the package context', () => {
-    // Arrange
-    const block = createBlock({ supervisionPackageDetails })
+  it('should pass oasysReviewHref and openInNewTab through for the in-flight OASys review links', () => {
+    const block = createBlock({ openInNewTab: true })
 
-    // Act
     const params = buildParams(block)
 
-    // Assert
+    expect(params.oasysReviewHref).toBe(OASYS_REVIEW_HREF)
+    expect(params.openInNewTab).toBe(true)
+  })
+
+  it('should pass the next appointment through as part of the package context', () => {
+    const block = createBlock({ supervisionPackageDetails })
+
+    const params = buildParams(block)
+
     expect(params.nextAppointment).toEqual(supervisionPackageDetails.nextAppointment)
   })
 
   it('should omit the tier score when the calculation is MISSING', () => {
-    // Arrange
     const tierCalculation = {
       tierScore: 'MISSING',
       provisional: false,
@@ -84,22 +92,23 @@ describe('buildParams()', () => {
     } as TierCalculation
     const block = createBlock({ tierCalculation })
 
-    // Act
     const params = buildParams(block)
 
-    // Assert
     expect(params.tierScore).toBeUndefined()
     expect(params.tag).toEqual({ text: 'Missing', color: 'red' })
   })
 
-  it('should return only the tier and crn props when no package data is loaded', () => {
-    // Arrange
+  it('should return only the tier, crn and OASys review props when no package data is loaded', () => {
     const block = createBlock()
 
-    // Act
     const params = buildParams(block)
 
-    // Assert
-    expect(params).toEqual({ tierScore: undefined, tag: undefined, crn: 'X123456' })
+    expect(params).toEqual({
+      tierScore: undefined,
+      tag: undefined,
+      crn: 'X123456',
+      oasysReviewHref: OASYS_REVIEW_HREF,
+      openInNewTab: false,
+    })
   })
 })

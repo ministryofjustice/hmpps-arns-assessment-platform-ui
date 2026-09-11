@@ -1,6 +1,7 @@
 import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import {
   BlockDefinition,
+  ResolvableBoolean,
   ResolvableObject,
   ResolvableString,
   ResolvedPropsOf,
@@ -20,6 +21,12 @@ export interface SupervisionPackage extends BlockDefinition {
 
   /** Supervision package details loaded by the loadSupervisionPackage effect, or a Data() reference to them */
   supervisionPackageDetails: ResolvableObject<SupervisionPackageDetails> | undefined
+
+  /** OASys homepage the in-flight "start/complete a review" links point at */
+  oasysReviewHref: ResolvableString
+
+  /** True for MPoP-access users — the review link opens in a new tab and says so; false (OASYS access) keeps it in the same tab */
+  openInNewTab: ResolvableBoolean
 }
 
 /**
@@ -27,10 +34,10 @@ export interface SupervisionPackage extends BlockDefinition {
  * params.currentYear, params.earlyEngagement, params.nextAppointment), so the
  * frontend context is spread rather than nested under a key.
  *
- * Its link props (arrange appointment, next-appointment, tier history, NDelius)
- * are left unset on purpose: those routes only exist in MPoP, so supplying them
- * would send practitioners out of this service. With no next-appointment href
- * the appointment renders as plain text rather than a link.
+ * Most link props (arrange appointment, next-appointment, tier history, NDelius) are
+ * left unset on purpose: those routes only exist in MPoP, so supplying them would send
+ * practitioners out of this service. With no next-appointment href the appointment
+ * renders as plain text rather than a link. oasysReviewHref is the exception.
  */
 export function buildParams(props: ResolvedPropsOf<SupervisionPackage>) {
   const tierCalculation = props.tierCalculation as TierCalculation | undefined
@@ -41,6 +48,8 @@ export function buildParams(props: ResolvedPropsOf<SupervisionPackage>) {
     tag: tierCalculation?.tag,
     crn: props.crn,
     ...(supervisionPackageDetails ?? {}),
+    oasysReviewHref: props.oasysReviewHref,
+    openInNewTab: props.openInNewTab,
   }
 }
 

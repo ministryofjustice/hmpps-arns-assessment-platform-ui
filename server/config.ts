@@ -219,6 +219,11 @@ export default {
   nationalRolloutFeedbackUrl: get('NATIONAL_ROLLOUT_FEEDBACK_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
+  oasysReviewUrl: get(
+    'OASYS_REVIEW_URL',
+    'http://localhost:3000/training-session-launcher/sessions',
+    requiredInProduction,
+  ),
   mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
   featureFlagUrl: get('FEATURE_FLAG_URL', ''),

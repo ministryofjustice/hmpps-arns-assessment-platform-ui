@@ -41,6 +41,7 @@ generic-service:
     RISK_ACTUARIAL_API_URL: 'https://risk-actuarial-api.hmpps.service.justice.gov.uk'
     SAN_URL: 'https://strengths-based-needs-assessments.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
+    OASYS_REVIEW_URL: 'https://int.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
     FEATURE_FLAG_URL: 'https://feature-toggles.hmpps.service.justice.gov.uk'
     AUDIT_ENABLED: 'true'

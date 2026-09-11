@@ -22,6 +22,7 @@ generic-service:
     RISK_ACTUARIAL_API_URL: 'https://risk-actuarial-api-dev.hmpps.service.justice.gov.uk'
     SAN_URL: 'https://strengths-based-needs-assessments-dev.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://arns-assessment-platform-dev.hmpps.service.justice.gov.uk/training-session-launcher/sessions'
+    OASYS_REVIEW_URL: 'https://t2.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation-dev.hmpps.service.justice.gov.uk'
     FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'false'

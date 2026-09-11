@@ -211,6 +211,7 @@ services:
       NATIONAL_ROLLOUT_FEEDBACK_URL: national-rollout-feedback-url
       FEEDBACK_FORM_URL: private-beta-feedback-url
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      OASYS_REVIEW_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 
   aap-api:
