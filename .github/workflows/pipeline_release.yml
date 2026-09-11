@@ -56,7 +56,7 @@ jobs:
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
       docker_multiplatform: true
-      total_shards: 4
+      total_shards: 5
 
   publish_docker:
     name: Publish docker image

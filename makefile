@@ -8,6 +8,10 @@ SERVICE_NAME = aap-ui
 
 APP_VERSION ?= local
 
+## Must match the @playwright/test version in package-lock
+PLAYWRIGHT_VERSION = 1.60.0
+export PLAYWRIGHT_VERSION
+
 ## Compose files to stack on each other
 DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
 CI_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
@@ -51,6 +55,9 @@ e2e-ui: ## Run Playwright tests with UI mode (dev environment must be running).
 
 SHARD ?=
 export SHARD
+
+playwright-version: ## Prints the pinned Playwright version.
+	@echo ${PLAYWRIGHT_VERSION}
 
 e2e-ci: ## Run Playwright tests in Docker container (for CI).
 	@make install-node-modules
