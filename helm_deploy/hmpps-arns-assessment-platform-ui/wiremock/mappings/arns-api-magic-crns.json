@@ -3,7 +3,7 @@
     {
       "name": "ARNS API - criminogenic needs (MPoP users) - magic CRNs",
       "request": {
-        "urlPathPattern": "/arns-api/needs/crn/(X222222|X333333|X444444|X555555|X666666|X888888)",
+        "urlPathPattern": "/arns-api/needs/crn/(X222222|X333333|X444444|X666666|X888888|X555555|X111111)",
         "method": "GET"
       },
       "response": {
@@ -96,7 +96,7 @@
     {
       "name": "ARNS API - criminogenic needs details (OASys users) - magic CRNs",
       "request": {
-        "urlPathPattern": "/arns-api/needs/(X222222|X333333|X444444|X555555|X666666|X888888)",
+        "urlPathPattern": "/arns-api/needs/(X222222|X333333|X444444|X666666|X888888|X555555|X111111)",
         "method": "GET"
       },
       "response": {

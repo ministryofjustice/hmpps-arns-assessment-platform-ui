@@ -24,11 +24,9 @@ const logTierOutcome = (crn: string, httpStatus: number) => {
 /**
  * Loads the supervision package and tier for the person in session.
  *
- * The two calls are independent (settled separately) so a tier failure never blocks
- * the package — the component renders with an 'Unavailable' tier. The package call's
- * outcome is recorded as a status that drives the tab: a package object → 'success',
- * null (404 → no package yet) → 'unavailable' (tab hidden), a thrown error
- * (500/503) → 'error' (tab shown with an error message).
+ * The calls are settled separately so a tier failure never blocks the package.
+ * Package outcome: context object (200, incl. in-flight) → stored, guard decides the
+ * tab; null (404) → nothing stored, tab hidden; error (500/503) → error message.
  */
 export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const crn = context.getSession().caseDetails?.crn
@@ -53,8 +51,8 @@ export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (
     logger.error({ err: tierResult.reason, crn }, 'Failed to fetch tier details from MPoP Components API')
   }
 
-  // Only a failure needs to be recorded (it drives the error message). A missing package or a
-  // non-renderable phase hides the tab via the phase check, so nothing is needed for those.
+  // Record a failure (drives the error message) or store a returned context (guard reads its
+  // phase code). A null return is a genuine 404 — nothing to store, tab stays hidden.
   if (packageResult.status === 'rejected') {
     context.setData('supervisionPackageError', true)
     logger.error({ err: packageResult.reason, crn }, 'Failed to load supervision package')

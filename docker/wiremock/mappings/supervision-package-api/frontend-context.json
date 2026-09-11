@@ -191,13 +191,156 @@
       "priority": 10
     },
     {
-      "name": "Supervision Package API - X555555 - not calculated yet (pairs with the provisional tier)",
+      "name": "Supervision Package API - X555555 - in-flight, OASys review not started (currentPhase null)",
       "request": {
         "url": "/supervision-package-api/frontend-context/X555555",
         "method": "GET"
       },
       "response": {
-        "status": 404
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "currentPhase": null,
+          "earlyEngagement": {
+            "startDate": "2026-09-01",
+            "endDate": "2026-10-27",
+            "weeks": 8,
+            "completed": 1
+          },
+          "currentYear": {
+            "startDate": "2026-09-01",
+            "endDate": "2027-08-31",
+            "proRataFromDate": "2026-09-01",
+            "isFirstYear": true,
+            "appointments": {
+              "allowance": 24,
+              "scheduled": 0,
+              "completed": 0
+            }
+          },
+          "nextAppointment": null,
+          "createdAt": "2026-09-01T09:00:00Z",
+          "updatedAt": "2026-09-01T09:00:00Z",
+          "context": {
+            "name": {
+              "forename": "Buster",
+              "middleNames": "",
+              "surname": "Sanford"
+            },
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": {
+              "eligible": false,
+              "since": ""
+            },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2026-09-01",
+                "endDate": "2027-08-31",
+                "supervisionPackage": {
+                  "code": "SP1",
+                  "description": "Standard supervision"
+                },
+                "type": {
+                  "code": "SP",
+                  "description": "ORA Community Order",
+                  "isCustodial": false
+                },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Supervision Package API - X111111 - in-flight, OASys review started but not finished (SPNS)",
+      "request": {
+        "url": "/supervision-package-api/frontend-context/X111111",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "currentPhase": {
+            "supervisionPackage": {
+              "code": "SP1",
+              "description": "Standard supervision"
+            },
+            "phase": {
+              "code": "SPNS",
+              "description": "Not yet started"
+            },
+            "eventNumber": "1",
+            "startDate": "2026-09-01",
+            "endDate": "2027-08-31"
+          },
+          "earlyEngagement": {
+            "startDate": "2026-09-01",
+            "endDate": "2026-10-27",
+            "weeks": 8,
+            "completed": 4
+          },
+          "currentYear": {
+            "startDate": "2026-09-01",
+            "endDate": "2027-08-31",
+            "proRataFromDate": "2026-09-01",
+            "isFirstYear": true,
+            "appointments": {
+              "allowance": 24,
+              "scheduled": 1,
+              "completed": 2
+            }
+          },
+          "nextAppointment": null,
+          "createdAt": "2026-09-01T09:00:00Z",
+          "updatedAt": "2026-09-08T09:00:00Z",
+          "context": {
+            "name": {
+              "forename": "Buster",
+              "middleNames": "",
+              "surname": "Sanford"
+            },
+            "gender": "Male",
+            "integratedOffenderManagementRedRated": false,
+            "offenderPersonalDisorderPathway": false,
+            "intensiveSupervisionCourt": false,
+            "nationalSecurityDivision": false,
+            "finalThirdEligibility": {
+              "eligible": false,
+              "since": ""
+            },
+            "sentences": [
+              {
+                "eventNumber": "1",
+                "startDate": "2026-09-01",
+                "endDate": "2027-08-31",
+                "supervisionPackage": {
+                  "code": "SP1",
+                  "description": "Standard supervision"
+                },
+                "type": {
+                  "code": "SP",
+                  "description": "ORA Community Order",
+                  "isCustodial": false
+                },
+                "custody": null,
+                "inBreach": false
+              }
+            ]
+          }
+        }
       },
       "priority": 10
     },
