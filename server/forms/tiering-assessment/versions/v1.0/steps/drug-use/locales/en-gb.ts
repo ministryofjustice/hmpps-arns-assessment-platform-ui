@@ -10,7 +10,7 @@ export const english = {
       option: {
         [DrugOption.amphetamines]: 'Amphetamines',
         [DrugOption.benzodiazepines]: 'Benzodiazepines',
-        [DrugOption.cannabis]: 'cannabis',
+        [DrugOption.cannabis]: 'Cannabis',
         [DrugOption.cocaine_hydrochloride]: 'Cocaine hydrochloride',
         [DrugOption.crack_or_cocaine]: 'Crack or cocaine',
         [DrugOption.ecstasy]: 'Ecstasy (also known as MDMA)',
@@ -35,7 +35,7 @@ export const english = {
       },
     },
     [Question.other_drug_name]: {
-      text: 'other drug name',
+      text: 'Other drug name',
       char_count_validation: 'Must be 200 characters or less',
     },
     [Question.drug_radio]: {
