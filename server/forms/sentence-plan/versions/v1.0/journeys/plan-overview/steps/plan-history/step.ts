@@ -24,6 +24,9 @@ export const planHistoryStep = step({
   blocks: [subtitleText, agreementHistory],
   onAccess: [
     redirectToPrivacyUnlessAccepted(),
+    // Redirect to plan overview if plan is not yet agreed.
+    // The overview step defaults missing type to current.
+    redirectIfNotPostAgreement('overview'),
     access({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
@@ -31,8 +34,5 @@ export const planHistoryStep = step({
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_HISTORY),
       ],
     }),
-    // Redirect to plan overview if plan is not yet agreed.
-    // The overview step defaults missing type to current.
-    redirectIfNotPostAgreement('overview'),
   ],
 })
