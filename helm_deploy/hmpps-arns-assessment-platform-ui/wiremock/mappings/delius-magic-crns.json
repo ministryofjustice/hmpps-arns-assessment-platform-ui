@@ -3,7 +3,7 @@
     {
       "name": "Delius case-details - magic CRNs",
       "request": {
-        "urlPathPattern": "/delius/case-details/(X222222|X333333|X444444|X555555|X666666|X888888)",
+        "urlPathPattern": "/delius/case-details/(X222222|X333333|X444444|X666666|X888888|X555555|X111111)",
         "method": "GET"
       },
       "response": {
@@ -55,7 +55,7 @@
     {
       "name": "Delius user access - magic CRNs can be accessed by any user",
       "request": {
-        "urlPathPattern": "/delius/users/[^/]+/access/(X222222|X333333|X444444|X555555|X666666|X888888)",
+        "urlPathPattern": "/delius/users/[^/]+/access/(X222222|X333333|X444444|X666666|X888888|X555555|X111111)",
         "method": "GET"
       },
       "response": {

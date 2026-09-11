@@ -12,7 +12,6 @@ import { checkAccessibility, navigateToSentencePlan, sentencePlanV1URLs } from '
  */
 const CRN_IN_STANDARD_PHASE = 'X444444'
 const CRN_WITHOUT_PACKAGE = 'X888888'
-const CRN_WITH_PROVISIONAL_TIER = 'X555555'
 const CRN_WITHOUT_APPOINTMENTS = 'X222222'
 const CRN_IN_BREACH_WITH_OPD = 'X333333'
 const CRN_WITH_FAILING_TIER_ONLY = 'X777777'
@@ -110,7 +109,10 @@ test.describe('Supervision package', () => {
     await expect(page.getByText('No appointments scheduled')).toBeVisible()
   })
 
-  test('hides the tab when the person has no supervision package (AC3)', async ({ page, createSession }) => {
+  test('hides the tab and redirects when the person has no supervision package (AC3)', async ({
+    page,
+    createSession,
+  }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITHOUT_PACKAGE,
@@ -120,20 +122,6 @@ test.describe('Supervision package', () => {
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     // No package (404) is "not displayable", so the tab is hidden entirely.
-    await expect(planOverviewPage.primaryNavigation.getByRole('link', { name: 'Supervision package' })).toBeHidden()
-  })
-
-  test('hides the tab and redirects when the package is not in a renderable phase (AC3)', async ({
-    page,
-    createSession,
-  }) => {
-    const { handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
-      crn: CRN_WITH_PROVISIONAL_TIER,
-    })
-    await navigateToSentencePlan(page, handoverLink)
-
-    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await expect(planOverviewPage.primaryNavigation.getByRole('link', { name: 'Supervision package' })).toBeHidden()
 
     // Direct navigation is blocked too — it redirects to the plan overview, so the

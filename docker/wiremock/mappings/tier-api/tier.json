@@ -1,7 +1,18 @@
 {
   "mappings": [
     {
-      "name": "Tier API - X555555 - provisional tier (package not calculated yet)",
+      "name": "Tier API - X666666 - server error (tier unavailable)",
+      "request": {
+        "url": "/tier-api/v3/crn/X666666/tier",
+        "method": "GET"
+      },
+      "response": {
+        "status": 500
+      },
+      "priority": 10
+    },
+    {
+      "name": "Tier API - X555555 - provisional tier (in-flight, OASys review not started)",
       "request": {
         "url": "/tier-api/v3/crn/X555555/tier",
         "method": "GET"
@@ -16,17 +27,6 @@
           "changeReason": "Initial calculation",
           "provisional": true
         }
-      },
-      "priority": 10
-    },
-    {
-      "name": "Tier API - X666666 - server error (tier unavailable)",
-      "request": {
-        "url": "/tier-api/v3/crn/X666666/tier",
-        "method": "GET"
-      },
-      "response": {
-        "status": 500
       },
       "priority": 10
     },

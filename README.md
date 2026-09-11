@@ -55,16 +55,17 @@ The application will be available at http://localhost:3000 with HMPPS Auth runni
 
 In local, dev and test, calls to Delius, the ARNS API, the Tier API and the Supervision Package API go through Wiremock. The CRNs below get a canned response and never reach the real API. Every other CRN goes to the real API. Preprod and prod always call the real APIs.
 
-| CRN     | Tier              | Supervision package                    |
-| ------- | ----------------- | -------------------------------------- |
-| X444444 | B2 confirmed      | Standard phase, early engagement done  |
-| X222222 | B2 confirmed      | Standard phase, no appointments booked |
-| X333333 | B2 confirmed      | In breach, OPD pathway                 |
-| X555555 | C2 provisional    | Not calculated yet (404)               |
-| X666666 | Unavailable (500) | Unavailable (500)                      |
-| X888888 | B2 confirmed      | No package (404)                       |
+| CRN     | Tier              | Supervision package                           |
+| ------- | ----------------- | --------------------------------------------- |
+| X444444 | B2 confirmed      | Standard phase, early engagement done         |
+| X222222 | B2 confirmed      | Standard phase, no appointments booked        |
+| X333333 | B2 confirmed      | In breach, OPD pathway                        |
+| X666666 | Unavailable (500) | Unavailable (500)                             |
+| X888888 | B2 confirmed      | No package (404)                              |
+| X555555 | C2 provisional    | In-flight, OASys review not started           |
+| X111111 | B2 confirmed      | In-flight, OASys review started, not finished |
 
-All six share the same Delius case details and ARNS needs. To use one, customise any scenario in the Training Session Launcher and pick it under "Stubbed CRN" on the Subject Details tab.
+All seven share the same Delius case details and ARNS needs. To use one, customise any scenario in the Training Session Launcher and pick it under "Stubbed CRN" on the Subject Details tab.
 
 The list is kept in three places, keep them in step: `server/forms/training-session-launcher/scenarios/stubbedCrns.ts` (launcher picker), `helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings` (dev and test), `docker/wiremock/mappings` (local).
 
