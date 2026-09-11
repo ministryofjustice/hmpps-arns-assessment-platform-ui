@@ -118,21 +118,21 @@ export class RiskActuarialService {
   }
 
   private getDidOffenceInvolveCarryingOrUsingWeapon(context: TieringAssessmentEffectContext): boolean | null {
-    const offenceElements: string[] = context.getAnswer('offence-elements') as string[]
+    const offenceElements: string[] = context.getAnswer('offence_elements') as string[]
     if (offenceElements == null || offenceElements.length === 0) {
       return null
     }
-    return offenceElements.includes('weapon') || offenceElements.includes('violent-or-threat-of-violence-with-a-weapon')
+    return offenceElements.includes('WEAPON') || offenceElements.includes('VIOLENT_OR_THREAT_OF_VIOLENCE_WITH_A_WEAPON')
   }
 
   private getEvidenceOfDomesticAbuse(context: TieringAssessmentEffectContext): boolean | null {
-    const evidenceOfDomesticAbuse = this.parseBoolean(context.getAnswer('evidence-of-domestic-abuse'))
-    const domesticAbuseAgainst = this.parseString(context.getAnswer('domestic-abuse-against'))
+    const evidenceOfDomesticAbuse = this.parseBoolean(context.getAnswer('evidence_of_domestic_abuse'))
+    const domesticAbuseAgainst = this.parseString(context.getAnswer('domestic_abuse_against'))
 
     if (evidenceOfDomesticAbuse === null) return null
     if (!evidenceOfDomesticAbuse) return false
 
-    return domesticAbuseAgainst === 'family-member-and-intimate-partner' || domesticAbuseAgainst === 'intimate-partner'
+    return domesticAbuseAgainst === 'FAMILY_MEMBER_AND_INTIMATE_PARTNER' || domesticAbuseAgainst === 'INTIMATE_PARTNER'
   }
 
   private saveScoresToContext(context: TieringAssessmentEffectContext, riskScores: RiskScores): void {
