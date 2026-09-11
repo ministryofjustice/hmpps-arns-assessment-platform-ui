@@ -1,152 +1,147 @@
-import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
+import { CommonOption } from '../../constants/commonOption'
+import { commonContentFor } from '../../locales'
+import { Step } from '../../constants/page'
+import { Question } from './constants/question'
+import { contentFor } from './locales'
 
-export const regularOffendingActivitiesField = GovUKRadioInput({
-  code: 'regular-offending-activities',
-  fieldset: {
-    legend: {
-      text: Format('Does %1 engage in activities that could link to offending?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const regularOffendingActivitiesQuestion = question({
+  content: {
+    code: Question.regular_offending_activities,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.regular_offending_activities.text', CaseData.ForenamePossessive),
+    options: [
+      {
+        value: CommonOption.no_problems,
+        text: contentFor('question.regular_offending_activities.option.NO_PROBLEMS'),
+      },
+      {
+        value: CommonOption.some_problems,
+        text: contentFor('question.regular_offending_activities.option.SOME_PROBLEMS'),
+      },
+      {
+        value: CommonOption.significant_problems,
+        text: contentFor('question.regular_offending_activities.option.SIGNIFICANT_PROBLEMS'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    {
-      value: 'NO_PROBLEMS',
-      text: 'Engages in pro-social activities and understands the link to offending',
-    },
-    {
-      value: 'SOME_PROBLEMS',
-      text: 'Sometimes engages in activities linked to offending but recognises the link',
-    },
-    {
-      value: 'SIGNIFICANT_PROBLEMS',
-      text: 'Regularly engages in activities which encourage offending and is not aware or does not care about the link to offending',
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'unknown',
-      text: 'Unknown',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.regular_offending_activities).match(Condition.IsRequired()),
+      changePath: Step.thinking_attitudes_and_behaviours.path,
     }),
-  ],
+  },
 })
 
-export const temperControlField = GovUKRadioInput({
-  code: 'temper-control',
-  fieldset: {
-    legend: {
-      text: Format('Is %1 able to manage their temper?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const temperControlQuestion = question({
+  content: {
+    code: Question.temper_control,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.temper_control.text', CaseData.ForenamePossessive),
+    options: [
+      {
+        value: CommonOption.no_problems,
+        text: contentFor('question.temper_control.option.NO_PROBLEMS'),
+      },
+      {
+        value: CommonOption.some_problems,
+        text: contentFor('question.temper_control.option.SOME_PROBLEMS'),
+      },
+      {
+        value: CommonOption.significant_problems,
+        text: contentFor('question.temper_control.option.SIGNIFICANT_PROBLEMS'),
+        hint: contentFor('question.temper_control.option.hint'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    {
-      value: 'NO_PROBLEMS',
-      text: 'Yes, is able to manage their temper well',
-    },
-    {
-      value: 'SOME_PROBLEMS',
-      text: 'Sometimes has outbreaks of uncontrolled anger',
-    },
-    {
-      value: 'SIGNIFICANT_PROBLEMS',
-      text: 'No, easily loses their temper',
-      hint: 'This may result in a loss of control or inability to stay calm until they have expressed their anger',
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'unknown',
-      text: 'Unknown',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.temper_control).match(Condition.IsRequired()),
+      changePath: Step.thinking_attitudes_and_behaviours.path,
     }),
-  ],
+  },
 })
 
-export const impulsivityProblemsField = GovUKRadioInput({
-  code: 'impulsivity-problems',
-  fieldset: {
-    legend: {
-      text: Format('Does %1 act on impulse?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const impulsivityProblemsQuestion = question({
+  content: {
+    code: Question.impulsivity_problems,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.impulsivity_problems.text', CaseData.ForenamePossessive),
+    options: [
+      {
+        value: CommonOption.no_problems,
+        text: contentFor('question.impulsivity_problems.option.NO_PROBLEMS'),
+      },
+      {
+        value: CommonOption.some_problems,
+        text: contentFor('question.impulsivity_problems.option.SOME_PROBLEMS'),
+      },
+      {
+        value: CommonOption.significant_problems,
+        text: contentFor('question.impulsivity_problems.option.SIGNIFICANT_PROBLEMS'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    {
-      value: 'NO_PROBLEMS',
-      text: 'Considers all aspects of a situation before acting on or making a decision',
-    },
-    {
-      value: 'SOME_PROBLEMS',
-      text: 'Sometimes acts on impulse which causes problems',
-    },
-    {
-      value: 'SIGNIFICANT_PROBLEMS',
-      text: 'Acts on impulse which causes significant problems',
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'unknown',
-      text: 'Unknown',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.impulsivity_problems).match(Condition.IsRequired()),
+      changePath: Step.thinking_attitudes_and_behaviours.path,
     }),
-  ],
+  },
 })
 
-export const proCriminalAttitudesField = GovUKRadioInput({
-  code: 'pro-criminal-attitudes',
-  fieldset: {
-    legend: {
-      text: Format('Does %1 support or excuse criminal behaviour?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const proCriminalAttitudesQuestion = question({
+  content: {
+    code: Question.pro_criminal_attitudes,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.pro_criminal_attitudes.text', CaseData.ForenamePossessive),
+    options: [
+      {
+        value: CommonOption.no_problems,
+        text: contentFor('question.pro_criminal_attitudes.option.NO_PROBLEMS'),
+      },
+      {
+        value: CommonOption.some_problems,
+        text: contentFor('question.pro_criminal_attitudes.option.SOME_PROBLEMS'),
+      },
+      {
+        value: CommonOption.significant_problems,
+        text: contentFor('question.pro_criminal_attitudes.option.SIGNIFICANT_PROBLEMS'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    {
-      value: 'NO_PROBLEMS',
-      text: 'Does not support or excuse criminal behaviour',
-    },
-    {
-      value: 'SOME_PROBLEMS',
-      text: 'Sometimes supports or excuses criminal behaviour',
-    },
-    {
-      value: 'SIGNIFICANT_PROBLEMS',
-      text: 'Supports or excuses criminal behaviour or their pattern of behaviour and other evidence indicates this is an issue',
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'unknown',
-      text: 'Unknown',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.pro_criminal_attitudes).match(Condition.IsRequired()),
+      changePath: Step.thinking_attitudes_and_behaviours.path,
     }),
-  ],
+  },
 })
+
+export const thinkingAttitudesBehavioursFields = {
+  code: Step.thinking_attitudes_and_behaviours.code,
+  questions: {
+    regularOffendingActivitiesQuestion,
+    temperControlQuestion,
+    impulsivityProblemsQuestion,
+    proCriminalAttitudesQuestion,
+  },
+}

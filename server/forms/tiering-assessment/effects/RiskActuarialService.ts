@@ -16,6 +16,7 @@ import { convertToTitleCase, replaceUnderscoresWithSpaces } from '../../../utils
 import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
 import { CommonOption } from '../versions/v1.0/constants/commonOption'
 import { UnitsOfAlcoholOption, FrequencyOption } from '../versions/v1.0/steps/alcohol/constants/option'
+import { DrugOption } from '../versions/v1.0/steps/drug-use/constants/DrugOption'
 
 export class RiskActuarialService {
   constructor(private readonly riskActuarialApiClient: RiskActuarialApiClient) {}
@@ -50,30 +51,30 @@ export class RiskActuarialService {
       isCurrentOffenceAgainstVictimStranger: this.parseBoolean(context.getAnswer('victim_stranger')),
       suitabilityOfAccommodation: this.parseProblemLevel(context.getAnswer('suitability_of_accommodation')),
       isUnemployed: this.parseEmploymentStatus(context.getAnswer('is_unemployed')),
-      hasBenzodiazepinesUsage: this.parseDrugCheckbox('benzodiazepines', context),
-      hasCannabisUsage: this.parseDrugCheckbox('cannabis', context),
-      hasPowderCocaineUsage: this.parseDrugCheckbox('cocaine-hydrochloride', context),
-      hasCrackCocaineUsage: this.parseDrugCheckbox('crack-or-cocaine', context),
-      hasHallucinogensUsage: this.parseDrugCheckbox('hallucinogens', context),
-      hasHeroinUsage: this.parseDrugCheckbox('heroin', context),
-      hasMethadoneUsage: this.parseDrugCheckbox('methadone', context),
-      hasMisusedPrescriptionDrugUsage: this.parseDrugCheckbox('misused-prescribed-drugs', context),
-      hasOtherOpiateUsage: this.parseDrugCheckbox('other-opiates', context),
-      hasSolventsUsage: this.parseDrugCheckbox('solvents', context),
-      hasSpiceUsage: this.parseDrugCheckbox('spice', context),
-      hasSteroidsUsage: this.parseDrugCheckbox('steroids', context),
-      hasKetamineUsage: this.parseDrugCheckbox('ketamine', context),
-      hasOtherDrugsUsage: this.parseDrugCheckbox('other-drug', context),
+      hasBenzodiazepinesUsage: this.parseDrugCheckbox(DrugOption.benzodiazepines, context),
+      hasCannabisUsage: this.parseDrugCheckbox(DrugOption.cannabis, context),
+      hasPowderCocaineUsage: this.parseDrugCheckbox(DrugOption.cocaine_hydrochloride, context),
+      hasCrackCocaineUsage: this.parseDrugCheckbox(DrugOption.crack_or_cocaine, context),
+      hasHallucinogensUsage: this.parseDrugCheckbox(DrugOption.hallucinogens, context),
+      hasHeroinUsage: this.parseDrugCheckbox(DrugOption.heroin, context),
+      hasMethadoneUsage: this.parseDrugCheckbox(DrugOption.methadone, context),
+      hasMisusedPrescriptionDrugUsage: this.parseDrugCheckbox(DrugOption.misused_prescribed_drugs, context),
+      hasOtherOpiateUsage: this.parseDrugCheckbox(DrugOption.other_opiates, context),
+      hasSolventsUsage: this.parseDrugCheckbox(DrugOption.solvents, context),
+      hasSpiceUsage: this.parseDrugCheckbox(DrugOption.spice, context),
+      hasSteroidsUsage: this.parseDrugCheckbox(DrugOption.steroids, context),
+      hasKetamineUsage: this.parseDrugCheckbox(DrugOption.ketamine, context),
+      hasOtherDrugsUsage: this.parseDrugCheckbox(DrugOption.other_drugs, context),
       hasCurrentDrugMisuse: this.parseBoolean(context.getAnswer('ever_misused_drugs')),
-      motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation-to-tackle-drug-misuse')),
+      motivationToTackleDrugMisuse: this.parseMotivationLevel(context.getAnswer('motivation_to_tackle_drug_misuse')),
       currentAlcoholUseProblems: this.getCurrentAlcoholUseProblems(context),
       excessiveAlcoholUse: this.getExcessiveAlcoholUseProblems(context),
       currentRelationshipStatus: this.getCurrentRelationshipStatus(context),
-      currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship-satisfaction')),
-      regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular-offending-activities')),
-      temperControl: this.parseProblemLevel(context.getAnswer('temper-control')),
-      impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity-problems')),
-      proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro-criminal-attitudes')),
+      currentRelationshipWithPartner: this.parseProblemLevel(context.getAnswer('relationship_satisfaction')),
+      regularOffendingActivities: this.parseProblemLevel(context.getAnswer('regular_offending_activities')),
+      temperControl: this.parseProblemLevel(context.getAnswer('temper_control')),
+      impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity_problems')),
+      proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro_criminal_attitudes')),
       previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous-convictions') as string[]),
       didOffenceInvolveCarryingOrUsingWeapon: this.getDidOffenceInvolveCarryingOrUsingWeapon(context),
       evidenceOfDomesticAbuse: this.getEvidenceOfDomesticAbuse(context),
@@ -82,7 +83,7 @@ export class RiskActuarialService {
 
   private getCurrentRelationshipStatus(context: TieringAssessmentEffectContext): CurrentRelationshipStatus | null {
     const whoAreTheyLivingWith = this.parseString(context.getAnswer('who_are_they_living_with'))
-    const importantRelationships = this.parseString(context.getAnswer('important-relationships'))
+    const importantRelationships = this.parseString(context.getAnswer('important_relationships'))
 
     const isInvalid = (val: string | null) => val === null || val === 'unknown'
 
@@ -286,12 +287,12 @@ export class RiskActuarialService {
   }
 
   private parseDrugCheckbox(val: string, context: TieringAssessmentEffectContext): boolean | null {
-    const drugAnswers = context.getAnswer('drug-misuse') as string[] | null | undefined
+    const drugAnswers = context.getAnswer('drug_use') as string[] | null | undefined
 
     if (!drugAnswers) return null
     if (!drugAnswers.includes(val)) return false
 
-    const radioAnswer = context.getAnswer(`${val}-radio`)
+    const radioAnswer = context.getAnswer(`${val}_RADIO`)
 
     return this.parseBoolean(radioAnswer)
   }

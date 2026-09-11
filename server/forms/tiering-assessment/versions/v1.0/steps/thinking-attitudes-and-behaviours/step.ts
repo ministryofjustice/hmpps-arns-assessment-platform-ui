@@ -1,27 +1,24 @@
 import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import {
-  impulsivityProblemsField,
-  proCriminalAttitudesField,
-  regularOffendingActivitiesField,
-  temperControlField,
-} from './fields'
+import { thinkingAttitudesBehavioursFields } from './fields'
+import { continueButton } from '../../common'
+import { Step } from '../../constants/page'
+import { stepTitle } from '../../locales'
 
 export const thinkingAttitudesAndBehavioursStep = step({
-  path: '/thinking-attitudes-and-behaviours',
-  title: 'Thinking, attitudes and behaviours',
+  path: `/${Step.thinking_attitudes_and_behaviours.path}`,
+  title: stepTitle(Step.thinking_attitudes_and_behaviours),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
   blocks: [
-    regularOffendingActivitiesField,
-    temperControlField,
-    impulsivityProblemsField,
-    proCriminalAttitudesField,
-    GovUKButton({ text: 'Save and continue' }),
+    thinkingAttitudesBehavioursFields.questions.regularOffendingActivitiesQuestion.displayModes.field,
+    thinkingAttitudesBehavioursFields.questions.temperControlQuestion.displayModes.field,
+    thinkingAttitudesBehavioursFields.questions.impulsivityProblemsQuestion.displayModes.field,
+    thinkingAttitudesBehavioursFields.questions.proCriminalAttitudesQuestion.displayModes.field,
+    continueButton,
   ],
   onSubmission: [
     submit({
@@ -32,7 +29,7 @@ export const thinkingAttitudesAndBehavioursStep = step({
           TieringAssessmentEffects.CalculateRiskActuarialScores(),
           TieringAssessmentEffects.SaveAssessmentData(),
         ],
-        next: [redirect({ goto: 'offence-analysis' })],
+        next: [redirect({ goto: Step.offence_analysis.path })],
       },
     }),
   ],

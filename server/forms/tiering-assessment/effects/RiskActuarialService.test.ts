@@ -11,6 +11,7 @@ import {
 } from '../../../interfaces/risk-actuarial-api/riskScores'
 import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
 import { CommonOption } from '../versions/v1.0/constants/commonOption'
+import { DrugOption } from '../versions/v1.0/steps/drug-use/constants/DrugOption'
 
 describe('RiskActuarialService', () => {
   let service: RiskActuarialService
@@ -307,51 +308,52 @@ describe('RiskActuarialService', () => {
       victim_stranger: 'true',
       suitability_of_accommodation: 'SOME_PROBLEMS',
       is_unemployed: EmploymentOption.unemployed_not_actively_looking_for_work,
-      'drug-misuse': [
-        'amphetamines',
-        'benzodiazepines',
-        'cannabis',
-        'cocaine-hydrochloride',
-        'crack-or-cocaine',
-        'ecstasy',
-        'hallucinogens',
-        'heroin',
-        'ketamine',
-        'methadone',
-        'misused-prescribed-drugs',
-        'other-opiates',
-        'solvents',
-        'spice',
-        'steroids',
-        'other-drug',
+      drug_use: [
+        DrugOption.amphetamines,
+        DrugOption.benzodiazepines,
+        DrugOption.cannabis,
+        DrugOption.cocaine_hydrochloride,
+        DrugOption.crack_or_cocaine,
+        DrugOption.ecstasy,
+        DrugOption.hallucinogens,
+        DrugOption.heroin,
+        DrugOption.ketamine,
+        DrugOption.methadone,
+        DrugOption.misused_prescribed_drugs,
+        DrugOption.other_opiates,
+        DrugOption.solvents,
+        DrugOption.spice,
+        DrugOption.steroids,
+        DrugOption.other_drugs,
       ],
-      'benzodiazepines-radio': 'true',
-      'cannabis-radio': 'true',
-      'cocaine-hydrochloride-radio': 'true',
-      'crack-or-cocaine-radio': 'true',
-      'hallucinogens-radio': 'true',
-      'heroin-radio': 'true',
-      'methadone-radio': 'true',
-      'misused-prescribed-drugs-radio': 'true',
-      'other-opiates-radio': 'true',
-      'solvents-radio': 'true',
-      'spice-radio': 'true',
-      'steroids-radio': 'true',
-      'ketamine-radio': 'true',
-      'other-drug-radio': 'true',
+      BENZODIAZEPINES_RADIO: 'true',
+      CANNABIS_RADIO: 'true',
+      COCAINE_HYDROCHLORIDE_RADIO: 'true',
+      CRACK_OR_COCAINE_RADIO: 'true',
+      ECSTASY_RADIO: 'true',
+      HALLUCINOGENS_RADIO: 'true',
+      HEROIN_RADIO: 'true',
+      KETAMINE_RADIO: 'true',
+      METHADONE_RADIO: 'true',
+      MISUSED_PRESCRIBED_DRUGS_RADIO: 'true',
+      OTHER_OPIATES_RADIO: 'true',
+      SOLVENTS_RADIO: 'true',
+      SPICE_RADIO: 'true',
+      STEROIDS_RADIO: 'true',
+      OTHER_DRUGS_RADIO: 'true',
       ever_misused_drugs: 'YES',
-      'motivation-to-tackle-drug-misuse': 'PARTIAL_MOTIVATION',
+      motivation_to_tackle_drug_misuse: 'PARTIAL_MOTIVATION',
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
       units_of_alcohol: 'FIVE_TO_SIX_UNITS',
       'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
       who_are_they_living_with: 'partner',
-      'important-relationships': 'partner',
-      'relationship-satisfaction': 'SOME_PROBLEMS',
-      'regular-offending-activities': 'NO_PROBLEMS',
-      'temper-control': 'SOME_PROBLEMS',
-      'impulsivity-problems': 'NO_PROBLEMS',
-      'pro-criminal-attitudes': 'SIGNIFICANT_PROBLEMS',
+      important_relationships: 'PARTNER',
+      relationship_satisfaction: 'SOME_PROBLEMS',
+      regular_offending_activities: 'NO_PROBLEMS',
+      temper_control: 'SOME_PROBLEMS',
+      impulsivity_problems: 'NO_PROBLEMS',
+      pro_criminal_attitudes: 'SIGNIFICANT_PROBLEMS',
       'previous-convictions': ['FIREARMS', 'ROBBERY', 'WEAPON'],
       'offence-elements': 'domestic-abuse,excessive-violence-or-sadistic-violence,weapon',
       'evidence-of-domestic-abuse': 'true',
@@ -698,10 +700,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" include "partner"', async () => {
+  it('should parse IN_RELATIONSHIP_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" and "important_relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
       who_are_they_living_with: 'partner,family',
-      'important-relationships': 'partner,family-members',
+      important_relationships: 'PARTNER,FAMILY_MEMBER',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -715,10 +717,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" not include "partner" and "important-relationships" include "partner"', async () => {
+  it('should parse IN_RELATIONSHIP_NOT_LIVING_TOGETHER for currentRelationshipStatus if "who_are_they_living_with" not include "partner" and "important_relationships" include "partner"', async () => {
     const answers: Record<string, unknown> = {
       who_are_they_living_with: 'friends,family',
-      'important-relationships': 'partner,family',
+      important_relationships: 'PARTNER,FAMILY_MEMBERS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -732,10 +734,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who_are_they_living_with" and "important-relationships" not include "partner"', async () => {
+  it('should parse NOT_IN_RELATIONSHIP for currentRelationshipStatus if "who_are_they_living_with" and "important_relationships" not include "partner"', async () => {
     const answers: Record<string, unknown> = {
       who_are_they_living_with: 'friends,family',
-      'important-relationships': 'friends,family',
+      important_relationships: 'FRIENDS,FAMILY_MEMBERS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1185,10 +1187,10 @@ describe('RiskActuarialService', () => {
 
   it('should return false for items not found in drug-misuse checkbox, but follow boolean or null logic for selected items with radio selected', async () => {
     const answers: Record<string, unknown> = {
-      'drug-misuse': ['benzodiazepines', 'cannabis', 'cocaine-hydrochloride'],
-      'benzodiazepines-radio': true,
-      'cannabis-radio': false,
-      'cocaine-hydrochloride-radio': 'unknown',
+      drug_use: [DrugOption.benzodiazepines, DrugOption.cannabis, DrugOption.cocaine_hydrochloride],
+      BENZODIAZEPINES_RADIO: true,
+      CANNABIS_RADIO: false,
+      COCAINE_HYDROCHLORIDE: 'unknown',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])

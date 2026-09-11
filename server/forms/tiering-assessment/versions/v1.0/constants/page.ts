@@ -31,6 +31,10 @@ export const Step = {
     code: 'drug_misuse',
     path: 'drug-misuse',
   },
+  drug_use: {
+    code: 'drug_use',
+    path: 'drug-use',
+  },
   alcohol_ever_used: {
     code: 'alcohol_ever_used',
     path: 'alcohol-ever-used',
@@ -46,6 +50,14 @@ export const Step = {
   personal_relationships_and_community: {
     code: 'personal_relationships_and_community',
     path: 'personal-relationships-and-community',
+  },
+  thinking_attitudes_and_behaviours: {
+    code: 'thinking_attitudes_and_behaviours',
+    path: 'thinking-attitudes-and-behaviours',
+  },
+  offence_analysis: {
+    code: 'offence_analysis',
+    path: 'offence-analysis',
   },
   check_your_answers: {
     code: 'check_your_answers',
