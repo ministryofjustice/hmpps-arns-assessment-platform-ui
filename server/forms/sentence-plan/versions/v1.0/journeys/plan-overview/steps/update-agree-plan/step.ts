@@ -1,4 +1,13 @@
-import { Data, Post, redirect, step, submit, when, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  when,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { updatePlanAgreementQuestion, buttonGroup, notesField } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { sentencePlanOverviewPath } from '../../../../constants'
@@ -8,7 +17,13 @@ export const updateAgreePlanStep = step({
   path: '/update-agree-plan',
   title: 'Do they agree to their plan?',
   blocks: [updatePlanAgreementQuestion, notesField, buttonGroup],
-  onAccess: [redirectToOverviewIfReadOnly(), redirectUnlessCouldNotAnswer(sentencePlanOverviewPath)],
+  onAccess: [
+    redirectToOverviewIfReadOnly(),
+    redirectUnlessCouldNotAnswer(sentencePlanOverviewPath),
+    access({
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT_UPDATE)],
+    }),
+  ],
   view: {
     locals: {
       backlink: when(Data('navigationReferrer').match(Condition.Equals('plan-history')))

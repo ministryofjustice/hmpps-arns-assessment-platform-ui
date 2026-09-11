@@ -14,10 +14,10 @@ test.describe('View Plan Overview page', () => {
 
     await navigateToSentencePlan(page, handoverLink)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW, {
-      additionalFilter: msg => msg.details.tab === 'current',
-    })
+    // Landing from handover has no tab and redirects to current, so exactly one event must be sent
+    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW)
     expectAuditEvent(event)
+    expect(event.details.tab).toBe('current')
   })
 
   test('viewing future goals tab', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
