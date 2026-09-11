@@ -1,37 +1,48 @@
 import { GovUKCheckboxInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Answer, Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {and, Answer, Condition, Format, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import {
+  itemisedSummaryRow,
+  question,
+  QuestionFormat,
+  radioField,
+  revealedQuestion
+} from "../../../../constants/questionContent";
+import {CommonOption} from "../../constants/commonOption";
+import {commonContentFor} from "../../locales";
+import {Step} from "../../constants/page";
+import {Question} from "./constants/question";
+import {contentFor} from "./locales";
+import {DomesticAbuseOption} from "./constants/DomesticAbuseOption";
 
-const domesticAbuseAgainstField = GovUKRadioInput({
-  code: 'domestic-abuse-against',
-  fieldset: {
-    legend: {
-      text: 'Who was this commited against?',
-      classes: 'govuk-fieldset__legend--s',
+const drugLastUsedQuestion = revealedQuestion({
+    content: {
+      code: Question.domestic_abuse_against,
+      format: QuestionFormat.RADIO,
+      text: contentFor('question.domestic_abuse_against.text'),
+      options: [
+        {
+          value: DomesticAbuseOption.family_member,
+          text: contentFor('question.domestic_abuse_against.option.FAMILY_MEMBER'),
+        },
+        {
+          value: DomesticAbuseOption.intimate_partner,
+          text: contentFor('question.domestic_abuse_against.option.INTIMATE_PARTNER'),
+        },
+        {
+          value: DomesticAbuseOption.family_member_and_intimate_partner,
+          text: contentFor('question.domestic_abuse_against.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER'),
+        },
+      ],
+      validationMessage: commonContentFor('validation.this_is_a_required_field'),
     },
-  },
-  dependentWhen: Answer('evidence-of-domestic-abuse').match(Condition.Equals('true')),
-  items: [
-    {
-      value: 'family-member',
-      text: 'Family member',
+    displayModes: {
+      field: radioField({
+        legendClasses: 'govuk-visually-hidden',
+        dependentWhen: Answer(Question.domestic_abuse_against).match(Condition.IsRequired()),
+      }),
     },
-    {
-      value: 'intimate-partner',
-      text: 'Intimate partner',
-    },
-    {
-      value: 'family-member-and-intimate-partner',
-      text: 'Family member and intimate partner',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
-    }),
-  ],
-})
+  })
 
 export const offenceElementsField = GovUKCheckboxInput({
   code: 'offence-elements',
@@ -98,34 +109,31 @@ export const offenceElementsField = GovUKCheckboxInput({
   ],
 })
 
-export const evidenceOfDomesticAbuseField = GovUKRadioInput({
-  code: 'evidence-of-domestic-abuse',
-  fieldset: {
-    legend: {
-      text: Format('Is there evidence that %1 has ever been a perpetrator of domestic abuse?', CaseData.Forename),
-      classes: 'govuk-fieldset__legend--s',
-    },
+const evidenceOfDomesticAbuseQuestion = question({
+  content: {
+    code: Question.evidence_of_domestic_abuse,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.evidence_of_domestic_abuse.text', CaseData.ForenamePossessive),
+    options: [
+      {
+        value: CommonOption.yes,
+        text: commonContentFor('option.YES'),
+        reveal: drugLastUsedQuestion
+      },
+      {
+        value: CommonOption.no,
+        text: commonContentFor('option.NO'),
+      },
+      { divider: commonContentFor('or') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: commonContentFor('validation.this_is_a_required_field'),
   },
-  items: [
-    {
-      value: 'true',
-      text: 'Yes',
-      block: domesticAbuseAgainstField,
-    },
-
-    { value: 'false', text: 'No' },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'unknown',
-      text: 'Unknown',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: 'This is a required field',
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.evidence_of_domestic_abuse).match(Condition.IsRequired()),
+      changePath: Step.thinking_attitudes_and_behaviours.path,
     }),
-  ],
+  },
 })
