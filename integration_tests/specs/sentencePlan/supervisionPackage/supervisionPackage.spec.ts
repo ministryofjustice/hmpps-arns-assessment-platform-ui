@@ -68,7 +68,7 @@ test.describe('Supervision package', () => {
     await PlanOverviewPage.verifyOnPage(page)
     await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
 
-    await expect(page.getByText('Supervision stage')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Supervision stage' })).toBeVisible()
   })
 
   test('shows the breach warning and status tags when the person is in breach on the OPD pathway', async ({
