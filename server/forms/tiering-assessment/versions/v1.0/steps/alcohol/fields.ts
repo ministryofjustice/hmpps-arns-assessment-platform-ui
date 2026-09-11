@@ -1,4 +1,5 @@
 import { GovUKDetails } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { Step } from '../../constants/page'
 import { itemisedSummaryRow, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
@@ -41,7 +42,10 @@ export const currentAlcoholUseFrequencyQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol.path }),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.current_alcohol_use).match(Condition.IsRequired()),
+      changePath: Step.alcohol.path,
+    }),
   },
 })
 
@@ -78,7 +82,10 @@ export const unitsOfAlcoholQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol.path }),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.units_of_alcohol).match(Condition.IsRequired()),
+      changePath: Step.alcohol.path,
+    }),
   },
 })
 
@@ -109,7 +116,10 @@ export const bingeDrinkingQuestion = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.alcohol.path }),
+    summaryRow: itemisedSummaryRow({
+      visibleWhen: Answer(Question.alcohol_use_binge_drinking).match(Condition.IsRequired()),
+      changePath: Step.alcohol.path,
+    }),
   },
 })
 

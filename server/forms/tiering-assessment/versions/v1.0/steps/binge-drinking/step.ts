@@ -1,22 +1,19 @@
-import { access, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
-import { bingeDrinkingField } from './fields'
-import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import { Step } from '../../constants/page'
+import { stepTitle } from '../../locales'
+import { bingeDrinkingFields } from './fields'
+import { continueButton } from '../../common'
 
 export const bingeDrinkingStep = step({
   path: `/${Step.binge_drinking.path}`,
-  title: Format(
-    'Has %1 shown evidence of binge drinking or excessive alcohol use in the last 6 months?',
-    CaseData.Forename,
-  ),
+  title: stepTitle(Step.binge_drinking),
   onAccess: [
     access({
       effects: [TieringAssessmentEffects.LoadAssessmentData(), TieringAssessmentEffects.LoadCaseData()],
     }),
   ],
-  blocks: [bingeDrinkingField, GovUKButton({ text: 'Save and continue' })],
+  blocks: [bingeDrinkingFields.questions.bingeDrinkingQuestion.displayModes.field, continueButton],
   onSubmission: [
     submit({
       validate: true,

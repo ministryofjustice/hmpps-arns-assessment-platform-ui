@@ -652,7 +652,7 @@ describe('RiskActuarialService', () => {
       'motivation-to-tackle-drug-misuse': 'unknown',
       has_ever_drunk_alcohol: 'unknown',
       'alcohol-use-binge-drinking': 'unknown',
-      'binge-drinking': 'unknown',
+      binge_drinking: 'unknown',
       who_are_they_living_with: 'UNKNOWN',
       'important-relationships': 'unknown',
       'relationship-satisfaction': 'unknown',
@@ -908,7 +908,7 @@ describe('RiskActuarialService', () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_NOT_LAST_THREE_MONTHS',
       'alcohol-use-binge-drinking': 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
-      'binge-drinking': 'SIGNIFICANT_PROBLEMS',
+      binge_drinking: 'SIGNIFICANT_PROBLEMS',
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
