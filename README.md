@@ -57,13 +57,13 @@ In local, dev and test, calls to Delius, the ARNS API, the Tier API and the Supe
 
 | CRN     | Tier              | Supervision package                           |
 | ------- | ----------------- | --------------------------------------------- |
-| X444444 | B2 confirmed      | Standard phase, early engagement done         |
-| X222222 | B2 confirmed      | Standard phase, no appointments booked        |
-| X333333 | B2 confirmed      | In breach, OPD pathway                        |
+| X444444 | B confirmed       | Standard phase, early engagement done         |
+| X222222 | B confirmed       | Standard phase, no appointments booked        |
+| X333333 | B confirmed       | In breach, OPD pathway                        |
 | X666666 | Unavailable (500) | Unavailable (500)                             |
-| X888888 | B2 confirmed      | No package (404)                              |
-| X555555 | C2 provisional    | In-flight, OASys review not started           |
-| X111111 | B2 confirmed      | In-flight, OASys review started, not finished |
+| X888888 | B confirmed       | No package (404)                              |
+| X555555 | C provisional     | In-flight, OASys review not started           |
+| X111111 | B confirmed       | In-flight, OASys review started, not finished |
 
 All seven share the same Delius case details and ARNS needs. To use one, customise any scenario in the Training Session Launcher and pick it under "Stubbed CRN" on the Subject Details tab.
 
