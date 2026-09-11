@@ -34,6 +34,7 @@ generic-service:
     AUDIT_SERVICE_NAME: 'hmpps-arns-assessment-platform-ui'
     GOTENBERG_API_URL: 'http://hmpps-arns-assessment-platform-ui-gotenberg'
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
+    OASYS_REVIEW_URL: 'https://int.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
