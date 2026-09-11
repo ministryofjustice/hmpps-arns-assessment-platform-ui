@@ -1,0 +1,21 @@
+name: Deploy ephemeral PR environment
+
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  deploy_ephemeral:
+    name: Deploy ephemeral environment
+    if: contains(github.event.pull_request.labels.*.name, 'ephemeral')
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_ephemeral.yml@ephemeral-deployment
+    secrets: inherit

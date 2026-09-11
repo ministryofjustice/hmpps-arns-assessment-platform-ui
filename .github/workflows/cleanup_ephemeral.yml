@@ -1,0 +1,17 @@
+name: Cleanup ephemeral PR environment
+
+on:
+  pull_request:
+    types: [closed, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup_ephemeral:
+    name: Remove ephemeral environment
+    if: |
+      (github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, 'ephemeral')) ||
+      (github.event.action == 'unlabeled' && github.event.label.name == 'ephemeral')
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/cleanup_ephemeral.yml@ephemeral-deployment
+    secrets: inherit
