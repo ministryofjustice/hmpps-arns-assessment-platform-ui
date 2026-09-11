@@ -75,7 +75,7 @@ export class RiskActuarialService {
       temperControl: this.parseProblemLevel(context.getAnswer('temper_control')),
       impulsivityProblems: this.parseProblemLevel(context.getAnswer('impulsivity_problems')),
       proCriminalAttitudes: this.parseProblemLevel(context.getAnswer('pro_criminal_attitudes')),
-      previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous-convictions') as string[]),
+      previousConvictions: this.parsePreviousConvictions(context.getAnswer('previous_convictions') as string[]),
       didOffenceInvolveCarryingOrUsingWeapon: this.getDidOffenceInvolveCarryingOrUsingWeapon(context),
       evidenceOfDomesticAbuse: this.getEvidenceOfDomesticAbuse(context),
     }
@@ -112,7 +112,7 @@ export class RiskActuarialService {
 
     return this.parseProblemLevel(
       hasEverDrunkAlcohol === 'YES_IN_LAST_THREE_MONTHS'
-        ? context.getAnswer('alcohol-use-binge-drinking')
+        ? context.getAnswer('alcohol_use_binge_drinking')
         : context.getAnswer('binge_drinking'),
     )
   }

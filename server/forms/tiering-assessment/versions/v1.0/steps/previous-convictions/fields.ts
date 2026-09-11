@@ -1,86 +1,65 @@
-import { GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { Condition, Format, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
+import { checkboxField, itemisedSummaryRow, question, QuestionFormat } from '../../../../constants/questionContent'
+import { Question } from './constants/question'
+import { contentFor } from './locales'
+import { commonContentFor } from '../../locales'
+import { Option } from './constants/option'
+import { Step } from '../../constants/page'
 
-export const previousConvictionsField = GovUKCheckboxInput({
-  code: 'previous-convictions',
-  hint: {
-    text: "Select all that apply, or select 'None of these offences'.",
+const previousConvictionsQuestion = question({
+  content: {
+    code: Question.previous_convictions,
+    format: QuestionFormat.CHECKBOX,
+    text: contentFor('question.previous_convictions.text', CaseData.Forename),
+    hint: commonContentFor('select_all_that_apply'),
+    options: [
+      { value: Option.HOMICIDE, text: contentFor('question.previous_convictions.option.HOMICIDE') },
+      { value: Option.WOUNDING_GBH, text: contentFor('question.previous_convictions.option.WOUNDING_GBH') },
+      {
+        value: Option.SEXUAL_OFFENCE_AGAINST_CHILD,
+        text: contentFor('question.previous_convictions.option.SEXUAL_OFFENCE_AGAINST_CHILD'),
+      },
+      {
+        value: Option.OTHER_OFFENCE_AGAINST_CHILD,
+        text: contentFor('question.previous_convictions.option.OTHER_OFFENCE_AGAINST_CHILD'),
+      },
+      { value: Option.CRIMINAL_DAMAGE, text: contentFor('question.previous_convictions.option.CRIMINAL_DAMAGE') },
+      { value: Option.WEAPON, text: contentFor('question.previous_convictions.option.WEAPON') },
+      { value: Option.KIDNAPPING, text: contentFor('question.previous_convictions.option.KIDNAPPING') },
+      { value: Option.ARSON, text: contentFor('question.previous_convictions.option.ARSON') },
+      { value: Option.RACIAL_OFFENCE, text: contentFor('question.previous_convictions.option.RACIAL_OFFENCE') },
+      {
+        value: Option.AGGRAVATED_BURGLARY,
+        text: contentFor('question.previous_convictions.option.AGGRAVATED_BURGLARY'),
+      },
+      { value: Option.ROBBERY, text: contentFor('question.previous_convictions.option.ROBBERY') },
+      {
+        value: Option.OTHER_SERIOUS_OFFENCE,
+        text: contentFor('question.previous_convictions.option.OTHER_SERIOUS_OFFENCE'),
+      },
+      {
+        value: Option.OFFENCE_COMMITTED_IN_CUSTODY,
+        text: contentFor('question.previous_convictions.option.OFFENCE_COMMITTED_IN_CUSTODY'),
+      },
+      { value: Option.FIREARMS, text: contentFor('question.previous_convictions.option.FIREARMS') },
+      { divider: commonContentFor('or') },
+      {
+        value: Option.NA,
+        text: contentFor('question.previous_convictions.option.NA'),
+        behaviour: 'exclusive' as const,
+      },
+    ],
+    validationMessage: contentFor('question.previous_convictions.validation', CaseData.Forename),
   },
-  items: [
-    {
-      value: 'HOMICIDE',
-      text: 'Murder, attempted murder, threat or conspiracy to murder or manslaughter',
-    },
-    {
-      value: 'WOUNDING_GBH',
-      text: 'Wounding or GBH',
-    },
-    {
-      value: 'RAPE_OR_SERIOUS_SEXUAL_OFFENCE',
-      text: 'Rape or serious sexual offence against an adult',
-    },
-    {
-      value: 'SEXUAL_OFFENCE_AGAINST_CHILD',
-      text: 'Any sexual offence against a child',
-    },
-    {
-      value: 'OTHER_OFFENCE_AGAINST_CHILD',
-      text: 'Any other offence against a child',
-    },
-    {
-      value: 'CRIMINAL_DAMAGE',
-      text: 'Criminal damage with intent to endanger life',
-    },
-    {
-      value: 'WEAPON',
-      text: 'Any offence involving possession or use of weapons',
-    },
-    {
-      value: 'KIDNAPPING',
-      text: 'Kidnapping or false imprisonment',
-    },
-    {
-      value: 'ARSON',
-      text: 'Arson',
-    },
-    {
-      value: 'RACIAL_OFFENCE',
-      text: 'Racially motivated or racially aggravated offence',
-    },
-    {
-      value: 'AGGRAVATED_BURGLARY',
-      text: 'Aggravated burglary',
-    },
-    {
-      value: 'ROBBERY',
-      text: 'Robbery',
-    },
-    {
-      value: 'OTHER_SERIOUS_OFFENCE',
-      text: 'Any other serious offence (for example, blackmail, harassment, stalking, indecent images of children, child neglect or abduction)',
-    },
-    {
-      value: 'OFFENCE_COMMITTED_IN_CUSTODY',
-      text: 'Any offence committed in custody',
-    },
-    {
-      value: 'FIREARMS',
-      text: 'Possession of a firearm with intent to endanger life or resist arrest',
-    },
-    {
-      divider: 'or',
-    },
-    {
-      value: 'NA',
-      text: 'None of these offences',
-      behaviour: 'exclusive',
-    },
-  ],
-  validWhen: [
-    validation({
-      condition: Self().match(Condition.IsRequired()),
-      message: Format("Select all that apply, or select 'None of these offences'.", CaseData.ForenamePossessive),
-    }),
-  ],
+  displayModes: {
+    field: checkboxField(),
+    summaryRow: itemisedSummaryRow({ changePath: Step.previous_convictions.path }),
+  },
 })
+
+export const previousConvictionsFields = {
+  code: Step.previous_convictions.code,
+  questions: {
+    previousConvictionsQuestion,
+  },
+}

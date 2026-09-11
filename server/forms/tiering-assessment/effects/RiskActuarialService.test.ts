@@ -346,7 +346,7 @@ describe('RiskActuarialService', () => {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
       current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
       units_of_alcohol: 'FIVE_TO_SIX_UNITS',
-      'alcohol-use-binge-drinking': 'SIGNIFICANT_PROBLEMS',
+      alcohol_use_binge_drinking: 'SIGNIFICANT_PROBLEMS',
       who_are_they_living_with: 'partner',
       important_relationships: 'PARTNER',
       relationship_satisfaction: 'SOME_PROBLEMS',
@@ -354,7 +354,7 @@ describe('RiskActuarialService', () => {
       temper_control: 'SOME_PROBLEMS',
       impulsivity_problems: 'NO_PROBLEMS',
       pro_criminal_attitudes: 'SIGNIFICANT_PROBLEMS',
-      'previous-convictions': ['FIREARMS', 'ROBBERY', 'WEAPON'],
+      previous_convictions: ['FIREARMS', 'ROBBERY', 'WEAPON'],
       'offence-elements': 'domestic-abuse,excessive-violence-or-sadistic-violence,weapon',
       'evidence-of-domestic-abuse': 'true',
       'domestic-abuse-against': 'intimate-partner',
@@ -653,7 +653,7 @@ describe('RiskActuarialService', () => {
       ever_misused_drugs: 'UNKNOWN',
       'motivation-to-tackle-drug-misuse': 'unknown',
       has_ever_drunk_alcohol: 'unknown',
-      'alcohol-use-binge-drinking': 'unknown',
+      alcohol_use_binge_drinking: 'unknown',
       binge_drinking: 'unknown',
       who_are_they_living_with: 'UNKNOWN',
       'important-relationships': 'unknown',
@@ -909,7 +909,7 @@ describe('RiskActuarialService', () => {
   it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_NOT_LAST_THREE_MONTHS and binge-drinking is set', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_NOT_LAST_THREE_MONTHS',
-      'alcohol-use-binge-drinking': 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
+      alcohol_use_binge_drinking: 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
       binge_drinking: 'SIGNIFICANT_PROBLEMS',
     }
 
@@ -926,7 +926,7 @@ describe('RiskActuarialService', () => {
 
   it('should correctly parse a single valid conviction', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': ['CRIMINAL_DAMAGE'],
+      previous_convictions: ['CRIMINAL_DAMAGE'],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -942,7 +942,7 @@ describe('RiskActuarialService', () => {
 
   it('should parse multiple valid convictions', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': [
+      previous_convictions: [
         'HOMICIDE',
         'WOUNDING_GBH',
         'KIDNAPPING',
@@ -978,7 +978,7 @@ describe('RiskActuarialService', () => {
 
   it('should ignore invalid previous convictions', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': [
+      previous_convictions: [
         'WOUNDING_GBH',
         'RAPE_OR_SERIOUS_SEXUAL_OFFENCE',
         'WEAPON',
@@ -1000,7 +1000,7 @@ describe('RiskActuarialService', () => {
 
   it('should correctly parse null for a list of invalid previous convictions', async () => {
     const answers: Record<string, unknown> = {
-      'previous-convictions': ['SEXUAL_OFFENCE_AGAINST_CHILD', 'RACIAL_OFFENCE'],
+      previous_convictions: ['SEXUAL_OFFENCE_AGAINST_CHILD', 'RACIAL_OFFENCE'],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])

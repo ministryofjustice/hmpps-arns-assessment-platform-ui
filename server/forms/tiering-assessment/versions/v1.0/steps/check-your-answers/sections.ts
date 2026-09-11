@@ -15,6 +15,7 @@ import { bingeDrinkingFields } from '../binge-drinking/fields'
 import { drugUseFields } from '../drug-use/fields'
 import { personalRelationshipsFields } from '../personal-relationships-and-community/fields'
 import { thinkingAttitudesBehavioursFields } from '../thinking-attitudes-and-behaviours/fields'
+import { previousConvictionsFields } from '../previous-convictions/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -33,6 +34,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields, bingeDrinkingFields] },
   { step: Step.personal_relationships_and_community, config: personalRelationshipsFields },
   { step: Step.thinking_attitudes_and_behaviours, config: thinkingAttitudesBehavioursFields },
+  { step: Step.previous_convictions, config: previousConvictionsFields },
 ]
 
 export interface Answerable {
