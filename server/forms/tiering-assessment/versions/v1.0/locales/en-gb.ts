@@ -45,6 +45,7 @@ export const english = {
     [CommonOption.other]: 'Other',
     [CommonOption.unknown]: 'Unknown',
     [CommonOption.none]: 'None',
+    [CommonOption.na]: 'Not applicable',
   },
 } as const
 
