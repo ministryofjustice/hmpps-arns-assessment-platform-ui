@@ -252,12 +252,14 @@ export const goalsSection = TemplateWrapper({
                                 href: isAchievedGoal
                                   ? Format('../goal/%1/view-inactive-goal', Item().path('uuid'))
                                   : Format('../goal/%1/change-goal', Item().path('uuid')),
-                                dataAiId: isAchievedGoal ? 'view-inactive-goal-link' : 'update-draft-goal-link',
+                                dataAiId: isAchievedGoal
+                                  ? 'goal-summary-card-view-inactive-goal-link'
+                                  : 'goal-summary-card-update-draft-goal-link',
                               },
                               {
                                 text: 'Add or update steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
-                                dataAiId: 'add-or-update-goal-steps-link',
+                                dataAiId: 'goal-summary-card-add-or-update-goal-steps-link',
                                 hidden: or(
                                   isAchievedGoal,
                                   Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
@@ -266,7 +268,7 @@ export const goalsSection = TemplateWrapper({
                               {
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
-                                dataAiId: 'delete-goal-link',
+                                dataAiId: 'goal-summary-card-delete-goal-link',
                                 hidden: isAchievedGoal,
                               },
                             ],
@@ -336,8 +338,8 @@ export const goalsSection = TemplateWrapper({
                                     .path('status')
                                     .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
                                 )
-                                  .then('view-inactive-goal-inline-link')
-                                  .else('update-goal-link'),
+                                  .then('goal-summary-card-view-inactive-goal-link')
+                                  .else('goal-summary-card-update-goal-link'),
                               },
                             ],
                             isReadOnly: when(isReadOnlyAccess),
