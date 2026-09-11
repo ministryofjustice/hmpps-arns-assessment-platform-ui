@@ -58,6 +58,7 @@ class WrappingSelect extends HTMLElement {
 
     const selectedIndex = this.selectEl.selectedIndex >= 0 ? this.selectEl.selectedIndex : 0
     const selectedOption = options[selectedIndex]
+    const dataAiId = this.selectEl.getAttribute('data-ai-id')
 
     const toggle = document.createElement('button')
     toggle.type = 'button'
@@ -65,6 +66,10 @@ class WrappingSelect extends HTMLElement {
     toggle.className = 'wrapping-select__toggle'
     toggle.setAttribute('aria-haspopup', 'listbox')
     toggle.setAttribute('aria-expanded', 'false')
+
+    if (dataAiId) {
+      toggle.setAttribute('data-ai-id', dataAiId)
+    }
 
     const labelIds = [associatedLabelId, labelledBy, toggle.id].filter(Boolean).join(' ')
     if (labelIds) {

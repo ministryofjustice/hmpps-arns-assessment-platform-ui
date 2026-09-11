@@ -46,7 +46,7 @@ test.describe('MPoP access flow', () => {
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToMpopPrivacyScreen(page, crn)
-      await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+      await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
 
       await PrivacyScreenPage.verifyOnPage(page)
     })

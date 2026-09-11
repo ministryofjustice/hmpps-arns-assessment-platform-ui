@@ -4,6 +4,7 @@ import {
   Item,
   Loop,
   Iterator,
+  or,
   Self,
   validation,
   when,
@@ -17,6 +18,7 @@ import {
   GovUKTextareaInput,
   GovUKHeading,
   GovUKGridRow,
+  GovUKInsetText,
   GovUKBody,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { AssessmentInfoDetails, ButtonAsLink, WrappingSelect } from '../../../../../components'
@@ -24,14 +26,8 @@ import { actorLabelOptions, CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 
 const stepActorLabelText = 'Who will do the step?'
-const stepActorHintText = 'Add one person or agency.'
 const stepDescriptionLabelText = 'What should they do to achieve the goal?'
-const stepDescriptionHintText = 'Enter one step at a time.'
 const stepStatusLabelText = 'What is the status?'
-const stepStatusHintText = 'For example, not started.'
-const stepActorHintId = 'step-actor-hint'
-const stepDescriptionHintId = 'step-description-hint'
-const stepStatusHintId = 'step-status-hint'
 
 const stepStatusOptions = [
   { value: '', text: 'Choose status' },
@@ -43,8 +39,52 @@ const stepStatusOptions = [
 ]
 
 export const pageHeading = GovUKHeading({
-  caption: Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
-  text: 'Add or change steps',
+  text: when(
+    or(
+      Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      Data('activeGoal.steps').not.match(Condition.IsRequired()),
+    ),
+  )
+    .then('Add steps')
+    .else('Add or update steps'),
+})
+
+/**
+ * Inset text block summarising the goal context
+ *
+ * Shows:
+ * - Area of need (in bold)
+ * - Also relates to (only when the goal is related to other areas)
+ * - Goal text
+ *
+ * Area of need and "Also relates to" share a single paragraph (with a <br>)
+ * so the lines are adjacent — only "Goal" sits in its own paragraph below.
+ */
+const areaOfNeedText = Data('activeGoal.areaOfNeedLabel').pipe(
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join(', '),
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
+  .then(
+    Format('<p>Area of need: <strong>%1</strong><br>Also relates to: %2</p>', areaOfNeedText, relatedAreasOfNeedText),
+  )
+  .else(Format('<p>Area of need: <strong>%1</strong></p>', areaOfNeedText))
+
+const goalBlockContent = Format('<p>Goal: %1</p>', Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()))
+
+const isSingleStep = Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1))
+
+export const goalContextInsetText = GovUKInsetText({
+  classes: 'govuk-!-margin-top-2',
+  blocks: [HtmlBlock({ content: areaBlockContent }), HtmlBlock({ content: goalBlockContent })],
 })
 
 /**
@@ -52,7 +92,7 @@ export const pageHeading = GovUKHeading({
  */
 export const assessmentInfoDetails = AssessmentInfoDetails({
   personName: CaseData.Forename,
-  areaName: Data('currentAreaOfNeed').path('text'),
+  areaName: Data('currentAreaOfNeed.text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   visibleWhen: canAccessSanContent,
@@ -66,14 +106,7 @@ export const columnHeaders = GovUKGridRow({
   columns: [
     {
       width: 'one-sixth',
-      blocks: [
-        GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' }),
-        GovUKBody({
-          text: stepActorHintText,
-          classes: 'govuk-hint govuk-!-margin-bottom-0',
-          attributes: { id: stepActorHintId },
-        }),
-      ],
+      blocks: [GovUKBody({ text: stepActorLabelText, classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1' })],
     },
     {
       width: 'one-half',
@@ -81,11 +114,6 @@ export const columnHeaders = GovUKGridRow({
         GovUKBody({
           text: stepDescriptionLabelText,
           classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
-        }),
-        GovUKBody({
-          text: stepDescriptionHintText,
-          classes: 'govuk-hint govuk-!-margin-bottom-0',
-          attributes: { id: stepDescriptionHintId },
         }),
       ],
     },
@@ -95,11 +123,6 @@ export const columnHeaders = GovUKGridRow({
         GovUKBody({
           text: stepStatusLabelText,
           classes: 'govuk-!-font-weight-bold govuk-!-margin-bottom-1',
-        }),
-        GovUKBody({
-          text: stepStatusHintText,
-          classes: 'govuk-hint govuk-!-margin-bottom-0',
-          attributes: { id: stepStatusHintId },
         }),
       ],
     },
@@ -131,7 +154,6 @@ export const stepRows = HtmlBlock({
                     text: stepActorLabelText,
                     classes: 'govuk-visually-hidden',
                   },
-                  describedBy: stepActorHintId,
                   items: actorLabelOptions,
                   defaultValue: Item().path('actor'),
                   validWhen: [
@@ -154,7 +176,6 @@ export const stepRows = HtmlBlock({
                   classes: 'govuk-visually-hidden',
                 },
                 autocomplete: 'off',
-                describedBy: stepDescriptionHintId,
                 rows: '1',
                 classes: 'govuk-!-width-full app-autosize-textarea',
                 attributes: {
@@ -180,7 +201,6 @@ export const stepRows = HtmlBlock({
                     text: stepStatusLabelText,
                     classes: 'govuk-visually-hidden',
                   },
-                  describedBy: stepStatusHintId,
                   items: stepStatusOptions,
                   defaultValue: Item().path('status'),
                   validWhen: [
@@ -197,12 +217,15 @@ export const stepRows = HtmlBlock({
             width: 'one-sixth',
             blocks: [
               ButtonAsLink({
-                text: when(Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1)))
-                  .then('Clear')
-                  .else('Remove'),
+                text: when(isSingleStep).then('Clear').else('Remove'),
                 name: 'action',
                 value: Format('remove_%1', Loop.Index0()),
                 classes: 'govuk-!-margin-bottom-0',
+                attributes: {
+                  'data-ai-id': when(isSingleStep)
+                    .then('add-update-steps-clear-step-link')
+                    .else(Format('add-update-steps-remove-step-link-%1', Loop.Index0())),
+                },
               }),
             ],
           },
@@ -255,6 +278,7 @@ export const pageLayout = TemplateWrapper({
       <div>
         {{slot:pageHeading}}
         {{slot:assessmentInfoDetails}}
+        {{slot:goalContextInsetText}}
         {{slot:columnHeaders}}
         {{slot:stepRows}}
         {{slot:buttonGroup}}
@@ -266,6 +290,7 @@ export const pageLayout = TemplateWrapper({
     hiddenDefaultSubmit: [hiddenDefaultSubmit],
     pageHeading: [pageHeading],
     assessmentInfoDetails: [assessmentInfoDetails],
+    goalContextInsetText: [goalContextInsetText],
     columnHeaders: [columnHeaders],
     stepRows: [stepRows],
     saveAndContinueButton: [saveAndContinueButton],

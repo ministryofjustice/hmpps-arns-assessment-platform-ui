@@ -11,6 +11,7 @@ import {
   type AreaOverrides,
 } from '../../../builders/AssessmentDataFactories'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
+import SelectAreaOfNeedPage from '../../../pages/sentencePlan/selectAreaOfNeedPage'
 
 const setupAboutPage = async (
   page: Page,
@@ -146,8 +147,14 @@ test.describe('About Page: complete assessment state', () => {
           await expect(createGoalLink).toHaveText(/Create .+ goal/i)
 
           await aboutPage.clickCreateGoalInSection(aboutPage.highScoringAreasAccordion, 0)
-          await CreateGoalPage.verifyOnPage(page)
-          await expect(page.locator('.govuk-caption-l')).toContainText('Drug use')
+
+          // Create goal links now route through the area selection page, pre-selecting that area.
+          const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+          await expect(selectAreaOfNeedPage.areaRadio('drug-use')).toBeChecked()
+          await selectAreaOfNeedPage.clickContinue()
+
+          const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+          await expect(createGoalPage.areaOfNeedInset).toContainText('Area of need: drug use')
         }
       })
 
@@ -198,54 +205,45 @@ test.describe('About Page: complete assessment state', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: 'YES', // tier 3
-            accStrengths: 'NO',
             accOtherWeightedScore: '6', // threshold 1, distance = 5
           },
           educationTrainingEmployability: {
             eteLinkedToHarm: 'NO',
             eteLinkedToReoffending: 'YES', // tier 1
-            eteStrengths: 'NO',
             eteOtherWeightedScore: '4', // threshold 1, distance = 3
           },
           drugMisuse: {
             drugLinkedToHarm: 'YES',
             drugLinkedToReoffending: 'YES', // tier 3
-            drugStrengths: 'NO',
             drugOtherWeightedScore: '5', // threshold 0, distance = 5
           },
           alcoholMisuse: {
             alcoholLinkedToHarm: 'YES',
             alcoholLinkedToReoffending: 'NO', // tier 2
-            alcoholStrengths: 'NO',
             alcoholOtherWeightedScore: '5', // threshold 1, distance = 4
           },
           personalRelationshipsAndCommunity: {
             relLinkedToHarm: 'NO',
             relLinkedToReoffending: 'NO', // tier 0
-            relStrengths: 'NO',
             relOtherWeightedScore: '6', // threshold 1, distance = 5
           },
           thinkingBehaviourAndAttitudes: {
             thinkLinkedToHarm: 'YES',
             thinkLinkedToReoffending: 'NO', // tier 2
-            thinkStrengths: 'NO',
             thinkOtherWeightedScore: '2', // at threshold 2, main distance = 0 (would be low-scoring alone)
           },
           lifestyleAndAssociates: {
             lifestyleLinkedToHarm: 'YES',
             lifestyleLinkedToReoffending: 'NO',
-            lifestyleStrengths: 'NO',
             lifestyleOtherWeightedScore: '4', // above threshold 1, sub distance = 3, pushes thinking to high-scoring
           },
           finance: {
             financeLinkedToHarm: 'NO',
             financeLinkedToReoffending: 'NO',
-            financeStrengths: 'NO',
           },
           healthAndWellbeing: {
             emoLinkedToHarm: 'NO',
             emoLinkedToReoffending: 'NO',
-            emoStrengths: 'NO',
           },
         }
 
@@ -292,37 +290,31 @@ test.describe('About Page: complete assessment state', () => {
           accommodation: {
             accLinkedToHarm: 'NO',
             accLinkedToReoffending: 'NO',
-            accStrengths: 'NO',
             accOtherWeightedScore: '0',
           },
           educationTrainingEmployability: {
             eteLinkedToHarm: 'NO',
             eteLinkedToReoffending: 'NO',
-            eteStrengths: 'NO',
             eteOtherWeightedScore: '0',
           },
           drugMisuse: {
             drugLinkedToHarm: 'NO',
             drugLinkedToReoffending: 'NO',
-            drugStrengths: 'NO',
             drugOtherWeightedScore: '0',
           },
           alcoholMisuse: {
             alcoholLinkedToHarm: 'NO',
             alcoholLinkedToReoffending: 'NO',
-            alcoholStrengths: 'NO',
             alcoholOtherWeightedScore: '0',
           },
           personalRelationshipsAndCommunity: {
             relLinkedToHarm: 'NO',
             relLinkedToReoffending: 'NO',
-            relStrengths: 'NO',
             relOtherWeightedScore: '0',
           },
           thinkingBehaviourAndAttitudes: {
             thinkLinkedToHarm: 'NO',
             thinkLinkedToReoffending: 'NO',
-            thinkStrengths: 'NO',
             thinkOtherWeightedScore: '0',
           },
         },
@@ -347,37 +339,31 @@ test.describe('About Page: complete assessment state', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: 'YES',
-            accStrengths: 'NO',
             accOtherWeightedScore: '6',
           },
           educationTrainingEmployability: {
             eteLinkedToHarm: 'YES',
             eteLinkedToReoffending: 'YES',
-            eteStrengths: 'NO',
             eteOtherWeightedScore: '6',
           },
           drugMisuse: {
             drugLinkedToHarm: 'YES',
             drugLinkedToReoffending: 'YES',
-            drugStrengths: 'NO',
             drugOtherWeightedScore: '6',
           },
           alcoholMisuse: {
             alcoholLinkedToHarm: 'YES',
             alcoholLinkedToReoffending: 'YES',
-            alcoholStrengths: 'NO',
             alcoholOtherWeightedScore: '6',
           },
           personalRelationshipsAndCommunity: {
             relLinkedToHarm: 'YES',
             relLinkedToReoffending: 'YES',
-            relStrengths: 'NO',
             relOtherWeightedScore: '6',
           },
           thinkingBehaviourAndAttitudes: {
             thinkLinkedToHarm: 'YES',
             thinkLinkedToReoffending: 'YES',
-            thinkStrengths: 'NO',
             thinkOtherWeightedScore: '6',
           },
         },

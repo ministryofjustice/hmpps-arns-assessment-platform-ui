@@ -35,7 +35,7 @@ test.describe('Previous Versions - Handover Redirect', () => {
     await handlePrivacyScreenIfPresent(page)
 
     await expect(page).toHaveURL(/\/plan\/view-historic\//)
-    await expect(page).toHaveURL(/type=current/)
+    await expect(page).toHaveURL(/goalStatusTab=current/)
     await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.historicPlan))
 
     const historicPlanPage = await HistoricPlanPage.verifyOnPage(page)

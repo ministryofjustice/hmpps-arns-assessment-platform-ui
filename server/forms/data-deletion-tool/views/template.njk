@@ -1,0 +1,81 @@
+{%- extends "partials/layout.njk" -%}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+
+{% set allValidationErrors = fieldValidationErrors.concat(domainValidationErrors) %}
+
+{% block head %}
+  {{ super() }}
+  {% block pageStylesheets %}
+    <link rel="stylesheet" href="{{ '/assets/css/forms/data-deletion-tool/assets/form.css' | assetMap }}">
+  {% endblock %}
+{% endblock %}
+
+{% block bodyEnd %}
+  {{ super() }}
+  {% block pageScripts %}
+    <script src="{{ '/assets/js/forms/data-deletion-tool/assets/form.js' | assetMap }}"></script>
+  {% endblock %}
+{% endblock %}
+
+{% block govukHeader %}
+  {{ super() }}
+  {% set isOnConfigurationPage = step.path == '/configuration' %}
+  {% set isOnEventsPage = step.path == '/events' %}
+  {% set isOnTimelinePage = step.path == '/timeline' %}
+  {% set isOnSummaryPage = step.path == '/summary' or step.path == '/success' %}
+
+  {{ govukServiceNavigation({
+    navigation: [
+      {
+        href: "/data-deletion-tool/configuration",
+        text: "Configuration",
+        current: isOnConfigurationPage
+      },
+      {
+        href: "/data-deletion-tool/events",
+        text: "Events",
+        current: isOnEventsPage
+      },
+      {
+        href: "/data-deletion-tool/timeline",
+        text: "Timeline",
+        current: isOnTimelinePage
+      },
+      {
+        href: "/data-deletion-tool/summary",
+        text: "Summary",
+        current: isOnSummaryPage
+      },
+      {
+        href: "/data-deletion-tool/clear",
+        text: "Clear session"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: allValidationErrors | toErrorSummary
+      }) if allValidationErrors.length }}
+
+      <form id="main-form" method="post" action="#">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+        {% for block in blocks %}
+          {{ block | safe }}
+        {% endfor %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block govukFooter %}
+  {{ pdsFooter({
+    baseUrl: footerBaseUrl or "/platform"
+  }) }}
+{% endblock %}

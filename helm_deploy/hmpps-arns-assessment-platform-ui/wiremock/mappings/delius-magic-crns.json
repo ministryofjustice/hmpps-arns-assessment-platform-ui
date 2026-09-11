@@ -1,0 +1,76 @@
+{
+  "mappings": [
+    {
+      "name": "Delius case-details - magic CRNs",
+      "request": {
+        "urlPathPattern": "/delius/case-details/(X222222|X333333|X444444|X555555|X666666|X888888)",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "name": {
+            "forename": "Buster",
+            "middleName": "",
+            "surname": "Sanford"
+          },
+          "crn": "{{request.pathSegments.[2]}}",
+          "tier": "",
+          "dateOfBirth": "2002-01-15",
+          "nomisId": "",
+          "region": "",
+          "location": "COMMUNITY",
+          "sexuallyMotivatedOffenceHistory": "YES",
+          "sentences": [
+            {
+              "description": "Custodial Sentence",
+              "startDate": "2024-11-06",
+              "endDate": "2029-01-12",
+              "programmeRequirement": false,
+              "unpaidWorkHoursOrdered": 10,
+              "unpaidWorkMinutesCompleted": 20,
+              "rarDaysOrdered": 3,
+              "rarDaysCompleted": 1,
+              "rarRequirement": true
+            },
+            {
+              "description": "ORA Community Order",
+              "startDate": "2024-11-19",
+              "endDate": "2025-05-18",
+              "programmeRequirement": false,
+              "unpaidWorkHoursOrdered": 0,
+              "unpaidWorkMinutesCompleted": 0,
+              "rarDaysOrdered": 0,
+              "rarDaysCompleted": 0,
+              "rarRequirement": false
+            }
+          ]
+        }
+      },
+      "priority": 10
+    },
+    {
+      "name": "Delius user access - magic CRNs can be accessed by any user",
+      "request": {
+        "urlPathPattern": "/delius/users/[^/]+/access/(X222222|X333333|X444444|X555555|X666666|X888888)",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "inCaseload": true,
+          "userExcluded": false,
+          "userRestricted": false,
+          "canAccess": true
+        }
+      },
+      "priority": 10
+    }
+  ]
+}

@@ -36,7 +36,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectTargetDateOption('3_months')
       await readdPage.clickConfirm()
 
-      await expect(page).toHaveURL(/plan\/overview.*type=current/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=current/)
     })
 
     test('can confirm re-adding a goal as a future goal', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -56,7 +56,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectCanStartNow(false)
       await readdPage.clickConfirm()
 
-      await expect(page).toHaveURL(/plan\/overview.*type=future/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=future/)
     })
 
     test('shows validation error when re-add note is empty', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -273,7 +273,7 @@ test.describe('Re-add goal journey', () => {
 
       // Verify initial state: 2 active goals
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=current')
 
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(2)
@@ -288,7 +288,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectTargetDateOption('3_months')
       await readdPage.clickConfirm()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Verify re-added goal is at the bottom
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -331,7 +331,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectTargetDateOption('3_months')
       await readdPage.clickConfirm()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(1)
@@ -382,7 +382,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.clickConfirm()
 
       // Verify redirected to future goals tab
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify the goal card does NOT show "Aim to achieve this by" text
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -419,7 +419,7 @@ test.describe('Re-add goal journey', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=removed')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=removed')
 
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(2)
@@ -433,7 +433,7 @@ test.describe('Re-add goal journey', () => {
       await readdPage.selectTargetDateOption('6_months')
       await readdPage.clickConfirm()
 
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=removed')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=removed')
 
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.getGoalCount()).toBe(1)

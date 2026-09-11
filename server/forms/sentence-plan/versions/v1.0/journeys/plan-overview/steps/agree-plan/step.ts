@@ -1,4 +1,5 @@
 import {
+  access,
   redirect,
   step,
   submit,
@@ -19,12 +20,17 @@ export const agreePlanStep = step({
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
-      backlink: when(Query('type').match(Condition.IsRequired()))
-        .then(Format('overview?type=%1', Query('type')))
-        .else('overview?type=current'),
+      backlink: when(Query('goalStatusTab').match(Condition.IsRequired()))
+        .then(Format('overview?goalStatusTab=%1', Query('goalStatusTab')))
+        .else('overview?goalStatusTab=current'),
     },
   },
-  onAccess: [redirectToOverviewIfReadOnly()],
+  onAccess: [
+    redirectToOverviewIfReadOnly(),
+    access({
+      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT)],
+    }),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

@@ -10,12 +10,15 @@ export default class PlanHistoryPage extends AbstractPage {
 
   readonly viewGoalLink: Locator
 
+  readonly createGoalButton: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
     this.mainContent = page.getByTestId('main-form')
     this.showAllSectionsButton = page.getByRole('button', { name: 'Show all sections' })
     this.viewGoalLink = page.getByRole('link', { name: 'View goal' })
+    this.createGoalButton = page.getByRole('button', { name: 'Create goal' })
   }
 
   static async verifyOnPage(page: Page): Promise<PlanHistoryPage> {

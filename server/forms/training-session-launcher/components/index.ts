@@ -1,9 +1,9 @@
 import { TabPanel } from './tab-panel/tabPanel'
-import { criminogenicNeedsList } from './criminogenic-needs-list/criminogenicNeedsList'
-import { randomizableField } from './randomizable-field/randomizableField'
+import { CriminogenicNeedsList } from './criminogenic-needs-list/criminogenicNeedsList'
+import { RandomizableField } from './randomizable-field/randomizableField'
 
-export const trainingSessionLauncherComponents = [TabPanel, criminogenicNeedsList, randomizableField]
+export const trainingSessionLauncherComponents = [TabPanel, CriminogenicNeedsList, RandomizableField]
 
 export { TabPanel, type TabPanelItem } from './tab-panel/tabPanel'
-export { CriminogenicNeedsList, type CriminogenicNeedsListProps } from './criminogenic-needs-list/criminogenicNeedsList'
-export { RandomizableField, type RandomizableFieldProps } from './randomizable-field/randomizableField'
+export { CriminogenicNeedsList } from './criminogenic-needs-list/criminogenicNeedsList'
+export { RandomizableField } from './randomizable-field/randomizableField'

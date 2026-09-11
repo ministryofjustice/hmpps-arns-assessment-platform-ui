@@ -134,7 +134,7 @@ test.describe('Plan History - Updated Goals', () => {
     await updatePage.setStepStatusByIndex(0, 'IN_PROGRESS')
     await updatePage.clickSaveGoalAndSteps()
 
-    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
 
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -177,7 +177,7 @@ test.describe('Plan History - Updated Goals', () => {
     await updatePage.enterProgressNotes('Good progress being made with support group attendance.')
     await updatePage.clickSaveGoalAndSteps()
 
-    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
 
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)

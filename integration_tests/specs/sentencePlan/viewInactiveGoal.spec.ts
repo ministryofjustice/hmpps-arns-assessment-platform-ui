@@ -118,7 +118,7 @@ test.describe('View inactive goal page', () => {
       await viewPage.clickBackLink()
 
       // Should navigate to achieved goals tab
-      await expect(page).toHaveURL(/type=achieved/)
+      await expect(page).toHaveURL(/goalStatusTab=achieved/)
     })
   })
 
@@ -226,7 +226,7 @@ test.describe('View inactive goal page', () => {
       await viewPage.clickBackLink()
 
       // Should navigate to removed goals tab
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
     })
   })
 

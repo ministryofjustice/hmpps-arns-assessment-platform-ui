@@ -1,7 +1,9 @@
 import { dataAccess } from '../data'
+import config from '../config'
 import AuditService from './auditService'
 import AssessmentService from './assessmentService'
 import FeatureFlagService from './featureFlagService'
+import DomainEventsService from './domainEventsService'
 import { RiskActuarialService } from '../forms/tiering-assessment/effects/RiskActuarialService'
 
 export const services = () => {
@@ -9,10 +11,13 @@ export const services = () => {
     applicationInfo,
     assessmentPlatformApiClient,
     coordinatorApiClient,
+    arnsApiClient,
+    gotenbergClient,
     handoverApiClient,
     deliusApiClient,
     riskActuarialApiClient,
     arnsComponents,
+    mpopComponents,
     preferencesStore,
   } = dataAccess()
 
@@ -21,14 +26,18 @@ export const services = () => {
     assessmentPlatformApiClient,
     deliusApiClient,
     coordinatorApiClient,
+    arnsApiClient,
+    gotenbergClient,
     handoverApiClient,
     riskActuarialApiClient,
-    riskActuarialService: new RiskActuarialService(riskActuarialApiClient),
     arnsComponents,
+    mpopComponents,
     preferencesStore,
     auditService: new AuditService(applicationInfo.applicationName),
     assessmentService: new AssessmentService(assessmentPlatformApiClient),
     featureFlagService: new FeatureFlagService(),
+    domainEventsService: new DomainEventsService(config.sns),
+    riskActuarialService: new RiskActuarialService(riskActuarialApiClient),
   }
 }
 

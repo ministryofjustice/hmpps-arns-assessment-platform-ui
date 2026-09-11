@@ -1,4 +1,5 @@
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
+import { MPoPComponents } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import { ArnsComponents } from '@ministryofjustice/hmpps-arns-frontend-components-lib'
 import applicationInfoSupplier from '../applicationInfo'
 
@@ -9,8 +10,10 @@ import AssessmentPlatformApiClient from './assessmentPlatformApiClient'
 import DeliusApiClient from './deliusApiClient'
 import HandoverApiClient from './handoverApiClient'
 import CoordinatorApiClient from './coordinatorApiClient'
+import ArnsApiClient from './arnsApiClient'
 import AssessmentCacheStore from './assessmentCacheStore'
 import PreferencesStore from './preferencesStore'
+import GotenbergClient from './gotenbergClient'
 import RiskActuarialApiClient from './riskActuarialApiClient'
 
 const applicationInfo = applicationInfoSupplier()
@@ -33,6 +36,16 @@ export const dataAccess = () => {
     coordinatorApiClient: new CoordinatorApiClient(hmppsAuthClient),
     riskActuarialApiClient: new RiskActuarialApiClient(hmppsAuthClient),
     arnsComponents: new ArnsComponents(hmppsAuthClient, config.apis.arnsApi, logger),
+    mpopComponents: new MPoPComponents(
+      hmppsAuthClient,
+      {
+        ...config.apis.tierApi,
+        supervisionPackageApiConfig: config.apis.supervisionPackageApi,
+      },
+      logger,
+    ),
+    arnsApiClient: new ArnsApiClient(hmppsAuthClient),
+    gotenbergClient: new GotenbergClient(config.apis.gotenberg),
     assessmentCacheStore,
     preferencesStore: new PreferencesStore(),
   }
@@ -47,6 +60,9 @@ export {
   HandoverApiClient,
   DeliusApiClient,
   CoordinatorApiClient,
-  ArnsComponents,
+  ArnsApiClient,
+  GotenbergClient,
   PreferencesStore,
+  MPoPComponents,
+  ArnsComponents,
 }

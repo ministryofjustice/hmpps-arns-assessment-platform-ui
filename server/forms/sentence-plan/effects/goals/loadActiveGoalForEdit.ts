@@ -22,10 +22,22 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
   }
   const { activeGoal } = activeGoalResolution
 
-  // Set up area of need data based on the goal's area
-  const currentAreaOfNeed = areasOfNeed?.find(area => area.slug === activeGoal.areaOfNeed)
+  /*
+   * The area of need can be changed on the "Change area of need" page, which carries the
+   * chosen area back as a query param (?area=). Until the goal is saved this is a pending
+   * selection, so the edit page reflects it without persisting anything yet.
+   */
+  const pendingAreaOfNeed = context.getQueryParam('area') as string | undefined
+  // Ignore an unknown/invalid area (e.g. a manually edited query string) and use the saved area.
+  const effectiveAreaOfNeed =
+    pendingAreaOfNeed && areasOfNeed?.some(area => area.slug === pendingAreaOfNeed)
+      ? pendingAreaOfNeed
+      : activeGoal.areaOfNeed
+
+  // Set up area of need data based on the effective area
+  const currentAreaOfNeed = areasOfNeed?.find(area => area.slug === effectiveAreaOfNeed)
   const otherAreasOfNeed =
-    areasOfNeed?.filter(area => area.slug !== activeGoal.areaOfNeed).sort((a, b) => a.text.localeCompare(b.text)) ?? []
+    areasOfNeed?.filter(area => area.slug !== effectiveAreaOfNeed).sort((a, b) => a.text.localeCompare(b.text)) ?? []
 
   context.setData('currentAreaOfNeed', currentAreaOfNeed)
   context.setData('otherAreasOfNeed', otherAreasOfNeed)
@@ -36,12 +48,24 @@ export const loadActiveGoalForEdit = () => async (context: SentencePlanContext) 
   // Pre-populate form fields with existing values
   context.setAnswer('goal_title', activeGoal.title)
 
-  // Determine if goal has related areas
-  const hasRelatedAreas = activeGoal.relatedAreasOfNeed && activeGoal.relatedAreasOfNeed.length > 0
-  context.setAnswer('is_related_to_other_areas', hasRelatedAreas ? 'yes' : 'no')
+  /*
+   * Drop the (possibly newly chosen) primary area from related areas — a goal can't relate
+   * to its own area, so it is not offered as a related option.
+   */
+  const relatedAreasOfNeed = (activeGoal.relatedAreasOfNeed ?? []).filter(area => area !== effectiveAreaOfNeed)
+  const hasRelatedAreas = relatedAreasOfNeed.length > 0
 
+  /*
+   * When the area of need has been changed and no valid related areas remain,
+   * leave the related areas question unanswered so the practitioner must actively re-select.
+   * If valid related areas still exist after filtering, keep them pre-selected.
+   */
+  const areaHasChanged = pendingAreaOfNeed !== undefined && pendingAreaOfNeed !== activeGoal.areaOfNeed
   if (hasRelatedAreas) {
-    context.setAnswer('related_areas_of_need', activeGoal.relatedAreasOfNeed)
+    context.setAnswer('is_related_to_other_areas', 'yes')
+    context.setAnswer('related_areas_of_need', relatedAreasOfNeed)
+  } else if (!areaHasChanged) {
+    context.setAnswer('is_related_to_other_areas', 'no')
   }
 
   // Determine if goal can start now based on status

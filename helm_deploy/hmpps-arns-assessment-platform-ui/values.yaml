@@ -32,6 +32,7 @@ generic-service:
     AUDIT_ENABLED: 'true'
     AUDIT_SQS_REGION: 'eu-west-2'
     AUDIT_SERVICE_NAME: 'hmpps-arns-assessment-platform-ui'
+    GOTENBERG_API_URL: 'http://hmpps-arns-assessment-platform-ui-gotenberg'
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
 
@@ -80,5 +81,59 @@ generic-service:
     targetCPUUtilizationPercentage: 80
     scaleUpStabilizationWindowSeconds: 60
 
+gotenberg:
+  nameOverride: gotenberg
+  replicaCount: 2
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+  image:
+    repository: gotenberg/gotenberg
+    tag: 8.36.0
+    port: 3000
+
+  containerCommand: ['gotenberg']
+  containerArgs:
+    ['--chromium-clear-cookies', '--libreoffice-disable-routes', '--webhook-disable', '--prometheus-disable-collect']
+
+  ingress:
+    enabled: false
+
+  livenessProbe:
+    httpGet:
+      path: /health
+    periodSeconds: 30
+    initialDelaySeconds: 60
+    timeoutSeconds: 20
+    failureThreshold: 10
+
+  readinessProbe:
+    httpGet:
+      path: /health
+    periodSeconds: 20
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 15
+
+  podSecurityContext:
+    fsGroup: 1001
+
+  securityContext:
+    runAsUser: 1001
+    privileged: false
+    runAsNonRoot: true
+
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
+
+# Wiremock is a test-only proxy in front of Delius, ARNS, Tier and Supervision Package.
+# All of its configuration lives in values-dev.yaml and values-test.yaml. Keep turned off here
+# to avoid Wiremock being enabled in preprod and prod.
+wiremock:
+  enabled: false

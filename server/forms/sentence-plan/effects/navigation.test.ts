@@ -2,6 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { NAV_KEY_PATTERNS } from './navigation'
 
+// The print preview opens in a new tab and must not change the navigation stack.
+const UntrackedStepPaths = new Set(['/print-preview'])
+
 function findStepFiles(dir: string): string[] {
   const results: string[] = []
 
@@ -40,7 +43,7 @@ describe('NAV_KEY_PATTERNS coverage', () => {
     stepFiles.forEach(file => {
       const rawPath = extractStepPath(file)
 
-      if (rawPath) {
+      if (rawPath && !UntrackedStepPaths.has(rawPath)) {
         const strippedPath = stripRouteParams(rawPath)
         const isTracked = patternValues.some(pattern => pattern.includes(strippedPath))
         const relativePath = path.relative(versionsDir, file)

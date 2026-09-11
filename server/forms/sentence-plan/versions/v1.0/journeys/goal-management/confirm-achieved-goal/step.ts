@@ -39,7 +39,7 @@ export const confirmAchievedGoalStep = step({
             target: 'plan-overview',
           }),
         ],
-        next: [redirect({ goto: '../../plan/overview?type=achieved' })],
+        next: [redirect({ goto: '../../plan/overview?goalStatusTab=achieved' })],
       },
     }),
   ],

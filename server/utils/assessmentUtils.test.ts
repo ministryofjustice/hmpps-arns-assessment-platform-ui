@@ -9,9 +9,9 @@ const areasOfNeedThresholdsAndUpperBounds = Object.fromEntries(
 describe('assessmentUtils', () => {
   // Note: The SAN assessment data keys (e.g. accommodation_practitioner_analysis_risk_of_serious_harm)
   // come from SAN via the coordinator API, representing raw form answers. Each value is an AnswerDto
-  // with a `value` property. We don't use the YES/NO indicator values from these keys - instead we get
-  // linked indicators from the handover service (criminogenic needs data, which IS from OASys).
-  // We only use these SAN keys for the _details text.
+  // with a `value` property. Linked indicators normally come from the needs data (handover for OASys,
+  // ARNS for MPoP), and these SAN keys are used for the _details text. The exception is strengths,
+  // which falls back to the SAN strengths key when the needs data omits it (the ARNS/MPoP case).
   const createSanAssessmentData = (overrides: Partial<SanAssessmentData> = {}): SanAssessmentData => ({
     accommodation_section_complete: { value: 'YES' },
     accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
@@ -116,6 +116,90 @@ describe('assessmentUtils', () => {
       expect(accommodationArea.linkedToStrengthsOrProtectiveFactors).toBeNull()
       // Section complete still comes from SAN assessment data
       expect(accommodationArea.isAssessmentSectionComplete).toBe(true)
+    })
+
+    it('should source the strengths indicator from the coordinator when the needs data omits it (MPoP/ARNS)', () => {
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: true,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 4,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+      // ARNS provides harm/reoffending but not strengths, so strengths falls back to the coordinator's SAN answer
+      expect(accommodationArea.linkedToHarm).toBe('YES')
+      expect(accommodationArea.linkedToStrengthsOrProtectiveFactors).toBe('YES')
+      expect(accommodationArea.strengthsOrProtectiveFactorsDetails).toBe('Has stable housing history')
+    })
+
+    it('should source harm/reoffending from the coordinator for areas the ARNS needs data omits (MPoP finance/health)', () => {
+      const sanAssessmentData = createSanAssessmentData({
+        finance_section_complete: { value: 'YES' },
+        finance_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+        finance_practitioner_analysis_risk_of_reoffending: { value: 'NO' },
+      })
+      const crimNeeds = createCriminogenicNeedsData({
+        finance: {
+          linkedToHarm: null,
+          linkedToReoffending: null,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: null,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const financeArea = result.find(a => a.goalRoute === 'finances')
+
+      expect(financeArea.linkedToHarm).toBe('YES')
+      expect(financeArea.linkedToReoffending).toBe('NO')
+    })
+
+    it('should keep the ARNS harm/reoffending value for scored areas and not override it from the coordinator', () => {
+      // Coordinator says YES for accommodation harm, but the needs data says NO - the needs data wins.
+      const sanAssessmentData = createSanAssessmentData()
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: false,
+          linkedToReoffending: false,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: 4,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+      expect(accommodationArea.linkedToHarm).toBe('NO')
+      expect(accommodationArea.linkedToReoffending).toBe('NO')
+    })
+
+    it('should not fall back to the coordinator for harm/reoffending on a scored area with a null ARNS indicator', () => {
+      // A scored section left unanswered in the needs data (linkedToHarm/Reoffending null) must stay
+      // null - only the unscored finance/health areas take the coordinator fallback.
+      const sanAssessmentData = createSanAssessmentData({
+        accommodation_practitioner_analysis_risk_of_serious_harm: { value: 'YES' },
+        accommodation_practitioner_analysis_risk_of_reoffending: { value: 'YES' },
+      })
+      const crimNeeds = createCriminogenicNeedsData({
+        accommodation: {
+          linkedToHarm: null,
+          linkedToReoffending: null,
+          linkedToStrengthsOrProtectiveFactors: null,
+          score: null,
+        },
+      })
+
+      const result = transformAssessmentData(sanAssessmentData, crimNeeds)
+      const accommodationArea = result.find(a => a.goalRoute === 'accommodation')
+
+      expect(accommodationArea.linkedToHarm).toBeNull()
+      expect(accommodationArea.linkedToReoffending).toBeNull()
     })
 
     it('should handle incomplete sections', () => {
