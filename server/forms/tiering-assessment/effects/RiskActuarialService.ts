@@ -110,11 +110,19 @@ export class RiskActuarialService {
   private getExcessiveAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
     const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has_ever_drunk_alcohol'))
 
-    return this.parseProblemLevel(
-      hasEverDrunkAlcohol === 'YES_IN_LAST_THREE_MONTHS'
-        ? context.getAnswer('alcohol_use_binge_drinking')
-        : context.getAnswer('binge_drinking'),
-    )
+    switch (hasEverDrunkAlcohol) {
+      case 'NO':
+        return this.parseProblemLevel('NO_PROBLEMS')
+
+      case 'YES_IN_LAST_THREE_MONTHS':
+        return this.parseProblemLevel(context.getAnswer('alcohol_use_binge_drinking'))
+
+      case 'YES_NOT_IN_LAST_THREE_MONTHS':
+        return this.parseProblemLevel(context.getAnswer('binge_drinking'))
+
+      default:
+        return null
+    }
   }
 
   private getDidOffenceInvolveCarryingOrUsingWeapon(context: TieringAssessmentEffectContext): boolean | null {

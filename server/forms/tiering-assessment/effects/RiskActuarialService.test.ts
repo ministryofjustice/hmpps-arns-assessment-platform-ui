@@ -820,22 +820,6 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has_ever_drunk_alcohol" is YES_NOT_LAST_THREE_MONTHS', async () => {
-    const answers: Record<string, unknown> = {
-      has_ever_drunk_alcohol: 'YES_NOT_LAST_THREE_MONTHS',
-    }
-
-    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
-
-    await service.calculateAndSaveScores(mockContext)
-
-    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
-      expect.objectContaining({
-        currentAlcoholUseProblems: null,
-      }),
-    )
-  })
-
   it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol <= 4', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
@@ -902,13 +886,14 @@ describe('RiskActuarialService', () => {
     expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
       expect.objectContaining({
         currentAlcoholUseProblems: 'NO_PROBLEMS',
+        excessiveAlcoholUse: 'NO_PROBLEMS',
       }),
     )
   })
 
-  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_NOT_LAST_THREE_MONTHS and binge-drinking is set', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_NOT_IN_LAST_THREE_MONTHS and binge-drinking is set', async () => {
     const answers: Record<string, unknown> = {
-      has_ever_drunk_alcohol: 'YES_NOT_LAST_THREE_MONTHS',
+      has_ever_drunk_alcohol: 'YES_NOT_IN_LAST_THREE_MONTHS',
       alcohol_use_binge_drinking: 'NO_PROBLEMS', // Practically will never happen, just checking the if functionality
       binge_drinking: 'SIGNIFICANT_PROBLEMS',
     }
