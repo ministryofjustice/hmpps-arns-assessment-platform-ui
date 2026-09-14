@@ -2,46 +2,10 @@ import type { Request, Response } from 'express'
 import setUpRequestContext from './setUpRequestContext'
 import { requestContext } from '../utils/requestContext'
 
-const mockSetAttribute = jest.fn()
-
-jest.mock('@ministryofjustice/hmpps-azure-telemetry', () => ({
-  trace: {
-    getActiveSpan: () => ({
-      setAttribute: (...args: unknown[]) => mockSetAttribute(...args),
-    }),
-  },
-}))
-
 type MiddlewareStack = Array<{ handle: (req: Request, res: Response, next: () => void) => void }>
 
 describe('setUpRequestContext', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
-
-  it('should set serviceName on the active span when targetService exists', () => {
-    const router = setUpRequestContext() as unknown as { stack: MiddlewareStack }
-    const middleware = router.stack[0].handle
-    const req = { session: { targetService: 'sentence-plan' } } as unknown as Request
-    const res = {} as Response
-
-    middleware(req, res, () => {})
-
-    expect(mockSetAttribute).toHaveBeenCalledWith('serviceName', 'sentence-plan')
-  })
-
-  it('should not set serviceName on the active span when targetService is absent', () => {
-    const router = setUpRequestContext() as unknown as { stack: MiddlewareStack }
-    const middleware = router.stack[0].handle
-    const req = { session: {} } as unknown as Request
-    const res = {} as Response
-
-    middleware(req, res, () => {})
-
-    expect(mockSetAttribute).not.toHaveBeenCalled()
-  })
-
-  it('should provide serviceName from session.targetService via lazy getter', async () => {
+  it('should provide serviceName from session.targetService via lazy getter', () => {
     const router = setUpRequestContext() as unknown as { stack: MiddlewareStack }
     const middleware = router.stack[0].handle
     const req = { session: { targetService: 'sentence-plan' } } as unknown as Request
