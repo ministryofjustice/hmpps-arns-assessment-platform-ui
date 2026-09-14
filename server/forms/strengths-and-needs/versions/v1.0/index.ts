@@ -1,4 +1,14 @@
-import { access, and, Condition, Data, journey, redirect, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Condition,
+  Data,
+  journey,
+  not,
+  Params,
+  redirect,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 import { financeJourney } from './journeys/finance'
@@ -11,12 +21,17 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isEditMode, isOasysAccess } from './guards'
+import { isEditMode, isHistoricView, isOasysAccess, preventPrivilegeEscalation } from './guards'
+import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { previousVersionsStep } from './steps/previous-versions/step'
 import { configStep } from '../configStep'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
+import { StrengthsAndNeedsTransformers } from '../../transformers'
+import { createRoute } from '../../generators'
+import { baseSanRoute } from './constants/path'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -29,24 +44,30 @@ const feedbackUrl = config.privateBetaFeedbackUrl
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
-  path: `/${formVersion}`,
+  path: `/${formVersion}/:mode/:uuid`,
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
-      basePath,
+      basePath: createRoute(baseSanRoute),
+      assessmentVersionDate: Data('sessionDetails.assessmentVersion').pipe(
+        StrengthsAndNeedsTransformers.FormatFullDateTime(),
+      ),
       sectionNavItems: Object.values(Section).map(section => ({
         ...section,
         complete: Data(section.statusKey),
         text: commonContentFor(`sectionTitle.${section.code}`),
         // Override sideNavHref for read-only mode to point to analysis step
-        sideNavHref: when(isEditMode)
-          .then(`${section.sideNavHref}?resume=true`)
-          .else(section.sideNavHref),
+        sideNavHref: when(Params('mode').match(Condition.Equals('edit')))
+          .then(createRoute([...baseSanRoute, section.sideNavHref], [{ name: 'resume', value: 'true' }]))
+          .else(createRoute([...baseSanRoute, section.sideNavHref])),
       })),
+      viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
+      viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
       buttons: {
-        showReturnToOasysButton: isOasysAccess,
+        showReturnToOasysButton: and(isOasysAccess, not(isHistoricView)),
       },
       feedbackUrl,
+      previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
     },
   },
   data: {
@@ -58,17 +79,25 @@ export const strengthsAndNeedsV1Journey = journey({
       effects: [
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
+        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
         StrengthsAndNeedsEffects.loadAssessment(),
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
+    // Prevent privilege escalation: check mode against accessMode
+    preventPrivilegeEscalation(),
     // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
     access({
       when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
       next: [redirect({ goto: `${formRootPath}/privacy` })],
     }),
   ],
-  steps: [...createPlatformPages({ baseUrl: basePath, feedbackUrl }), viewAllAnswersStep, configStep],
+  steps: [
+    ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
+    viewAllAnswersStep,
+    previousVersionsStep,
+    configStep,
+  ],
   children: [
     accommodationJourney,
     employmentJourney,
@@ -78,5 +107,6 @@ export const strengthsAndNeedsV1Journey = journey({
     healthWellbeingJourney,
     personalRelationshipsJourney,
     thinkingBehavioursAndAttitudesJourney,
+    offenceAnalysisJourney,
   ],
 })

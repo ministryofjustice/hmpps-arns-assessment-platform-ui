@@ -38,7 +38,7 @@ services:
       INGRESS_URL: http://localhost:3000
       OASYS_URL: http://localhost:3000/training-session-launcher/sessions
       MPOP_URL: http://localhost:3000/sign-in
-      SAN_URL: http://localhost:3000
+      SAN_URL: http://localhost:3000/strengths-and-needs/v1.0
 
   arns-handover:
     environment:

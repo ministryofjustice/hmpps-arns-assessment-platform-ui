@@ -16,7 +16,7 @@ test.describe('View Summary or Practitioner Analysis pages for each Criminogenic
     })
     await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(financeAnswers).save()
 
-    await walkToFinanceSummary(page, handoverLink)
+    await walkToFinanceSummary(page, handoverLink, sanAssessmentId)
 
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.VIEW_SECTION_SUMMARY, {
       additionalFilter: onPage('finance', 'finance_summary'),
@@ -35,7 +35,7 @@ test.describe('View Summary or Practitioner Analysis pages for each Criminogenic
     })
     await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(financeAnswers).save()
 
-    await walkToFinanceSummary(page, handoverLink)
+    await walkToFinanceSummary(page, handoverLink, sanAssessmentId)
     await markSectionComplete(page)
     await expect(page).toHaveURL(/finance-analysis/)
 

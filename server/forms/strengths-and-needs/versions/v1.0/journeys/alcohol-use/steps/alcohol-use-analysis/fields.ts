@@ -8,6 +8,8 @@ import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { questions, summary } from '../alcohol-use-summary/fields'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { analysisOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -40,6 +42,7 @@ export const alcoholPractitionerAnalysisSummaryTab = HtmlBlock({
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
           panel: { blocks: [practitionerAnalysisSummary] },
+          visibleWhen: anyAnswered(analysisOf({ section: Section.alcohol_use, config: alcoholUseSection })),
         },
       ],
       visibleWhen: anyAnswered(questions),

@@ -150,4 +150,16 @@ export const subjectDetailsTabContent = [
       defaultValue: Data('scenario.sentencePlanVersion'),
     }),
   }),
+
+  RandomizableField({
+    fieldKey: 'sanAssessmentVersion',
+    randomize: Data('sanAssessmentVersion_isRandomized'),
+    field: GovUKTextInput({
+      code: 'sanAssessmentVersion',
+      label: 'SAN Assessment Version',
+      hint: 'Unix timestamp in milliseconds (leave blank for current version)',
+      classes: 'govuk-input--width-10',
+      defaultValue: Data('scenario.sanAssessmentVersion'),
+    }),
+  }),
 ]

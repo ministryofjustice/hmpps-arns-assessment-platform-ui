@@ -129,7 +129,7 @@ const income = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
 })
 
@@ -143,7 +143,7 @@ const bankAccount = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
 })
 
@@ -179,7 +179,7 @@ const moneyManagement = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
 })
 
@@ -213,7 +213,7 @@ const gambling = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
 })
 
@@ -256,7 +256,7 @@ const debt = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
 })
 
@@ -310,7 +310,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
 })
 
@@ -341,7 +341,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.financeSummary.path,
+      changeHref: Step.financeSummary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -370,7 +370,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.financeSummary.path,
+      changeHref: Step.financeSummary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -399,7 +399,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.financeSummary.path,
+      changeHref: Step.financeSummary.path,
       changeVisuallyHiddenText: true,
     }),
   },

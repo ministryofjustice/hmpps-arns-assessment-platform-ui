@@ -11,8 +11,6 @@ export default class DrugUsePage extends StrengthsAndNeedsPage {
 
   readonly selectWhichDrugs: Locator
 
-  readonly yes: Locator
-
   readonly selectWhyTheyUseDrugs: Locator
 
   readonly culturalOrReligiousPractice: Locator
@@ -26,7 +24,6 @@ export default class DrugUsePage extends StrengthsAndNeedsPage {
     this.mainSection = page.getByTestId('main-form')
     this.selectIfEverMisusedDrugs = page.getByRole('link', { name: 'Select if they’ve ever misused drugs' })
     this.selectWhichDrugs = page.getByRole('link', { name: 'Select which drugs they’ve misused' })
-    this.yes = page.getByLabel('Yes')
     this.form = page.locator('form')
     this.selectWhyTheyUseDrugs = page.getByRole('link', { name: 'Select why they use drugs' })
     this.culturalOrReligiousPractice = page.getByRole('checkbox', { name: 'Cultural or religious practice' })
@@ -41,10 +38,11 @@ export default class DrugUsePage extends StrengthsAndNeedsPage {
     page: Page,
     handoverLink: string,
     baseUrl: string,
+    assessmentId: string,
     url: string = 'drug-use',
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}${drugUse}/${url}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${drugUse}/${url}`)
     expect(page.url()).toContain(url)
   }
 

@@ -183,9 +183,8 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     criminogenicNeedsData: buildCriminogenicNeeds(values),
   }
 
-  // Add version info based on target application
-  if (targetApplication === 'strengths-and-needs' && session.sanAssessmentVersion) {
-    request.assessmentVersion = session.sanAssessmentVersion
+  if (targetApplication === 'strengths-and-needs' && values.sanAssessmentVersion) {
+    request.assessmentVersion = values.sanAssessmentVersion
   }
 
   if (targetApplication === 'sentence-plan' && values.sentencePlanVersion) {

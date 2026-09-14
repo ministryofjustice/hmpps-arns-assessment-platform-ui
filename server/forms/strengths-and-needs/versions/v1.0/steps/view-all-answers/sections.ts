@@ -8,6 +8,7 @@ import { financeSection } from '../../journeys/finance/section'
 import { healthWellbeingSection } from '../../journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from '../../journeys/personal-relationships-and-community/section'
 import { thinkingBehavioursAttitudesSection } from '../../journeys/thinking-behaviours-and-attitudes/section'
+import { offenceAnalysisSection } from '../../journeys/offence-analysis/section'
 
 type SectionDefinitionOf = (typeof Section)[keyof typeof Section]
 
@@ -25,7 +26,7 @@ export const viewAllAnswersSections: ViewAllAnswersSection[] = [
   { section: Section.health_and_wellbeing, config: healthWellbeingSection },
   { section: Section.personal_relationships_and_community, config: personalRelationshipsCommunitySection },
   { section: Section.thinking_behaviours_and_attitudes, config: thinkingBehavioursAttitudesSection },
-  { section: Section.offence_analysis }, // TODO: Add Offence analysis config once implemented
+  { section: Section.offence_analysis, config: offenceAnalysisSection },
 ]
 
 export interface Answerable {

@@ -8,6 +8,8 @@ import { accommodationSection } from '../../section'
 import { questions, summary } from '../accommodation-summary/fields'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { analysisOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -38,6 +40,7 @@ export const accommodationPractitionerAnalysisSummaryTab = HtmlBlock({
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
           panel: { blocks: [practitionerAnalysisSummary] },
+          visibleWhen: anyAnswered(analysisOf({ section: Section.accommodation, config: accommodationSection })),
         },
       ],
       visibleWhen: anyAnswered(questions),

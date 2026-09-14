@@ -9,6 +9,8 @@ import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { summary } from '../../../health-wellbeing/steps/health-wellbeing-summary/fields'
 import { Step } from '../../../health-wellbeing/constants/step'
+import { analysisOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
@@ -43,6 +45,12 @@ export const personalRelationshipsCommunityPractitionerAnalysisSummaryTab = Html
           panel: {
             blocks: [practitionerAnalysisSummary],
           },
+          visibleWhen: anyAnswered(
+            analysisOf({
+              section: Section.personal_relationships_and_community,
+              config: personalRelationshipsCommunitySection,
+            }),
+          ),
         },
       ],
       visibleWhen: anyAnswered(questions),

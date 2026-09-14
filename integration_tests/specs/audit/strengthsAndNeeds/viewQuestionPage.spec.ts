@@ -21,11 +21,13 @@ test.describe('Views Question pages for each Criminogenic Needs section', () => 
     strengthsAndNeedsBuilder,
     auditQueue,
   }) => {
-    const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    const { crn, handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto('/strengths-and-needs/v1.0/finances/finance')
+    await page.goto(`/strengths-and-needs/v1.0/edit/${sanAssessmentId}/finances/finance`)
 
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.VIEW_QUESTION_PAGE, {
       additionalFilter: onPage('finance', 'finance'),
