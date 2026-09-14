@@ -24,6 +24,13 @@ initialiseTelemetry({
 })
   .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/info', '/assets/*', '/favicon.ico']))
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
+  .addModifier(span => {
+    const serviceName = requestContext.getStore()?.getServiceName()
+
+    if (serviceName) {
+      span.setAttribute('serviceName', serviceName)
+    }
+  })
   .startRecording()
 
 const shutdown = async () => {
