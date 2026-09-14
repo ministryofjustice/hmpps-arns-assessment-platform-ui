@@ -13,6 +13,9 @@
     <meta name="ai-connection-string" content="{{ appInsightsConnectionString }}">
     <meta name="ai-request-id" content="{{ requestId }}">
     <meta name="ai-telemetry-id" content="{{ telemetryId }}">
+    {% if targetService %}
+      <meta name="ai-target-service" content="{{ targetService }}">
+    {% endif %}
     {% if user and user.authSource %}
       <meta name="ai-entry-point" content="{{ user.authSource }}">
     {% endif %}

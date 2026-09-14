@@ -38,6 +38,7 @@ function createAppInsights() {
     const assessmentUuid = document.querySelector('[data-qa-assessment-uuid]')?.getAttribute('data-qa-assessment-uuid')
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
     const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
+    const serviceName = document.querySelector('meta[name="ai-target-service"]')?.content
     const entryPoint = document.querySelector('meta[name="ai-entry-point"]')?.content
     const userContext = document.querySelector('meta[name="ai-user-context"]')?.content
     const userType = document.querySelector('meta[name="ai-user-type"]')?.content
@@ -63,6 +64,7 @@ function createAppInsights() {
       assessmentUuid: assessmentUuid || undefined,
       requestId: requestId || undefined,
       telemetryId: telemetryId || undefined,
+      serviceName: serviceName || undefined,
       entryPoint: entryPoint || undefined,
       userContext: userContext || undefined,
       userType: userType || undefined,
