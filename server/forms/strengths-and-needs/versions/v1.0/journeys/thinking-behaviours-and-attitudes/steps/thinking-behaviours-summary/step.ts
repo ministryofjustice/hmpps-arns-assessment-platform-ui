@@ -5,6 +5,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const thinkingBehavioursSummaryStep = step({
   path: `/${Step.thinkingBehavioursSummary.path}`,
@@ -18,6 +19,7 @@ export const thinkingBehavioursSummaryStep = step({
     ),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

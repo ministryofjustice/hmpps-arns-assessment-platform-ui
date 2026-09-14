@@ -9,6 +9,7 @@ import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
@@ -22,6 +23,7 @@ export const drugUseStep = step({
   blocks: [drugUseSection.questions.drugUse.displayModes.field, saveButton],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -5,6 +5,7 @@ import { Step } from '../../constants/step'
 import { summaryPageTitle } from '../../../../locales'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
@@ -14,6 +15,7 @@ export const healthWellbeingSummaryStep = step({
     auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.health_and_wellbeing, Step.health_wellbeing_summary),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

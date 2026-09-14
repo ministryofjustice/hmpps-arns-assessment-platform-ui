@@ -6,6 +6,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { sectionPageTitle } from '../../../../locales'
 import { thinkingBehavioursAttitudesSection } from '../../section'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const thinkingBehavioursStep = step({
   path: `/${Step.thinkingBehaviours.path}`,
@@ -33,6 +34,7 @@ export const thinkingBehavioursStep = step({
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.thinking_behaviours_and_attitudes, Step.thinkingBehaviours),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

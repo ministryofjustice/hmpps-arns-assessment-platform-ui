@@ -18,6 +18,7 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { victimsCollection } from '../../constants/collections'
 import { contentFor } from '../../locales'
 import { saveButton } from '../../../../constants/buttons'
+import { autosaveSubmit } from '../../../../autosave'
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
@@ -43,6 +44,7 @@ export const offenceAnalysisVictimSummaryStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

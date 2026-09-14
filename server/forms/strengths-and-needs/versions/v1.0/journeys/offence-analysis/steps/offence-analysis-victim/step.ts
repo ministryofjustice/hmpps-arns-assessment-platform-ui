@@ -4,6 +4,7 @@ import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
@@ -22,6 +23,7 @@ export const offenceAnalysisVictimStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

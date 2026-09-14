@@ -4,6 +4,7 @@ import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisInvolvedPartiesStep = step({
   path: `/${Step.offence_analysis_involved_parties.path}`,
@@ -14,6 +15,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
     saveButton,
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

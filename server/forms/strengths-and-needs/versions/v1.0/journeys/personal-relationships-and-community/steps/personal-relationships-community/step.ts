@@ -10,6 +10,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
@@ -43,6 +44,7 @@ export const personalRelationshipsCommunityStep = step({
     ),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
