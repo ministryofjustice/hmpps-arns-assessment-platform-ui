@@ -81,7 +81,7 @@ wiremock:
     tag: 3.13.2
     port: 8080
 
-  containerArgs: ['--global-response-templating']
+  containerArgs: ['--global-response-templating', '--no-request-journal']
 
   ingress:
     enabled: false
