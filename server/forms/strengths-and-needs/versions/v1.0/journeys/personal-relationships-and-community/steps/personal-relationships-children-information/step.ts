@@ -7,6 +7,7 @@ import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { sectionPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const personalRelationshipsChildrenInformationStep = step({
   path: `/${Step.personal_relationships_children_information.path}`,
@@ -26,6 +27,7 @@ export const personalRelationshipsChildrenInformationStep = step({
     ),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

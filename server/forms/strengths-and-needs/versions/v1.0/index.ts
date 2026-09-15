@@ -67,6 +67,7 @@ export const strengthsAndNeedsV1Journey = journey({
         showReturnToOasysButton: and(isOasysAccess, not(isHistoricView)),
       },
       feedbackUrl,
+      autosave: isEditMode, // Only enable autosave if we are in edit mode
       previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
     },
   },

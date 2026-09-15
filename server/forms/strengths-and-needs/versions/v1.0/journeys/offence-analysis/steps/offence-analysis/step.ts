@@ -19,6 +19,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisStep = step({
   path: `/${Step.offence_analysis.path}`,
@@ -38,6 +39,7 @@ export const offenceAnalysisStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: and(
         Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),

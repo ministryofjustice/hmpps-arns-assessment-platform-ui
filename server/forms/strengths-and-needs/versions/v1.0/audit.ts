@@ -1,4 +1,4 @@
-import { access } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, Condition, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
@@ -17,7 +17,10 @@ const pageDetails = (section: SectionConfig, step: StepConfig) => ({ section: se
 
 /** For a step's `onAccess`. */
 export const auditPageView = (event: SanAuditEvent, section: SectionConfig, step: StepConfig) =>
-  access({ effects: [StrengthsAndNeedsEffects.sendAuditEvent(event, pageDetails(section, step))] })
+  access({
+    when: Request.Method().match(Condition.Equals('GET')),
+    effects: [StrengthsAndNeedsEffects.sendAuditEvent(event, pageDetails(section, step))],
+  })
 
 /** For a step's `onValid.effects`, after the save effect. */
 export const auditPageAction = (event: SanAuditEvent, section: SectionConfig, step: StepConfig) =>

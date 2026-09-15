@@ -7,6 +7,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const currentAccommodationStep = step({
   path: `/${Step.current_accommodation.path}`,
@@ -20,6 +21,7 @@ export const currentAccommodationStep = step({
   blocks: [accommodationSection.questions.currentAccommodation.displayModes.field, saveButton],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.current_accommodation)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

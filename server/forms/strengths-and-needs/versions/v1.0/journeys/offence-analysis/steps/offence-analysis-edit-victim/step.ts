@@ -13,6 +13,7 @@ import { Step } from '../../constants/step'
 import { victimQuestions } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisEditVictimStep = step({
   path: `/${Step.offence_analysis_victim_edit.templatePath}`,
@@ -37,6 +38,7 @@ export const offenceAnalysisEditVictimStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
