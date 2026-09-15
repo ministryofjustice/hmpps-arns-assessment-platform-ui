@@ -153,7 +153,7 @@ export const notUsedInLastSixMonthsSummarySection = TemplateWrapper({
 
 export const moreInformationHeading = GovUKHeading({
   text: contentFor('text.more_information'),
-  visibleWhen: Answer('drug_use').match(Condition.Equals(CommonOption.yes)),
+  visibleWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
 })
 
 export const drugsSummaryPartTwo = GovUKSummaryList({
@@ -208,6 +208,7 @@ export const summaryTab = HtmlBlock({
           label: commonContentFor('practitioner_analysis'),
           panel: {
             blocks: [
+              drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.field,
               drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
               drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
               drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,

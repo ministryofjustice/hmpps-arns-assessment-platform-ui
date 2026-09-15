@@ -8,8 +8,6 @@ export const Question = {
   how_often_used_last_six_months: 'how_often_used_last_six_months',
   how_often_used_value: 'how_often_used_last_six_months_%1',
   how_often_used_other: 'how_often_used_other',
-  how_often_used_other_test: 'how_often_used_other_test',
-  how_often_used_other_details_test: 'how_often_used_other_%1_details_test',
   how_often_used_details: 'how_often_used_last_six_months_%1_details',
   not_used_in_last_six_months_details: 'not_used_in_last_six_months_details',
   drugs_injected: 'drugs_injected',

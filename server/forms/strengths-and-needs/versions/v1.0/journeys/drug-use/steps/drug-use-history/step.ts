@@ -38,7 +38,7 @@ export const drugUseHistoryStep = step({
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_history),
         ],
-        next: [redirect({ goto: 'drug-use-summary' })],
+        next: [redirect({ goto: Step.drug_use_summary.path })],
       },
     }),
   ],
