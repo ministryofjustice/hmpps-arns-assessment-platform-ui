@@ -219,6 +219,10 @@ test.describe('Offence Analysis Page', () => {
             question: 'offence_analysis_who_was_the_victim',
             value: ['OTHER'],
           },
+          {
+            question: 'offence_analysis_who_was_the_victim_other_details',
+            value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+          },
         ]).save()
 
       await OffenceAnalysisPage.navigateToOffenceAnalysis(
