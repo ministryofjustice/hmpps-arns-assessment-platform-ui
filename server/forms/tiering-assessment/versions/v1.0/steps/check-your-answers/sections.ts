@@ -16,6 +16,7 @@ import { drugUseFields } from '../drug-use/fields'
 import { personalRelationshipsFields } from '../personal-relationships-and-community/fields'
 import { thinkingAttitudesBehavioursFields } from '../thinking-attitudes-and-behaviours/fields'
 import { previousConvictionsFields } from '../previous-convictions/fields'
+import { offenceAnalysisFields } from '../offence-analysis/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -34,6 +35,7 @@ export const checkYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields, bingeDrinkingFields] },
   { step: Step.personal_relationships_and_community, config: personalRelationshipsFields },
   { step: Step.thinking_attitudes_and_behaviours, config: thinkingAttitudesBehavioursFields },
+  { step: Step.offence_analysis, config: offenceAnalysisFields },
   { step: Step.previous_convictions, config: previousConvictionsFields },
 ]
 
