@@ -11,10 +11,6 @@ export const Step = {
     code: 'drug_use_history',
     path: 'drug-use-history',
   },
-  drug_use_history_more_than_six_months: {
-    code: 'drug_use_history_more_than_six_months',
-    path: 'drug-use-history-more-than-six-months',
-  },
   add_drugs: {
     code: 'add_drugs',
     path: 'add-drugs',

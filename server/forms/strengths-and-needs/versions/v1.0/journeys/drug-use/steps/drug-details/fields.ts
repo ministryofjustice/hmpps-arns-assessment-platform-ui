@@ -3,7 +3,6 @@ import {
   Answer,
   Condition,
   Data,
-  Format,
   Item,
   Iterator,
   Transformer,
@@ -29,7 +28,8 @@ export const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Conditi
 const drugValueLower = Item().path('value').pipe(Transformer.String.ToLowerCase())
 
 export const usedInLastSixMonthsSection = TemplateWrapper({
-  template: '<h2 class="govuk-heading-l">Used in the last 6 months</h2>{{slot:content}}',
+  template: '<h2 class="govuk-heading-l">{{heading}}</h2>{{slot:content}}',
+  values: { heading: contentFor('option.LAST_SIX') },
   slots: {
     content: [
       GovUKDetails({
@@ -78,12 +78,13 @@ export const sectionDivider = TemplateWrapper({
 // --- Not used in the last 6 months ---
 
 export const usedMoreThanSixMonthsSection = TemplateWrapper({
-  template: '<h2 class="govuk-heading-l">Not used in the last 6 months</h2>{{slot:content}}',
+  template: '<h2 class="govuk-heading-l">{{heading}}</h2>{{slot:content}}',
+  values: { heading: contentFor('heading.not_used_in_last_six_months') },
   slots: {
     content: [
       GovUKInsetText({
-        text: Format(
-          '%1 used %2 more than 6 months ago.',
+        text: contentFor(
+          'inset.used_more_than_six_months_ago',
           CaseData.Forename,
           Data('drugsUsedMoreThanSix')
             .each(

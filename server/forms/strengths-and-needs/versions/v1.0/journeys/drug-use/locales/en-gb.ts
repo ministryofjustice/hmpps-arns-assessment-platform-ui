@@ -213,6 +213,9 @@ export const english = {
   heading: {
     not_used_in_last_six_months: 'Not used in the last 6 months',
   },
+  inset: {
+    used_more_than_six_months_ago: '%1 used %2 more than 6 months ago.',
+  },
 } as const
 
-export type AccommodationLocale = Locale<typeof english>
+export type DrugUseLocale = Locale<typeof english>

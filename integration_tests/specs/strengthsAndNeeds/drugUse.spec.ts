@@ -219,7 +219,7 @@ test.describe('Drug use Page', () => {
           { question: 'how_often_used_last_six_months_amphetamines', value: 'DAILY' },
           { question: 'drugs_is_receiving_treatment_no_details', value: '' },
           { question: 'how_often_used_last_six_months_amphetamines_details', value: 'test' },
-          { question: 'drug_use_more_than_six_months_details', value: 'test' },
+          { question: 'not_used_in_last_six_months_details', value: 'test' },
           { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
         ]).save()
 
@@ -317,7 +317,7 @@ test.describe('Drug use Page', () => {
           { question: 'how_often_used_last_six_months_amphetamines', value: 'DAILY' },
           { question: 'drugs_is_receiving_treatment_no_details', value: '' },
           { question: 'how_often_used_last_six_months_amphetamines_details', value: 'test' },
-          { question: 'drug_use_more_than_six_months_details', value: 'test' },
+          { question: 'not_used_in_last_six_months_details', value: 'test' },
           { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
         ]).save()
 

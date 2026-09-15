@@ -32,7 +32,7 @@ test.describe('Errors', () => {
 
     await expect(page.getByRole('heading', { name: 'You need to sign in to use this service' })).toBeVisible()
 
-    const accommodationPage = new AccommodationPage(page)
+    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'You need to sign in to use this service')
     await expect(accommodationPage.returnToOASys).toBeVisible()
   })
 })
