@@ -19,6 +19,7 @@ import { Modal } from '../../../../../../components/modal/modalComponent'
 import { commonContentFor } from '../../../../locales'
 import { Option } from '../../constants/option'
 import { victimsCollection } from '../../constants/collections'
+import { CommonOption } from '../../../../constants/commonOption'
 
 export const victimCards = CollectionBlock({
   collection: Data(victimsCollection.name).each(
@@ -73,6 +74,9 @@ export const victimCards = CollectionBlock({
                         .path(Question.offence_analysis_victim_relationship_other_details)
                         .path('value'),
                       size: 's',
+                      visibleWhen: Item().path('answers')
+                        .path(Question.offence_analysis_victim_relationship)
+                        .path('value').match(Condition.Equals(CommonOption.other)),
                     }),
                   ],
                 },

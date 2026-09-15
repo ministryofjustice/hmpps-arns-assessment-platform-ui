@@ -294,7 +294,12 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
         Condition.Array.Contains(CommonOption.other),
       ),
     }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_involved_parties.path }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.offence_analysis_involved_parties.path,
+      visibleWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
+        Condition.Array.Contains(CommonOption.other),
+      ),
+    }),
   },
 })
 

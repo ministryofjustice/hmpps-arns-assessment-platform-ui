@@ -18,6 +18,9 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { victimsCollection } from '../../constants/collections'
 import { contentFor } from '../../locales'
 import { saveButton } from '../../../../constants/buttons'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
+import { Section } from '../../../../constants/section'
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
@@ -29,6 +32,11 @@ const addAnotherButton = GovUKButton({
 export const offenceAnalysisVictimSummaryStep = step({
   path: `/${Step.offence_analysis_victim_summary.path}`,
   title: 'Victims summary',
+  view: {
+    locals: {
+      backlink: createRoute([...baseSanRoute, Section.offence_analysis.path]),
+    },
+  },
   reachability: { entryWhen: true },
   blocks: [victimCards, saveButton, addAnotherButton],
   onAccess: [
