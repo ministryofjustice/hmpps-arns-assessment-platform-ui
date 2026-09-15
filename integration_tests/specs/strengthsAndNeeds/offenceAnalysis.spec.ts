@@ -83,7 +83,7 @@ test.describe('Offence Analysis Page', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId).withAnswers([
           {
-            question: 'offence_analysis_index_offence_description',
+            question: 'offence_analysis_description_of_offence',
             value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
           },
           {
@@ -212,7 +212,7 @@ test.describe('Offence Analysis Page', () => {
             value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
           },
           {
-            question: 'offence_analysis_reason',
+            question: 'offence_analysis_motivations',
             value: ['ADDICTIONS_PERCEIVED_NEEDS'],
           },
           {
