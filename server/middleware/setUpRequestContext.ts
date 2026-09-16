@@ -5,7 +5,13 @@ const setUpRequestContext = (): Router => {
   const router = express.Router()
 
   router.use((req, _res, next) => {
-    requestContext.run({ getServiceName: () => req.session?.targetService }, next)
+    requestContext.run(
+      {
+        getServiceName: () => req.session?.targetService,
+        getRequestUrl: () => `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+      },
+      next,
+    )
   })
 
   return router
