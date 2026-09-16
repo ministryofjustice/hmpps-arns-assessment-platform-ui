@@ -1,4 +1,4 @@
-import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { buttonGroup, scores } from './fields'
 import { backToTopLink } from '../../common'
@@ -11,6 +11,7 @@ export const reoffendingPredictorScoresStep = step({
   onAccess: [
     access({
       effects: [
+        TieringAssessmentEffects.IsAssessmentStatusComplete(),
         TieringAssessmentEffects.LoadAssessmentData(),
         TieringAssessmentEffects.TransformRiskData(),
         TieringAssessmentEffects.LoadCaseData(),
@@ -18,4 +19,12 @@ export const reoffendingPredictorScoresStep = step({
     }),
   ],
   blocks: [scores, backToTopLink, buttonGroup],
+  onSubmission: [
+    submit({
+      onAlways: {
+        effects: [TieringAssessmentEffects.SetAssessmentComplete(), TieringAssessmentEffects.SaveAssessmentData()],
+        next: [redirect({ goto: Step.reoffending_predictor_scores.path })],
+      },
+    }),
+  ],
 })

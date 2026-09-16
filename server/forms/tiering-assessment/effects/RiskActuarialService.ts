@@ -98,7 +98,7 @@ export class RiskActuarialService {
 
   private getCurrentAlcoholUseProblems(context: TieringAssessmentEffectContext): ProblemLevel | null {
     const hasEverDrunkAlcohol = this.parseString(context.getAnswer('has_ever_drunk_alcohol'))
-    const currentAlcoholUseFrequency = this.parseString(context.getAnswer('current_alcohol_use_frequency'))
+    const currentAlcoholUseFrequency = this.parseString(context.getAnswer('current_alcohol_use'))
     const unitsOfAlcohol = this.parseString(context.getAnswer('units_of_alcohol'))
 
     if (hasEverDrunkAlcohol === null || hasEverDrunkAlcohol === 'unknown') return null
