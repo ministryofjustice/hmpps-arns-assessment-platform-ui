@@ -289,16 +289,9 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
     validationMessage: contentFor('question.offence_analysis_how_many_involved.validation'),
   },
   displayModes: {
-    field: radioField({
-      dependentWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
-        Condition.Array.Contains(CommonOption.other),
-      ),
-    }),
+    field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.offence_analysis_involved_parties.path,
-      visibleWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
-        Condition.Array.Contains(CommonOption.other),
-      ),
     }),
   },
 })
