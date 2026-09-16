@@ -25,7 +25,7 @@ export const currentAccommodationStep = step({
       validate: true,
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.current_accommodation),
         ],

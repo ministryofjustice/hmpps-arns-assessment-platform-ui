@@ -8,9 +8,12 @@ import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { questions, summary } from '../drug-use-summary/fields'
 import { goToPractitionerAnalysisButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
+import { analysisOf } from '../../../../steps/view-all-answers/sections'
+import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
+    drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.summaryRow,
     drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.summaryRow,
     drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.summaryRow,
     drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
@@ -40,6 +43,7 @@ export const drugsSummaryAnalysisTab = HtmlBlock({
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
           panel: { blocks: [practitionerAnalysisSummary] },
+          visibleWhen: anyAnswered(analysisOf({ section: Section.drug_use, config: drugUseSection })),
         },
       ],
       visibleWhen: anyAnswered(questions),

@@ -1,10 +1,10 @@
-import { Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { answerRow, questionsWithin } from '../../../../constants/questionContent'
 import { Section, SectionComplete } from '../../constants/section'
 import { commonContentFor } from '../../locales'
-import { analysisOf, Answerable, questionsOf, viewAllAnswersSections, ViewAllAnswersSection } from './sections'
+import { analysisOf, Answerable, questionsOf, ViewAllAnswersSection, viewAllAnswersSections } from './sections'
 import { CaseData } from '../../constants/formVersion'
 
 type SectionDefinition = (typeof Section)[keyof typeof Section]
@@ -43,9 +43,13 @@ export const anyAnswered = (fields: Answerable[]) =>
   or(
     fields
       .flatMap(field => questionsWithin(field.content))
-      .map(question => Answer(question.code).match(Condition.IsRequired())),
+      .map(question =>
+        and(
+          Answer(question.code).match(Condition.IsRequired()),
+          Answer(question.code).match(Condition.String.HasMinLength(1)),
+        ),
+      ),
   )
-
 const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answerable[]) =>
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })
 

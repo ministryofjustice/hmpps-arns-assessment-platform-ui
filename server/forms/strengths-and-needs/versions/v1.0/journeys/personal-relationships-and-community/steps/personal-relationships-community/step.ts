@@ -3,19 +3,24 @@ import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { sectionPageTitle } from '../../../../locales'
-import { sectionPath } from '../../../../constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { personalRelationshipsCommunitySection } from '../../section'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { createRoute } from '../../../../../../generators'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
   title: sectionPageTitle(Section.personal_relationships_and_community),
   view: {
     locals: {
-      backlink: sectionPath(Section.personal_relationships_and_community) + Step.personal_relationships.path,
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.personal_relationships_and_community.path,
+        Step.personal_relationships.path,
+      ]),
     },
   },
   blocks: [

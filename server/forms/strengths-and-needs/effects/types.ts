@@ -5,8 +5,9 @@ import { AssessmentIdentifiers } from '../../../interfaces/aap-api/identifier'
 import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
 import { AccessSessionDetails } from '../../access/effects/types'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
-import { AssessmentPlatformApiClient } from '../../../data'
+import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
 import AuditService from '../../../services/auditService'
+import { PreviousVersionDisplay } from './assessment/loadPreviousVersions'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -23,6 +24,11 @@ export interface StrengthsAndNeedsSession {
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
   privacyAccepted?: boolean
+  mode?: 'edit' | 'view' | 'view-historic'
+  uuid?: string
+  versionUuid?: string
+  countersignedVersions: PreviousVersionDisplay[]
+  previousVersions?: PreviousVersionDisplay[]
   patternDrafts?: Record<string, Record<string, unknown>>
 }
 
@@ -64,4 +70,5 @@ export type StrengthsAndNeedsContext = EffectFunctionContext<
 export interface StrengthsAndNeedsEffectsDeps {
   api: AssessmentPlatformApiClient
   auditService: AuditService
+  coordinatorApi: CoordinatorApiClient
 }

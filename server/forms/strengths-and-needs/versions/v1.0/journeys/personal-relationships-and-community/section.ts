@@ -130,7 +130,7 @@ const childrenDetails = question({
   },
   displayModes: {
     field: checkboxField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_children_information.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_children_information.path }),
   },
 })
 
@@ -202,7 +202,7 @@ const importantPeople = question({
   },
   displayModes: {
     field: checkboxField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships.path }),
   },
 })
 
@@ -244,7 +244,7 @@ const currentRelationship = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
@@ -305,7 +305,7 @@ const intimateRelationship = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
@@ -368,7 +368,7 @@ const parentalResponsibilities = question({
   displayModes: {
     field: radioField({ dependentWhen: hasParentalResponsibilities, visibleWhen: hasParentalResponsibilities }),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.personal_relationships_community.path,
+      changeHref: Step.personal_relationships_community.path,
       visibleWhen: hasParentalResponsibilities,
     }),
   },
@@ -417,7 +417,7 @@ const familyRelationship = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
@@ -455,7 +455,7 @@ const childhood = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
@@ -473,7 +473,7 @@ const childhoodBehaviour = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
@@ -556,7 +556,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
@@ -591,7 +591,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.personal_relationships_community_summary.path,
+      changeHref: Step.personal_relationships_community_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -625,7 +625,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.personal_relationships_community_summary.path,
+      changeHref: Step.personal_relationships_community_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -659,7 +659,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.personal_relationships_community_summary.path,
+      changeHref: Step.personal_relationships_community_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },

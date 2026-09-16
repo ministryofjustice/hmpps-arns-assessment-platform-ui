@@ -200,7 +200,7 @@ const employmentHistory = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployedOrRetired, visibleWhen: hasBeenEmployedOrRetired }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path, visibleWhen: hasBeenEmployedOrRetired }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path, visibleWhen: hasBeenEmployedOrRetired }),
   },
 })
 
@@ -240,7 +240,7 @@ const dayToDayCommitments = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -303,7 +303,7 @@ const academicQualification = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -332,7 +332,7 @@ const professionalQualification = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -364,7 +364,7 @@ const jobSkills = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -434,7 +434,7 @@ const difficultiesReadingWritingNumeracy = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -491,7 +491,7 @@ const employmentExperience = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployed, visibleWhen: hasBeenEmployed }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path, visibleWhen: hasBeenEmployed }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path, visibleWhen: hasBeenEmployed }),
   },
 })
 
@@ -511,7 +511,7 @@ const educationExperience = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -565,7 +565,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })
 
@@ -598,7 +598,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.employment_education_summary.path,
+      changeHref: Step.employment_education_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -632,7 +632,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.employment_education_summary.path,
+      changeHref: Step.employment_education_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },
@@ -664,7 +664,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changePath: Step.employment_education_summary.path,
+      changeHref: Step.employment_education_summary.path,
       changeVisuallyHiddenText: true,
     }),
   },

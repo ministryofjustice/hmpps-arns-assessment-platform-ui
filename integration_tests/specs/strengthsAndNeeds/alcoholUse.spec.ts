@@ -14,10 +14,12 @@ import {
 test.describe('Alcohol use Page', () => {
   test.describe('Questions', () => {
     test('shows the alcohol use question', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL)
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId)
 
       const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol?')
 
@@ -50,7 +52,7 @@ test.describe('Alcohol use Page', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-details')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       // Recency questions, only shown on this branch
       await expect(
@@ -98,7 +100,7 @@ test.describe('Alcohol use Page', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_NOT_IN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-details')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       // Base usage questions are still shown
       await expect(
@@ -134,7 +136,7 @@ test.describe('Alcohol use Page', () => {
         .save()
 
       // "No" skips the usage questions and routes straight to the summary.
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-summary')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
 
       // Summary list keys/values are not exposed as ARIA roles, so match on text.
       // The alcohol use answer is shown...
@@ -162,7 +164,7 @@ test.describe('Alcohol use Page', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'NO' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-summary')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
 
       // The "Change" link anchors to the question, not the top of the target page.
       const changeAlcoholUse = page.locator('a[href$="#alcohol_use"]')
@@ -194,7 +196,7 @@ test.describe('Alcohol use Page', () => {
       // targets one of those questions must activate that tab first
       await navigateToStrengthsAndNeeds(page, handoverLink)
       await page.goto(
-        `${baseURL}${sanFormPath}${v1Path}${alcohol}/alcohol-use-summary#alcohol_use_practitioner_analysis_strengths_or_protective_factors`,
+        `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-summary#alcohol_use_practitioner_analysis_strengths_or_protective_factors`,
       )
 
       await expect(page.locator('#practitioner-analysis')).toBeVisible()
@@ -221,7 +223,7 @@ test.describe('Alcohol use Page', () => {
         .save()
 
       // Reach the analysis page via the real flow: summary -> practitioner tab -> Mark as complete.
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-summary')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
       await page.getByRole('button', { name: 'Go to practitioner analysis' }).click()
       await page.getByRole('button', { name: 'Mark as complete' }).click()
 
@@ -254,27 +256,113 @@ test.describe('Alcohol use Page', () => {
         ])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-details')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       await expect(page.getByRole('textbox', { name: 'Give details' }).first()).toBeVisible()
     })
+  })
 
+  test.describe('Validation', () => {
     test('validation on the alcohol use question', async ({
       page,
       createSession,
       strengthsAndNeedsBuilder,
       baseURL,
     }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL)
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId)
       const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol?')
 
       await alcoholUsePage.saveAndContinue.click()
+      await expect(alcoholUsePage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Select if they have ever drunk alcohol":
+                - /url: "#alcohol_use"
+      `)
       await alcoholUsePage.selectOneOption.click()
 
       await expect(alcoholUsePage.yesIncludingLastThreeMonths).toBeFocused()
+    })
+
+    test('validation when they have drunk alcohol in the last 3 months', async ({
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+      baseURL,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId)
+        .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
+        .save()
+
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+
+      const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'drunk alcohol in the last 3 months')
+
+      await alcoholUsePage.saveAndContinue.click()
+      await expect(alcoholUsePage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Select how often they drunk alcohol in the last 3 months":
+                - /url: "#alcohol_frequency"
+            - listitem:
+              - link "Select how many units of alcohol they have on a typical day of drinking":
+                - /url: "#alcohol_units"
+            - listitem:
+              - link "Select if they had 8 or more units within a single day of drinking in the last 3 months":
+                - /url: "#alcohol_binge_drinking"
+            - listitem:
+              - link "Select if there's evidence of binge drinking or excessive alcohol use in the last 6 months":
+                - /url: "#alcohol_evidence_of_excess_drinking"
+            - listitem:
+              - link "Select if they have any past issues with alcohol":
+                - /url: "#alcohol_past_issues"
+            - listitem:
+              - link "Select why they drink alcohol":
+                - /url: "#alcohol_reasons_for_use"
+            - listitem:
+              - link "Select the impact of them drinking alcohol, or select 'No impact'":
+                - /url: "#alcohol_impact_of_use"
+            - listitem:
+              - link "Select if anything has helped them to stop or reduce drinking alcohol in the past":
+                - /url: "#alcohol_stopped_or_reduced"
+            - listitem:
+              - link "Select if they want to make changes to their alcohol use":
+                - /url: "#alcohol_use_changes"
+        `)
+
+      await alcoholUsePage.selectHowOftenTheyDrunk.click()
+      await expect(alcoholUsePage.onceAMonth).toBeFocused()
+      await alcoholUsePage.selectHowManyUnitsOf.click()
+      await expect(alcoholUsePage.oneToTwoUnits).toBeFocused()
+      await alcoholUsePage.selectIfTheyHadEightOrMore.click()
+      await expect(alcoholUsePage.hasHadEightOrMore).toBeFocused()
+      await alcoholUsePage.selectIfTheresEvidence.click()
+      await expect(alcoholUsePage.noEvidenceOfBingeDrinking).toBeFocused()
+      await alcoholUsePage.selectIfTheyHaveAnyPast.click()
+      await expect(alcoholUsePage.haveAnyPast).toBeFocused()
+      await alcoholUsePage.selectWhyTheyDrink.click()
+      await expect(alcoholUsePage.culturalAndReligious).toBeFocused()
+      await alcoholUsePage.selectTheImpactOf.click()
+      await expect(alcoholUsePage.behavioural).toBeFocused()
+      await alcoholUsePage.selectIfAnythingHasHelped.click()
+      await expect(alcoholUsePage.hasAnythingHelped).toBeFocused()
+      await alcoholUsePage.errorWantsToMakeChanges.click()
+      await expect(alcoholUsePage.yesAlreadyMadePositiveChanges).toBeFocused()
     })
   })
 
@@ -309,7 +397,7 @@ test.describe('Alcohol use Page', () => {
         ])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-summary')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
 
       const summary = page.getByRole('tabpanel', { name: 'Summary' })
 
@@ -354,7 +442,7 @@ test.describe('Alcohol use Page', () => {
         ])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-summary')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
       const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Summary')
 
       await alcoholUsePage.goToPractitionerAnalysis.click()
@@ -393,6 +481,7 @@ test.describe('Alcohol use Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'alcohol-use-summary#practitioner-analysis',
       )
 
@@ -423,7 +512,7 @@ test.describe('Alcohol use Page', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-details')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       await expect(
         page.getByRole('group', {
@@ -454,7 +543,7 @@ test.describe('Alcohol use Page', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, 'alcohol-use-details')
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       await expect(
         page.getByRole('group', {
@@ -473,10 +562,12 @@ test.describe('Alcohol use Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL)
+      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId)
       await checkAccessibility(page, {
         disableRules: ['aria-allowed-attr'],
       })

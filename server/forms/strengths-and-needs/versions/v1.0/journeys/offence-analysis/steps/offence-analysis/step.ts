@@ -3,6 +3,9 @@ import {
   and,
   Answer,
   Condition,
+  Data,
+  Item,
+  Iterator,
   Post,
   redirect,
   step,
@@ -38,6 +41,25 @@ export const offenceAnalysisStep = step({
     submit({
       when: and(
         Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),
+        Data(victimsCollection.name).match(Condition.IsRequired()),
+        Post('action').match(Condition.Equals('save')),
+      ),
+      validate: true,
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+        ],
+        next: [
+          redirect({
+            goto: Step.offence_analysis_victim_summary.path,
+          }),
+        ],
+      },
+    }),
+    submit({
+      when: and(
+        Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),
         Post('action').match(Condition.Equals('save')),
       ),
       validate: true,
@@ -54,13 +76,37 @@ export const offenceAnalysisStep = step({
       },
     }),
     submit({
-      when: Post('action').match(Condition.Equals('save')),
+      when: and(
+        Post('action').match(Condition.Equals('save')),
+        Answer(Question.offence_analysis_who_was_the_victim).not.match(
+          Condition.Array.Contains(Option.one_or_more_person),
+        ),
+        Data('assessment.collections')
+          .each(Iterator.Find(Item().path('name').match(Condition.Equals(victimsCollection.name))))
+          .match(Condition.IsRequired()),
+      ),
       validate: true,
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
           StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
+        ],
+        next: [
+          redirect({
+            goto: Step.offence_analysis_involved_parties.path,
+          }),
+        ],
+      },
+    }),
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+          // StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
         ],
         next: [
           redirect({

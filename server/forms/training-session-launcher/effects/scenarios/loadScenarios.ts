@@ -169,6 +169,10 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     values.sentencePlanVersion === undefined || values.sentencePlanVersion === null
       ? ''
       : String(values.sentencePlanVersion).trim()
+  const sanAssessmentVersion =
+    values.sanAssessmentVersion === undefined || values.sanAssessmentVersion === null
+      ? ''
+      : String(values.sanAssessmentVersion).trim()
 
   return {
     id: scenario.id,
@@ -188,6 +192,7 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
     sentencePlanVersion,
+    sanAssessmentVersion,
 
     displayNeeds: transformToDisplayNeeds(values),
     isCustom,

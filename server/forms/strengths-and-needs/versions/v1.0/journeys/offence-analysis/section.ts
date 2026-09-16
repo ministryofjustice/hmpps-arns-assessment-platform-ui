@@ -126,7 +126,7 @@ const offenceElements = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis.path }),
   },
 })
 
@@ -197,7 +197,7 @@ const motivations = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis.path }),
   },
 })
 
@@ -255,7 +255,7 @@ const offenceCommitedAgainst = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis.path }),
   },
 })
 
@@ -294,7 +294,12 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
         Condition.Array.Contains(CommonOption.other),
       ),
     }),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_involved_parties.path }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.offence_analysis_involved_parties.path,
+      visibleWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
+        Condition.Array.Contains(CommonOption.other),
+      ),
+    }),
   },
 })
 
@@ -361,7 +366,7 @@ const offenceAnalysisLeader = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
@@ -386,7 +391,7 @@ const offenceImpactOnVictims = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
@@ -411,7 +416,7 @@ const offenceAnalysisAcceptResponsibility = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
@@ -439,7 +444,7 @@ const offenceAnalysisEscalation = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
@@ -501,7 +506,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuse = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
@@ -563,7 +568,7 @@ const offenceAnalysisVictimOfDomesticAbuse = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
@@ -641,7 +646,7 @@ const offenceAnalysisRisk = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changePath: Step.offence_analysis_impact.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 

@@ -6,13 +6,16 @@ import { buildPageTitle, checkAccessibility, sanPageTitles } from './sanUtils'
 test.describe('Personal relationships and community Page', () => {
   test.describe('Questions', () => {
     test('shows any children', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
       await strengthsAndNeedsBuilder.fresh().save()
 
       await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
       )
 
       const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -54,6 +57,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships',
       )
 
@@ -103,6 +107,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community',
       )
 
@@ -200,6 +205,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
       )
 
       const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -208,6 +214,21 @@ test.describe('Personal relationships and community Page', () => {
       )
 
       await personalRelationshipsAndCommunityPage.saveAndContinue.click()
+      await expect(personalRelationshipsAndCommunityPage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Enter details of any children that live with them":
+                - /url: "#personal_relationships_community_children_details_yes_children_living_with_pop_details"
+            - listitem:
+              - link "Enter details of any children that do not live with them":
+                - /url: "#personal_relationships_community_children_details_yes_children_not_living_with_pop_details"
+            - listitem:
+              - link "Enter details of any children that visit them regularly":
+                - /url: "#personal_relationships_community_children_details_yes_children_visiting_details"
+      `)
 
       await personalRelationshipsAndCommunityPage.errorChildrenThatLive.click()
       await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatLive).toBeFocused()
@@ -235,6 +256,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships',
       )
 
@@ -244,9 +266,101 @@ test.describe('Personal relationships and community Page', () => {
       )
 
       await personalRelationshipsAndCommunityPage.saveAndContinue.click()
-      await personalRelationshipsAndCommunityPage.errorEnterDetails.click()
+      await expect(personalRelationshipsAndCommunityPage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Enter details":
+                - /url: "#personal_relationships_community_important_people_other_details"
+      `)
 
+      await personalRelationshipsAndCommunityPage.errorEnterDetails.click()
       await expect(personalRelationshipsAndCommunityPage.enterDetails).toBeFocused()
+    })
+
+    test('validation personal relationships community questions', async ({
+      baseURL,
+      page,
+      createSession,
+      strengthsAndNeedsBuilder,
+    }) => {
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+        subject: { gender: '1' },
+      })
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId).withAnswers([
+          { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
+          {
+            question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+            value: 'test',
+          },
+          { question: 'personal_relationships_community_important_people', value: ['PARTNER_INTIMATE_RELATIONSHIP'] },
+          {
+            question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
+            value: '',
+          },
+        ]).save()
+
+      await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'personal-relationships-community',
+      )
+
+      const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
+        page,
+        'current relationship status',
+      )
+
+      await personalRelationshipsAndCommunityPage.saveAndContinue.click()
+
+      await expect(personalRelationshipsAndCommunityPage.alert).toMatchAriaSnapshot(`
+        - alert:
+          - heading "There is a problem" [level=2]
+          - list:
+            - /children: equal
+            - listitem:
+              - link "Select if they are happy with their current relationship status":
+                - /url: "#personal_relationships_community_current_relationship"
+            - listitem:
+              - link "Select their history of intimate relationships":
+                - /url: "#personal_relationships_community_intimate_relationship"
+            - listitem:
+              - link "Enter details":
+                - /url: "#personal_relationships_community_challenges_intimate_relationship"
+            - listitem:
+              - link "Select what their current relationship is like with their family":
+                - /url: "#personal_relationships_community_family_relationship"
+            - listitem:
+              - link "Select their experience of childhood":
+                - /url: "#personal_relationships_community_childhood"
+            - listitem:
+              - link "Select if they had childhood behavioural problems":
+                - /url: "#personal_relationships_community_childhood_behaviour"
+            - listitem:
+              - link "Select if they want to make changes to their personal relationships and community":
+                - /url: "#personal_relationships_community_changes"
+      `)
+
+      await personalRelationshipsAndCommunityPage.selectIfTheyAreHappy.click()
+      await expect(personalRelationshipsAndCommunityPage.happyAndPositive).toBeFocused()
+      await personalRelationshipsAndCommunityPage.selectTheirHistory.click()
+      await expect(personalRelationshipsAndCommunityPage.historyOfStable).toBeFocused()
+      await personalRelationshipsAndCommunityPage.enterDetails.click()
+      await expect(personalRelationshipsAndCommunityPage.isAbleToResolve).toBeFocused()
+      await personalRelationshipsAndCommunityPage.selectWhatTheirCurrent.click()
+      await expect(personalRelationshipsAndCommunityPage.stableSupportive).toBeFocused()
+      await personalRelationshipsAndCommunityPage.selectTheirExperience.click()
+      await expect(personalRelationshipsAndCommunityPage.positiveExperience).toBeFocused()
+      await personalRelationshipsAndCommunityPage.selectIfTheyHadChildhood.click()
+      await expect(personalRelationshipsAndCommunityPage.yes).toBeFocused()
+      await personalRelationshipsAndCommunityPage.errorWantsToMakeChanges.click()
+      await expect(personalRelationshipsAndCommunityPage.yesAlreadyMadePositiveChanges).toBeFocused()
     })
   })
 
@@ -289,6 +403,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community-summary',
       )
 
@@ -329,7 +444,7 @@ test.describe('Personal relationships and community Page', () => {
             - paragraph: test
           - definition:
             - link "Change":
-              - /url: personal-relationships-community
+              - /url: personal-relationships-community#personal_relationships_community_challenges_intimate_relationship
           - term: What is Test's current relationship like with their family?
           - definition:
             - paragraph: Stable, supportive, positive and rewarding relationship
@@ -397,6 +512,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community-summary',
       )
 
@@ -461,6 +577,7 @@ test.describe('Personal relationships and community Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'personal-relationships-community-summary#practitioner-analysis',
       )
       const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -477,12 +594,15 @@ test.describe('Personal relationships and community Page', () => {
 
   test.describe('Accessibility', () => {
     test('should be accessible', async ({ page, createSession, baseURL }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+      const { handoverLink, sanAssessmentId } = await createSession({
+        targetService: TargetService.STRENGTHS_AND_NEEDS,
+      })
 
       await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
       )
       await checkAccessibility(page, {
         // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330

@@ -15,6 +15,7 @@ export const alcohol = '/alcohol-use'
 export const personal = '/personal-relationships-and-community'
 export const thinking = '/thinking-behaviours-and-attitudes'
 export const finances = '/finances'
+export const viewAllAnswers = '/view-all-answers'
 
 export const sentencePlanV1URLs = {
   PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
@@ -86,7 +87,7 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  expectedPath = '/strengths-and-needs/v1.0/',
+  expectedPath: string = 'current-accommodation',
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
