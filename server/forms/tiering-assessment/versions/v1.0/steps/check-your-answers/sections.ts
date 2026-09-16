@@ -23,12 +23,15 @@ export interface CheckYourAnswersSection {
   config?: SectionDefinition | SectionDefinition[]
 }
 
-export const checkYourAnswersSections: CheckYourAnswersSection[] = [
+export const staticCheckYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.current_offence_and_offending_history, config: currentOffenceAndOffendingHistoryFields },
   { step: Step.sexual_offending, config: sexualOffendingFields },
   { step: Step.date_of_current_supervision, config: dateOfCurrentSupervisionFields },
   { step: Step.offences_since_community_date, config: offencesSinceSupervisionFields },
   { step: Step.interview_question, config: interviewFields },
+]
+
+export const dynamicCheckYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.accommodation, config: accommodationFields },
   { step: Step.employment, config: employmentFields },
   { step: Step.drug_misuse, config: [drugMisuseFields, drugUseFields] },
