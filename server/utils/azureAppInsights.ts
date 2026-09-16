@@ -9,10 +9,12 @@ telemetry.trackEvent = (name: string, attributes?: Record<string, string | numbe
   const context = requestContext.getStore()
 
   const serviceName = context?.getServiceName()
+  const uri = context?.getRequestUrl()
 
   originalTrackEvent(name, {
     ...attributes,
     ...(serviceName ? { serviceName } : {}),
+    ...(uri ? { uri } : {}),
   })
 }
 
