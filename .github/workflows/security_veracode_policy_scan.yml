@@ -4,11 +4,12 @@ on:
   schedule:
     - cron: '5 3 * * 1' # Every Monday at 03:05 UTC
 
-permissions:
-  contents: read
-
 jobs:
   security-veracode-policy-check:
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     name: Project security veracode policy scan
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/security_veracode_policy_scan.yml@v2 # WORKFLOW_VERSION
     with:
