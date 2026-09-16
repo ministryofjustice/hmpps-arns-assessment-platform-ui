@@ -9,7 +9,7 @@ export const scores = DetailedRiskPredictorScores({
   forename: 'Alex',
 })
 
-export const buttonGroupStart = HtmlBlock({
+const buttonGroupStart = HtmlBlock({
   content: `<div class="govuk-button-group">`,
 })
 
@@ -23,7 +23,7 @@ const checkAnswersGrayButton = GovUKLinkButton({
   href: '/tiering-assessment/v1.0/check-your-answers',
 })
 
-export const buttonGroupEnd = HtmlBlock({
+const buttonGroupEnd = HtmlBlock({
   content: `</div>`,
 })
 

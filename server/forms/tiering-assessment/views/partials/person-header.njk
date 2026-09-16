@@ -1,5 +1,6 @@
 {%- from "govuk/components/button/macro.njk" import govukButton -%}
 {%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% if data.caseData %}
   {% set person = data.caseData %}
@@ -10,6 +11,14 @@
       <header class="govuk-width-container" role="presentation" data-qa="{{ params.dataQa or 'tiering-assessment-header' }}">
 
         <a href="{{ backlink }}" class="govuk-back-link govuk-!-margin-bottom-4 govuk-!-margin-top-4">Back</a>
+
+        {% if data.isAssessmentComplete %}
+          {{ govukNotificationBanner({
+            type: "success",
+            text: "You have marked this section as complete",
+            attributes: { 'data-qa': 'completed-assessment' }
+          }) }}
+        {% endif %}
 
         {{ govukErrorSummary({
           titleText: "There is a problem",
