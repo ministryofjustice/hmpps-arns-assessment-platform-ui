@@ -1,5 +1,5 @@
-import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKCharacterCount, GovUKSelectInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {Condition, Self, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {GovUKCharacterCount, GovUKSelectInput, GovUKTextInput} from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
   checkboxField,
   ParentOption,
@@ -18,15 +18,15 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
-import { CaseData } from '../../constants/formVersion'
-import { CommonOption } from '../../constants/commonOption'
-import { Section } from '../../constants/section'
-import { Question } from './constants/question'
-import { Option } from './constants/option'
-import { Step } from './constants/step'
-import { commonContentFor } from '../../locales'
-import { contentFor } from './locales'
-import { victimsCollection } from './constants/collections'
+import {CaseData} from '../../constants/formVersion'
+import {CommonOption} from '../../constants/commonOption'
+import {Section} from '../../constants/section'
+import {Question} from './constants/question'
+import {Option} from './constants/option'
+import {Step} from './constants/step'
+import {commonContentFor} from '../../locales'
+import {contentFor} from './locales'
+import {victimsCollection} from './constants/collections'
 
 // --- Index Offence Description ---
 
