@@ -8,6 +8,7 @@ import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
@@ -32,6 +33,7 @@ export const employedEmploymentStep = step({
   ],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employed)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

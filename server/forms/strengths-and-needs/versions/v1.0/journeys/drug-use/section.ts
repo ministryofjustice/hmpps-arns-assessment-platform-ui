@@ -59,7 +59,7 @@ const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRe
 const anyInjectableSelectedDrugs = Data('injectableSelectedDrugs').match(Condition.IsRequired())
 
 const lastSixMonthConditions = drugsList.map(drug =>
-  Answer(fieldCodeString('drug_last_used', drug.value)).match(Condition.Equals('LAST_SIX')),
+  Answer(fieldCodeString(Question.drug_last_used, drug.value)).match(Condition.Equals(Option.last_six)),
 )
 
 // Answer-based twin of `anyDrugUsedInLastSix` for steps that run before the
@@ -637,7 +637,7 @@ const whatCouldHelpNotUseInFuture = question({
   content: {
     code: Question.drugs_what_could_help_not_use_drugs_in_future,
     format: QuestionFormat.TEXT,
-    text: Format('What could help %1 not use drugs in the future? (optional)', CaseData.Forename),
+    text: contentFor('question.drugs_what_could_help_not_use_drugs_in_future.text', CaseData.Forename),
   },
   displayModes: {
     field: characterCountField({

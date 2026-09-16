@@ -8,6 +8,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { CommonOption } from '../../../../constants/commonOption'
 import { sectionPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const alcoholUseStep = step({
   path: `/${Step.alcohol_use.path}`,
@@ -21,6 +22,7 @@ export const alcoholUseStep = step({
   blocks: [alcoholUseSection.questions.alcoholUse.displayModes.field, saveButton],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

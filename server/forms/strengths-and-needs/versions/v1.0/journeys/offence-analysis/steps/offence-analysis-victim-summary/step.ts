@@ -1,6 +1,5 @@
 import {
   access,
-  Answer,
   Condition,
   Data,
   Post,
@@ -13,14 +12,13 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { victimCards } from './fields'
 import { Step } from '../../constants/step'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Question } from '../../constants/question'
-import { CommonOption } from '../../../../constants/commonOption'
 import { victimsCollection } from '../../constants/collections'
 import { contentFor } from '../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section } from '../../../../constants/section'
+import { autosaveSubmit } from '../../../../autosave'
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
@@ -51,19 +49,12 @@ export const offenceAnalysisVictimSummaryStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        next: [
-          redirect({
-            when: Answer(Question.offence_analysis_who_was_the_victim).match(
-              Condition.Array.Contains(CommonOption.other),
-            ),
-            goto: Step.offence_analysis_involved_parties.path,
-          }),
-          redirect({ goto: Step.offence_analysis_impact.path }),
-        ],
+        next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
       },
     }),
     submit({

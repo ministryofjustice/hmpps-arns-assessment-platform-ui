@@ -104,7 +104,7 @@
             </div>
           {% endif %}
 
-          <form method="post" novalidate data-qa="main-form">
+          <form method="post" novalidate data-qa="main-form" data-autosave="{{ 'true' if autosave else 'false' }}">
             <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
             {% for block in blocks %}

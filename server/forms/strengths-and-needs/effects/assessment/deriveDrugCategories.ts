@@ -1,4 +1,6 @@
-import { Drug, drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
+import { Drug, drugsList, fieldCodeString } from '../../versions/v1.0/journeys/drug-use/constants'
+import { Question } from '../../versions/v1.0/journeys/drug-use/constants/question'
+import { Option } from '../../versions/v1.0/journeys/drug-use/constants/option'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 
 const allDrugs = [...drugsList]
@@ -6,7 +8,7 @@ const drugByValue = new Map(allDrugs.map(drug => [drug.value, drug]))
 
 export const deriveDrugCategories =
   (_deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
-    const selectedDrugs = context.getAnswer('select_misused_drugs') as string[] | undefined
+    const selectedDrugs = context.getAnswer(Question.select_misused_drugs) as string[] | undefined
 
     if (!selectedDrugs?.length) {
       context.setData('drugsUsedInLastSix', [])
@@ -36,11 +38,11 @@ export const deriveDrugCategories =
         return
       }
 
-      const lastUsed = context.getAnswer(`drug_last_used_${drugValue.toLowerCase()}`) as string | undefined
+      const lastUsed = context.getAnswer(fieldCodeString(Question.drug_last_used, drugValue)) as string | undefined
 
-      if (lastUsed === 'LAST_SIX') {
+      if (lastUsed === Option.last_six) {
         usedInLastSix.push(drug)
-      } else if (lastUsed === 'MORE_THAN_SIX') {
+      } else if (lastUsed === Option.more_than_six) {
         usedMoreThanSix.push(drug)
       }
 

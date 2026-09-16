@@ -8,6 +8,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisInvolvedPartiesStep = step({
   path: `/${Step.offence_analysis_involved_parties.path}`,
@@ -27,6 +28,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
     saveButton,
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -6,6 +6,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { markAsCompleteButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisImpactStep = step({
   path: `/${Step.offence_analysis_impact.path}`,
@@ -31,6 +32,7 @@ export const offenceAnalysisImpactStep = step({
     markAsCompleteButton,
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

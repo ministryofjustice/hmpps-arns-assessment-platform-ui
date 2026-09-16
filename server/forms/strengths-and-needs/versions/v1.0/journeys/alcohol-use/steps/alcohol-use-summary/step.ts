@@ -5,6 +5,7 @@ import { Step } from '../../constants/step'
 import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const alcoholUseSummaryStep = step({
   path: `/${Step.alcohol_use_summary.path}`,
@@ -12,6 +13,7 @@ export const alcoholUseSummaryStep = step({
   blocks: [summaryTab],
   onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.alcohol_use, Step.alcohol_use_summary)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

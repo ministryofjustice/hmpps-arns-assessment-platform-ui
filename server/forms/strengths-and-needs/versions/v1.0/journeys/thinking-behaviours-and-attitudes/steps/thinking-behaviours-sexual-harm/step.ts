@@ -9,6 +9,7 @@ import { baseSanRoute } from '../../../../constants/path'
 import { thinkingBehavioursAttitudesSection } from '../../section'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { createRoute } from '../../../../../../generators'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const thinkingBehavioursSexualHarmStep = step({
   path: `/${Step.thinkingBehavioursSexualHarm.path}`,
@@ -38,6 +39,7 @@ export const thinkingBehavioursSexualHarmStep = step({
     ),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -9,6 +9,7 @@ import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const personalRelationshipsStep = step({
   path: `/${Step.personal_relationships.path}`,
@@ -28,6 +29,7 @@ export const personalRelationshipsStep = step({
     ),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
