@@ -61,6 +61,7 @@ function createAppInsights() {
 
     envelope.data = {
       ...envelope.data,
+      uri: envelope.data?.uri || window.location.href,
       assessmentUuid: assessmentUuid || undefined,
       requestId: requestId || undefined,
       telemetryId: telemetryId || undefined,
