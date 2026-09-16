@@ -190,7 +190,7 @@ export const drugsInjectedMonths = questionTemplate({
       { value: Option.last_six, text: contentFor('option.IN_THE_LAST_SIX') },
       { value: Option.more_than_six, text: contentFor('option.MORE_THAN_SIX') },
     ],
-    validationMessage: contentFor('question.drug_last_used.validation'),
+    validationMessage: contentFor('question.drugs_injected_months.validation'),
   },
   displayModes: {
     // Bespoke projection: the months question only applies while the drug's

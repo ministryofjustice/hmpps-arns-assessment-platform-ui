@@ -141,9 +141,6 @@ export const english = {
       validation: 'Select if linked to risk of reoffending',
     },
   },
-  validation: {
-    risk_of_serious_harm_details: 'Give details on the risk of serious harm',
-  },
 } as const
 
 export type HealthAndWellbeingLocale = typeof english
