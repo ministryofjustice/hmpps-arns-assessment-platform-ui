@@ -273,7 +273,11 @@ test.describe('Offence Analysis Page', () => {
             value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
           },
           {
-            question: 'offence_analysis_offence_elements',
+            question: 'offence_analysis_description_of_offence',
+            value: 'test',
+          },
+          {
+            question: 'offence_analysis_elements',
             value: ['ARSON'],
           },
           {
@@ -282,7 +286,7 @@ test.describe('Offence Analysis Page', () => {
           },
           {
             question: 'offence_analysis_motivations',
-            value: ['ADDICTIONS_PERCEIVED_NEEDS'],
+            value: ['ADDICTIONS_OR_PERCEIVED_NEEDS'],
           },
           {
             question: 'offence_analysis_commited_against',
