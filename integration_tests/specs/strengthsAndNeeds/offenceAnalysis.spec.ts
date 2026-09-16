@@ -571,7 +571,7 @@ test.describe('Offence Analysis Page', () => {
             value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
           },
           {
-            question: 'offence_analysis_offence_elements',
+            question: 'offence_analysis_elements',
             value: ['ARSON'],
           },
           {
@@ -580,7 +580,7 @@ test.describe('Offence Analysis Page', () => {
           },
           {
             question: 'offence_analysis_motivations',
-            value: ['ADDICTIONS_PERCEIVED_NEEDS'],
+            value: ['ADDICTIONS_OR_PERCEIVED_NEEDS'],
           },
           {
             question: 'offence_analysis_commited_against',
@@ -696,12 +696,13 @@ test.describe('Offence Analysis Page', () => {
               - paragraph: test
             - definition:
               - link "Change":
-                - /url: offence-analysis
+                - /url: offence-analysis#offence_analysis_description_of_offence
             - term: Did the current index offence(s) have any of the following elements?
-            - definition
+            - definition:
+              - paragraph: Arson
             - definition:
               - link "Change":
-                - /url: offence-analysis#offence_analysis_description_of_offence
+                - /url: offence-analysis#offence_analysis_elements
             - term: Why did the current index offence(s) happen?
             - definition:
               - paragraph: test
@@ -709,7 +710,8 @@ test.describe('Offence Analysis Page', () => {
               - link "Change":
                 - /url: offence-analysis#offence_analysis_reason
             - term: Did the current index offence(s) involve any of the following motivations?
-            - definition
+            - definition:
+              - paragraph: Addictions or perceived needs
             - definition:
               - link "Change":
                 - /url: offence-analysis#offence_analysis_motivations
