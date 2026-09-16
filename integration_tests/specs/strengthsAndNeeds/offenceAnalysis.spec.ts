@@ -321,6 +321,7 @@ test.describe('Offence Analysis Page', () => {
         page,
         handoverLink,
         baseURL,
+        sanAssessmentId,
         'offence-analysis-victim-summary',
       )
 
@@ -678,7 +679,13 @@ test.describe('Offence Analysis Page', () => {
         ])
         .save()
 
-      await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, 'offence-analysis-summary')
+      await OffenceAnalysisPage.navigateToOffenceAnalysis(
+        page,
+        handoverLink,
+        baseURL,
+        sanAssessmentId,
+        'offence-analysis-summary',
+      )
 
       const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Summary')
 
@@ -694,13 +701,13 @@ test.describe('Offence Analysis Page', () => {
             - definition
             - definition:
               - link "Change":
-                - /url: offence-analysis#offence_analysis_elements
+                - /url: offence-analysis#offence_analysis_description_of_offence
             - term: Why did the current index offence(s) happen?
             - definition:
               - paragraph: test
             - definition:
               - link "Change":
-                - /url: offence-analysis
+                - /url: offence-analysis#offence_analysis_reason
             - term: Did the current index offence(s) involve any of the following motivations?
             - definition
             - definition:
@@ -759,7 +766,7 @@ test.describe('Offence Analysis Page', () => {
               - paragraph: test
             - definition:
               - link "Change":
-                - /url: offence-analysis-impact
+                - /url: offence-analysis-impact#offence_analysis_patterns_of_offending
             - term: Are the current or previous offences linked to risk of serious harm, risks to the individual or other risks?
             - definition:
               - paragraph: "No"
