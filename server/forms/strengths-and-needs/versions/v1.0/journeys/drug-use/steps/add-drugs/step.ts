@@ -8,6 +8,7 @@ import { sectionPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const addDrugsStep = step({
   path: `/${Step.add_drugs.path}`,
@@ -21,6 +22,7 @@ export const addDrugsStep = step({
   blocks: [drugUseSection.questions.selectMisusedDrugs.displayModes.field, saveButton],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.add_drugs)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: { groups: ['default', 'drugs'] },

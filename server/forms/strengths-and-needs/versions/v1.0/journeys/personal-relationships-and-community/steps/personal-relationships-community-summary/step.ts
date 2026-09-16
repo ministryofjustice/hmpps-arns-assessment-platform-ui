@@ -5,6 +5,7 @@ import { Step } from '../../constants/step'
 import { personalRelationshipsCommunitySummaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const personalRelationshipsCommunitySummaryStep = step({
   path: `/${Step.personal_relationships_community_summary.path}`,
@@ -18,6 +19,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
     ),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

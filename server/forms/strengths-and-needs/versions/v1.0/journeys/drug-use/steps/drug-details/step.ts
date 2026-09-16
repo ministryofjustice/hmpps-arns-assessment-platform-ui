@@ -9,6 +9,7 @@ import { sectionPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const drugDetailsStep = step({
   path: `/${Step.drug_details.path}`,
@@ -33,6 +34,7 @@ export const drugDetailsStep = step({
     saveButton,
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

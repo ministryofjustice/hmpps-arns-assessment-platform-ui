@@ -18,6 +18,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section } from '../../../../constants/section'
+import { autosaveSubmit } from '../../../../autosave'
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
@@ -48,6 +49,7 @@ export const offenceAnalysisVictimSummaryStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

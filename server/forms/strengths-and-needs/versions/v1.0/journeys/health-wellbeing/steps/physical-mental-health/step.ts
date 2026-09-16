@@ -8,6 +8,7 @@ import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const physicalMentalHealthStep = step({
   path: `/${Step.physical_mental_health.path}`,
@@ -37,6 +38,7 @@ export const physicalMentalHealthStep = step({
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

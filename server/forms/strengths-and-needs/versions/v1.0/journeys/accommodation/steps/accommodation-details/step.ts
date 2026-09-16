@@ -8,6 +8,7 @@ import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,
@@ -29,6 +30,7 @@ export const accommodationDetailsStep = step({
   ],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.accommodation_details)],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

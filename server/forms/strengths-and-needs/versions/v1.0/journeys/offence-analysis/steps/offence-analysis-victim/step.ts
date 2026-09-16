@@ -7,6 +7,7 @@ import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section } from '../../../../constants/section'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
@@ -29,6 +30,7 @@ export const offenceAnalysisVictimStep = step({
     }),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

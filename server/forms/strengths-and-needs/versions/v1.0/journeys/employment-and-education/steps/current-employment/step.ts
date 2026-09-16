@@ -7,6 +7,7 @@ import { Step } from '../../constants/step'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
 import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
@@ -22,6 +23,7 @@ export const currentEmploymentStep = step({
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
   ],
   onSubmission: [
+    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
