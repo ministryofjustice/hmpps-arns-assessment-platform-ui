@@ -4,12 +4,22 @@ import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { markAsCompleteButton } from '../../../../constants/buttons'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisImpactStep = step({
   path: `/${Step.offence_analysis_impact.path}`,
   title: 'Offence analysis impact',
-  reachability: { entryWhen: true },
+  view: {
+    locals: {
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.offence_analysis.path,
+        Step.offence_analysis_involved_parties.path,
+      ]),
+    },
+  },
   blocks: [
     offenceAnalysisSection.questions.offenceAnalysisLeader.displayModes.field,
     offenceAnalysisSection.questions.offenceImpactOnVictims.displayModes.field,

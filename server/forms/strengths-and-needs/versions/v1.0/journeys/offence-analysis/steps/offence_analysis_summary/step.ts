@@ -7,7 +7,6 @@ import { victimsCollection } from '../../constants/collections'
 export const offenceAnalysisSummaryStep = step({
   path: `/${Step.offence_analysis_summary.path}`,
   title: 'Offence analysis summary',
-  reachability: { entryWhen: true },
   blocks: [offenceAnalysisSummaryTab],
   onAccess: [
     access({

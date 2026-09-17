@@ -1,6 +1,5 @@
 import {
   access,
-  Answer,
   Condition,
   Data,
   Post,
@@ -13,11 +12,12 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { victimCards } from './fields'
 import { Step } from '../../constants/step'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Question } from '../../constants/question'
-import { CommonOption } from '../../../../constants/commonOption'
 import { victimsCollection } from '../../constants/collections'
 import { contentFor } from '../../locales'
 import { saveButton } from '../../../../constants/buttons'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
+import { Section } from '../../../../constants/section'
 import { autosaveSubmit } from '../../../../autosave'
 
 const addAnotherButton = GovUKButton({
@@ -30,6 +30,11 @@ const addAnotherButton = GovUKButton({
 export const offenceAnalysisVictimSummaryStep = step({
   path: `/${Step.offence_analysis_victim_summary.path}`,
   title: 'Victims summary',
+  view: {
+    locals: {
+      backlink: createRoute([...baseSanRoute, Section.offence_analysis.path]),
+    },
+  },
   reachability: { entryWhen: true },
   blocks: [victimCards, saveButton, addAnotherButton],
   onAccess: [
@@ -49,15 +54,7 @@ export const offenceAnalysisVictimSummaryStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onValid: {
-        next: [
-          redirect({
-            when: Answer(Question.offence_analysis_who_was_the_victim).match(
-              Condition.Array.Contains(CommonOption.other),
-            ),
-            goto: Step.offence_analysis_involved_parties.path,
-          }),
-          redirect({ goto: Step.offence_analysis_impact.path }),
-        ],
+        next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
       },
     }),
     submit({
