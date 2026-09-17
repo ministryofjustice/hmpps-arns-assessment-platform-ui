@@ -185,6 +185,7 @@ export const english = {
     },
     [Question.alcohol_use_changes]: {
       text: 'Does %1 want to make changes to their alcohol use?',
+      hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their alcohol use',
     },
     [Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors]: {

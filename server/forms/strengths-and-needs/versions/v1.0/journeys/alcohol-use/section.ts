@@ -380,6 +380,7 @@ const changes = question({
     code: Question.alcohol_use_changes,
     format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_use_changes.text', CaseData.Forename),
+    hint: contentFor('question.alcohol_use_changes.hint', CaseData.Forename),
     options: [
       {
         value: CommonOption.made_changes,

@@ -408,7 +408,7 @@ const helpedDuringPeriodsGoodHealthWellbeing = question({
         text: commonContentFor('option.OTHER'),
         reveals: requiredDetails({
           code: Question.health_wellbeing_positive_factors_other_details,
-          validationMessage: contentFor('validation.risk_of_serious_harm_details'),
+          validationMessage: commonContentFor('validation.enter_details'),
         }),
       },
     ],
