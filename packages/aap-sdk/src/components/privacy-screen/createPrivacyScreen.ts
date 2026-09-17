@@ -15,6 +15,8 @@ import { createFormContent } from './fields'
  * Configuration for creating a privacy screen step
  */
 export interface PrivacyScreenConfig {
+  title?: ResolvableString
+  feedbackUrl?: string
   /**
    * Effects to run on page access (e.g., load session data, load person data)
    * These run before the page renders.
@@ -99,17 +101,21 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
     basePath,
     headerServiceNameLink,
     personForename,
+    title = 'Close other applications',
+    feedbackUrl,
   } = config
 
   return step({
     path: '/privacy',
-    title: 'Close other applications',
+    title,
     reachability: { entryWhen: true },
     view: {
       template,
       locals: {
         basePath,
         hideNavigation: true,
+        hideNavigationLinks: true,
+        feedbackUrl,
         hidePreviousVersions: true,
         hideBackToTop: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,

@@ -2,6 +2,11 @@ import { User } from '../../types/authentication/User.type'
 import { Answers, Properties, PropertyKeys, QuestionCodes } from './AssessmentDataModel.type'
 import { Identifiers } from './AssessmentIdentifier.type'
 
+/** A backend command hook; journeys own each hook's additional payload. */
+export interface Hook {
+  type: string
+}
+
 interface CommandTimeline {
   type: string
   data: Record<string, unknown>
@@ -9,6 +14,7 @@ interface CommandTimeline {
 
 export interface Command {
   type: string
+  hooks?: Hook[]
   timeline?: CommandTimeline
   user: User
   assessmentUuid: string

@@ -94,62 +94,68 @@ describe('accessRoutes', () => {
     jest.resetAllMocks()
   })
 
-  it('should prepare an OASys session and redirect to the requested service', async () => {
-    // Arrange
-    getCurrentContext.mockResolvedValue(handoverContext)
+  it.each(['sentence-plan', 'strengths-and-needs'])(
+    'should prepare an OASys session when entering %s',
+    async service => {
+      // Arrange
+      getCurrentContext.mockResolvedValue(handoverContext)
 
-    // Act
-    await request(createApp()).get('/access/sentence-plan/oasys').expect(302).expect('Location', '/sentence-plan')
+      // Act
+      await request(createApp()).get(`/access/${service}/oasys`).expect(302).expect('Location', `/${service}`)
 
-    // Assert
-    expect(getCurrentContext).toHaveBeenCalledWith('user-token')
-    expect(session).toEqual({
-      accessDetails: {
-        accessType: 'OASYS',
-        planAccessMode: 'READ_ONLY',
-        oasysRedirectUrl: 'https://oasys.example/return',
-      },
-      caseDetails: {
-        name: {
-          forename: 'Robin',
-          middleName: '',
-          surname: 'Jones',
+      // Assert
+      expect(getCurrentContext).toHaveBeenCalledWith('user-token')
+      expect(session).toEqual({
+        accessDetails: {
+          accessType: 'OASYS',
+          accessMode: 'READ_WRITE',
+          planAccessMode: 'READ_ONLY',
+          oasysRedirectUrl: 'https://oasys.example/return',
         },
-        crn: 'X000002',
-        pnc: 'PNC123',
-        dateOfBirth: '1990-02-03',
-        nomisId: 'A0002AA',
-        location: 'PRISON',
-        sexuallyMotivatedOffenceHistory: 'YES',
-        tier: '',
-        region: '',
-        sentences: [],
-      },
-      handoverContext,
-      practitionerDetails: {
-        identifier: 'OASYS1',
-        displayName: 'Alex Smith',
-        authSource: 'OASYS',
-      },
-      targetService: 'sentence-plan',
-    })
-  })
+        caseDetails: {
+          name: {
+            forename: 'Robin',
+            middleName: '',
+            surname: 'Jones',
+          },
+          crn: 'X000002',
+          pnc: 'PNC123',
+          gender: 'NOT_KNOWN',
+          dateOfBirth: '1990-02-03',
+          nomisId: 'A0002AA',
+          location: 'PRISON',
+          sexuallyMotivatedOffenceHistory: 'YES',
+          tier: '',
+          region: '',
+          sentences: [],
+        },
+        handoverContext,
+        practitionerDetails: {
+          identifier: 'OASYS1',
+          displayName: 'Alex Smith',
+          authSource: 'OASYS',
+        },
+        targetService: service,
+      })
+    },
+  )
 
-  it('should prepare a CRN session and redirect to the requested service', async () => {
+  it.each(['sentence-plan', 'strengths-and-needs'])('should prepare a CRN session when entering %s', async service => {
     // Arrange
     getCaseDetails.mockResolvedValue(caseDetails)
 
     // Act
     await request(createApp())
-      .get('/access/sentence-plan/crn/X000001')
+      .get(`/access/${service}/crn/X000001`)
       .expect(302)
-      .expect('Location', '/sentence-plan')
+      .expect('Location', `/${service}`)
 
     // Assert
     expect(getCaseDetails).toHaveBeenCalledWith('X000001')
     expect(session).toEqual({
       accessDetails: {
         accessType: 'HMPPS_AUTH',
+        accessMode: 'READ_WRITE',
         planAccessMode: 'READ_WRITE',
       },
       caseDetails,
@@ -158,8 +164,30 @@ describe('accessRoutes', () => {
         displayName: 'Jane Smith',
         authSource: 'HMPPS_AUTH',
       },
-      targetService: 'sentence-plan',
+      targetService: service,
     })
+  })
+
+  it.each([
+    ['0', 'NOT_KNOWN'],
+    ['1', 'MALE'],
+    ['2', 'FEMALE'],
+    ['9', 'NOT_SPECIFIED'],
+    ['unexpected', 'NOT_KNOWN'],
+  ])('should preserve assessment permissions and gender when handover supplies %s', async (gender, expectedGender) => {
+    // Arrange
+    getCurrentContext.mockResolvedValue({
+      ...handoverContext,
+      principal: { ...handoverContext.principal, accessMode: 'READ_ONLY', planAccessMode: 'READ_WRITE' },
+      subject: { ...handoverContext.subject, gender },
+    })
+
+    // Act
+    await request(createApp()).get('/access/strengths-and-needs/oasys').expect(302)
+
+    // Assert
+    expect(session.accessDetails).toMatchObject({ accessMode: 'READ_ONLY', planAccessMode: 'READ_WRITE' })
+    expect(session.caseDetails).toMatchObject({ gender: expectedGender })
   })
 
   it('should reject an unknown target service before loading access data', async () => {

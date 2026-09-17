@@ -74,6 +74,7 @@ class AccessController {
     }
     req.session.accessDetails = {
       accessType: 'HMPPS_AUTH',
+      accessMode: 'READ_WRITE',
       planAccessMode: 'READ_WRITE',
     }
   }
@@ -92,6 +93,7 @@ class AccessController {
       },
       crn: subject.crn,
       pnc: subject.pnc,
+      gender: this.getGenderFromHandover(subject.gender),
       dateOfBirth: subject.dateOfBirth,
       nomisId: subject.nomisId,
       location: subject.location,
@@ -107,9 +109,21 @@ class AccessController {
     }
     req.session.accessDetails = {
       accessType: 'OASYS',
+      accessMode: principal.accessMode,
       planAccessMode: principal.planAccessMode,
       oasysRedirectUrl: principal.returnUrl,
     }
+  }
+
+  private getGenderFromHandover(code: string | undefined): string {
+    const genders: Record<string, string> = {
+      '0': 'NOT_KNOWN',
+      '1': 'MALE',
+      '2': 'FEMALE',
+      '9': 'NOT_SPECIFIED',
+    }
+
+    return genders[code] ?? 'NOT_KNOWN'
   }
 }
 
