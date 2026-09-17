@@ -5,8 +5,8 @@ import {
   expectEachChangeLinkToLandOnItsQuestion,
   Scenario,
   summaryTab,
-  test,
 } from '../../changeLinkUtils'
+import { test } from '../../fixtures'
 
 /**
  * Offence analysis change links

@@ -6,8 +6,8 @@ import {
   practitionerAnalysisTab,
   Scenario,
   summaryTab,
-  test,
 } from '../../changeLinkUtils'
+import { test } from '../../fixtures'
 
 /**
  * Finances change links

@@ -6,8 +6,8 @@ import {
   practitionerAnalysisTab,
   Scenario,
   summaryTab,
-  test,
 } from '../../changeLinkUtils'
+import { test } from '../../fixtures'
 
 /**
  * Personal relationships and community change links

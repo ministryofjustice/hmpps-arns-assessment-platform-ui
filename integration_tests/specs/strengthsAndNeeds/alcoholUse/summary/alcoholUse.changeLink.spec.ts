@@ -7,8 +7,8 @@ import {
   practitionerAnalysisTab,
   Scenario,
   summaryTab,
-  test,
 } from '../../changeLinkUtils'
+import { test } from '../../fixtures'
 
 /**
  * Alcohol use change links
