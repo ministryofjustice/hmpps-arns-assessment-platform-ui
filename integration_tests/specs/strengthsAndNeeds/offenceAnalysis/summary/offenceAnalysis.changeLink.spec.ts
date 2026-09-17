@@ -4,6 +4,7 @@ import {
   expectChangeLinksListed,
   expectEachChangeLinkToLandOnItsQuestion,
   Scenario,
+  summaryTab,
   test,
 } from '../../changeLinkUtils'
 
@@ -71,6 +72,7 @@ test.describe('Offence analysis change links', () => {
           page,
           `${section}/${summaryPage}`,
           fullyAnswered.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -81,7 +83,7 @@ test.describe('Offence analysis change links', () => {
       test('the summary page lists every change link', async ({ page, openSection }) => {
         const section = await openSection(offence, fullyAnswered.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks)
+        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
       })
     })
   })

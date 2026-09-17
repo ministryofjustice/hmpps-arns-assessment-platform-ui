@@ -5,6 +5,7 @@ import {
   expectEachChangeLinkToLandOnItsQuestion,
   practitionerAnalysisTab,
   Scenario,
+  summaryTab,
   test,
 } from '../../changeLinkUtils'
 
@@ -70,6 +71,7 @@ test.describe('Finances change links', () => {
           page,
           `${section}/${summaryPage}`,
           fullyAnswered.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -83,9 +85,7 @@ test.describe('Finances change links', () => {
         page,
         `${section}/${analysisPage}`,
         practitionerAnalysisChangeLinks,
-        {
-          tab: practitionerAnalysisTab,
-        },
+        practitionerAnalysisTab,
       )
     })
   })
@@ -95,11 +95,14 @@ test.describe('Finances change links', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
         const section = await openSection(finances, fullyAnswered.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, practitionerAnalysisChangeLinks, {
-          tab: practitionerAnalysisTab,
-        })
+        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
       })
     })
   })

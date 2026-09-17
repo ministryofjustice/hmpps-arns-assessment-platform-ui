@@ -5,6 +5,7 @@ import {
   expectEachChangeLinkToLandOnItsQuestion,
   practitionerAnalysisTab,
   Scenario,
+  summaryTab,
   test,
 } from '../../changeLinkUtils'
 
@@ -134,6 +135,7 @@ test.describe('Drug use change links', () => {
           page,
           `${section}/${summaryPage}`,
           usedInTheLastSixMonths.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -146,6 +148,7 @@ test.describe('Drug use change links', () => {
           page,
           `${section}/${summaryPage}`,
           usedMoreThanSixMonthsAgo.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -159,9 +162,7 @@ test.describe('Drug use change links', () => {
         page,
         `${section}/${analysisPage}`,
         practitionerAnalysisChangeLinks,
-        {
-          tab: practitionerAnalysisTab,
-        },
+        practitionerAnalysisTab,
       )
     })
   })
@@ -171,11 +172,24 @@ test.describe('Drug use change links', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
         const section = await openSection(drugUse, usedInTheLastSixMonths.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, usedInTheLastSixMonths.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, usedInTheLastSixMonths.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, practitionerAnalysisChangeLinks, {
-          tab: practitionerAnalysisTab,
-        })
+        await expectChangeLinksListed(
+          page,
+          `${section}/${summaryPage}`,
+          usedInTheLastSixMonths.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          usedInTheLastSixMonths.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
       })
     })
 
@@ -183,11 +197,24 @@ test.describe('Drug use change links', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
         const section = await openSection(drugUse, usedMoreThanSixMonthsAgo.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, usedMoreThanSixMonthsAgo.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, usedMoreThanSixMonthsAgo.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, practitionerAnalysisChangeLinks, {
-          tab: practitionerAnalysisTab,
-        })
+        await expectChangeLinksListed(
+          page,
+          `${section}/${summaryPage}`,
+          usedMoreThanSixMonthsAgo.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          usedMoreThanSixMonthsAgo.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
       })
     })
   })

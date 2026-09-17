@@ -5,6 +5,7 @@ import {
   expectEachChangeLinkToLandOnItsQuestion,
   practitionerAnalysisTab,
   Scenario,
+  summaryTab,
   test,
 } from '../../changeLinkUtils'
 
@@ -95,6 +96,7 @@ test.describe('Accommodation change links', () => {
           page,
           `${section}/${summaryPage}`,
           settledAccommodation.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -107,6 +109,7 @@ test.describe('Accommodation change links', () => {
           page,
           `${section}/${summaryPage}`,
           noAccommodation.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -120,9 +123,7 @@ test.describe('Accommodation change links', () => {
         page,
         `${section}/${analysisPage}`,
         practitionerAnalysisChangeLinks,
-        {
-          tab: practitionerAnalysisTab,
-        },
+        practitionerAnalysisTab,
       )
     })
   })
@@ -132,11 +133,24 @@ test.describe('Accommodation change links', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
         const section = await openSection(accommodation, settledAccommodation.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, settledAccommodation.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, settledAccommodation.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, practitionerAnalysisChangeLinks, {
-          tab: practitionerAnalysisTab,
-        })
+        await expectChangeLinksListed(
+          page,
+          `${section}/${summaryPage}`,
+          settledAccommodation.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          settledAccommodation.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
       })
     })
 
@@ -144,11 +158,19 @@ test.describe('Accommodation change links', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
         const section = await openSection(accommodation, noAccommodation.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, noAccommodation.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, noAccommodation.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, practitionerAnalysisChangeLinks, {
-          tab: practitionerAnalysisTab,
-        })
+        await expectChangeLinksListed(page, `${section}/${summaryPage}`, noAccommodation.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          noAccommodation.summaryChangeLinks,
+          summaryTab,
+        )
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
       })
     })
   })

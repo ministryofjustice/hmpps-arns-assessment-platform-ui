@@ -5,6 +5,7 @@ import {
   expectEachChangeLinkToLandOnItsQuestion,
   practitionerAnalysisTab,
   Scenario,
+  summaryTab,
   test,
 } from '../../changeLinkUtils'
 
@@ -104,6 +105,7 @@ test.describe('Thinking, behaviours and attitudes change links', () => {
           page,
           `${section}/${summaryPage}`,
           fullyAnswered.summaryChangeLinks,
+          summaryTab,
         )
       })
     })
@@ -117,9 +119,7 @@ test.describe('Thinking, behaviours and attitudes change links', () => {
         page,
         `${section}/${analysisPage}`,
         practitionerAnalysisChangeLinks,
-        {
-          tab: practitionerAnalysisTab,
-        },
+        practitionerAnalysisTab,
       )
     })
   })
@@ -129,11 +129,14 @@ test.describe('Thinking, behaviours and attitudes change links', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
         const section = await openSection(thinking, fullyAnswered.answers)
 
-        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks)
-        await expectChangeLinksListed(page, `${section}/${analysisPage}`, practitionerAnalysisChangeLinks, {
-          tab: practitionerAnalysisTab,
-        })
+        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
       })
     })
   })

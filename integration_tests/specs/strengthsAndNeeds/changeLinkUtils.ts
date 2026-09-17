@@ -28,24 +28,19 @@ export const test = base.extend<{ openSection: (sectionPath: string, answers: An
   },
 })
 
+export const summaryTab = 'Summary'
+
 export const practitionerAnalysisTab = 'Practitioner analysis'
 
-const showTab = async (page: Page, tab?: string) => {
-  if (tab) {
-    await page.getByRole('tab', { name: tab }).click()
-  }
+const showTab = async (page: Page, tab: string) => {
+  await page.getByRole('tab', { name: tab }).click()
 }
 
 /**
- * Asserts the page (in the given tab, if any) shows exactly these
+ * Asserts the page, in the given tab, shows exactly these
  * change links in the specified order.
  */
-export const expectChangeLinksListed = async (
-  page: Page,
-  url: string,
-  changeLinks: ChangeLink[],
-  { tab }: { tab?: string } = {},
-) => {
+export const expectChangeLinksListed = async (page: Page, url: string, changeLinks: ChangeLink[], tab: string) => {
   await page.goto(url)
   await showTab(page, tab)
 
@@ -65,7 +60,7 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
   page: Page,
   url: string,
   changeLinks: ChangeLink[],
-  { tab }: { tab?: string } = {},
+  tab: string,
 ) => {
   for (const link of changeLinks) {
     // eslint-disable-next-line no-await-in-loop
