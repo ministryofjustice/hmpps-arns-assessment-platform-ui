@@ -3,9 +3,9 @@ import {
   and,
   Answer,
   Condition,
+  Format,
   not,
   or,
-  PredicateExpr,
   Self,
   validation,
   when,
@@ -24,6 +24,8 @@ import {
   ParentOption,
   QuestionContent,
   QuestionFormat,
+  questionFormGroupOf,
+  questionIdOf,
   QuestionOption,
   requiredValidationOf,
   revealedAnswerBlocksOf,
@@ -60,6 +62,7 @@ export const characterCountField =
     GovUKCharacterCount(
       definedPropsOf({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: placement.label ?? { text: content.text, classes: 'govuk-label--m' },
         hint: content.hint,
         maxLength: placement.maxLength,
@@ -79,6 +82,7 @@ export const characterCountDetails =
     GovUKCharacterCount(
       definedPropsOf({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: content.text,
         hint: content.hint,
         maxLength: options.maxLength,
@@ -87,12 +91,27 @@ export const characterCountDetails =
       }),
     )
 
+/** A step path anchored to one of its questions */
+const changeHrefOf = (stepPath: string, code: ResolvableString): ResolvableString => {
+  const questionId = questionIdOf(code)
+
+  return typeof questionId === 'string' ? `${stepPath}#${questionId}` : Format(`${stepPath}#%1`, questionId)
+}
+
 /**
- * Creates actions for a summary row that are to be displayed when in edit mode
+ * The "Change" action for a summary row, shown in edit mode only
  */
-export const createSummaryRowActions = (changeRef: ResolvableString) =>
+export const changeLinkActions = (stepPath: string, question: { code: ResolvableString; text: ResolvableString }) =>
   when(isEditMode)
-    .then({ items: [{ href: changeRef, text: commonContentFor('change') }] })
+    .then({
+      items: [
+        {
+          href: changeHrefOf(stepPath, question.code),
+          text: commonContentFor('change'),
+          visuallyHiddenText: question.text,
+        },
+      ],
+    })
     .else({})
 
 /**
@@ -188,6 +207,7 @@ const optionalFutureDateValidations = () => [
 export const optionalFutureDateDetails = () => (content: QuestionContent, parent: ParentOption) =>
   GovUKDateInputFull({
     code: content.code,
+    formGroup: questionFormGroupOf(content.code),
     fieldset: {
       legend: { text: content.text },
     },
@@ -223,7 +243,7 @@ export const summaryRow =
           ),
         ],
       },
-      actions: createSummaryRowActions(placement.changeHref),
+      actions: changeLinkActions(placement.changeHref, content),
     })
 
 const selectedOrAnswered = (content: OptionedQuestionContent, placement: SummaryRowPlacement) =>
@@ -245,11 +265,10 @@ const selectedOrAnswered = (content: OptionedQuestionContent, placement: Summary
  * as its own conditionally-visible body (single- and multi-select alike),
  * followed by the answers to the questions the options reveal — option
  * labels again for optioned reveals (recursively, for reveals of reveals),
- * the verbatim answer otherwise. The change link anchors to the question on
- * its step, and can carry the question text as visually hidden context.
+ * the verbatim answer otherwise.
  */
 export const itemisedSummaryRow =
-  (placement: { changeHref: string; visibleWhen?: PredicateExpr; changeVisuallyHiddenText?: boolean }) =>
+  (placement: SummaryRowPlacement) =>
   (content: OptionedQuestionContent): SummaryRow =>
     definedPropsOf({
       key: { text: content.text },
@@ -260,17 +279,7 @@ export const itemisedSummaryRow =
           ...revealedAnswerBlocksOf(content),
         ],
       },
-      actions: when(isEditMode)
-        .then({
-          items: [
-            definedPropsOf({
-              href: `${placement.changeHref}#${content.code}`,
-              text: commonContentFor('change'),
-              visuallyHiddenText: placement.changeVisuallyHiddenText ? content.text : undefined,
-            }),
-          ],
-        })
-        .else({}),
+      actions: changeLinkActions(placement.changeHref, content),
     })
 
 /**
@@ -294,7 +303,7 @@ export const checkboxSummaryRow =
           }),
         ),
       },
-      actions: createSummaryRowActions(`${placement.changeHref}#${content.code}`),
+      actions: changeLinkActions(placement.changeHref, content),
     })
 
 /** Read-only summary row for a free-text question: the answer, verbatim. */
@@ -313,5 +322,5 @@ export const textSummaryRow =
       value: {
         blocks: [GovUKBody({ text: Answer(content.code) })],
       },
-      actions: createSummaryRowActions(`${placement.changeHref}#${content.code}`),
+      actions: changeLinkActions(placement.changeHref, content),
     })

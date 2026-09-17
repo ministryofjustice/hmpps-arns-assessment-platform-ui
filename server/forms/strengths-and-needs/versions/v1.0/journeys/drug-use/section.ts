@@ -26,6 +26,7 @@ import {
   checkboxField,
   question,
   QuestionFormat,
+  questionFormGroupOf,
   questionTemplate,
   radioDetails,
   radioField,
@@ -45,7 +46,7 @@ import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
   characterCountField,
   checkboxSummaryRow,
-  createSummaryRowActions,
+  changeLinkActions,
   optionalDetails,
   requiredDetails,
   summaryRow,
@@ -69,8 +70,6 @@ const anyDrugUsedInLastSixMonths = or(
   lastSixMonthConditions[1],
   ...lastSixMonthConditions.slice(2),
 )
-
-const practitionerAnalysisHref = `${Step.drug_use_summary.path}#practitioner-analysis`
 
 /**
  * Per-drug question templates — one question asked once per drug. Instance
@@ -105,7 +104,7 @@ export const drugLastUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(lastUsedSummaryLabels, Answer(content.code)),
       },
-      actions: createSummaryRowActions(Step.add_drugs.path),
+      actions: changeLinkActions(Step.add_drugs.path, { code: content.code, text: contentFor('text.lastUsed.text') }),
     }),
   },
 })
@@ -128,6 +127,7 @@ export const drugHowOftenUsed = questionTemplate({
     collectionField: content =>
       GovUKRadioInput({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         classes: 'govuk-radios--inline',
         fieldset: {
           legend: {
@@ -144,7 +144,10 @@ export const drugHowOftenUsed = questionTemplate({
         text: SANGenerators.getTextFromListDefinition(content.options, Answer(content.code)),
       },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
-      actions: createSummaryRowActions(Step.drug_details.path),
+      actions: changeLinkActions(Step.drug_details.path, {
+        code: content.code,
+        text: contentFor('text.howOften.text'),
+      }),
     }),
   },
 })
@@ -160,6 +163,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
     collectionField: content =>
       GovUKCharacterCount({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: content.text,
         maxLength: CharacterLimit.c2000,
         validWhen: [
@@ -175,7 +179,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         text: Answer(content.code),
       },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
-      actions: createSummaryRowActions(Step.drug_details.path),
+      actions: changeLinkActions(Step.drug_details.path, content),
     }),
   },
 })
@@ -199,6 +203,7 @@ export const drugsInjectedMonths = questionTemplate({
     field: (content, parent) =>
       GovUKCheckboxInput({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         fieldset: {
           legend: {
             text: content.text,
@@ -230,6 +235,7 @@ const otherDrugNameRevealed = revealedQuestion({
     field: (content, parent) =>
       GovUKTextInput({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: {
           text: content.text,
           classes: 'govuk-visually-hidden',
@@ -737,7 +743,7 @@ const motivatedToStop = question({
       visibleWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
     }),
     summaryRow: summaryRow({
-      changeHref: practitionerAnalysisHref,
+      changeHref: Step.drug_use_summary.path,
       visibleWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
     }),
   },
@@ -770,7 +776,7 @@ const strengthsOrProtectiveFactors = question({
   displayModes: {
     field: radioField(),
     summaryRow: summaryRow({
-      changeHref: practitionerAnalysisHref,
+      changeHref: Step.drug_use_summary.path,
     }),
   },
 })
@@ -798,7 +804,7 @@ const riskOfSeriousHarm = question({
   displayModes: {
     field: radioField(),
     summaryRow: summaryRow({
-      changeHref: practitionerAnalysisHref,
+      changeHref: Step.drug_use_summary.path,
     }),
   },
 })
@@ -826,7 +832,7 @@ const riskOfReoffending = question({
   displayModes: {
     field: radioField(),
     summaryRow: summaryRow({
-      changeHref: practitionerAnalysisHref,
+      changeHref: Step.drug_use_summary.path,
     }),
   },
 })

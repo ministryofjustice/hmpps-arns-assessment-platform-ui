@@ -774,50 +774,50 @@ test.describe('Employment and education Page', () => {
           - definition:
             - paragraph: Unemployed - not actively looking for work
           - definition:
-            - link "Change":
-              - /url: current-employment
+            - link "Change What is Test's current employment status?":
+              - /url: current-employment#employment_status-question
           - term: Does Test have any additional day-to-day commitments?
           - definition:
             - paragraph: None
           - definition:
-            - link "Change":
-              - /url: employed#employment_other_responsibilities
+            - link "Change Does Test have any additional day-to-day commitments?":
+              - /url: employed#employment_other_responsibilities-question
           - term: Select the highest level of academic qualification Test has completed
           - definition:
             - paragraph: None of these
           - definition:
-            - link "Change":
-              - /url: employed#education_highest_level_completed
+            - link "Change Select the highest level of academic qualification Test has completed":
+              - /url: employed#education_highest_level_completed-question
           - term: Does Test have any professional or vocational qualifications?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: employed#education_professional_or_vocational_qualifications
+            - link "Change Does Test have any professional or vocational qualifications?":
+              - /url: employed#education_professional_or_vocational_qualifications-question
           - term: Does Test have any skills that could help them in a job or to get a job?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: employed#education_transferable_skills
+            - link "Change Does Test have any skills that could help them in a job or to get a job?":
+              - /url: employed#education_transferable_skills-question
           - term: Does Test have difficulties with reading, writing or numeracy?
           - definition:
             - paragraph: No difficulties
           - definition:
-            - link "Change":
-              - /url: employed#education_difficulties
+            - link "Change Does Test have difficulties with reading, writing or numeracy?":
+              - /url: employed#education_difficulties-question
           - term: What is Test's experience of education?
           - definition:
             - paragraph: Unknown
           - definition:
-            - link "Change":
-              - /url: employed#education_experience
+            - link "Change What is Test's experience of education?":
+              - /url: employed#education_experience-question
           - term: Does Test want to make changes to their employment and education?
           - definition:
             - paragraph: Test is not present
           - definition:
-            - link "Change":
-              - /url: employed#employment_education_changes
+            - link "Change Does Test want to make changes to their employment and education?":
+              - /url: employed#employment_education_changes-question
           - button "Go to practitioner analysis"
       `)
     })

@@ -3,6 +3,7 @@ import {
   Answer,
   ChainableExpr,
   Condition,
+  Format,
   or,
   PredicateExpr,
   Self,
@@ -66,7 +67,7 @@ import { SANGenerators } from '../generators'
  *       },
  *       displayModes: {
  *         field: radioField(),
- *         summaryRow: itemisedSummaryRow({ changePath: Step.my_step.path }),
+ *         summaryRow: itemisedSummaryRow({ changeHref: Step.my_step.path }),
  *       },
  *     }),
  *   },
@@ -176,6 +177,15 @@ export interface SummaryRowPlacement {
 export const definedPropsOf = <TProps extends object>(props: TProps): TProps =>
   Object.fromEntries(Object.entries(props).filter(([, value]) => value !== undefined)) as TProps
 
+/**
+ * The id on a question's form group.
+ */
+export const questionIdOf = (code: ResolvableString): ResolvableString =>
+  typeof code === 'string' ? `${code}-question` : Format('%1-question', code)
+
+/** Form group id attribute that identifies the question. */
+export const questionFormGroupOf = (code: ResolvableString) => ({ attributes: { id: questionIdOf(code) } })
+
 export const optionsOf = (content: OptionedQuestionContent): QuestionOption[] =>
   content.options.filter(isQuestionOption)
 
@@ -257,6 +267,7 @@ export const radioField =
       definedPropsOf({
         code: content.code,
         idPrefix: content.idPrefix,
+        formGroup: questionFormGroupOf(content.idPrefix ?? content.code),
         fieldset: {
           legend: {
             text: content.text,
@@ -285,6 +296,7 @@ export const radioDetails =
       definedPropsOf({
         code: content.code,
         idPrefix: content.idPrefix,
+        formGroup: questionFormGroupOf(content.idPrefix ?? content.code),
         fieldset: {
           legend: definedPropsOf({
             text: content.text,
@@ -309,6 +321,7 @@ export const checkboxField =
       definedPropsOf({
         code: content.code,
         multiple: true,
+        formGroup: questionFormGroupOf(content.code),
         fieldset: {
           legend: {
             text: content.text,
@@ -342,6 +355,7 @@ export const checkboxDetails =
       definedPropsOf({
         code: content.code,
         multiple: true,
+        formGroup: questionFormGroupOf(content.code),
         fieldset: options.legendClasses
           ? { legend: { text: content.text, classes: options.legendClasses } }
           : undefined,
@@ -479,7 +493,7 @@ export const revealedQuestion = <TContent extends QuestionContent>(definition: {
  *   },
  *   displayModes: {
  *     field: radioField({ dependentWhen: applies, visibleWhen: applies }),
- *     summaryRow: itemisedSummaryRow({ changePath: Step.my_step.path, visibleWhen: applies }),
+ *     summaryRow: itemisedSummaryRow({ changeHref: Step.my_step.path, visibleWhen: applies }),
  *   },
  * })
  * myQuestion.displayModes.field // GovUKRadioInput block, ready for a step's `blocks`

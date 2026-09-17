@@ -592,7 +592,6 @@ const strengthsOrProtectiveFactors = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.personal_relationships_community_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
@@ -626,7 +625,6 @@ const riskOfSeriousHarm = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.personal_relationships_community_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
@@ -660,7 +658,6 @@ const riskOfReoffending = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.personal_relationships_community_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })

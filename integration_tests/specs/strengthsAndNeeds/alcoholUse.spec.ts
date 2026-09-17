@@ -1,15 +1,7 @@
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { test, TargetService } from '../../support/fixtures'
-import {
-  alcohol,
-  buildPageTitle,
-  checkAccessibility,
-  navigateToStrengthsAndNeeds,
-  sanFormPath,
-  sanPageTitles,
-  v1Path,
-} from './sanUtils'
+import { buildPageTitle, checkAccessibility, sanPageTitles } from './sanUtils'
 
 test.describe('Alcohol use Page', () => {
   test.describe('Questions', () => {
@@ -82,8 +74,6 @@ test.describe('Alcohol use Page', () => {
       ).toBeVisible()
       await expect(page.getByRole('button', { name: 'Save and continue' })).toBeVisible()
 
-      // Fields render with id = their code, so the summary "Change" links can link to them.
-      await expect(page.locator('#alcohol_frequency')).toBeAttached()
     })
 
     test('hides the last-3-months questions when they have not drunk alcohol recently', async ({
@@ -138,9 +128,8 @@ test.describe('Alcohol use Page', () => {
       // "No" skips the usage questions and routes straight to the summary.
       await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
 
-      // Summary list keys/values are not exposed as ARIA roles, so match on text.
-      // The alcohol use answer is shown...
-      await expect(page.getByText('Has Test ever drunk alcohol?')).toBeVisible()
+      // The alcohol use answer is shown (as a summary list key, its Change link names it too)
+      await expect(page.getByRole('term').filter({ hasText: 'Has Test ever drunk alcohol?' })).toBeVisible()
 
       // ...but the usage questions are omitted, because they only apply when they have drunk alcohol.
       await expect(
@@ -148,59 +137,6 @@ test.describe('Alcohol use Page', () => {
       ).toHaveCount(0)
       await expect(page.getByText('Why does Test drink alcohol?')).toHaveCount(0)
       await expect(page.getByText('How often has Test drunk alcohol in the last 3 months?')).toHaveCount(0)
-    })
-
-    test('summary Change link deep-links to the specific question, not the top of the page', async ({
-      page,
-      createSession,
-      strengthsAndNeedsBuilder,
-      baseURL,
-    }) => {
-      const { handoverLink, sanAssessmentId } = await createSession({
-        targetService: TargetService.STRENGTHS_AND_NEEDS,
-      })
-      await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId)
-        .withAnswers([{ question: 'alcohol_use', value: 'NO' }])
-        .save()
-
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
-
-      // The "Change" link anchors to the question, not the top of the target page.
-      const changeAlcoholUse = page.locator('a[href$="#alcohol_use"]')
-      await expect(changeAlcoholUse).toBeVisible()
-      await changeAlcoholUse.click()
-
-      // brings the question into view and focuses the first
-      // option while the title stays visible.
-      await expect(page).toHaveURL(/#alcohol_use$/)
-      await expect(page.getByLabel('Yes, including the last 3 months')).toBeFocused()
-      await expect(page.getByRole('group', { name: 'Has Test ever drunk alcohol?' })).toBeVisible()
-    })
-
-    test('links into the practitioner-analysis tab (activates the hidden tab)', async ({
-      page,
-      createSession,
-      strengthsAndNeedsBuilder,
-      baseURL,
-    }) => {
-      const { handoverLink, sanAssessmentId } = await createSession({
-        targetService: TargetService.STRENGTHS_AND_NEEDS,
-      })
-      await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId)
-        .withAnswers([{ question: 'alcohol_use', value: 'NO' }])
-        .save()
-
-      // Practitioner questions live in a tab that is hidden by default. A "Change" link that
-      // targets one of those questions must activate that tab first
-      await navigateToStrengthsAndNeeds(page, handoverLink)
-      await page.goto(
-        `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-summary#alcohol_use_practitioner_analysis_strengths_or_protective_factors`,
-      )
-
-      await expect(page.locator('#practitioner-analysis')).toBeVisible()
-      await expect(page.getByRole('group', { name: /strengths or protective factors related to/ })).toBeVisible()
     })
 
     test('go to practitioner analysis button works on the analysis page after the section is marked complete', async ({

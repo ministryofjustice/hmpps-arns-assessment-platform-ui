@@ -23,7 +23,7 @@ import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
   characterCountField,
-  createSummaryRowActions,
+  changeLinkActions,
   itemisedSummaryRow,
   optionalDetails,
   requiredDetails,
@@ -128,7 +128,7 @@ const currentEmploymentStatus = question({
           }),
         ],
       },
-      actions: createSummaryRowActions(Step.current_employment.path),
+      actions: changeLinkActions(Step.current_employment.path, content),
     }),
   },
 })
@@ -599,7 +599,6 @@ const strengthsOrProtectiveFactors = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_education_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
@@ -633,7 +632,6 @@ const riskOfSeriousHarm = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_education_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
@@ -665,7 +663,6 @@ const riskOfReoffending = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_education_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
