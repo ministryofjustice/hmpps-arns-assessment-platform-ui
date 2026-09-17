@@ -19,7 +19,7 @@ export const english = {
     },
     [Question.other_drug_name]: {
       text: 'Enter which other drug they’ve misused',
-      hint: 'Add drug name.',
+      hint: 'Add drug name',
       option: {
         [Option.last_six]: 'Used in the last 6 months',
         [Option.more_than_six]: 'Used more than 6 months ago',

@@ -189,7 +189,7 @@ export const optionalFutureDateDetails = () => (content: QuestionContent, parent
   GovUKDateInputFull({
     code: content.code,
     fieldset: {
-      legend: { text: SANGenerators.getFormatterDateFromIso(content.text) },
+      legend: { text: content.text },
     },
     dependentWhen: parent.selectedWhen,
     formatters: [StrengthsAndNeedsTransformers.ToISO()],
