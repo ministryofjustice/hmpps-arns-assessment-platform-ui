@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -20,7 +20,7 @@ test.describe('Summary', () => {
         { question: 'employment_education_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+    await EmploymentAndEducationPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -101,7 +101,7 @@ test.describe('Summary', () => {
         { question: 'employment_education_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+    await EmploymentAndEducationPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -138,7 +138,7 @@ test.describe('Summary', () => {
         { question: 'employment_education_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
+    await EmploymentAndEducationPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -151,7 +151,8 @@ test.describe('Summary', () => {
       'strengths or protective factors',
     )
 
-    await employmentAndEducationPage.linkedToRiskOfReoffending.click()
+    await employmentAndEducationPage.questions.employment_education_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await employmentAndEducationPage.markComplete.click()
     await expect(employmentAndEducationPage.complete).toBeVisible()
     expect(page.url()).toContain('employment-education-analysis')

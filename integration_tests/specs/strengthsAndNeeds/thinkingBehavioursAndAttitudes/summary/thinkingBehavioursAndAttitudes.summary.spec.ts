@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -37,7 +37,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -201,7 +201,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -260,7 +260,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -272,7 +272,8 @@ test.describe('Summary', () => {
       'strengths or protective factors',
     )
 
-    await thinkingBehavioursAndAttitudesPage.linkedToRiskOfReoffending.click()
+    await thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await thinkingBehavioursAndAttitudesPage.markComplete.click()
     await expect(thinkingBehavioursAndAttitudesPage.complete).toBeVisible()
     expect(page.url()).toContain('thinking-behaviours-analysis')

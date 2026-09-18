@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page, never misused drugs', async ({
@@ -18,7 +18,7 @@ test.describe('Summary', () => {
         { question: 'drugs_section_status', value: 'INCOMPLETE' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
 
@@ -46,7 +46,7 @@ test.describe('Summary', () => {
         { question: 'drugs_section_status', value: 'INCOMPLETE' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
 
@@ -68,17 +68,12 @@ test.describe('Summary', () => {
         { question: 'drug_use_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'drug-use-summary#practitioner-analysis',
-    )
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary#practitioner-analysis')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'strengths or protective factors')
 
-    await drugUsePage.linkedToRiskOfReoffending.click()
+    await drugUsePage.questions.drug_use_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await drugUsePage.markComplete.click()
     await expect(drugUsePage.complete).toBeVisible()
     expect(page.url()).toContain('drug-use-analysis')

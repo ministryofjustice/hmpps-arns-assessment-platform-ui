@@ -1,7 +1,8 @@
+import type { AnswerConfig } from '../../builders/types'
 import { test as base, TargetService } from '../../support/fixtures'
 import { navigateToStrengthsAndNeeds, sanFormPath, v1Path } from './sanUtils'
 
-export type Answer = { question: string; value: string | string[] }
+export type Answer = AnswerConfig
 
 /**
  * Strengths and needs fixtures.

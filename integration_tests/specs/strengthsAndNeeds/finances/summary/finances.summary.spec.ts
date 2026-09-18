@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -19,7 +19,7 @@ test.describe('Summary', () => {
         { question: 'finance_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await FinancesPage.navigateToFinances(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
 
     const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
 
@@ -81,7 +81,7 @@ test.describe('Summary', () => {
         { question: 'finance_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await FinancesPage.navigateToFinances(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
     const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
 
     await financesPage.goToPractitionerAnalysis.click()
@@ -108,16 +108,11 @@ test.describe('Summary', () => {
         { question: 'finance_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
       ]).save()
 
-    await FinancesPage.navigateToFinances(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'finance-summary#practitioner-analysis',
-    )
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary#practitioner-analysis')
     const financesPage = await FinancesPage.verifyOnPage(page, 'strengths or protective factors')
 
-    await financesPage.linkedToRiskOfReoffending.click()
+    await financesPage.questions.finance_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await financesPage.markComplete.click()
     await expect(financesPage.complete).toBeVisible()
     expect(page.url()).toContain('finance-analysis')
