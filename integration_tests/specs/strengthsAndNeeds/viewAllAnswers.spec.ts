@@ -427,6 +427,22 @@ test.describe('Accessibility', () => {
       disableRules: ['aria-allowed-attr'],
     })
   })
+
+  test('print should be accessible', async ({ baseURL, createSession, page, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    await strengthsAndNeedsBuilder.fresh().save()
+
+    await navigateToStrengthsAndNeeds(page, handoverLink)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+
+    // Unfortunately this is not reflected in the Playwright UI
+    await page.emulateMedia({ media: 'print' })
+
+    await checkAccessibility(page, {
+      // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
+      disableRules: ['aria-allowed-attr'],
+    })
+  })
 })
 
 test.describe('View all answers print view', () => {
