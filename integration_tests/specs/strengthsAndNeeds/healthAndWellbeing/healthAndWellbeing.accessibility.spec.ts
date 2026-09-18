@@ -8,7 +8,7 @@ test.describe('Accessibility', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
     await checkAccessibility(page, {
       // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
       disableRules: ['aria-allowed-attr'],

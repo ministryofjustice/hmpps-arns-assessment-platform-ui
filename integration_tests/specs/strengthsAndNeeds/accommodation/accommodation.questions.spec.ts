@@ -14,7 +14,7 @@ test.describe('Questions', () => {
 
     await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.accommodation))
 
-    await expect(accommodationPage.whatTypeOfAccommodation).toMatchAriaSnapshot(`
+    await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
           - group /What type of accommodation does/:
             - text: /What type of accommodation does/
             - radio "Settled"
@@ -40,8 +40,7 @@ test.describe('Questions', () => {
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Who is')
 
-    await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - heading "Accommodation" [level=1]
+    await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
         - group "Who is Test living with?":
           - text: Who is Test living with? Select all that apply.
           - checkbox "Family"
@@ -110,10 +109,7 @@ test.describe('Questions', () => {
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Is the location')
 
-    await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - link "Back"
-        - heading "Accommodation" [level=1]
-        - strong: Incomplete
+    await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
         - group "Is the location of Test's accommodation suitable?"
         - group "Is Test's accommodation suitable?"
         - group "Does Test have future accommodation planned?"
@@ -131,7 +127,8 @@ test.describe('Questions', () => {
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
-    await accommodationPage.approvedPremises.click()
+    await accommodationPage.questions.type_of_temporary_accommodation.option('Approved premises')
+      .click()
     await accommodationPage.saveAndContinue.click()
 
     await AccommodationPage.verifyOnPage(page, 'Is the location')
@@ -150,10 +147,7 @@ test.describe('Questions', () => {
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'have no accommodation')
 
-    await expect(accommodationPage.mainSection).toMatchAriaSnapshot(`
-        - link "Back"
-        - heading "Accommodation" [level=1]
-        - strong: Incomplete
+    await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
         - group "Why does Test have no accommodation?"
         - text: What’s helped Test stay in accommodation in the past? (optional)
         - textbox "What’s helped Test stay in accommodation in the past? (optional)"

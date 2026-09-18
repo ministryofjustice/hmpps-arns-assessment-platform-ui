@@ -10,13 +10,13 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
 
     await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.offenceAnalysis))
 
-    await expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
+    await expect(offenceAnalysisPage.mainForm).toMatchAriaSnapshot(`
       - text: Enter a brief description of the current index offence(s)
       - textbox "Enter a brief description of the current index offence(s)"
       - text: You can enter up to 4000 characters You have 4,000 characters remaining
@@ -103,17 +103,11 @@ test.describe('Questions', () => {
         },
       ]).save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'offence-analysis-victim/create',
-    )
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Who is the victim')
 
-    expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
+    expect(offenceAnalysisPage.mainForm).toMatchAriaSnapshot(`
       - group "Who is the victim?":
         - text: Who is the victim?
         - radio "A stranger"
@@ -224,7 +218,7 @@ test.describe('Questions', () => {
         },
       ]).save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(
+    await OffenceAnalysisPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -234,7 +228,7 @@ test.describe('Questions', () => {
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'How many other people')
 
-    expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
+    expect(offenceAnalysisPage.mainForm).toMatchAriaSnapshot(`
       - group "How many other people were involved with committing the current index offence(s)?":
         - text: How many other people were involved with committing the current index offence(s)?
         - radio "None"

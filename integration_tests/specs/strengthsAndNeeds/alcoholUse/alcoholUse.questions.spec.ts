@@ -10,7 +10,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId)
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol?')
 
@@ -43,7 +43,7 @@ test.describe('Questions', () => {
       .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
     // Recency questions, only shown on this branch
     await expect(
@@ -89,7 +89,7 @@ test.describe('Questions', () => {
       .withAnswers([{ question: 'alcohol_use', value: 'YES_NOT_IN_LAST_THREE_MONTHS' }])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
     // Base usage questions are still shown
     await expect(
@@ -125,7 +125,7 @@ test.describe('Questions', () => {
       .save()
 
     // "No" skips the usage questions and routes straight to the summary.
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
 
     // The alcohol use answer is shown (as a summary list key, its Change link names it too)
     await expect(page.getByRole('term').filter({ hasText: 'Has Test ever drunk alcohol?' })).toBeVisible()
@@ -158,7 +158,7 @@ test.describe('Questions', () => {
       .save()
 
     // Reach the analysis page via the real flow: summary -> practitioner tab -> Mark as complete.
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
     await page.getByRole('button', { name: 'Go to practitioner analysis' }).click()
     await page.getByRole('button', { name: 'Mark as complete' }).click()
 
@@ -191,7 +191,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
     await expect(page.getByRole('textbox', { name: 'Give details' }).first()).toBeVisible()
   })

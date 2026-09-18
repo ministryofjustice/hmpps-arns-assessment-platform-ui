@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -26,13 +26,7 @@ test.describe('Summary', () => {
         { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'health-wellbeing-summary',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
 
@@ -133,13 +127,7 @@ test.describe('Summary', () => {
         { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'health-wellbeing-summary',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
 
@@ -174,7 +162,7 @@ test.describe('Summary', () => {
         { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+    await HealthAndWellbeingPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -183,7 +171,8 @@ test.describe('Summary', () => {
     )
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'strengths or protective factors')
 
-    await healthAndWellbeingPage.linkedToRiskOfReoffending.click()
+    await healthAndWellbeingPage.questions.health_wellbeing_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await healthAndWellbeingPage.markComplete.click()
     await expect(healthAndWellbeingPage.complete).toBeVisible()
     expect(page.url()).toContain('health-wellbeing-analysis')

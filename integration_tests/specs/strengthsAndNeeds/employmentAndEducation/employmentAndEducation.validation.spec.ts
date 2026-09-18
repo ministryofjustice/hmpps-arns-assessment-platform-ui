@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { test, TargetService } from '../../../support/fixtures'
 
 test.describe('Validation', () => {
@@ -10,14 +11,15 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
-    await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectTypeOfEmployment.click()
+    const { questions } = employmentAndEducationPage
 
-    await expect(employmentAndEducationPage.fullTime).toBeFocused()
+    await employmentAndEducationPage.saveAndContinue.click()
+    await questions.employment_type.errorLink.click()
+    await expect(questions.employment_type.input).toBeFocused()
   })
 
   test('validation currently unavailable option', async ({
@@ -32,14 +34,13 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
     await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectOneOption.click()
-
-    await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    await employmentAndEducationPage.hasBeenEmployed(Option.currently_unavailable_for_work).errorLink.click()
+    await expect(employmentAndEducationPage.hasBeenEmployed(Option.currently_unavailable_for_work).input).toBeFocused()
   })
 
   test('validation unemployed - actively looking option', async ({
@@ -54,14 +55,13 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
     await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectOneOption.click()
-
-    await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    await employmentAndEducationPage.hasBeenEmployed(Option.unemployed_looking_for_work).errorLink.click()
+    await expect(employmentAndEducationPage.hasBeenEmployed(Option.unemployed_looking_for_work).input).toBeFocused()
   })
 
   test('validation unemployed - not actively looking option', async ({
@@ -76,14 +76,13 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
     await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectOneOption.click()
-
-    await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    await employmentAndEducationPage.hasBeenEmployed(Option.unemployed_not_looking_for_work).errorLink.click()
+    await expect(employmentAndEducationPage.hasBeenEmployed(Option.unemployed_not_looking_for_work).input).toBeFocused()
   })
 
   test('validation employed questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -96,15 +95,11 @@ test.describe('Validation', () => {
         { question: 'employment_type', value: 'FULL_TIME' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
+
+    const { questions } = employmentAndEducationPage
 
     await employmentAndEducationPage.saveAndContinue.click()
     await expect(employmentAndEducationPage.alert).toMatchAriaSnapshot(`
@@ -141,23 +136,23 @@ test.describe('Validation', () => {
               - /url: "#employment_education_changes"
     `)
 
-    await employmentAndEducationPage.selectTheirEmploymentHistory.click()
-    await expect(employmentAndEducationPage.continuousEmploymentHistory).toBeFocused()
-    await employmentAndEducationPage.selectAdditionalDayToDay.click()
-    await expect(employmentAndEducationPage.caringResponsibilities).toBeFocused()
-    await employmentAndEducationPage.selectTheHighestLevel.click()
-    await expect(employmentAndEducationPage.entryLevel).toBeFocused()
-    await employmentAndEducationPage.selectIfTheyHaveAnyProfessional.click()
-    await expect(employmentAndEducationPage.haveAnyProfessional).toBeFocused()
-    await employmentAndEducationPage.selectIfTheyHaveAnySkills.click()
-    await expect(employmentAndEducationPage.yesHasSkills).toBeFocused()
-    await employmentAndEducationPage.selectIfTheyHaveDifficulties.click()
-    await expect(employmentAndEducationPage.yesWithReading).toBeFocused()
-    await employmentAndEducationPage.selectTheirOverall.click()
-    await expect(employmentAndEducationPage.positiveOverall).toBeFocused()
-    await employmentAndEducationPage.selectTheirExperienceOf.click()
-    await expect(employmentAndEducationPage.positiveExperienceOf).toBeFocused()
-    await employmentAndEducationPage.errorWantsToMakeChanges.click()
-    await expect(employmentAndEducationPage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.employment_history.errorLink.click()
+    await expect(questions.employment_history.input).toBeFocused()
+    await questions.employment_other_responsibilities.errorLink.click()
+    await expect(questions.employment_other_responsibilities.input).toBeFocused()
+    await questions.education_highest_level_completed.errorLink.click()
+    await expect(questions.education_highest_level_completed.input).toBeFocused()
+    await questions.education_professional_or_vocational_qualifications.errorLink.click()
+    await expect(questions.education_professional_or_vocational_qualifications.input).toBeFocused()
+    await questions.education_transferable_skills.errorLink.click()
+    await expect(questions.education_transferable_skills.input).toBeFocused()
+    await questions.education_difficulties.errorLink.click()
+    await expect(questions.education_difficulties.input).toBeFocused()
+    await questions.employment_experience.errorLink.click()
+    await expect(questions.employment_experience.input).toBeFocused()
+    await questions.education_experience.errorLink.click()
+    await expect(questions.education_experience.input).toBeFocused()
+    await questions.employment_education_changes.errorLink.click()
+    await expect(questions.employment_education_changes.input).toBeFocused()
   })
 })

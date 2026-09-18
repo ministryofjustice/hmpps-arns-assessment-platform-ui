@@ -15,13 +15,13 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 
     await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.healthAndWellbeing))
 
-    await expect(healthAndWellbeingPage.currentEmploymentStatus).toMatchAriaSnapshot(`
+    await expect(healthAndWellbeingPage.mainForm).toMatchAriaSnapshot(`
         - group /have any physical health conditions?/:
           - text: /have any physical health conditions?/
           - radio "Yes"
@@ -58,20 +58,14 @@ test.describe('Questions', () => {
         { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'physical-mental-health',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(
       page,
       'physical health conditions (optional)',
     )
 
-    await expect(healthAndWellbeingPage.mainSection).toMatchAriaSnapshot(`
+    await expect(healthAndWellbeingPage.mainForm).toMatchAriaSnapshot(`
       - text: Give details if Test is on prescribed medication or treatment for physical health conditions (optional)
       - textbox "Give details if Test is on prescribed medication or treatment for physical health conditions (optional)"
       - text: You can enter up to 2000 characters You have 2,000 characters remaining Give details if Test is on prescribed medication or treatment for mental health problems (optional)
@@ -214,20 +208,11 @@ test.describe('Questions', () => {
         { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'physical-mental-health',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
 
-    await expect(healthAndWellbeingPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Health and wellbeing" [level=1]
-      - strong: Incomplete
+    await expect(healthAndWellbeingPage.mainForm).toMatchAriaSnapshot(`
       - group "Has Test had a head injury or any illness affecting the brain?"
       - group "Does Test have any neurodiverse conditions?"
       - group "Does Test have any conditions or disabilities that impact their ability to learn? (optional)"

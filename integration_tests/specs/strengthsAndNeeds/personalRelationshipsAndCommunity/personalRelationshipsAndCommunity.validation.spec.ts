@@ -15,17 +15,14 @@ test.describe('Validation', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-    )
+    await PersonalRelationshipsAndCommunityPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
       'Are there any children',
     )
+
+    const { questions } = personalRelationshipsAndCommunityPage
 
     await personalRelationshipsAndCommunityPage.saveAndContinue.click()
     await expect(personalRelationshipsAndCommunityPage.alert).toMatchAriaSnapshot(`
@@ -44,12 +41,18 @@ test.describe('Validation', () => {
               - /url: "#personal_relationships_community_children_details_yes_children_visiting_details"
     `)
 
-    await personalRelationshipsAndCommunityPage.errorChildrenThatLive.click()
-    await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatLive).toBeFocused()
-    await personalRelationshipsAndCommunityPage.errorChildrenThatDoNotLive.click()
-    await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatDoNotLive).toBeFocused()
-    await personalRelationshipsAndCommunityPage.errorChildrenThatVisit.click()
-    await expect(personalRelationshipsAndCommunityPage.enterDetailsChildrenThatVisit).toBeFocused()
+    await questions.personal_relationships_community_children_details_yes_children_living_with_pop_details.errorLink.click()
+    await expect(
+      questions.personal_relationships_community_children_details_yes_children_living_with_pop_details.input,
+    ).toBeFocused()
+    await questions.personal_relationships_community_children_details_yes_children_not_living_with_pop_details.errorLink.click()
+    await expect(
+      questions.personal_relationships_community_children_details_yes_children_not_living_with_pop_details.input,
+    ).toBeFocused()
+    await questions.personal_relationships_community_children_details_yes_children_visiting_details.errorLink.click()
+    await expect(
+      questions.personal_relationships_community_children_details_yes_children_visiting_details.input,
+    ).toBeFocused()
   })
 
   test('validation other important people', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -66,7 +69,7 @@ test.describe('Validation', () => {
         { question: 'personal_relationships_community_important_people', value: ['OTHER'] },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -79,6 +82,8 @@ test.describe('Validation', () => {
       'Who are the important people',
     )
 
+    const { questions } = personalRelationshipsAndCommunityPage
+
     await personalRelationshipsAndCommunityPage.saveAndContinue.click()
     await expect(personalRelationshipsAndCommunityPage.alert).toMatchAriaSnapshot(`
       - alert:
@@ -90,8 +95,8 @@ test.describe('Validation', () => {
               - /url: "#personal_relationships_community_important_people_other_details"
     `)
 
-    await personalRelationshipsAndCommunityPage.errorEnterDetails.click()
-    await expect(personalRelationshipsAndCommunityPage.enterDetails).toBeFocused()
+    await questions.personal_relationships_community_important_people_other_details.errorLink.click()
+    await expect(questions.personal_relationships_community_important_people_other_details.input).toBeFocused()
   })
 
   test('validation personal relationships community questions', async ({
@@ -118,7 +123,7 @@ test.describe('Validation', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -130,6 +135,8 @@ test.describe('Validation', () => {
       page,
       'current relationship status',
     )
+
+    const { questions } = personalRelationshipsAndCommunityPage
 
     await personalRelationshipsAndCommunityPage.saveAndContinue.click()
 
@@ -161,19 +168,19 @@ test.describe('Validation', () => {
               - /url: "#personal_relationships_community_changes"
     `)
 
-    await personalRelationshipsAndCommunityPage.selectIfTheyAreHappy.click()
-    await expect(personalRelationshipsAndCommunityPage.happyAndPositive).toBeFocused()
-    await personalRelationshipsAndCommunityPage.selectTheirHistory.click()
-    await expect(personalRelationshipsAndCommunityPage.historyOfStable).toBeFocused()
-    await personalRelationshipsAndCommunityPage.enterDetails.click()
-    await expect(personalRelationshipsAndCommunityPage.isAbleToResolve).toBeFocused()
-    await personalRelationshipsAndCommunityPage.selectWhatTheirCurrent.click()
-    await expect(personalRelationshipsAndCommunityPage.stableSupportive).toBeFocused()
-    await personalRelationshipsAndCommunityPage.selectTheirExperience.click()
-    await expect(personalRelationshipsAndCommunityPage.positiveExperience).toBeFocused()
-    await personalRelationshipsAndCommunityPage.selectIfTheyHadChildhood.click()
-    await expect(personalRelationshipsAndCommunityPage.yes).toBeFocused()
-    await personalRelationshipsAndCommunityPage.errorWantsToMakeChanges.click()
-    await expect(personalRelationshipsAndCommunityPage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.personal_relationships_community_current_relationship.errorLink.click()
+    await expect(questions.personal_relationships_community_current_relationship.input).toBeFocused()
+    await questions.personal_relationships_community_intimate_relationship.errorLink.click()
+    await expect(questions.personal_relationships_community_intimate_relationship.input).toBeFocused()
+    await questions.personal_relationships_community_challenges_intimate_relationship.errorLink.click()
+    await expect(questions.personal_relationships_community_challenges_intimate_relationship.input).toBeFocused()
+    await questions.personal_relationships_community_family_relationship.errorLink.click()
+    await expect(questions.personal_relationships_community_family_relationship.input).toBeFocused()
+    await questions.personal_relationships_community_childhood.errorLink.click()
+    await expect(questions.personal_relationships_community_childhood.input).toBeFocused()
+    await questions.personal_relationships_community_childhood_behaviour.errorLink.click()
+    await expect(questions.personal_relationships_community_childhood_behaviour.input).toBeFocused()
+    await questions.personal_relationships_community_changes.errorLink.click()
+    await expect(questions.personal_relationships_community_changes.input).toBeFocused()
   })
 })
