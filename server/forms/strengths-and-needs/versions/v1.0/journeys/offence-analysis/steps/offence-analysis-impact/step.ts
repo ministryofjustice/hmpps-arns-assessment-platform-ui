@@ -11,7 +11,6 @@ import { autosaveSubmit } from '../../../../autosave'
 export const offenceAnalysisImpactStep = step({
   path: `/${Step.offence_analysis_impact.path}`,
   title: 'Offence analysis impact',
-  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: createRoute([

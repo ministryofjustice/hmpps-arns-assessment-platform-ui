@@ -13,7 +13,6 @@ import { autosaveSubmit } from '../../../../autosave'
 export const offenceAnalysisInvolvedPartiesStep = step({
   path: `/${Step.offence_analysis_involved_parties.path}`,
   title: 'Offence analysis Involved Parties',
-  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: when(

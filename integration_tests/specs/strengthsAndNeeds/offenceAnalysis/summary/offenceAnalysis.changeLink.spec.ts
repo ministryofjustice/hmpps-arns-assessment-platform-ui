@@ -25,6 +25,7 @@ const fullyAnswered: Scenario = {
   answers: [
     { question: 'offence_analysis_description_of_offence', value: 'Some details' },
     { question: 'offence_analysis_elements', value: ['ARSON', 'WEAPON'] },
+    { question: 'offence_weapon_details', value: 'A knife' },
     { question: 'offence_analysis_reason', value: 'Some details' },
     { question: 'offence_analysis_motivations', value: ['EMOTIONAL_STATE'] },
     { question: 'offence_analysis_who_was_the_victim', value: ['OTHER'] },
