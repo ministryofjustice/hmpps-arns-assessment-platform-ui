@@ -1,27 +1,41 @@
 /**
- * Mimics the behaviour of the error summary component when a "Change" link is clicked.
- * Brings the question into view, if the question is inside a tab (i.e. practitioner analysis),
- * activate that tab first, then scroll its title into view and focus the first input.
+ * Change links anchor to a question with `#<code>-question` (the id on
+ * its form group) which the browser scrolls to.
+ * However, it can't open the practitioner analysis tab when the question
+ * is inside it, and focus the question's first input. This script does both.
  */
-window.addEventListener('load', function scrollToAnchoredQuestion() {
-  const id = decodeURIComponent((window.location.hash || '').slice(1))
-  if (!id) return
 
-  const target = document.getElementById(id)
-  if (!target) return
+const showQuestion = question => {
+  question.scrollIntoView()
 
-  // If the question lives in a tab panel that isn't active, activate that tab first.
-  const panel = target.closest('.govuk-tabs__panel')
-  if (panel) {
-    const tab = document.querySelector(`.govuk-tabs__tab[href="#${panel.id}"]`)
-    if (tab) tab.click()
+  question.querySelector('input, textarea, select')?.focus({ preventScroll: true })
+}
+
+const showAnchoredQuestion = () => {
+  const questionId = window.location.hash.slice(1)
+  const question = document.getElementById(questionId)
+  if (!question || !question.classList.contains('govuk-form-group')) {
+    return
   }
 
-  // Bring the question title into view and focus the first field, keeping the title visible.
-  const formGroup = target.closest('.govuk-form-group')
-  const title = (formGroup && formGroup.querySelector('legend, label')) || target
-  title.scrollIntoView()
+  const hiddenPanel = question.closest('.govuk-tabs__panel--hidden')
+  if (!hiddenPanel) {
+    showQuestion(question)
+    return
+  }
 
-  const input = (formGroup || target).querySelector('input, textarea, select')
-  if (input) input.focus({ preventScroll: true })
-})
+  // Point the URL at the panel so GOV.UK Tabs opens it
+  window.addEventListener(
+    'hashchange',
+    () =>
+      setTimeout(() => {
+        window.history.replaceState(null, '', `#${questionId}`)
+        showQuestion(question)
+      }),
+    { once: true },
+  )
+  window.location.replace(`#${hiddenPanel.id}`)
+}
+
+window.addEventListener('load', showAnchoredQuestion)
+window.addEventListener('hashchange', showAnchoredQuestion)

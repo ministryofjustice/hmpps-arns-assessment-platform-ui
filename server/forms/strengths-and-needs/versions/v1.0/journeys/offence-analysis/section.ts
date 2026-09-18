@@ -6,6 +6,7 @@ import {
   question,
   QuestionContent,
   QuestionFormat,
+  questionFormGroupOf,
   radioDetails,
   radioField,
   revealedQuestion,
@@ -57,6 +58,7 @@ const weaponDetailsRevealed = revealedQuestion({
     field: (content, parent) =>
       GovUKTextInput({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: { text: content.text },
         dependentWhen: parent.selectedWhen,
         validWhen: [
@@ -216,6 +218,7 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
     field: (content, parent) =>
       GovUKCharacterCount({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: content.text,
         maxLength: 2000,
         dependentWhen: parent.selectedWhen,
@@ -316,6 +319,7 @@ const offenceAnalysisLeader = question({
           field: (content, parent) =>
             GovUKCharacterCount({
               code: content.code,
+              formGroup: questionFormGroupOf(content.code),
               label: content.text,
               maxLength: 2000,
               dependentWhen: parent.selectedWhen,
@@ -342,6 +346,7 @@ const offenceAnalysisLeader = question({
           field: (content, parent) =>
             GovUKCharacterCount({
               code: content.code,
+              formGroup: questionFormGroupOf(content.code),
               label: content.text,
               maxLength: 2000,
               dependentWhen: parent.selectedWhen,
@@ -589,6 +594,7 @@ const patternsOfOffending = question({
 const offenceAnalysisRiskDetailsField = (content: QuestionContent, parent: ParentOption) =>
   GovUKCharacterCount({
     code: content.code,
+    formGroup: questionFormGroupOf(content.code),
     label: content.text,
     maxLength: 2000,
     dependentWhen: parent.selectedWhen,
@@ -869,6 +875,7 @@ const victimEthnicity = question({
     field: content =>
       GovUKSelectInput({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         label: { text: content.text, classes: 'govuk-label--m' },
         items: victimEthnicitySelectItems,
         validWhen: [

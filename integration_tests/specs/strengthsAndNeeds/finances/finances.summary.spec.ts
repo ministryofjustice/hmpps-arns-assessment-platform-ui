@@ -29,38 +29,38 @@ test.describe('Summary', () => {
         - definition:
           - paragraph: Carer’s allowance
         - definition:
-          - link "Change":
-            - /url: finance#finance_income
+          - link "Change Where does Test currently get their money from?":
+            - /url: finance#finance_income-question
         - term: Does Test have their own bank account?
         - definition:
           - paragraph: "Yes"
         - definition:
-          - link "Change":
-            - /url: finance#finance_bank_account
+          - link "Change Does Test have their own bank account?":
+            - /url: finance#finance_bank_account-question
         - term: How good is Test at managing their money?
         - definition:
           - paragraph: Able to manage their money well and is a strength
         - definition:
-          - link "Change":
-            - /url: finance#finance_money_management
+          - link "Change How good is Test at managing their money?":
+            - /url: finance#finance_money_management-question
         - term: Is Test affected by gambling?
         - definition:
           - paragraph: Yes, their own gambling
         - definition:
-          - link "Change":
-            - /url: finance#finance_gambling
+          - link "Change Is Test affected by gambling?":
+            - /url: finance#finance_gambling-question
         - term: Is Test affected by debt?
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: finance#finance_debt
+          - link "Change Is Test affected by debt?":
+            - /url: finance#finance_debt-question
         - term: Does Test want to make changes to their finances?
         - definition:
           - paragraph: Test is not present
         - definition:
-          - link "Change":
-            - /url: finance#finance_changes
+          - link "Change Does Test want to make changes to their finances?":
+            - /url: finance#finance_changes-question
         - button "Go to practitioner analysis"
     `)
   })

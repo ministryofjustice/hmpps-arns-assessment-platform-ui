@@ -26,7 +26,7 @@ import { Question } from '../../constants/question'
 import { SANGenerators } from '../../../../../../generators'
 import { contentFor } from '../../locales'
 import { Option } from '../../constants/option'
-import { createSummaryRowActions } from '../../../../constants/questionContent'
+import { changeLinkActions } from '../../../../constants/questionContent'
 
 export const questions = questionsOf({
   section: Section.drug_use,
@@ -52,7 +52,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
             ),
           ),
       },
-      actions: createSummaryRowActions(Step.add_drugs.path),
+      actions: changeLinkActions(Step.add_drugs.path, drugUseSection.questions.selectMisusedDrugs.content),
     },
     rows: [
       drugLastUsed.summaryRowOver(drugValueLower),
@@ -107,7 +107,10 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
             }),
           ],
         },
-        actions: createSummaryRowActions(Step.drug_details.path),
+        actions: changeLinkActions(Step.drug_details.path, {
+          code: Question.drugs_injected,
+          text: contentFor('text.injected.text'),
+        }),
         visibleWhen: and(
           Data('injectableSelectedDrugs').match(Condition.IsRequired()),
           Answer(Question.drugs_injected).match(Condition.Array.Contains(drugValue)),
