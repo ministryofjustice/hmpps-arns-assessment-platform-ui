@@ -164,15 +164,15 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: 'offence_analysis_index_offence_description',
+          question: 'offence_analysis_description_of_offence',
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
         {
-          question: 'offence_analysis_offence_elements',
+          question: 'offence_analysis_elements',
           value: ['ARSON'],
         },
         {
-          question: 'offence_analysis_why_offence_happened',
+          question: 'offence_analysis_reason',
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
         {
@@ -180,7 +180,7 @@ test.describe('Validation', () => {
           value: ['ADDICTIONS_PERCEIVED_NEEDS'],
         },
         {
-          question: 'offence_analysis_commited_against',
+          question: 'offence_analysis_who_was_the_victim',
           value: ['ONE_OR_MORE_PEOPLE'],
         },
       ]).save()

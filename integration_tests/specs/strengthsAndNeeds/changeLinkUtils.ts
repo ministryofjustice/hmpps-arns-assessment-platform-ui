@@ -12,6 +12,12 @@ export const summaryTab = 'Summary'
 
 export const practitionerAnalysisTab = 'Practitioner analysis'
 
+/** Opens a page, failing fast if the assessment sends us somewhere else (e.g. its resume page). */
+const openPage = async (page: Page, url: string) => {
+  await page.goto(url)
+  await expect(page, 'landed on the page under test').toHaveURL(url)
+}
+
 const showTab = async (page: Page, tab: string) => {
   await page.getByRole('tab', { name: tab }).click()
 }
@@ -21,7 +27,7 @@ const showTab = async (page: Page, tab: string) => {
  * change links in the specified order.
  */
 export const expectChangeLinksListed = async (page: Page, url: string, changeLinks: ChangeLink[], tab: string) => {
-  await page.goto(url)
+  await openPage(page, url)
   await showTab(page, tab)
 
   const shown = page.getByRole('link', { name: /^Change\b/ })
@@ -45,7 +51,7 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
   for (const link of changeLinks) {
     // eslint-disable-next-line no-await-in-loop
     await test.step(`Change → ${hrefOf(link)}`, async () => {
-      await page.goto(url)
+      await openPage(page, url)
       await showTab(page, tab)
       const change = page.locator(`main a[href="${hrefOf(link)}"]`).first()
       await expect(change, 'says what it changes, as visually hidden text').toHaveAccessibleName(/^Change\s+\S/)

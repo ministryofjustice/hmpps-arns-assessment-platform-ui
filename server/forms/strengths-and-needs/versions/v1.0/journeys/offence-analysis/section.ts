@@ -1,4 +1,4 @@
-import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCharacterCount, GovUKSelectInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
   checkboxField,
@@ -292,12 +292,10 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
     validationMessage: contentFor('question.offence_analysis_how_many_involved.validation'),
   },
   displayModes: {
-    field: radioField({
-      dependentWhen: Answer(Question.offence_analysis_who_was_the_victim).match(
-        Condition.Array.Contains(CommonOption.other),
-      ),
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.offence_analysis_involved_parties.path,
     }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_involved_parties.path }),
   },
 })
 

@@ -4,12 +4,19 @@ import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
+import { Section } from '../../../../constants/section'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
   title: 'Add victim',
-  reachability: { entryWhen: true },
+  view: {
+    locals: {
+      backlink: createRoute([...baseSanRoute, Section.offence_analysis.path]),
+    },
+  },
   blocks: [
     victimQuestions.victimType.displayModes.field,
     victimQuestions.victimAge.displayModes.field,

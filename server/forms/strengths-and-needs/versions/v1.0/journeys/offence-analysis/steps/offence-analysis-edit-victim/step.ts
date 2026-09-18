@@ -13,11 +13,23 @@ import { Step } from '../../constants/step'
 import { victimQuestions } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
+import { Section } from '../../../../constants/section'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const offenceAnalysisEditVictimStep = step({
   path: `/${Step.offence_analysis_victim_edit.templatePath}`,
   title: 'Add victim',
+  view: {
+    locals: {
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.offence_analysis.path,
+        Step.offence_analysis_victim_summary.path,
+      ]),
+    },
+  },
   reachability: { entryWhen: true },
   blocks: [
     victimQuestions.victimType.displayModes.field,
