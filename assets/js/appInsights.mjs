@@ -178,3 +178,15 @@ export function initAccordionTelemetry() {
       })
   })
 }
+
+export const initDetailsTelemetry = () => {
+  if (!connectionString) return
+
+  document.querySelectorAll('details[data-ai-id]').forEach(details => {
+    const summary = details.querySelector('summary')
+
+    if (summary) {
+      summary.setAttribute('data-ai-id', details.getAttribute('data-ai-id'))
+    }
+  })
+}
