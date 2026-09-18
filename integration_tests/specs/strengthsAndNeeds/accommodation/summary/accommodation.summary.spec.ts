@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
-import { test, TargetService } from '../../../support/fixtures'
-import { navigateToStrengthsAndNeeds } from '../sanUtils'
+import { test, TargetService } from '../../../../support/fixtures'
+import { navigateToStrengthsAndNeeds } from '../../sanUtils'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -109,7 +109,8 @@ test.describe('Summary', () => {
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
 
     await accommodationPage.goToPractitionerAnalysis.click()
-    await accommodationPage.linkedToRiskOfReoffending.click()
+    await accommodationPage.questions.accommodation_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await accommodationPage.markComplete.click()
     await expect(accommodationPage.complete).toBeVisible()
     expect(page.url()).toContain('accommodation-analysis')

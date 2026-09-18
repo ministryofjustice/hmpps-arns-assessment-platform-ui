@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows a fully-answered summary including the multi-select reasons and impact questions', async ({
@@ -33,7 +33,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
 
     const summary = page.getByRole('tabpanel', { name: 'Summary' })
 
@@ -78,7 +78,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Summary')
 
     await alcoholUsePage.goToPractitionerAnalysis.click()
@@ -113,7 +113,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(
+    await AlcoholUsePage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -123,7 +123,8 @@ test.describe('Summary', () => {
 
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'strengths or protective factors')
 
-    await alcoholUsePage.linkedToRiskOfReoffending.click()
+    await alcoholUsePage.questions.alcohol_use_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await alcoholUsePage.markComplete.click()
     await expect(alcoholUsePage.complete).toBeVisible()
     expect(page.url()).toContain('alcohol-use-analysis')

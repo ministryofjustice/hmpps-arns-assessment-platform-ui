@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -37,7 +37,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -146,7 +146,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -210,7 +210,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -222,7 +222,8 @@ test.describe('Summary', () => {
       'strengths or protective factors',
     )
 
-    await personalRelationshipsAndCommunityPage.linkedToRiskOfReoffending.click()
+    await personalRelationshipsAndCommunityPage.questions.personal_relationships_community_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await personalRelationshipsAndCommunityPage.markComplete.click()
     await expect(personalRelationshipsAndCommunityPage.complete).toBeVisible()
     expect(page.url()).toContain('personal-relationships-community-analysis')

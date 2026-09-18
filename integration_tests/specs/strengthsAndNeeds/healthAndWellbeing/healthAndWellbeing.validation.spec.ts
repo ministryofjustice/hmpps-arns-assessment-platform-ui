@@ -15,7 +15,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 
@@ -73,11 +73,11 @@ test.describe('Validation', () => {
         },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(page, handoverLink, baseURL, sanAssessmentId)
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
-    const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
+    await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
 
-    expect(await healthAndWellbeingPage.giveDetailsCharacterError('231')).toBeVisible()
+    expect(page.getByText('You have 231 characters too many').first()).toBeVisible()
   })
 
   test('validation physical mental health questions', async ({
@@ -97,18 +97,14 @@ test.describe('Validation', () => {
         { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'physical-mental-health',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(
       page,
       'physical health conditions (optional)',
     )
+
+    const { questions } = healthAndWellbeingPage
 
     await healthAndWellbeingPage.saveAndContinue.click()
 
@@ -146,23 +142,23 @@ test.describe('Validation', () => {
               - /url: "#health_wellbeing_changes"
     `)
 
-    await healthAndWellbeingPage.errorWantsToMakeChanges.click()
-    await expect(healthAndWellbeingPage.yesAlreadyMadePositiveChanges).toBeFocused()
-    await healthAndWellbeingPage.selectIfTheyAreCurrently.click()
-    await expect(healthAndWellbeingPage.isCurrentlyHaving).toBeFocused()
-    await healthAndWellbeingPage.selectIfTheyHaveAny.click()
-    await expect(healthAndWellbeingPage.haveAnyNeurodiverse).toBeFocused()
-    await healthAndWellbeingPage.selectIfTheyHaveHad.click()
-    await expect(healthAndWellbeingPage.hadAHeadInjury).toBeFocused()
-    await healthAndWellbeingPage.selectIfTheyAreAbleTo.click()
-    await expect(healthAndWellbeingPage.yesAbleToCope).toBeFocused()
-    await healthAndWellbeingPage.selectTheirAttitude.click()
-    await expect(healthAndWellbeingPage.positiveAndResonably).toBeFocused()
-    await healthAndWellbeingPage.selectIfAttempted.click()
-    await expect(healthAndWellbeingPage.hasEverAttempted).toBeFocused()
-    await healthAndWellbeingPage.selectIfTheyHaveEver.click()
-    await expect(healthAndWellbeingPage.hasSelfHarmed).toBeFocused()
-    await healthAndWellbeingPage.selectHowOptimistic.click()
-    await expect(healthAndWellbeingPage.optimistic).toBeFocused()
+    await questions.health_wellbeing_changes.errorLink.click()
+    await expect(questions.health_wellbeing_changes.input).toBeFocused()
+    await questions.health_wellbeing_psychiatric_treatment.errorLink.click()
+    await expect(questions.health_wellbeing_psychiatric_treatment.input).toBeFocused()
+    await questions.health_wellbeing_neurodiverse_conditions.errorLink.click()
+    await expect(questions.health_wellbeing_neurodiverse_conditions.input).toBeFocused()
+    await questions.health_wellbeing_head_injury_or_illness.errorLink.click()
+    await expect(questions.health_wellbeing_head_injury_or_illness.input).toBeFocused()
+    await questions.health_wellbeing_coping_day_to_day_life.errorLink.click()
+    await expect(questions.health_wellbeing_coping_day_to_day_life.input).toBeFocused()
+    await questions.health_wellbeing_attitude_towards_self.errorLink.click()
+    await expect(questions.health_wellbeing_attitude_towards_self.input).toBeFocused()
+    await questions.health_wellbeing_attempted_suicide_or_suicidal_thoughts.errorLink.click()
+    await expect(questions.health_wellbeing_attempted_suicide_or_suicidal_thoughts.input).toBeFocused()
+    await questions.health_wellbeing_self_harmed.errorLink.click()
+    await expect(questions.health_wellbeing_self_harmed.input).toBeFocused()
+    await questions.health_wellbeing_outlook.errorLink.click()
+    await expect(questions.health_wellbeing_outlook.input).toBeFocused()
   })
 })

@@ -13,6 +13,7 @@ test.describe('Validation', () => {
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+    const { questions } = accommodationPage
 
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`
@@ -24,9 +25,8 @@ test.describe('Validation', () => {
               - link "Select the type of settled accommodation":
                 - /url: "#type_of_settled_accommodation"
       `)
-    await accommodationPage.selectTypeOfAccommodation('settled')
-
-    await expect(accommodationPage.homeowner).toBeFocused()
+    await questions.type_of_settled_accommodation.errorLink.click()
+    await expect(questions.type_of_settled_accommodation.input).toBeFocused()
   })
 
   test('validation temporary option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -38,6 +38,7 @@ test.describe('Validation', () => {
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+    const { questions } = accommodationPage
 
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`
@@ -49,9 +50,8 @@ test.describe('Validation', () => {
               - link "Select the type of temporary accommodation":
                 - /url: "#type_of_temporary_accommodation"
       `)
-    await accommodationPage.selectTypeOfAccommodation('temporary')
-
-    await expect(accommodationPage.approvedPremises).toBeFocused()
+    await questions.type_of_temporary_accommodation.errorLink.click()
+    await expect(questions.type_of_temporary_accommodation.input).toBeFocused()
   })
 
   test('validation no accommodation option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -63,6 +63,7 @@ test.describe('Validation', () => {
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
+    const { questions } = accommodationPage
 
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`
@@ -74,9 +75,8 @@ test.describe('Validation', () => {
               - link "Select the type of no accommodation":
                 - /url: "#type_of_no_accommodation"
       `)
-    await accommodationPage.selectTypeOfAccommodation('no accommodation')
-
-    await expect(accommodationPage.campsite).toBeFocused()
+    await questions.type_of_no_accommodation.errorLink.click()
+    await expect(questions.type_of_no_accommodation.input).toBeFocused()
   })
 
   test('validation settled questions', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -91,6 +91,7 @@ test.describe('Validation', () => {
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Who is')
+    const { questions } = accommodationPage
 
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`
@@ -112,13 +113,13 @@ test.describe('Validation', () => {
                 - /url: "#accommodation_changes"
       `)
 
-    await accommodationPage.selectWhoTheyAreLivingWith.click()
-    await expect(accommodationPage.family).toBeFocused()
-    await accommodationPage.selectIfTheLocation.click()
-    await expect(accommodationPage.isTheLocationOf).toBeFocused()
-    await accommodationPage.selectIfTheAccommodation.click()
-    await expect(accommodationPage.yesAccommodationSuitable).toBeFocused()
-    await accommodationPage.errorWantsToMakeChanges.click()
-    await expect(accommodationPage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.living_with.errorLink.click()
+    await expect(questions.living_with.input).toBeFocused()
+    await questions.suitable_housing_location.errorLink.click()
+    await expect(questions.suitable_housing_location.input).toBeFocused()
+    await questions.suitable_housing.errorLink.click()
+    await expect(questions.suitable_housing.input).toBeFocused()
+    await questions.accommodation_changes.errorLink.click()
+    await expect(questions.accommodation_changes.input).toBeFocused()
   })
 })

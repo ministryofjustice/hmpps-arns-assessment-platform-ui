@@ -10,13 +10,13 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId)
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'ever misused drugs')
 
     await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.drugUse))
 
-    await expect(drugUsePage.mainSection).toMatchAriaSnapshot(`
+    await expect(drugUsePage.mainForm).toMatchAriaSnapshot(`
         - group "Has Test ever misused drugs?":
           - text: Has Test ever misused drugs? This includes illegal and prescription drugs.
           - radio "Yes"
@@ -37,11 +37,11 @@ test.describe('Questions', () => {
         { question: 'drugs_section_status', value: 'INCOMPLETE' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
-    await expect(drugUsePage.mainSection).toMatchAriaSnapshot(`
+    await expect(drugUsePage.mainForm).toMatchAriaSnapshot(`
       - group "Which drugs has Test misused?":
         - text: Which drugs has Test misused? Select all that apply.
         - checkbox "Amphetamines (including speed, methamphetamine)"
@@ -93,7 +93,7 @@ test.describe('Questions', () => {
         { question: 'drugs_section_status', value: 'INCOMPLETE' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
 
@@ -124,11 +124,11 @@ test.describe('Questions', () => {
         { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Not used in the last 6 months')
 
-    await expect(drugUsePage.mainSection).toMatchAriaSnapshot(`
+    await expect(drugUsePage.mainForm).toMatchAriaSnapshot(`
       - heading "Used in the last 6 months" [level=2]
       - group: How to record frequency
       - heading "Amphetamines (including speed, methamphetamine)" [level=2]
@@ -188,11 +188,11 @@ test.describe('Questions', () => {
         { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'use drugs?')
 
-    await expect(drugUsePage.mainSection).toMatchAriaSnapshot(`
+    await expect(drugUsePage.mainForm).toMatchAriaSnapshot(`
       - group "Why does Test use drugs?":
         - text: Why does Test use drugs? Consider why they started using, their history, and any triggers. Select all that apply.
         - checkbox "Cultural or religious practice"

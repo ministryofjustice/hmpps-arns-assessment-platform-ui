@@ -8,14 +8,15 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId)
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'ever misused drugs')
 
-    await drugUsePage.saveAndContinue.click()
-    await drugUsePage.selectIfEverMisusedDrugs.click()
+    const { questions } = drugUsePage
 
-    await expect(drugUsePage.yes).toBeFocused()
+    await drugUsePage.saveAndContinue.click()
+    await questions.drug_use.errorLink.click()
+    await expect(questions.drug_use.input).toBeFocused()
   })
 
   test('validation misused drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -29,12 +30,12 @@ test.describe('Validation', () => {
         { question: 'drugs_section_status', value: 'INCOMPLETE' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
     await drugUsePage.saveAndContinue.click()
-    await expect(drugUsePage.selectWhichDrugs).toBeVisible()
+    await expect(drugUsePage.alert.getByRole('link', { name: 'Select which drugs they’ve misused' })).toBeVisible()
   })
 
   test('validation drug use history questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -57,9 +58,11 @@ test.describe('Validation', () => {
         { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
       ]).save()
 
-    await DrugUsePage.navigateToDrugUse(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'use drugs?')
+
+    const { questions } = drugUsePage
 
     await drugUsePage.saveAndContinue.click()
     await expect(drugUsePage.alert).toMatchAriaSnapshot(`
@@ -78,11 +81,11 @@ test.describe('Validation', () => {
               - /url: "#drug_use_changes"
     `)
 
-    await drugUsePage.selectWhyTheyUseDrugs.click()
-    await expect(drugUsePage.culturalOrReligiousPractice).toBeFocused()
-    await drugUsePage.selectHowTheirDrugUse.click()
-    await expect(drugUsePage.behaviour).toBeFocused()
-    await drugUsePage.errorWantsToMakeChanges.click()
-    await expect(drugUsePage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.drugs_reasons_for_use.errorLink.click()
+    await expect(questions.drugs_reasons_for_use.input).toBeFocused()
+    await questions.drugs_affected_their_life.errorLink.click()
+    await expect(questions.drugs_affected_their_life.input).toBeFocused()
+    await questions.drug_use_changes.errorLink.click()
+    await expect(questions.drug_use_changes.input).toBeFocused()
   })
 })

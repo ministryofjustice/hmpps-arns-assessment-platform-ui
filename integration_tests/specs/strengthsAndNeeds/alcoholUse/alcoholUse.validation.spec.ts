@@ -9,8 +9,9 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId)
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol?')
+    const { questions } = alcoholUsePage
 
     await alcoholUsePage.saveAndContinue.click()
     await expect(alcoholUsePage.alert).toMatchAriaSnapshot(`
@@ -22,9 +23,8 @@ test.describe('Validation', () => {
             - link "Select if they have ever drunk alcohol":
               - /url: "#alcohol_use"
     `)
-    await alcoholUsePage.selectOneOption.click()
-
-    await expect(alcoholUsePage.yesIncludingLastThreeMonths).toBeFocused()
+    await questions.alcohol_use.errorLink.click()
+    await expect(questions.alcohol_use.input).toBeFocused()
   })
 
   test('validation when they have drunk alcohol in the last 3 months', async ({
@@ -41,9 +41,11 @@ test.describe('Validation', () => {
       .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
       .save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'drunk alcohol in the last 3 months')
+
+    const { questions } = alcoholUsePage
 
     await alcoholUsePage.saveAndContinue.click()
     await expect(alcoholUsePage.alert).toMatchAriaSnapshot(`
@@ -80,24 +82,24 @@ test.describe('Validation', () => {
               - /url: "#alcohol_use_changes"
       `)
 
-    await alcoholUsePage.selectHowOftenTheyDrunk.click()
-    await expect(alcoholUsePage.onceAMonth).toBeFocused()
-    await alcoholUsePage.selectHowManyUnitsOf.click()
-    await expect(alcoholUsePage.oneToTwoUnits).toBeFocused()
-    await alcoholUsePage.selectIfTheyHadEightOrMore.click()
-    await expect(alcoholUsePage.hasHadEightOrMore).toBeFocused()
-    await alcoholUsePage.selectIfTheresEvidence.click()
-    await expect(alcoholUsePage.noEvidenceOfBingeDrinking).toBeFocused()
-    await alcoholUsePage.selectIfTheyHaveAnyPast.click()
-    await expect(alcoholUsePage.haveAnyPast).toBeFocused()
-    await alcoholUsePage.selectWhyTheyDrink.click()
-    await expect(alcoholUsePage.culturalAndReligious).toBeFocused()
-    await alcoholUsePage.selectTheImpactOf.click()
-    await expect(alcoholUsePage.behavioural).toBeFocused()
-    await alcoholUsePage.selectIfAnythingHasHelped.click()
-    await expect(alcoholUsePage.hasAnythingHelped).toBeFocused()
-    await alcoholUsePage.errorWantsToMakeChanges.click()
-    await expect(alcoholUsePage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.alcohol_frequency.errorLink.click()
+    await expect(questions.alcohol_frequency.input).toBeFocused()
+    await questions.alcohol_units.errorLink.click()
+    await expect(questions.alcohol_units.input).toBeFocused()
+    await questions.alcohol_binge_drinking.errorLink.click()
+    await expect(questions.alcohol_binge_drinking.input).toBeFocused()
+    await questions.alcohol_evidence_of_excess_drinking.errorLink.click()
+    await expect(questions.alcohol_evidence_of_excess_drinking.input).toBeFocused()
+    await questions.alcohol_past_issues.errorLink.click()
+    await expect(questions.alcohol_past_issues.input).toBeFocused()
+    await questions.alcohol_reasons_for_use.errorLink.click()
+    await expect(questions.alcohol_reasons_for_use.input).toBeFocused()
+    await questions.alcohol_impact_of_use.errorLink.click()
+    await expect(questions.alcohol_impact_of_use.input).toBeFocused()
+    await questions.alcohol_stopped_or_reduced.errorLink.click()
+    await expect(questions.alcohol_stopped_or_reduced.input).toBeFocused()
+    await questions.alcohol_use_changes.errorLink.click()
+    await expect(questions.alcohol_use_changes.input).toBeFocused()
   })
 
   // The binge threshold is gender-based: 8 units for men, 6 for others.
@@ -118,7 +120,7 @@ test.describe('Validation', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+      await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       await expect(
         page.getByRole('group', {
@@ -149,7 +151,7 @@ test.describe('Validation', () => {
         .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
         .save()
 
-      await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
+      await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
 
       await expect(
         page.getByRole('group', {
