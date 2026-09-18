@@ -40,7 +40,12 @@ services:
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.60.0-noble # Must match version in package-lock
+    image: playwright:${PLAYWRIGHT_VERSION:?}
+    build:
+      context: .
+      dockerfile: playwright.Dockerfile
+      args:
+        PLAYWRIGHT_VERSION: ${PLAYWRIGHT_VERSION:?}
     networks:
       - hmpps
     depends_on:
