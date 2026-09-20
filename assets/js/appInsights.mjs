@@ -39,6 +39,7 @@ function createAppInsights() {
     const assessmentUuid = document.querySelector('[data-qa-assessment-uuid]')?.getAttribute('data-qa-assessment-uuid')
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
     const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
+    const serviceName = document.querySelector('meta[name="ai-target-service"]')?.content
     const entryPoint = document.querySelector('meta[name="ai-entry-point"]')?.content
     const userContext = document.querySelector('meta[name="ai-user-context"]')?.content
     const userType = document.querySelector('meta[name="ai-user-type"]')?.content
@@ -61,9 +62,11 @@ function createAppInsights() {
 
     envelope.data = {
       ...envelope.data,
+      uri: envelope.data?.uri || window.location.href,
       assessmentUuid: assessmentUuid || undefined,
       requestId: requestId || undefined,
       telemetryId: telemetryId || undefined,
+      serviceName: serviceName || undefined,
       entryPoint: entryPoint || undefined,
       userContext: userContext || undefined,
       userType: userType || undefined,
@@ -176,5 +179,17 @@ export function initAccordionTelemetry() {
       .forEach(accordion => {
         initialiseAccordion(accordion, config)
       })
+  })
+}
+
+export const initDetailsTelemetry = () => {
+  if (!connectionString) return
+
+  document.querySelectorAll('details[data-ai-id]').forEach(details => {
+    const summary = details.querySelector('summary')
+
+    if (summary) {
+      summary.setAttribute('data-ai-id', details.getAttribute('data-ai-id'))
+    }
   })
 }

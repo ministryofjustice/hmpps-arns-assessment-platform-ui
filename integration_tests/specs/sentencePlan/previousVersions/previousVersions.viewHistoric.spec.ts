@@ -1,0 +1,342 @@
+import { expect, Page } from '@playwright/test'
+import { test, TargetService } from '../../../support/fixtures'
+import {
+  currentGoals,
+  currentGoalsWithCompletedSteps,
+  futureGoals,
+  mixedGoals,
+} from '../../../builders/sentencePlanFactories'
+import {
+  buildPageTitle,
+  checkAccessibility,
+  handlePrivacyScreenIfPresent,
+  navigateToSentencePlan,
+  sentencePlanPageTitles,
+} from '../sentencePlanUtils'
+import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
+import HistoricPlanPage from '../../../pages/sentencePlan/historicPlanPage'
+
+test.describe('View Historic Plan', () => {
+  const startOfDay = new Date(2026, 0, 1, 9)
+  const endOfDay = new Date(2026, 0, 1, 17)
+
+  const navigateToHistoricPlan = async (
+    page: Page,
+    handoverLink: string,
+  ): Promise<{ historicPlanPage: HistoricPlanPage; newPage: Page }> => {
+    await navigateToSentencePlan(page, handoverLink)
+    await page.getByRole('link', { name: /View previous versions/i }).click()
+    const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page)
+
+    const [newPage] = await Promise.all([
+      page.waitForEvent('popup'),
+      previousVersionsPage.clickViewVersionOnDate('1 January 2026'),
+    ])
+
+    await newPage.waitForLoadState()
+    const historicPlanPage = await HistoricPlanPage.verifyOnPage(newPage)
+    await expect(newPage).toHaveTitle(buildPageTitle(sentencePlanPageTitles.historicPlan))
+    await expect(historicPlanPage.alertHeading).toHaveCount(1)
+    await expect(historicPlanPage.alertHeading).toContainText('This version is from 1st January 2026')
+    return { historicPlanPage, newPage }
+  }
+
+  test.describe('Header', () => {
+    test('should not show Return to OASys button when navigating from within Sentence Plan', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(startOfDay, endOfDay).save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.returnToOasysButton).toBeHidden()
+    })
+
+    test('should show Return to OASys button when accessing directly from OASys', async ({
+      page,
+      coordinatorBuilder,
+      sentencePlanBuilder,
+      handoverBuilder,
+    }) => {
+      const coordinator = coordinatorBuilder.create()
+      const association = await coordinator.save()
+
+      await sentencePlanBuilder
+        .extend(association.sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(2))
+        .withAgreementStatus('AGREED')
+        .save()
+
+      await coordinator.lock(association)
+      const signed = await coordinator.sign(association)
+
+      const session = await handoverBuilder
+        .forAssociation(association)
+        .withPlanVersion(signed.sentencePlanVersion)
+        .save()
+
+      const handoverUrl = new URL(session.handoverLink)
+      handoverUrl.searchParams.set('clientId', 'sentence-plan')
+
+      await page.goto(handoverUrl.toString())
+      await handlePrivacyScreenIfPresent(page)
+
+      const historicPlanPage = await HistoricPlanPage.verifyOnPage(page)
+      await expect(historicPlanPage.returnToOasysButton).toBeVisible()
+    })
+  })
+
+  test.describe('Empty State', () => {
+    test('shows empty message when no current goals exist', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(startOfDay, endOfDay).save()
+
+      const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.noGoalsMessage).toBeVisible()
+      await expect(historicPlanPage.noGoalsMessage).toContainText(/does not have any goals to work on now/i)
+      await checkAccessibility(newPage, { include: '#main-content' })
+    })
+
+    test('shows empty message when no future goals exist', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(startOfDay, endOfDay).save()
+
+      const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await historicPlanPage.clickFutureGoalsTab()
+      await expect(newPage).toHaveURL(/goalStatusTab=future/)
+
+      await expect(historicPlanPage.noFutureGoalsMessage).toBeVisible()
+      await expect(historicPlanPage.noFutureGoalsMessage).toContainText(/does not have any future goals/i)
+    })
+  })
+
+  test.describe('Goal Display', () => {
+    test('displays current goals in Goals to work on now section', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(2))
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      const goalCount = await historicPlanPage.getGoalCount()
+      expect(goalCount).toBe(2)
+
+      const firstGoalTitle = await historicPlanPage.getGoalCardTitle(0)
+      expect(firstGoalTitle).toContain('Current Goal 1')
+
+      const secondGoalTitle = await historicPlanPage.getGoalCardTitle(1)
+      expect(secondGoalTitle).toContain('Current Goal 2')
+    })
+
+    test('displays future goals in Future goals section', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(futureGoals(2))
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await historicPlanPage.clickFutureGoalsTab()
+
+      const goalCount = await historicPlanPage.getGoalCount()
+      expect(goalCount).toBe(2)
+
+      const firstGoalTitle = await historicPlanPage.getGoalCardTitle(0)
+      expect(firstGoalTitle).toContain('Future Goal 1')
+    })
+
+    test('shows correct goal count in tab labels', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(mixedGoals())
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.currentGoalsTab).toContainText('2')
+      await expect(historicPlanPage.futureGoalsTab).toContainText('1')
+    })
+
+    test('goal card shows title and area of need', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Find stable housing',
+            status: 'ACTIVE',
+            areaOfNeed: 'accommodation',
+            targetDate: '2025-06-01',
+          },
+        ])
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      const goalTitle = await historicPlanPage.getGoalCardTitle(0)
+      expect(goalTitle).toContain('Find stable housing')
+
+      const areaOfNeed = await historicPlanPage.getGoalCardAreaOfNeed(0)
+      await expect(areaOfNeed).toContainText(/accommodation/i)
+    })
+
+    test('goal card shows No steps added when goal has no steps', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoals(1))
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      const goalCard = await historicPlanPage.getGoalCardByIndex(0)
+      await expect(goalCard).toContainText(/no steps added/i)
+    })
+
+    test('goal card shows steps when steps exist', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals([
+          {
+            title: 'Goal with steps',
+            status: 'ACTIVE',
+            areaOfNeed: 'accommodation',
+            targetDate: '2025-06-01',
+            steps: [
+              { actor: 'probation_practitioner', description: 'Contact housing services' },
+              { actor: 'person_on_probation', description: 'Attend housing appointment' },
+            ],
+          },
+        ])
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      const goalCard = await historicPlanPage.getGoalCardByIndex(0)
+      await expect(goalCard).toContainText('Contact housing services')
+      await expect(goalCard).toContainText('Attend housing appointment')
+    })
+  })
+
+  test.describe('Agreement Status Messages', () => {
+    test('shows "Last updated" when historic plan was modified after agreement', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withPlanAgreements([{ status: 'AGREED', dateOffset: -(365 * 24 * 60 * 60 * 1000), createdBy: 'Jane Smith' }])
+        .withGoals([
+          {
+            title: 'Find stable housing',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: '2025-06-01',
+            createdBy: 'Moses Hill',
+            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+          },
+        ])
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.planLastUpdatedMessage).toBeVisible()
+      await expect(historicPlanPage.planLastUpdatedMessage).toContainText('Moses Hill')
+      await expect(historicPlanPage.planAgreedMessage).not.toBeVisible()
+    })
+
+    test('shows "agreed to their plan" when historic plan has no post-agreement changes', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(currentGoalsWithCompletedSteps(1))
+        .withAgreementStatus('AGREED')
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(historicPlanPage.planAgreedMessage).toBeVisible()
+      await expect(historicPlanPage.planLastUpdatedMessage).not.toBeVisible()
+    })
+  })
+
+  test.describe('Tab Navigation', () => {
+    test('defaults to current goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withEventsBackdated(startOfDay, endOfDay).save()
+
+      const { newPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await expect(newPage).toHaveURL(/goalStatusTab=current/)
+    })
+
+    test('can switch to future goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(mixedGoals())
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await historicPlanPage.clickFutureGoalsTab()
+
+      await expect(newPage).toHaveURL(/goalStatusTab=future/)
+      const goalCount = await historicPlanPage.getGoalCount()
+      expect(goalCount).toBe(1)
+    })
+
+    test('can switch back to current goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder
+        .extend(sentencePlanId)
+        .withGoals(mixedGoals())
+        .withEventsBackdated(startOfDay, endOfDay)
+        .save()
+
+      const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
+
+      await historicPlanPage.clickFutureGoalsTab()
+      await expect(newPage).toHaveURL(/goalStatusTab=future/)
+
+      await historicPlanPage.clickCurrentGoalsTab()
+      await expect(newPage).toHaveURL(/goalStatusTab=current/)
+
+      const goalCount = await historicPlanPage.getGoalCount()
+      expect(goalCount).toBe(2)
+    })
+  })
+})

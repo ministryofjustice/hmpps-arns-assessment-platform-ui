@@ -1,0 +1,81 @@
+import {
+  access,
+  Answer,
+  Data,
+  Format,
+  redirect,
+  Post,
+  step,
+  submit,
+  Condition,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup } from './fields'
+import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { CaseData } from '../../../constants'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+
+/**
+ * Confirm re-add goal page
+ *
+ * This is used to add a removed goal back into a plan.
+ * Only available for goals with status 'REMOVED' on agreed plans.
+ *
+ * The user must:
+ * - Provide a reason for re-adding the goal
+ * - Specify whether the person can start working on the goal now
+ * - If yes, select a target date
+ */
+export const confirmAddGoalStep = step({
+  path: '/confirm-readd-goal',
+  title: 'Confirm you want to add this goal back into the plan',
+  reachability: { entryWhen: true },
+  view: {
+    locals: {
+      backlink: 'view-inactive-goal',
+    },
+  },
+  blocks: [pageHeading, goalCard, readdNoteSection, canStartNowSection, buttonGroup],
+
+  onAccess: [
+    // Load data first (no `when` = always runs)
+    access({
+      effects: [
+        SentencePlanEffects.setActiveGoalContext(),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_RE_ADD_GOAL),
+      ],
+    }),
+    // Only allow re-adding goals if plan is agreed
+    redirectIfNotPostAgreement('../../plan/overview'),
+    redirectIfGoalNotFound('../../plan/overview'),
+    // Only allow re-adding REMOVED goals (not achieved)
+    access({
+      when: Data('activeGoal.status').not.match(Condition.Equals('REMOVED')),
+      next: [redirect({ goto: '../../plan/overview' })],
+    }),
+  ],
+
+  onSubmission: [
+    submit({
+      when: Post('action').match(Condition.Equals('confirm')),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.readdGoalToPlan(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_RE_ADD_GOAL),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You added a goal back into %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+          }),
+        ],
+        next: [
+          redirect({
+            when: Answer('can_start_now').match(Condition.Equals('no')),
+            goto: '../../plan/overview?goalStatusTab=future',
+          }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
+        ],
+      },
+    }),
+  ],
+})

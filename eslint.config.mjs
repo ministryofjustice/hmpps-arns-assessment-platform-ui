@@ -8,10 +8,10 @@ const journeyDirs = readdirSync('server/forms', { withFileTypes: true })
 
 export default [
   ...hmppsConfig({
-    extraIgnorePaths: ['test_results/', 'packages/*/dist/', 'server/forms/sentence-plan/'],
+    extraIgnorePaths: ['test_results/', 'packages/*/dist/'],
   }),
   {
-    ignores: ['test_results/**', 'packages/*/dist/**', 'server/forms/sentence-plan/**'],
+    ignores: ['test_results/**', 'packages/*/dist/**'],
   },
   {
     // Journeys own their source and consume platform capabilities through the SDK.

@@ -37,28 +37,28 @@
   "dependencies": {
     "@aws-sdk/client-sns": "3.1097.0",
     "@aws-sdk/client-sqs": "^3.863.0",
-    "@faker-js/faker": "10.2.0",
+    "@faker-js/faker": "10.5.0",
     "@flipt-io/flipt-client-js": "0.4.0",
     "@microsoft/applicationinsights-clickanalytics-js": "3.4.1",
     "@microsoft/applicationinsights-web": "3.4.1",
-    "@ministryofjustice/frontend": "9.0.0",
+    "@ministryofjustice/frontend": "11.0.1",
     "@ministryofjustice/hmpps-audit-client": "^1.1.1",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.1",
     "@ministryofjustice/hmpps-azure-telemetry": "0.0.1-alpha.1",
     "@ministryofjustice/hmpps-forge": "0.4.0",
     "@ministryofjustice/hmpps-monitoring": "^1.0.0",
-    "@ministryofjustice/hmpps-mpop-frontend-components-lib": "0.0.14",
+    "@ministryofjustice/hmpps-mpop-frontend-components-lib": "0.0.21",
     "@ministryofjustice/hmpps-rest-client": "^1.0.0",
     "accessible-autocomplete": "^3.0.1",
     "body-parser": "^2.2.0",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^9.0.0",
     "cookie-parser": "1.4.7",
     "csrf-sync": "^4.2.1",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "express-session": "^1.18.2",
     "govuk-frontend": "6.0.0",
     "helmet": "^8.1.0",
@@ -77,13 +77,24 @@
     "zod": "^4.1.5"
   },
   "overrides": {
-    "mocha": {
-      "serialize-javascript": "^7.0.3",
-      "diff": "^8.0.3",
-      "minimatch": "^10.2.4"
+    "@aws-sdk/xml-builder": {
+      "fast-xml-parser": "5.8.0"
+    },
+    "@ministryofjustice/frontend": {
+      "moment": "^2.31.0"
+    },
+    "@opentelemetry/sdk-logs": {
+      "@opentelemetry/core": "2.9.0",
+      "@opentelemetry/resources": "2.9.0"
     },
     "@yikes2000/prettier-plugin-merge-extras": {
       "diff": "5.2.2"
+    },
+    "bunyan": {
+      "moment": "^2.31.0"
+    },
+    "express": {
+      "proxy-addr": "^2.0.8"
     },
     "glob@6.0.4": {
       "minimatch": "^10.2.4"
@@ -91,12 +102,22 @@
     "glob@10.5.0": {
       "minimatch": "^10.2.4"
     },
-    "@opentelemetry/sdk-logs": {
-      "@opentelemetry/core": "2.9.0",
-      "@opentelemetry/resources": "2.9.0"
+    "govuk-frontend": {
+      "moment": "^2.31.0"
     },
-    "@aws-sdk/xml-builder": {
-      "fast-xml-parser": "5.8.0"
+    "minimatch@3.1.5": {
+      "brace-expansion": "^1.1.18"
+    },
+    "minimatch@10.2.4": {
+      "brace-expansion": "^5.0.9"
+    },
+    "minimatch@10.2.6": {
+      "brace-expansion": "^5.0.9"
+    },
+    "mocha": {
+      "diff": "^8.0.4",
+      "minimatch": "^10.2.4",
+      "serialize-javascript": "^7.0.3"
     }
   },
   "devDependencies": {

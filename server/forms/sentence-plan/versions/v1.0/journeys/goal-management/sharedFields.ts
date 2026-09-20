@@ -1,0 +1,198 @@
+import {
+  or,
+  Answer,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  Self,
+  validation,
+  Condition,
+  Transformer,
+  Generator,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKRadioInput, GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { MOJDatePicker } from '@ministryofjustice/hmpps-forge/moj-components'
+import { CaseData } from '../../constants'
+
+export const relatedAreasOfNeed = GovUKCheckboxInput({
+  code: 'related_areas_of_need',
+  hint: {
+    text: 'Select all that apply',
+    classes: 'app-label--body-text',
+  },
+  fieldset: {
+    legend: {
+      text: 'Which other areas of need is this goal related to?',
+      classes: 'govuk-fieldset__legend--m govuk-visually-hidden',
+    },
+  },
+  items: Data('otherAreasOfNeed').each(
+    Iterator.Map({
+      value: Item().path('slug'),
+      text: Item().path('text'),
+      attributes: {
+        'data-ai-id': Format('related-area-of-need-%1-checkbox', Item().path('slug')),
+      },
+    }),
+  ),
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Select all related areas',
+    }),
+  ],
+  dependentWhen: Answer('is_related_to_other_areas').match(Condition.Equals('yes')),
+})
+
+export const isRelatedToOtherAreas = GovUKRadioInput({
+  code: 'is_related_to_other_areas',
+  fieldset: {
+    legend: {
+      text: 'Does this goal relate to any other areas of need?',
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      value: 'yes',
+      text: 'Yes',
+      block: relatedAreasOfNeed,
+    },
+    {
+      value: 'no',
+      text: 'No',
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Select yes if this goal is related to any other area of need',
+    }),
+  ],
+})
+
+// MOJ Date Picker uses DD/MM/YYYY format, so everything needs
+// converting into that format.
+export const customTargetDate = MOJDatePicker({
+  code: 'custom_target_date',
+  label: {
+    text: 'Select a date',
+  },
+  hint: 'For example, 31/3/2023.',
+  // Set a minimum date of today in the DD/MM/YYYY format
+  minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
+  formatters: [Transformer.String.ToISODate()],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Select a date',
+    }),
+    validation({
+      // Skip when empty so the IsRequired rule above is the only error shown for a blank field.
+      condition: or(Self().not.match(Condition.IsRequired()), Self().match(Condition.Date.IsValid())),
+      message: 'Select a valid date',
+    }),
+    validation({
+      // Only range-check once we have a valid date — IsToday/IsFutureDate throw on an empty or
+      // invalid value, so defer those cases to the IsRequired/IsValid rules above.
+      condition: or(
+        Self().not.match(Condition.Date.IsValid()),
+        Self().match(Condition.Date.IsToday()),
+        Self().match(Condition.Date.IsFutureDate()),
+      ),
+      message: 'Date must be today or in the future',
+    }),
+  ],
+  dependentWhen: Answer('target_date_option').match(Condition.Equals('set_another_date')),
+})
+
+export const targetDateOption = GovUKRadioInput({
+  code: 'target_date_option',
+  fieldset: {
+    legend: {
+      text: Format('When does %1 aim to achieve this goal?', CaseData.Forename),
+    },
+  },
+  items: [
+    {
+      value: 'date_in_3_months',
+      text: Format(
+        'In 3 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(3), Transformer.Date.ToUKLongDate()),
+      ),
+      attributes: {
+        'data-ai-id': 'target-date-option-3-months-radio',
+      },
+    },
+    {
+      value: 'date_in_6_months',
+      text: Format(
+        'In 6 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(6), Transformer.Date.ToUKLongDate()),
+      ),
+      attributes: {
+        'data-ai-id': 'target-date-option-6-months-radio',
+      },
+    },
+    {
+      value: 'date_in_12_months',
+      text: Format(
+        'In 12 months (%1)',
+        Generator.Date.Today().pipe(Transformer.Date.AddMonths(12), Transformer.Date.ToUKLongDate()),
+      ),
+      attributes: {
+        'data-ai-id': 'target-date-option-12-months-radio',
+      },
+    },
+    { divider: 'or' },
+    {
+      value: 'set_another_date',
+      text: 'Set another date',
+      attributes: {
+        'data-ai-id': 'target-date-option-set-another-date-radio',
+      },
+      block: customTargetDate,
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Select when they should aim to achieve this goal',
+    }),
+  ],
+  dependentWhen: Answer('can_start_now').match(Condition.Equals('yes')),
+})
+
+export const canStartNow = GovUKRadioInput({
+  code: 'can_start_now',
+  fieldset: {
+    legend: {
+      text: Format('Can %1 start working on this goal now?', CaseData.Forename),
+      classes: 'govuk-fieldset__legend--m',
+    },
+  },
+  items: [
+    {
+      value: 'yes',
+      text: 'Yes',
+      block: targetDateOption,
+      attributes: {
+        'data-ai-id': 'can-start-now-yes-radio',
+      },
+    },
+    {
+      value: 'no',
+      text: 'No, it is a future goal',
+      attributes: {
+        'data-ai-id': 'can-start-now-no-radio',
+      },
+    },
+  ],
+  validWhen: [
+    validation({
+      condition: Self().match(Condition.IsRequired()),
+      message: 'Select yes if they can start working on this goal now',
+    }),
+  ],
+})

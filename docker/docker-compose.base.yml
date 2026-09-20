@@ -3,7 +3,7 @@
 
 services:
   redis:
-    image: redis:8.6
+    image: redis:8.10
     networks:
       - hmpps
     ports:
@@ -123,7 +123,7 @@ services:
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in
 
   gotenberg:
-    image: gotenberg/gotenberg:8.34.0
+    image: gotenberg/gotenberg:8.36.0
     networks:
       - hmpps
     extra_hosts:
@@ -209,6 +209,7 @@ services:
       NATIONAL_ROLLOUT_FEEDBACK_URL: national-rollout-feedback-url
       FEEDBACK_FORM_URL: private-beta-feedback-url
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      OASYS_REVIEW_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 
   aap-api:

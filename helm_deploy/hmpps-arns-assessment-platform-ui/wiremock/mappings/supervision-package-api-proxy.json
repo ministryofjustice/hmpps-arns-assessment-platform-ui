@@ -1,0 +1,11 @@
+{
+  "name": "Proxy to Supervision Package API",
+  "request": {
+    "urlPattern": "/supervision-package-api/.*"
+  },
+  "response": {
+    "proxyBaseUrl": "{{systemValue type='ENVIRONMENT' key='WIREMOCK_SUPERVISION_PACKAGE_API_URL'}}",
+    "proxyUrlPrefixToRemove": "/supervision-package-api"
+  },
+  "priority": 100
+}

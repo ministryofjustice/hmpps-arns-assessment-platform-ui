@@ -1,0 +1,35 @@
+import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+
+// loads sentence information from Delius API if not already present via CRN access route:
+export const loadSentenceInformation = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+  const session = context.getSession()
+  const caseDetails = session.caseDetails
+  const assessmentUuid = context.getData('assessmentUuid')
+
+  if (!caseDetails?.crn) {
+    deps.logger.error({ assessmentUuid }, 'Cannot load sentence information: missing CRN in session')
+    return
+  }
+
+  if (caseDetails.sentences && caseDetails.sentences.length > 0) {
+    deps.logger.debug(
+      { assessmentUuid, crn: caseDetails.crn },
+      'Sentence information already loaded, skipping Delius API call',
+    )
+    return
+  }
+
+  try {
+    const deliusCaseDetails = await deps.deliusApi.getCaseDetails(caseDetails.crn)
+    session.caseDetails = {
+      ...caseDetails,
+      sentences: deliusCaseDetails.sentences,
+    }
+    context.setData('caseData', session.caseDetails)
+  } catch (error) {
+    deps.logger.error(
+      { err: error, assessmentUuid, crn: caseDetails.crn },
+      'Failed to load sentence information from Delius',
+    )
+  }
+}

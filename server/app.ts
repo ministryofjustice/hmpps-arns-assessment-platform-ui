@@ -24,6 +24,7 @@ import setUpPreferencesCookie from './middleware/setUpPreferencesCookie'
 import setUpRequestLogging from './middleware/setUpRequestLogging'
 import setUpPreviousPageTracking from './middleware/setUpPreviousPageTracking'
 import setUpFeatureFlags from './middleware/setUpFeatureFlags'
+import setUpRequestContext from './middleware/setUpRequestContext'
 
 import routes from './routes'
 import type { Services } from './services'
@@ -87,6 +88,8 @@ export default function createApp(services: Services): express.Application {
     })
     next()
   })
+
+  app.use(setUpRequestContext())
 
   // Mount routes
   app.use(routes(services))
