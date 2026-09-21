@@ -312,7 +312,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(
+    await OffenceAnalysisPage.navigateTo(
       page,
       handoverLink,
       baseURL,

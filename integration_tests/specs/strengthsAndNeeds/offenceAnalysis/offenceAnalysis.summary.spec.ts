@@ -122,13 +122,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'offence-analysis-summary',
-    )
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-summary')
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Summary')
 
