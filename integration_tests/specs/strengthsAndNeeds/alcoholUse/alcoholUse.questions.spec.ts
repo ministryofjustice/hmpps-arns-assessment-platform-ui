@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/question'
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -40,7 +43,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
-      .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
+      .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -86,7 +89,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
-      .withAnswers([{ question: 'alcohol_use', value: 'YES_NOT_IN_LAST_THREE_MONTHS' }])
+      .withAnswers([{ question: Question.alcohol_use, value: Option.yes_not_in_last_three_months }])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -121,7 +124,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
-      .withAnswers([{ question: 'alcohol_use', value: 'NO' }])
+      .withAnswers([{ question: Question.alcohol_use, value: CommonOption.no }])
       .save()
 
     // "No" skips the usage questions and routes straight to the summary.
@@ -150,10 +153,13 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'alcohol_use', value: 'NO' },
-        { question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-        { question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'alcohol_use_practitioner_analysis_risk_of_reoffending', value: 'NO' },
+        { question: Question.alcohol_use, value: CommonOption.no },
+        {
+          question: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors,
+          value: CommonOption.no,
+        },
+        { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.no },
       ])
       .save()
 
@@ -186,8 +192,8 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'alcohol_use', value: 'YES_NOT_IN_LAST_THREE_MONTHS' },
-        { question: 'alcohol_past_issues', value: 'YES' },
+        { question: Question.alcohol_use, value: Option.yes_not_in_last_three_months },
+        { question: Question.alcohol_past_issues, value: CommonOption.yes },
       ])
       .save()
 

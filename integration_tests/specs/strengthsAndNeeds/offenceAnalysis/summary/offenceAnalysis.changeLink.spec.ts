@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
 import { offence } from '../../sanUtils'
 import {
   changeLink,
@@ -23,27 +26,27 @@ const summaryPage = 'offence-analysis-summary'
 
 const fullyAnswered: Scenario = {
   answers: [
-    { question: 'offence_analysis_description_of_offence', value: 'Some details' },
-    { question: 'offence_analysis_elements', value: ['ARSON', 'WEAPON'] },
-    { question: 'offence_weapon_details', value: 'A knife' },
-    { question: 'offence_analysis_reason', value: 'Some details' },
-    { question: 'offence_analysis_motivations', value: ['EMOTIONAL_STATE'] },
-    { question: 'offence_analysis_who_was_the_victim', value: ['OTHER'] },
-    { question: 'offence_analysis_who_was_the_victim_other_details', value: 'Some details' },
-    { question: 'offence_analysis_how_many_involved', value: 'TWO' },
-    { question: 'offence_analysis_leader', value: 'YES' },
-    { question: 'offence_analysis_leader_yes_details', value: 'Some details' },
-    { question: 'offence_analysis_impact_on_victims', value: 'YES' },
-    { question: 'offence_analysis_impact_on_victims_yes_details', value: 'Some details' },
-    { question: 'offence_analysis_accept_responsibility', value: 'YES' },
-    { question: 'offence_analysis_accept_responsibility_yes_details', value: 'Some details' },
-    { question: 'offence_analysis_escalation', value: 'YES' },
-    { question: 'offence_analysis_escalation_yes_details', value: 'Some details' },
-    { question: 'offence_analysis_perpetrator_of_domestic_abuse', value: 'NO' },
-    { question: 'offence_analysis_victim_of_domestic_abuse', value: 'NO' },
-    { question: 'offence_analysis_patterns_of_offending', value: 'Some details' },
-    { question: 'offence_analysis_risk', value: 'YES' },
-    { question: 'offence_analysis_risk_yes_details', value: 'Some details' },
+    { question: Question.offence_analysis_description_of_offence, value: 'Some details' },
+    { question: Question.offence_analysis_elements, value: [Option.arson, Option.weapon] },
+    { question: Question.offence_weapon_details, value: 'A knife' },
+    { question: Question.offence_analysis_reason, value: 'Some details' },
+    { question: Question.offence_analysis_motivations, value: [Option.emotional_state] },
+    { question: Question.offence_analysis_who_was_the_victim, value: [CommonOption.other] },
+    { question: Question.offence_analysis_who_was_the_victim_other_details, value: 'Some details' },
+    { question: Question.offence_analysis_how_many_involved, value: Option.two },
+    { question: Question.offence_analysis_leader, value: CommonOption.yes },
+    { question: Question.offence_analysis_leader_yes_details, value: 'Some details' },
+    { question: Question.offence_analysis_impact_on_victims, value: CommonOption.yes },
+    { question: Question.offence_analysis_impact_on_victims_yes_details, value: 'Some details' },
+    { question: Question.offence_analysis_accept_responsibility, value: CommonOption.yes },
+    { question: Question.offence_analysis_accept_responsibility_yes_details, value: 'Some details' },
+    { question: Question.offence_analysis_escalation, value: CommonOption.yes },
+    { question: Question.offence_analysis_escalation_yes_details, value: 'Some details' },
+    { question: Question.offence_analysis_perpetrator_of_domestic_abuse, value: CommonOption.no },
+    { question: Question.offence_analysis_victim_of_domestic_abuse, value: CommonOption.no },
+    { question: Question.offence_analysis_patterns_of_offending, value: 'Some details' },
+    { question: Question.offence_analysis_risk, value: CommonOption.yes },
+    { question: Question.offence_analysis_risk_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
     changeLink('offence-analysis', 'offence_analysis_description_of_offence'),

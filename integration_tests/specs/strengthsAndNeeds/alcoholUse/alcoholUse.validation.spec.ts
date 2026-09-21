@@ -1,3 +1,5 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/question'
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -38,7 +40,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
-      .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
+      .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -117,7 +119,7 @@ test.describe('Validation', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId)
-        .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
+        .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
         .save()
 
       await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -148,7 +150,7 @@ test.describe('Validation', () => {
       })
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId)
-        .withAnswers([{ question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' }])
+        .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
         .save()
 
       await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')

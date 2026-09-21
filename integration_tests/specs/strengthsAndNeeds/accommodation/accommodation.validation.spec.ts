@@ -1,3 +1,5 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -9,7 +11,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'SETTLED' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.settled }]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -34,7 +36,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'TEMPORARY' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.temporary }]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -59,7 +61,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'NO_ACCOMMODATION' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.no_accommodation }]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -85,8 +87,8 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'current_accommodation', value: 'SETTLED' },
-        { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')

@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
 import { expect, Page } from '@playwright/test'
 import type { AuditMessage } from '../../../support/AuditQueueClient'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
@@ -32,14 +35,14 @@ export function expectSanAuditEvent(
  * Finances is the shortest section, so helper targets it
  */
 export const financeAnswers = [
-  { question: 'finance_income', value: ['EMPLOYMENT'] },
-  { question: 'finance_bank_account', value: 'YES' },
-  { question: 'finance_money_management', value: 'GOOD' },
-  { question: 'finance_money_management_good_details', value: 'Manages money well.' },
-  { question: 'finance_gambling', value: ['NO'] },
-  { question: 'finance_debt', value: ['NO'] },
-  { question: 'finance_changes', value: 'MADE_CHANGES' },
-  { question: 'finance_changes_made_changes_details', value: 'Has made changes.' },
+  { question: Question.finance_income, value: [Option.employment] },
+  { question: Question.finance_bank_account, value: CommonOption.yes },
+  { question: Question.finance_money_management, value: Option.good },
+  { question: Question.finance_money_management_good_details, value: 'Manages money well.' },
+  { question: Question.finance_gambling, value: [CommonOption.no] },
+  { question: Question.finance_debt, value: [CommonOption.no] },
+  { question: Question.finance_changes, value: CommonOption.made_changes },
+  { question: Question.finance_changes_made_changes_details, value: 'Has made changes.' },
 ]
 
 /**

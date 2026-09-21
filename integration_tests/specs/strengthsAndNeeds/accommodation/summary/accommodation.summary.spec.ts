@@ -1,3 +1,6 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -10,14 +13,14 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'current_accommodation', value: 'SETTLED' },
-        { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
-        { question: 'living_with', value: ['FAMILY'] },
-        { question: 'suitable_housing_location', value: 'NO' },
-        { question: 'suitable_housing_location_concerns', value: [] },
-        { question: 'suitable_housing', value: 'NO' },
-        { question: 'unsuitable_housing_concerns', value: [] },
-        { question: 'accommodation_changes', value: 'NOT_PRESENT' },
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+        { question: Question.living_with, value: [Option.family] },
+        { question: Question.suitable_housing_location, value: CommonOption.no },
+        { question: Question.suitable_housing_location_concerns, value: [] },
+        { question: Question.suitable_housing, value: CommonOption.no },
+        { question: Question.unsuitable_housing_concerns, value: [] },
+        { question: Question.accommodation_changes, value: CommonOption.not_present },
       ]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
@@ -66,14 +69,14 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'current_accommodation', value: 'SETTLED' },
-        { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
-        { question: 'living_with', value: ['FAMILY'] },
-        { question: 'suitable_housing_location', value: 'NO' },
-        { question: 'suitable_housing_location_concerns', value: [] },
-        { question: 'suitable_housing', value: 'NO' },
-        { question: 'unsuitable_housing_concerns', value: [] },
-        { question: 'accommodation_changes', value: 'NOT_PRESENT' },
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+        { question: Question.living_with, value: [Option.family] },
+        { question: Question.suitable_housing_location, value: CommonOption.no },
+        { question: Question.suitable_housing_location_concerns, value: [] },
+        { question: Question.suitable_housing, value: CommonOption.no },
+        { question: Question.unsuitable_housing_concerns, value: [] },
+        { question: Question.accommodation_changes, value: CommonOption.not_present },
       ]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
@@ -90,18 +93,24 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'current_accommodation', value: 'SETTLED' },
-        { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
-        { question: 'living_with', value: ['FAMILY'] },
-        { question: 'suitable_housing_location', value: 'NO' },
-        { question: 'suitable_housing_location_concerns', value: [] },
-        { question: 'suitable_housing', value: 'NO' },
-        { question: 'unsuitable_housing_concerns', value: [] },
-        { question: 'accommodation_changes', value: 'NOT_PRESENT' },
-        { question: 'accommodation_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-        { question: 'accommodation_practitioner_analysis_strengths_or_protective_factors_details', value: '' },
-        { question: 'accommodation_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'accommodation_practitioner_analysis_risk_of_serious_harm_details', value: '' },
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+        { question: Question.living_with, value: [Option.family] },
+        { question: Question.suitable_housing_location, value: CommonOption.no },
+        { question: Question.suitable_housing_location_concerns, value: [] },
+        { question: Question.suitable_housing, value: CommonOption.no },
+        { question: Question.unsuitable_housing_concerns, value: [] },
+        { question: Question.accommodation_changes, value: CommonOption.not_present },
+        {
+          question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors,
+          value: CommonOption.no,
+        },
+        {
+          question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_no_details,
+          value: '',
+        },
+        { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
       .save()
 
@@ -109,7 +118,7 @@ test.describe('Summary', () => {
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
 
     await accommodationPage.goToPractitionerAnalysis.click()
-    await accommodationPage.questions.accommodation_practitioner_analysis_risk_of_reoffending.option('No')
+    await accommodationPage.questions.accommodation_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
       .click()
     await accommodationPage.markComplete.click()
     await expect(accommodationPage.complete).toBeVisible()

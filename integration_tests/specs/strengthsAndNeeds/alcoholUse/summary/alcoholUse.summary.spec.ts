@@ -1,3 +1,6 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -16,20 +19,20 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' },
-        { question: 'alcohol_frequency', value: 'MULTIPLE_TIMES_A_MONTH' },
-        { question: 'alcohol_units', value: 'UNITS_3_TO_4' },
-        { question: 'alcohol_binge_drinking', value: 'YES' },
-        { question: 'alcohol_binge_drinking_frequency', value: 'MONTHLY' },
-        { question: 'alcohol_evidence_of_excess_drinking', value: 'YES_WITH_SOME_EVIDENCE' },
-        { question: 'alcohol_past_issues', value: 'YES' },
-        { question: 'alcohol_past_issues_yes_details', value: 'Had issues a few years ago' },
-        { question: 'alcohol_reasons_for_use', value: ['SOCIAL', 'ENJOYMENT'] },
-        { question: 'alcohol_impact_of_use', value: ['RELATIONSHIPS', 'FINANCES'] },
-        { question: 'alcohol_stopped_or_reduced', value: 'YES' },
-        { question: 'alcohol_stopped_or_reduced_yes_details', value: 'Cut down last year' },
-        { question: 'alcohol_use_changes', value: 'HAS_MADE_CHANGES' },
-        { question: 'alcohol_use_changes_made_changes_details', value: 'Stopped drinking spirits' },
+        { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
+        { question: Question.alcohol_frequency, value: Option.multiple_times_a_month },
+        { question: Question.alcohol_units, value: Option.units_3_to_4 },
+        { question: Question.alcohol_binge_drinking, value: CommonOption.yes },
+        { question: Question.alcohol_binge_drinking_frequency, value: Option.monthly },
+        { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
+        { question: Question.alcohol_past_issues, value: CommonOption.yes },
+        { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
+        { question: Question.alcohol_reasons_for_use, value: [Option.social, Option.enjoyment] },
+        { question: Question.alcohol_impact_of_use, value: [Option.relationships, Option.finances] },
+        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
+        { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
       .save()
 
@@ -61,20 +64,20 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' },
-        { question: 'alcohol_frequency', value: 'MULTIPLE_TIMES_A_MONTH' },
-        { question: 'alcohol_units', value: 'UNITS_3_TO_4' },
-        { question: 'alcohol_binge_drinking', value: 'YES' },
-        { question: 'alcohol_binge_drinking_frequency', value: 'MONTHLY' },
-        { question: 'alcohol_evidence_of_excess_drinking', value: 'YES_WITH_SOME_EVIDENCE' },
-        { question: 'alcohol_past_issues', value: 'YES' },
-        { question: 'alcohol_past_issues_yes_details', value: 'Had issues a few years ago' },
-        { question: 'alcohol_reasons_for_use', value: ['SOCIAL', 'ENJOYMENT'] },
-        { question: 'alcohol_impact_of_use', value: ['RELATIONSHIPS', 'FINANCES'] },
-        { question: 'alcohol_stopped_or_reduced', value: 'YES' },
-        { question: 'alcohol_stopped_or_reduced_yes_details', value: 'Cut down last year' },
-        { question: 'alcohol_use_changes', value: 'HAS_MADE_CHANGES' },
-        { question: 'alcohol_use_changes_made_changes_details', value: 'Stopped drinking spirits' },
+        { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
+        { question: Question.alcohol_frequency, value: Option.multiple_times_a_month },
+        { question: Question.alcohol_units, value: Option.units_3_to_4 },
+        { question: Question.alcohol_binge_drinking, value: CommonOption.yes },
+        { question: Question.alcohol_binge_drinking_frequency, value: Option.monthly },
+        { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
+        { question: Question.alcohol_past_issues, value: CommonOption.yes },
+        { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
+        { question: Question.alcohol_reasons_for_use, value: [Option.social, Option.enjoyment] },
+        { question: Question.alcohol_impact_of_use, value: [Option.relationships, Option.finances] },
+        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
+        { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
       .save()
 
@@ -92,24 +95,27 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' },
-        { question: 'alcohol_frequency', value: 'MULTIPLE_TIMES_A_MONTH' },
-        { question: 'alcohol_units', value: 'UNITS_3_TO_4' },
-        { question: 'alcohol_binge_drinking', value: 'YES' },
-        { question: 'alcohol_binge_drinking_frequency', value: 'MONTHLY' },
-        { question: 'alcohol_evidence_of_excess_drinking', value: 'YES_WITH_SOME_EVIDENCE' },
-        { question: 'alcohol_past_issues', value: 'YES' },
-        { question: 'alcohol_past_issues_yes_details', value: 'Had issues a few years ago' },
-        { question: 'alcohol_reasons_for_use', value: ['SOCIAL', 'ENJOYMENT'] },
-        { question: 'alcohol_impact_of_use', value: ['RELATIONSHIPS', 'FINANCES'] },
-        { question: 'alcohol_stopped_or_reduced', value: 'YES' },
-        { question: 'alcohol_stopped_or_reduced_yes_details', value: 'Cut down last year' },
-        { question: 'alcohol_use_changes', value: 'HAS_MADE_CHANGES' },
-        { question: 'alcohol_use_changes_made_changes_details', value: 'Stopped drinking spirits' },
-        { question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-        { question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details', value: '' },
-        { question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
+        { question: Question.alcohol_frequency, value: Option.multiple_times_a_month },
+        { question: Question.alcohol_units, value: Option.units_3_to_4 },
+        { question: Question.alcohol_binge_drinking, value: CommonOption.yes },
+        { question: Question.alcohol_binge_drinking_frequency, value: Option.monthly },
+        { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
+        { question: Question.alcohol_past_issues, value: CommonOption.yes },
+        { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
+        { question: Question.alcohol_reasons_for_use, value: [Option.social, Option.enjoyment] },
+        { question: Question.alcohol_impact_of_use, value: [Option.relationships, Option.finances] },
+        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
+        { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
+        {
+          question: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors,
+          value: CommonOption.no,
+        },
+        { question: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },
+        { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
       .save()
 
@@ -123,7 +129,7 @@ test.describe('Summary', () => {
 
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'strengths or protective factors')
 
-    await alcoholUsePage.questions.alcohol_use_practitioner_analysis_risk_of_reoffending.option('No')
+    await alcoholUsePage.questions.alcohol_use_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
       .click()
     await alcoholUsePage.markComplete.click()
     await expect(alcoholUsePage.complete).toBeVisible()

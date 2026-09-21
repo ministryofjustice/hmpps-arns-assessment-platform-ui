@@ -1,3 +1,6 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -9,14 +12,14 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'finance_income', value: ['CARERS_ALLOWANCE'] },
-        { question: 'finance_bank_account', value: 'YES' },
-        { question: 'finance_money_management', value: 'GOOD' },
-        { question: 'finance_money_management_good_details', value: '' },
-        { question: 'finance_gambling', value: ['YES_THEIR_GAMBLING'] },
-        { question: 'finance_gambling_yes_their_gambling_details', value: '' },
-        { question: 'finance_debt', value: ['NO'] },
-        { question: 'finance_changes', value: 'NOT_PRESENT' },
+        { question: Question.finance_income, value: [Option.carers_allowance] },
+        { question: Question.finance_bank_account, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_money_management_good_details, value: '' },
+        { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+        { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
+        { question: Question.finance_debt, value: [CommonOption.no] },
+        { question: Question.finance_changes, value: CommonOption.not_present },
       ]).save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
@@ -71,14 +74,14 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'finance_income', value: ['CARERS_ALLOWANCE'] },
-        { question: 'finance_bank_account', value: 'YES' },
-        { question: 'finance_money_management', value: 'GOOD' },
-        { question: 'finance_money_management_good_details', value: '' },
-        { question: 'finance_gambling', value: ['YES_THEIR_GAMBLING'] },
-        { question: 'finance_gambling_yes_their_gambling_details', value: '' },
-        { question: 'finance_debt', value: ['NO'] },
-        { question: 'finance_changes', value: 'NOT_PRESENT' },
+        { question: Question.finance_income, value: [Option.carers_allowance] },
+        { question: Question.finance_bank_account, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_money_management_good_details, value: '' },
+        { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+        { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
+        { question: Question.finance_debt, value: [CommonOption.no] },
+        { question: Question.finance_changes, value: CommonOption.not_present },
       ]).save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
@@ -94,24 +97,24 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'finance_income', value: ['CARERS_ALLOWANCE'] },
-        { question: 'finance_bank_account', value: 'YES' },
-        { question: 'finance_money_management', value: 'GOOD' },
-        { question: 'finance_money_management_good_details', value: '' },
-        { question: 'finance_gambling', value: ['YES_THEIR_GAMBLING'] },
-        { question: 'finance_gambling_yes_their_gambling_details', value: '' },
-        { question: 'finance_debt', value: ['NO'] },
-        { question: 'finance_changes', value: 'NOT_PRESENT' },
-        { question: 'finance_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-        { question: 'finance_practitioner_analysis_strengths_or_protective_factors_no_details', value: '' },
-        { question: 'finance_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'finance_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        { question: Question.finance_income, value: [Option.carers_allowance] },
+        { question: Question.finance_bank_account, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_money_management_good_details, value: '' },
+        { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+        { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
+        { question: Question.finance_debt, value: [CommonOption.no] },
+        { question: Question.finance_changes, value: CommonOption.not_present },
+        { question: Question.finance_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.no },
+        { question: Question.finance_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },
+        { question: Question.finance_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.finance_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ]).save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary#practitioner-analysis')
     const financesPage = await FinancesPage.verifyOnPage(page, 'strengths or protective factors')
 
-    await financesPage.questions.finance_practitioner_analysis_risk_of_reoffending.option('No')
+    await financesPage.questions.finance_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
       .click()
     await financesPage.markComplete.click()
     await expect(financesPage.complete).toBeVisible()

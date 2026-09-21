@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/question'
 import { expect } from '@playwright/test'
 import { alcohol } from '../../sanUtils'
 import {
@@ -27,28 +30,34 @@ const analysisPage = 'alcohol-use-analysis'
 
 const fullyAnswered: Scenario = {
   answers: [
-    { question: 'alcohol_use', value: 'YES_WITHIN_LAST_THREE_MONTHS' },
-    { question: 'alcohol_frequency', value: 'MORE_THAN_4_TIMES_A_WEEK' },
-    { question: 'alcohol_units', value: 'UNITS_7_TO_9' },
-    { question: 'alcohol_binge_drinking', value: 'YES' },
-    { question: 'alcohol_binge_drinking_frequency', value: 'WEEKLY' },
-    { question: 'alcohol_evidence_of_excess_drinking', value: 'YES_WITH_EVIDENCE' },
-    { question: 'alcohol_past_issues', value: 'YES' },
-    { question: 'alcohol_past_issues_yes_details', value: 'Some details' },
-    { question: 'alcohol_reasons_for_use', value: ['SOCIAL', 'MANAGING_EMOTIONAL_ISSUES', 'OTHER'] },
-    { question: 'alcohol_reasons_for_use_other_details', value: 'Some details' },
-    { question: 'alcohol_impact_of_use', value: ['FINANCES', 'RELATIONSHIPS', 'OTHER'] },
-    { question: 'alcohol_impact_of_use_other_details', value: 'Some details' },
-    { question: 'alcohol_stopped_or_reduced', value: 'YES' },
-    { question: 'alcohol_stopped_or_reduced_yes_details', value: 'Some details' },
-    { question: 'alcohol_use_changes', value: 'DOES_NOT_WANT_TO_MAKE_CHANGES' },
-    { question: 'alcohol_use_changes_does_not_want_to_make_changes_details', value: 'Some details' },
-    { question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-    { question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details', value: 'Some details' },
-    { question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
-    { question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details', value: 'Some details' },
-    { question: 'alcohol_use_practitioner_analysis_risk_of_reoffending', value: 'YES' },
-    { question: 'alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details', value: 'Some details' },
+    { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
+    { question: Question.alcohol_frequency, value: Option.more_than_4_times_a_week },
+    { question: Question.alcohol_units, value: Option.units_7_to_9 },
+    { question: Question.alcohol_binge_drinking, value: CommonOption.yes },
+    { question: Question.alcohol_binge_drinking_frequency, value: Option.weekly },
+    { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_evidence },
+    { question: Question.alcohol_past_issues, value: CommonOption.yes },
+    { question: Question.alcohol_past_issues_yes_details, value: 'Some details' },
+    {
+      question: Question.alcohol_reasons_for_use,
+      value: [Option.social, Option.managing_emotional_issues, CommonOption.other],
+    },
+    { question: Question.alcohol_reasons_for_use_other_details, value: 'Some details' },
+    { question: Question.alcohol_impact_of_use, value: [Option.finances, Option.relationships, CommonOption.other] },
+    { question: Question.alcohol_impact_of_use_other_details, value: 'Some details' },
+    { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+    { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Some details' },
+    { question: Question.alcohol_use_changes, value: CommonOption.does_not_want_to_make_changes },
+    { question: Question.alcohol_use_changes_does_not_want_to_make_changes_details, value: 'Some details' },
+    { question: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.no },
+    {
+      question: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details,
+      value: 'Some details',
+    },
+    { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+    { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
+    { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+    { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
     changeLink('alcohol-use', 'alcohol_use'),
