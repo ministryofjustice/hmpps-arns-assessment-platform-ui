@@ -110,8 +110,10 @@ test.describe('Validation', () => {
         - text: Who was the offence committed against? Select all that apply.
         - checkbox "One or more people"
         - text: One or more people
-        - checkbox "Other"
-        - text: Other For example, a business or the wider community.
+        - checkbox "Other" [checked] [expanded]
+        - text: Other For example, a business or the wider community. Give details
+        - textbox "Give details"
+        - text: You can enter up to 2000 characters You have 2,000 characters remaining
     `)
   })
 
