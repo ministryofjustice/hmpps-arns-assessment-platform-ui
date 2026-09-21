@@ -9,7 +9,7 @@ test.describe('Accessibility', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await AlcoholUsePage.navigateToAlcoholUse(page, handoverLink, baseURL, sanAssessmentId)
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
     await checkAccessibility(page, {
       disableRules: ['aria-allowed-attr'],
     })

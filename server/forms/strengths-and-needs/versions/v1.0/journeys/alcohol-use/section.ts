@@ -8,6 +8,7 @@ import {
   checkboxField,
   question,
   QuestionFormat,
+  questionFormGroupOf,
   radioField,
   requiredValidationOf,
   revealedQuestion,
@@ -51,6 +52,7 @@ const bingeDrinkingFrequencyRevealed = revealedQuestion({
     field: (content, parent) =>
       GovUKRadioInput({
         code: content.code,
+        formGroup: questionFormGroupOf(content.code),
         fieldset: {
           legend: {
             text: content.text,
@@ -460,7 +462,6 @@ const strengthsOrProtectiveFactors = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
@@ -488,7 +489,6 @@ const riskOfSeriousHarm = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })
@@ -516,7 +516,6 @@ const riskOfReoffending = question({
     field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_summary.path,
-      changeVisuallyHiddenText: true,
     }),
   },
 })

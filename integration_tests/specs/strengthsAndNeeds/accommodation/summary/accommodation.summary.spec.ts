@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
-import { test, TargetService } from '../../../support/fixtures'
-import { navigateToStrengthsAndNeeds } from '../sanUtils'
+import { test, TargetService } from '../../../../support/fixtures'
+import { navigateToStrengthsAndNeeds } from '../../sanUtils'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -30,32 +30,32 @@ test.describe('Summary', () => {
             - paragraph: Settled
             - paragraph: Homeowner
           - definition:
-            - link "Change":
-              - /url: current-accommodation
+            - link "Change What type of accommodation does Test currently have?":
+              - /url: current-accommodation#current_accommodation-question
           - term: Who is Test living with?
           - definition:
             - paragraph: Family
           - definition:
-            - link "Change":
-              - /url: accommodation-details#living_with
+            - link "Change Who is Test living with?":
+              - /url: accommodation-details#living_with-question
           - term: Is the location of Test's accommodation suitable?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: accommodation-details#suitable_housing_location
+            - link "Change Is the location of Test's accommodation suitable?":
+              - /url: accommodation-details#suitable_housing_location-question
           - term: Is Test's accommodation suitable?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: accommodation-details#suitable_housing
+            - link "Change Is Test's accommodation suitable?":
+              - /url: accommodation-details#suitable_housing-question
           - term: Does Test want to make changes to their accommodation?
           - definition:
             - paragraph: Test is not present
           - definition:
-            - link "Change":
-              - /url: accommodation-details#accommodation_changes
+            - link "Change Does Test want to make changes to their accommodation?":
+              - /url: accommodation-details#accommodation_changes-question
           - button "Go to practitioner analysis"
       `)
   })
@@ -109,7 +109,8 @@ test.describe('Summary', () => {
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
 
     await accommodationPage.goToPractitionerAnalysis.click()
-    await accommodationPage.linkedToRiskOfReoffending.click()
+    await accommodationPage.questions.accommodation_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await accommodationPage.markComplete.click()
     await expect(accommodationPage.complete).toBeVisible()
     expect(page.url()).toContain('accommodation-analysis')

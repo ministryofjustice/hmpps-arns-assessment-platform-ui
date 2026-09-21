@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -10,13 +11,13 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
     await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.employmentAndEducation))
 
-    await expect(employmentAndEducationPage.currentEmploymentStatus).toMatchAriaSnapshot(`
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
         - group /current employment status?/:
           - text: /current employment status?/
           - radio "Employed"
@@ -45,20 +46,11 @@ test.describe('Questions', () => {
         { question: 'employment_type', value: 'FULL_TIME' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - text: What job sector does Test work in? (optional)
       - textbox "What job sector does Test work in? (optional)"
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -197,14 +189,15 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
-    await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectTypeOfEmployment.click()
+    const { questions } = employmentAndEducationPage
 
-    await expect(employmentAndEducationPage.fullTime).toBeFocused()
+    await employmentAndEducationPage.saveAndContinue.click()
+    await questions.employment_type.errorLink.click()
+    await expect(questions.employment_type.input).toBeFocused()
   })
 
   test('shows self-employed questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -214,19 +207,11 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'SELF_EMPLOYED' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - text: What job sector does Test work in? (optional)
       - textbox "What job sector does Test work in? (optional)"
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
@@ -240,18 +225,11 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'RETIRED' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "What is Test's employment history?"
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
@@ -279,20 +257,11 @@ test.describe('Questions', () => {
         { question: 'has_been_employed', value: 'YES' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "What is Test's employment history?"
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
@@ -321,20 +290,11 @@ test.describe('Questions', () => {
         { question: 'has_been_employed', value: 'NO' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
       - group "Does Test have any professional or vocational qualifications?"
@@ -358,14 +318,13 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
     await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectOneOption.click()
-
-    await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    await employmentAndEducationPage.hasBeenEmployed(Option.currently_unavailable_for_work).errorLink.click()
+    await expect(employmentAndEducationPage.hasBeenEmployed(Option.currently_unavailable_for_work).input).toBeFocused()
   })
 
   test('shows unemployed - actively looking for work questions', async ({
@@ -383,20 +342,11 @@ test.describe('Questions', () => {
         { question: 'has_been_employed', value: 'YES' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "What is Test's employment history?"
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
@@ -425,20 +375,11 @@ test.describe('Questions', () => {
         { question: 'has_been_employed', value: 'NO' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
       - group "Does Test have any professional or vocational qualifications?"
@@ -462,14 +403,13 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' }]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
 
     await employmentAndEducationPage.saveAndContinue.click()
-    await employmentAndEducationPage.selectOneOption.click()
-
-    await expect(employmentAndEducationPage.yesHasBeenEmployedBefore).toBeFocused()
+    await employmentAndEducationPage.hasBeenEmployed(Option.unemployed_looking_for_work).errorLink.click()
+    await expect(employmentAndEducationPage.hasBeenEmployed(Option.unemployed_looking_for_work).input).toBeFocused()
   })
 
   test('shows unemployed - not actively looking for work questions', async ({
@@ -487,20 +427,11 @@ test.describe('Questions', () => {
         { question: 'has_been_employed', value: 'YES' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "What is Test's employment history?"
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
@@ -529,20 +460,11 @@ test.describe('Questions', () => {
         { question: 'has_been_employed', value: 'NO' },
       ]).save()
 
-    await EmploymentAndEducationPage.navigateToEmploymentAndEducation(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'employed',
-    )
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
-    await expect(employmentAndEducationPage.mainSection).toMatchAriaSnapshot(`
-      - link "Back"
-      - heading "Employment and education" [level=1]
-      - strong: Incomplete
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "Does Test have any additional day-to-day commitments?"
       - group "Select the highest level of academic qualification Test has completed"
       - group "Does Test have any professional or vocational qualifications?"

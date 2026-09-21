@@ -9,17 +9,15 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-    )
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
       page,
       'consequences of their actions?',
     )
+
+    const { questions } = thinkingBehavioursAndAttitudesPage
+
     await thinkingBehavioursAndAttitudesPage.saveAndContinue.click()
     await expect(thinkingBehavioursAndAttitudesPage.alert).toMatchAriaSnapshot(`
       - alert:
@@ -73,35 +71,35 @@ test.describe('Validation', () => {
               - /url: "#thinking_behaviours_attitudes_changes"
     `)
 
-    await thinkingBehavioursAndAttitudesPage.errorConsequences.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesAwareOfTheConsequences).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorStableBehaviour.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesShowsStableBehaviour).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorEngagesInOffendingActivities.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesEngagesInProSocialActivities).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorResilientToPeerPressure.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesResilientTowardsPeerPressure).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorAbleToSolveProblems.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesAbleToSolveProblems).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorUnderstandsPeoplesViews.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesUnderstandsPeoplesViews).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorManipulativeOrPredatory.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesHonestAccountNoManipulative).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorManagesTemper.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesAbleToManageTemper).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorUsesViolenceOrAggression.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesDoesNotUseViolence).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorActsOnImpulse.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesConsidersAllAspectsBeforeActing).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorPositiveAttitudeCJStaff.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesHasAPositiveAttitude).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorHostileOrientation.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesConstructiveConversationsAndForgives).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorAcceptsSupervision.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesAcceptsSupervision).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorSupportsCriminalBehaviour.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesDoesNotSupportCriminalBehaviour).toBeFocused()
-    await thinkingBehavioursAndAttitudesPage.errorWantsToMakeChanges.click()
-    await expect(thinkingBehavioursAndAttitudesPage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.thinking_behaviours_attitudes_consequences.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_consequences.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_stable_behaviour.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_stable_behaviour.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_offending_activities.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_offending_activities.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_peer_pressure.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_peer_pressure.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_problem_solving.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_problem_solving.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_peoples_views.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_peoples_views.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_manipulative_predatory_behaviour.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_manipulative_predatory_behaviour.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_temper_management.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_temper_management.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_violence_controlling_behaviour.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_violence_controlling_behaviour.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_impulsive_behaviour.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_impulsive_behaviour.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_positive_attitude.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_positive_attitude.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_hostile_orientation.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_hostile_orientation.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_supervision.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_supervision.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_criminal_behaviour.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_criminal_behaviour.input).toBeFocused()
+    await questions.thinking_behaviours_attitudes_changes.errorLink.click()
+    await expect(questions.thinking_behaviours_attitudes_changes.input).toBeFocused()
   })
 })

@@ -10,13 +10,13 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await FinancesPage.navigateToFinances(page, handoverLink, baseURL, sanAssessmentId)
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const financesPage = await FinancesPage.verifyOnPage(page, 'currently get their money')
 
     await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.finances))
 
-    await expect(financesPage.mainSection).toMatchAriaSnapshot(`
+    await expect(financesPage.mainForm).toMatchAriaSnapshot(`
       - group "Where does Test currently get their money from?":
         - text: Where does Test currently get their money from? Select all that apply.
         - checkbox "Carer’s allowance"

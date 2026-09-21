@@ -9,9 +9,11 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await FinancesPage.navigateToFinances(page, handoverLink, baseURL, sanAssessmentId)
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const financesPage = await FinancesPage.verifyOnPage(page, 'currently get their money')
+
+    const { questions } = financesPage
 
     await financesPage.saveAndContinue.click()
     await expect(financesPage.alert).toMatchAriaSnapshot(`
@@ -39,17 +41,17 @@ test.describe('Validation', () => {
               - /url: "#finance_changes"
     `)
 
-    await financesPage.selectIfHaveOwn.click()
-    await expect(financesPage.yes).toBeFocused()
-    await financesPage.selectWhereTheyCurrently.click()
-    await expect(financesPage.carersAllowance).toBeFocused()
-    await financesPage.selectHowGoodTheyAreAtManaging.click()
-    await expect(financesPage.ableToManageTheirMoney).toBeFocused()
-    await financesPage.selectIfAffectedByGambling.click()
-    await expect(financesPage.yesTheirOwnGambling).toBeFocused()
-    await financesPage.selectIfAffectedByDebt.click()
-    await expect(financesPage.yesTheirOwnDebt).toBeFocused()
-    await financesPage.errorWantsToMakeChanges.click()
-    await expect(financesPage.yesAlreadyMadePositiveChanges).toBeFocused()
+    await questions.finance_bank_account.errorLink.click()
+    await expect(questions.finance_bank_account.input).toBeFocused()
+    await questions.finance_income.errorLink.click()
+    await expect(questions.finance_income.input).toBeFocused()
+    await questions.finance_money_management.errorLink.click()
+    await expect(questions.finance_money_management.input).toBeFocused()
+    await questions.finance_gambling.errorLink.click()
+    await expect(questions.finance_gambling.input).toBeFocused()
+    await questions.finance_debt.errorLink.click()
+    await expect(questions.finance_debt.input).toBeFocused()
+    await questions.finance_changes.errorLink.click()
+    await expect(questions.finance_changes.input).toBeFocused()
   })
 })

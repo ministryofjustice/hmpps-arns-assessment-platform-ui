@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -37,7 +37,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -57,56 +57,56 @@ test.describe('Summary', () => {
           - paragraph: Yes, children that live with them
           - paragraph: test
         - definition:
-          - link "Change":
-            - /url: personal-relationships-children-information#personal_relationships_community_children_details
+          - link "Change Are there any children in Test's life?":
+            - /url: personal-relationships-children-information#personal_relationships_community_children_details-question
         - term: Who are the important people in Test's life?
         - definition:
           - paragraph: Partner or someone they’re in an intimate relationship with
         - definition:
-          - link "Change":
-            - /url: personal-relationships#personal_relationships_community_important_people
+          - link "Change Who are the important people in Test's life?":
+            - /url: personal-relationships#personal_relationships_community_important_people-question
         - term: Is Test happy with their current relationship status?
         - definition:
           - paragraph: Happy and positive about their relationship status or their relationship is likely to act as a protective factor
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_current_relationship
+          - link "Change Is Test happy with their current relationship status?":
+            - /url: personal-relationships-community#personal_relationships_community_current_relationship-question
         - term: What is Test's history of intimate relationships?
         - definition:
           - paragraph: History of stable, supportive, positive and rewarding relationships
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_intimate_relationship
+          - link "Change What is Test's history of intimate relationships?":
+            - /url: personal-relationships-community#personal_relationships_community_intimate_relationship-question
         - term: Is Test able to resolve any challenges in their intimate relationships?
         - definition:
           - paragraph: test
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_challenges_intimate_relationship
+          - link "Change Is Test able to resolve any challenges in their intimate relationships?":
+            - /url: personal-relationships-community#personal_relationships_community_challenges_intimate_relationship-question
         - term: What is Test's current relationship like with their family?
         - definition:
           - paragraph: Stable, supportive, positive and rewarding relationship
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_family_relationship
+          - link "Change What is Test's current relationship like with their family?":
+            - /url: personal-relationships-community#personal_relationships_community_family_relationship-question
         - term: What was Test's experience of their childhood?
         - definition:
           - paragraph: Positive experience
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_childhood
+          - link "Change What was Test's experience of their childhood?":
+            - /url: personal-relationships-community#personal_relationships_community_childhood-question
         - term: Did Test have any childhood behavioural problems?
         - definition:
           - paragraph: "Yes"
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_childhood_behaviour
+          - link "Change Did Test have any childhood behavioural problems?":
+            - /url: personal-relationships-community#personal_relationships_community_childhood_behaviour-question
         - term: Does Test want to make changes to their personal relationships and community?
         - definition:
           - paragraph: Test is not present
         - definition:
-          - link "Change":
-            - /url: personal-relationships-community#personal_relationships_community_changes
+          - link "Change Does Test want to make changes to their personal relationships and community?":
+            - /url: personal-relationships-community#personal_relationships_community_changes-question
         - button "Go to practitioner analysis"
     `)
   })
@@ -146,7 +146,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -210,7 +210,7 @@ test.describe('Summary', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -222,7 +222,8 @@ test.describe('Summary', () => {
       'strengths or protective factors',
     )
 
-    await personalRelationshipsAndCommunityPage.linkedToRiskOfReoffending.click()
+    await personalRelationshipsAndCommunityPage.questions.personal_relationships_community_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await personalRelationshipsAndCommunityPage.markComplete.click()
     await expect(personalRelationshipsAndCommunityPage.complete).toBeVisible()
     expect(page.url()).toContain('personal-relationships-community-analysis')

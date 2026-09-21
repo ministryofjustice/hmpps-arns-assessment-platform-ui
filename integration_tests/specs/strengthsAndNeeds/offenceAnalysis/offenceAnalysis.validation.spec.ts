@@ -57,7 +57,7 @@ test.describe('Validation', () => {
         },
       ]).save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
   })
 
   test('validation other options', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -76,11 +76,11 @@ test.describe('Validation', () => {
         },
       ]).save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
 
-    await expect(offenceAnalysisPage.mainSection).toMatchAriaSnapshot(`
+    await expect(offenceAnalysisPage.mainForm).toMatchAriaSnapshot(`
       - group "Did the current index offence(s) involve any of the following motivations?":
         - text: Did the current index offence(s) involve any of the following motivations? Select all that apply.
         - checkbox "Addictions or perceived needs"
@@ -118,9 +118,12 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(page, handoverLink, baseURL, sanAssessmentId)
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Enter a brief description of')
+
+    const { questions } = offenceAnalysisPage
+
     await offenceAnalysisPage.saveAndContinue.click()
 
     await expect(offenceAnalysisPage.alert).toMatchAriaSnapshot(`
@@ -145,16 +148,17 @@ test.describe('Validation', () => {
               - /url: "#offence_analysis_who_was_the_victim"
     `)
 
-    await offenceAnalysisPage.enterDetailsError.click()
-    await expect(offenceAnalysisPage.enterDescription).toBeFocused()
-    await offenceAnalysisPage.enterDetailsWhy.click()
-    await expect(offenceAnalysisPage.enterWhy).toBeFocused()
-    await offenceAnalysisPage.selectIfTheOffence.click()
-    await expect(offenceAnalysisPage.arson).toBeFocused()
-    await offenceAnalysisPage.selectIfTheOffenceInvolved.click()
-    await expect(offenceAnalysisPage.addictions).toBeFocused()
-    await offenceAnalysisPage.selectWhoOffenceWas.click()
-    await expect(offenceAnalysisPage.oneOrMore).toBeFocused()
+    // Two error links both read "Enter details", so each is found by the field it links to
+    await questions.offence_analysis_description_of_offence.errorLink.click()
+    await expect(questions.offence_analysis_description_of_offence.input).toBeFocused()
+    await questions.offence_analysis_reason.errorLink.click()
+    await expect(questions.offence_analysis_reason.input).toBeFocused()
+    await questions.offence_analysis_elements.errorLink.click()
+    await expect(questions.offence_analysis_elements.input).toBeFocused()
+    await questions.offence_analysis_motivations.errorLink.click()
+    await expect(questions.offence_analysis_motivations.input).toBeFocused()
+    await questions.offence_analysis_who_was_the_victim.errorLink.click()
+    await expect(questions.offence_analysis_who_was_the_victim.input).toBeFocused()
   })
 
   test('validation victim', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -185,15 +189,11 @@ test.describe('Validation', () => {
         },
       ]).save()
 
-    await OffenceAnalysisPage.navigateToOffenceAnalysis(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'offence-analysis-victim/create',
-    )
+    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
 
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Who is the victim')
+
+    const { questions } = offenceAnalysisPage
 
     await offenceAnalysisPage.saveAndContinue.click()
 
@@ -216,13 +216,13 @@ test.describe('Validation', () => {
               - /url: "#offence_analysis_victim_race"
     `)
 
-    await offenceAnalysisPage.selectWhoTheVictim.click()
-    await expect(offenceAnalysisPage.stranger).toBeFocused()
-    await offenceAnalysisPage.selectSex.click()
-    await expect(offenceAnalysisPage.male).toBeFocused()
-    await offenceAnalysisPage.selectAge.click()
-    await expect(offenceAnalysisPage.zeroToFour).toBeFocused()
-    await offenceAnalysisPage.selectEthnicity.click()
-    await expect(offenceAnalysisPage.victimsEthnicity).toBeFocused()
+    await questions.offence_analysis_victim_relationship.errorLink.click()
+    await expect(questions.offence_analysis_victim_relationship.input).toBeFocused()
+    await questions.offence_analysis_victim_sex.errorLink.click()
+    await expect(questions.offence_analysis_victim_sex.input).toBeFocused()
+    await questions.offence_analysis_victim_age.errorLink.click()
+    await expect(questions.offence_analysis_victim_age.input).toBeFocused()
+    await questions.offence_analysis_victim_race.errorLink.click()
+    await expect(questions.offence_analysis_victim_race.input).toBeFocused()
   })
 })

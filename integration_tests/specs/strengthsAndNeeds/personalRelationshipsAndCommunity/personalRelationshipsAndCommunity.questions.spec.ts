@@ -10,12 +10,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-    )
+    await PersonalRelationshipsAndCommunityPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
@@ -52,7 +47,7 @@ test.describe('Questions', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -102,7 +97,7 @@ test.describe('Questions', () => {
         },
       ]).save()
 
-    await PersonalRelationshipsAndCommunityPage.navigateToPersonalRelationshipsAndCommunity(
+    await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
       handoverLink,
       baseURL,

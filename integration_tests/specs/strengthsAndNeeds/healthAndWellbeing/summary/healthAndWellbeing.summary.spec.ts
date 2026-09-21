@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -26,13 +26,7 @@ test.describe('Summary', () => {
         { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'health-wellbeing-summary',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
 
@@ -42,69 +36,69 @@ test.describe('Summary', () => {
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: health-wellbeing#health_wellbeing_physical_health_condition
+          - link "Change Does Test have any physical health conditions?":
+            - /url: health-wellbeing#health_wellbeing_physical_health_condition-question
         - term: Does Test have any diagnosed or documented mental health problems?
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: health-wellbeing#health_wellbeing_mental_health_condition
+          - link "Change Does Test have any diagnosed or documented mental health problems?":
+            - /url: health-wellbeing#health_wellbeing_mental_health_condition-question
         - term: Has Test had a head injury or any illness affecting the brain?
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_head_injury_or_illness
+          - link "Change Has Test had a head injury or any illness affecting the brain?":
+            - /url: physical-mental-health#health_wellbeing_head_injury_or_illness-question
         - term: Does Test have any neurodiverse conditions?
         - definition:
           - paragraph: "Yes"
           - paragraph: "details"
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_neurodiverse_conditions
+          - link "Change Does Test have any neurodiverse conditions?":
+            - /url: physical-mental-health#health_wellbeing_neurodiverse_conditions-question
         - term: Does Test have any conditions or disabilities that impact their ability to learn? (optional)
         - definition:
           - paragraph: No, they do not have any conditions or disabilities that impact their ability to learn
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_learning_difficulties
+          - link "Change Does Test have any conditions or disabilities that impact their ability to learn? (optional)":
+            - /url: physical-mental-health#health_wellbeing_learning_difficulties-question
         - term: Is Test able to cope with day-to-day life?
         - definition:
           - paragraph: Not able to cope
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_coping_day_to_day_life
+          - link "Change Is Test able to cope with day-to-day life?":
+            - /url: physical-mental-health#health_wellbeing_coping_day_to_day_life-question
         - term: What is Test's attitude towards themselves?
         - definition:
           - paragraph: Negative self-image and unhappy
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_attitude_towards_self
+          - link "Change What is Test's attitude towards themselves?":
+            - /url: physical-mental-health#health_wellbeing_attitude_towards_self-question
         - term: Has Test ever self-harmed?
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_self_harmed
+          - link "Change Has Test ever self-harmed?":
+            - /url: physical-mental-health#health_wellbeing_self_harmed-question
         - term: Has Test ever attempted suicide or had suicidal thoughts?
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_attempted_suicide_or_suicidal_thoughts
+          - link "Change Has Test ever attempted suicide or had suicidal thoughts?":
+            - /url: physical-mental-health#health_wellbeing_attempted_suicide_or_suicidal_thoughts-question
         - term: How does Test feel about their future?
         - definition:
           - paragraph: Not optimistic and thinks their future will not get better or may get worse
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_outlook
+          - link "Change How does Test feel about their future?":
+            - /url: physical-mental-health#health_wellbeing_outlook-question
         - term: Does Test want to make changes to their health and wellbeing?
         - definition:
           - paragraph: Test is not present
         - definition:
-          - link "Change":
-            - /url: physical-mental-health#health_wellbeing_changes
+          - link "Change Does Test want to make changes to their health and wellbeing?":
+            - /url: physical-mental-health#health_wellbeing_changes-question
         - button "Go to practitioner analysis"
     `)
   })
@@ -133,13 +127,7 @@ test.describe('Summary', () => {
         { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'health-wellbeing-summary',
-    )
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'Summary')
 
@@ -174,7 +162,7 @@ test.describe('Summary', () => {
         { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
       ]).save()
 
-    await HealthAndWellbeingPage.navigateToHealthAndWellbeing(
+    await HealthAndWellbeingPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -183,7 +171,8 @@ test.describe('Summary', () => {
     )
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'strengths or protective factors')
 
-    await healthAndWellbeingPage.linkedToRiskOfReoffending.click()
+    await healthAndWellbeingPage.questions.health_wellbeing_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await healthAndWellbeingPage.markComplete.click()
     await expect(healthAndWellbeingPage.complete).toBeVisible()
     expect(page.url()).toContain('health-wellbeing-analysis')

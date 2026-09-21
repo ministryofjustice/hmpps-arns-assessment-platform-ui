@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -19,7 +19,7 @@ test.describe('Summary', () => {
         { question: 'finance_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await FinancesPage.navigateToFinances(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
 
     const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
 
@@ -29,38 +29,38 @@ test.describe('Summary', () => {
         - definition:
           - paragraph: Carer’s allowance
         - definition:
-          - link "Change":
-            - /url: finance#finance_income
+          - link "Change Where does Test currently get their money from?":
+            - /url: finance#finance_income-question
         - term: Does Test have their own bank account?
         - definition:
           - paragraph: "Yes"
         - definition:
-          - link "Change":
-            - /url: finance#finance_bank_account
+          - link "Change Does Test have their own bank account?":
+            - /url: finance#finance_bank_account-question
         - term: How good is Test at managing their money?
         - definition:
           - paragraph: Able to manage their money well and is a strength
         - definition:
-          - link "Change":
-            - /url: finance#finance_money_management
+          - link "Change How good is Test at managing their money?":
+            - /url: finance#finance_money_management-question
         - term: Is Test affected by gambling?
         - definition:
           - paragraph: Yes, their own gambling
         - definition:
-          - link "Change":
-            - /url: finance#finance_gambling
+          - link "Change Is Test affected by gambling?":
+            - /url: finance#finance_gambling-question
         - term: Is Test affected by debt?
         - definition:
           - paragraph: "No"
         - definition:
-          - link "Change":
-            - /url: finance#finance_debt
+          - link "Change Is Test affected by debt?":
+            - /url: finance#finance_debt-question
         - term: Does Test want to make changes to their finances?
         - definition:
           - paragraph: Test is not present
         - definition:
-          - link "Change":
-            - /url: finance#finance_changes
+          - link "Change Does Test want to make changes to their finances?":
+            - /url: finance#finance_changes-question
         - button "Go to practitioner analysis"
     `)
   })
@@ -81,7 +81,7 @@ test.describe('Summary', () => {
         { question: 'finance_changes', value: 'NOT_PRESENT' },
       ]).save()
 
-    await FinancesPage.navigateToFinances(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
     const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
 
     await financesPage.goToPractitionerAnalysis.click()
@@ -108,16 +108,11 @@ test.describe('Summary', () => {
         { question: 'finance_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
       ]).save()
 
-    await FinancesPage.navigateToFinances(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-      'finance-summary#practitioner-analysis',
-    )
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary#practitioner-analysis')
     const financesPage = await FinancesPage.verifyOnPage(page, 'strengths or protective factors')
 
-    await financesPage.linkedToRiskOfReoffending.click()
+    await financesPage.questions.finance_practitioner_analysis_risk_of_reoffending.option('No')
+      .click()
     await financesPage.markComplete.click()
     await expect(financesPage.complete).toBeVisible()
     expect(page.url()).toContain('finance-analysis')

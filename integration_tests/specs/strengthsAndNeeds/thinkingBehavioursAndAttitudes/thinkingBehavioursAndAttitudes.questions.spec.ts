@@ -10,12 +10,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
-      page,
-      handoverLink,
-      baseURL,
-      sanAssessmentId,
-    )
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
       page,
@@ -190,7 +185,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -198,12 +193,12 @@ test.describe('Questions', () => {
       'thinking-behaviours-risk-of-sexual-harm',
     )
 
-    const personalRelationshipsAndCommunityPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
+    const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
       page,
       'poses a risk of sexual harm',
     )
 
-    await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
+    await expect(thinkingBehavioursAndAttitudesPage.mainForm).toMatchAriaSnapshot(`
       - group "Are there any concerns that Test poses a risk of sexual harm to others?":
         - text: Are there any concerns that Test poses a risk of sexual harm to others?
         - radio "Yes" [checked]
@@ -212,7 +207,9 @@ test.describe('Questions', () => {
         - text: "No"
       - button "Save and continue"
     `)
-    await expect(personalRelationshipsAndCommunityPage.no).not.toBeEnabled()
+    await expect(
+      thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_risk_sexual_harm.option('No'),
+    ).not.toBeEnabled()
   })
 
   test('shows no risk of sexual harm', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -243,7 +240,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -251,12 +248,12 @@ test.describe('Questions', () => {
       'thinking-behaviours-risk-of-sexual-harm',
     )
 
-    const personalRelationshipsAndCommunityPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
+    const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
       page,
       'poses a risk of sexual harm',
     )
 
-    await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
+    await expect(thinkingBehavioursAndAttitudesPage.mainForm).toMatchAriaSnapshot(`
       - group "Are there any concerns that Test poses a risk of sexual harm to others?":
         - /children: equal
         - text: Are there any concerns that Test poses a risk of sexual harm to others?
@@ -267,7 +264,9 @@ test.describe('Questions', () => {
         - text: "No"
       - button "Save and continue"
     `)
-    await expect(personalRelationshipsAndCommunityPage.no).toBeEnabled()
+    await expect(
+      thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_risk_sexual_harm.option('No'),
+    ).toBeEnabled()
   })
 
   test('shows risk of sexual harm follow up', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -298,7 +297,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await ThinkingBehavioursAndAttitudesPage.navigateToThinkingBehavioursAndAttitudes(
+    await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,
       handoverLink,
       baseURL,
@@ -306,12 +305,12 @@ test.describe('Questions', () => {
       'thinking-behaviours-sexual-harm',
     )
 
-    const personalRelationshipsAndCommunityPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
+    const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
       page,
       'shows sexual preoccupation',
     )
 
-    await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
+    await expect(thinkingBehavioursAndAttitudesPage.mainForm).toMatchAriaSnapshot(`
       - group "Is there evidence Test shows sexual preoccupation?":
         - text: Is there evidence Test shows sexual preoccupation?
         - radio "Yes, the amount of time they spend engaging in sexual activity or thinking about sex is unhealthy and is impacting their day-to-day life"
