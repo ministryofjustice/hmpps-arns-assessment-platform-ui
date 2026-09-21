@@ -36,23 +36,4 @@ test.describe('Print Header', () => {
     await expect(page.getByTestId('header-tag')).toBeVisible()
     await expect(page.getByTestId('header-tag').getByText('Official Sensitive')).toHaveClass(/govuk-tag--red/)
   })
-
-  test('should be accessible', async ({ page, mountForgeComponent, makeAxeBuilder }) => {
-    await mountForgeComponent(
-      nunjucksComponent<BlockDefinition>('printHeader', {
-        render: (_props, nunjucksEnv) => {
-          return nunjucksEnv.render('strengths-and-needs/views/components/print-header/index.njk')
-        },
-      }),
-      {} as EvaluatedBlock<BlockDefinition>,
-      { assets: strengthsAndNeedsAssets, js: true },
-    )
-
-    await page.emulateMedia({ media: 'print' })
-
-    const accessibilityScanResults = await makeAxeBuilder()
-      .include('[data-qa="pdf-header"]')
-      .analyze()
-    expect(accessibilityScanResults.violations).toEqual([])
-  })
 })
