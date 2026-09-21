@@ -5,7 +5,7 @@ import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPa
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Multiple non-countersigned previous versions', () => {
-  test('it lists multiple previous versions of the plan', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+  test('it lists multiple previous versions of the plan', async ({ page, createSession }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })

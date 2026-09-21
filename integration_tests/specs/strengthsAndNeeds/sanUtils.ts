@@ -116,4 +116,4 @@ export const formatOrdinalDate = (date: Date): string => {
   const month = date.toLocaleDateString('en-GB', { month: 'long' })
   const year = date.getFullYear()
   return `${day}${suffix(day)} ${month} ${year}`
-} 
+}
