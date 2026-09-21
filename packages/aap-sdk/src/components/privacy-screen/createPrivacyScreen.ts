@@ -115,7 +115,7 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
         basePath,
         hideNavigation: true,
         hideNavigationLinks: true,
-        feedbackUrl,
+        ...(feedbackUrl === undefined ? {} : { feedbackUrl }),
         hidePreviousVersions: true,
         hideBackToTop: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,
