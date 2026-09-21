@@ -132,87 +132,87 @@ test.describe('Summary', () => {
           - definition:
             - paragraph: test
           - definition:
-            - link "Change":
-              - /url: offence-analysis#offence_analysis_description_of_offence
+            - link "Change Enter a brief description of the current index offence(s)":
+              - /url: offence-analysis#offence_analysis_description_of_offence-question
           - term: Did the current index offence(s) have any of the following elements?
           - definition:
             - paragraph: Arson
           - definition:
-            - link "Change":
-              - /url: offence-analysis#offence_analysis_elements
+            - link "Change Did the current index offence(s) have any of the following elements?":
+              - /url: offence-analysis#offence_analysis_elements-question
           - term: Why did the current index offence(s) happen?
           - definition:
             - paragraph: test
           - definition:
-            - link "Change":
-              - /url: offence-analysis#offence_analysis_reason
+            - link "Change Why did the current index offence(s) happen?":
+              - /url: offence-analysis#offence_analysis_reason-question
           - term: Did the current index offence(s) involve any of the following motivations?
           - definition:
             - paragraph: Addictions or perceived needs
           - definition:
-            - link "Change":
-              - /url: offence-analysis#offence_analysis_motivations
+            - link "Change Did the current index offence(s) involve any of the following motivations?":
+              - /url: offence-analysis#offence_analysis_motivations-question
           - term: Who was the offence committed against?
           - definition:
             - paragraph: One or more people
           - definition:
-            - link "Change":
-              - /url: offence-analysis#offence_analysis_who_was_the_victim
+            - link "Change Who was the offence committed against?":
+              - /url: offence-analysis#offence_analysis_who_was_the_victim-question
           - term: How many other people were involved with committing the current index offence(s)?
           - definition:
             - paragraph: None
           - definition:
-            - link "Change":
-              - /url: offence-analysis-involved-parties#offence_analysis_how_many_involved
+            - link "Change How many other people were involved with committing the current index offence(s)?":
+              - /url: offence-analysis-involved-parties#offence_analysis_how_many_involved-question
           - term: Was Test the leader of the current index offence(s)?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_leader
+            - link "Change Was Test the leader of the current index offence(s)?":
+              - /url: offence-analysis-impact#offence_analysis_leader-question
           - term: Does Test recognise the impact on the victims or wider community?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_impact_on_victims
+            - link "Change Does Test recognise the impact on the victims or wider community?":
+              - /url: offence-analysis-impact#offence_analysis_impact_on_victims-question
           - term: Does Test accept responsibility for the current index offence(s)?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_accept_responsibility
+            - link "Change Does Test accept responsibility for the current index offence(s)?":
+              - /url: offence-analysis-impact#offence_analysis_accept_responsibility-question
           - term: Is there an escalation in seriousness from previous offending?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_escalation
+            - link "Change Is there an escalation in seriousness from previous offending?":
+              - /url: offence-analysis-impact#offence_analysis_escalation-question
           - term: Is there evidence that Test has ever been a perpetrator of domestic abuse?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_perpetrator_of_domestic_abuse
+            - link "Change Is there evidence that Test has ever been a perpetrator of domestic abuse?":
+              - /url: offence-analysis-impact#offence_analysis_perpetrator_of_domestic_abuse-question
           - term: Is there evidence that Test has ever been a victim of domestic abuse?
           - definition:
             - paragraph: "No"
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_victim_of_domestic_abuse
+            - link "Change Is there evidence that Test has ever been a victim of domestic abuse?":
+              - /url: offence-analysis-impact#offence_analysis_victim_of_domestic_abuse-question
           - term: What are the patterns of offending?
           - definition:
             - paragraph: test
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_patterns_of_offending
+            - link "Change What are the patterns of offending?":
+              - /url: offence-analysis-impact#offence_analysis_patterns_of_offending-question
           - term: Are the current or previous offences linked to risk of serious harm, risks to the individual or other risks?
           - definition:
             - paragraph: "No"
             - paragraph: test
           - definition:
-            - link "Change":
-              - /url: offence-analysis-impact#offence_analysis_risk
+            - link "Change Are the current or previous offences linked to risk of serious harm, risks to the individual or other risks?":
+              - /url: offence-analysis-impact#offence_analysis_risk-question
           - heading "First victim" [level=2]
           - list:
             - listitem:
