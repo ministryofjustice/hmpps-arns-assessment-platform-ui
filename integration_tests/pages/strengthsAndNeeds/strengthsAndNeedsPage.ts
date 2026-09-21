@@ -3,10 +3,11 @@ import { questionIdOf } from '@server/forms/strengths-and-needs/constants/questi
 import { navigateToStrengthsAndNeeds, sanFormPath, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
 import AbstractPage from '../abstractPage'
 
-type PageQuestion = {
+export type PageQuestion = {
   input: Locator
   errorLink: Locator
-  option: (label: string) => Locator
+  error: Locator
+  option: (value: string) => Locator
 }
 
 /** A section's questions, keyed by server question code. Templated codes (`..._%1`) take the value to fill in. */
@@ -50,16 +51,14 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     return sectionPage
   }
 
-  /** A question, by its server question code */
+  /** A question, by its server question code. Its options are picked by their server option value. */
   protected question(code: string): PageQuestion {
     const root = this.page.locator(`#${questionIdOf(code)}`)
     return {
       input: this.page.locator(`#${code}`),
       errorLink: this.alert.locator(`a[href="#${code}"]`),
-      option: label =>
-        root
-          .getByRole('radio', { name: label, exact: true })
-          .or(root.getByRole('checkbox', { name: label, exact: true })),
+      error: this.page.locator(`#${code}-error`),
+      option: value => root.locator(`input[value="${value}"]`),
     }
   }
 

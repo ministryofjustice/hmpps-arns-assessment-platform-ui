@@ -1,3 +1,6 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -9,21 +12,21 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_head_injury_or_illness', value: 'NO' },
-        { question: 'health_wellbeing_neurodiverse_conditions', value: 'YES' },
-        { question: 'health_wellbeing_neurodiverse_conditions_yes_details', value: 'details' },
-        { question: 'health_wellbeing_learning_difficulties', value: 'NO' },
-        { question: 'health_wellbeing_learning_difficulties_yes_significant_difficulties_details', value: '' },
-        { question: 'health_wellbeing_learning_difficulties_yes_some_difficulties_details', value: '' },
-        { question: 'health_wellbeing_coping_day_to_day_life', value: 'NO' },
-        { question: 'health_wellbeing_attitude_towards_self', value: 'NEGATIVE' },
-        { question: 'health_wellbeing_self_harmed', value: 'NO' },
-        { question: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts', value: 'NO' },
-        { question: 'health_wellbeing_outlook', value: 'NOT_OPTIMISTIC' },
-        { question: 'health_wellbeing_positive_factors', value: [] },
-        { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_head_injury_or_illness, value: CommonOption.no },
+        { question: Question.health_wellbeing_neurodiverse_conditions, value: CommonOption.yes },
+        { question: Question.health_wellbeing_neurodiverse_conditions_yes_details, value: 'details' },
+        { question: Question.health_wellbeing_learning_difficulties, value: CommonOption.no },
+        { question: Question.health_wellbeing_learning_difficulties_yes_significant_difficulties_details, value: '' },
+        { question: Question.health_wellbeing_learning_difficulties_yes_some_difficulties_details, value: '' },
+        { question: Question.health_wellbeing_coping_day_to_day_life, value: CommonOption.no },
+        { question: Question.health_wellbeing_attitude_towards_self, value: Option.negative },
+        { question: Question.health_wellbeing_self_harmed, value: CommonOption.no },
+        { question: Question.health_wellbeing_attempted_suicide_or_suicidal_thoughts, value: CommonOption.no },
+        { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
+        { question: Question.health_wellbeing_positive_factors, value: [] },
+        { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
       ]).save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
@@ -110,21 +113,21 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_head_injury_or_illness', value: 'NO' },
-        { question: 'health_wellbeing_neurodiverse_conditions', value: 'YES' },
-        { question: 'health_wellbeing_neurodiverse_conditions_yes_details', value: '' },
-        { question: 'health_wellbeing_learning_difficulties', value: 'NO' },
-        { question: 'health_wellbeing_learning_difficulties_yes_significant_difficulties_details', value: '' },
-        { question: 'health_wellbeing_learning_difficulties_yes_some_difficulties_details', value: '' },
-        { question: 'health_wellbeing_coping_day_to_day_life', value: 'NOT' },
-        { question: 'health_wellbeing_attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
-        { question: 'health_wellbeing_self_harmed', value: 'NO' },
-        { question: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts', value: 'NO' },
-        { question: 'health_wellbeing_outlook', value: 'NOT_OPTIMISTIC' },
-        { question: 'health_wellbeing_positive_factors', value: [] },
-        { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_head_injury_or_illness, value: CommonOption.no },
+        { question: Question.health_wellbeing_neurodiverse_conditions, value: CommonOption.yes },
+        { question: Question.health_wellbeing_neurodiverse_conditions_yes_details, value: '' },
+        { question: Question.health_wellbeing_learning_difficulties, value: CommonOption.no },
+        { question: Question.health_wellbeing_learning_difficulties_yes_significant_difficulties_details, value: '' },
+        { question: Question.health_wellbeing_learning_difficulties_yes_some_difficulties_details, value: '' },
+        { question: Question.health_wellbeing_coping_day_to_day_life, value: CommonOption.no },
+        { question: Question.health_wellbeing_attitude_towards_self, value: Option.negative },
+        { question: Question.health_wellbeing_self_harmed, value: CommonOption.no },
+        { question: Question.health_wellbeing_attempted_suicide_or_suicidal_thoughts, value: CommonOption.no },
+        { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
+        { question: Question.health_wellbeing_positive_factors, value: [] },
+        { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
       ]).save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
@@ -141,25 +144,28 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_head_injury_or_illness', value: 'NO' },
-        { question: 'health_wellbeing_neurodiverse_conditions', value: 'NO' },
-        { question: 'health_wellbeing_neurodiverse_conditions_yes_details', value: 'details' },
-        { question: 'health_wellbeing_learning_difficulties', value: 'NO_LEARNING_ABILITIES_IMPACT' },
-        { question: 'health_wellbeing_learning_difficulties_yes_significant_difficulties_details', value: '' },
-        { question: 'health_wellbeing_learning_difficulties_yes_some_difficulties_details', value: '' },
-        { question: 'health_wellbeing_coping_day_to_day_life', value: 'NOT' },
-        { question: 'health_wellbeing_attitude_towards_self', value: 'NEGATIVE_UNHAPPY' },
-        { question: 'health_wellbeing_self_harmed', value: 'NO' },
-        { question: 'health_wellbeing_attempted_suicide_or_suicidal_thoughts', value: 'NO' },
-        { question: 'health_wellbeing_outlook', value: 'NOT_OPTIMISTIC' },
-        { question: 'health_wellbeing_positive_factors', value: [] },
-        { question: 'health_wellbeing_changes', value: 'NOT_PRESENT' },
-        { question: 'health_wellbeing_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-        { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
-        { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_head_injury_or_illness, value: CommonOption.no },
+        { question: Question.health_wellbeing_neurodiverse_conditions, value: CommonOption.no },
+        { question: Question.health_wellbeing_neurodiverse_conditions_yes_details, value: 'details' },
+        { question: Question.health_wellbeing_learning_difficulties, value: CommonOption.no },
+        { question: Question.health_wellbeing_learning_difficulties_yes_significant_difficulties_details, value: '' },
+        { question: Question.health_wellbeing_learning_difficulties_yes_some_difficulties_details, value: '' },
+        { question: Question.health_wellbeing_coping_day_to_day_life, value: CommonOption.no },
+        { question: Question.health_wellbeing_attitude_towards_self, value: Option.negative },
+        { question: Question.health_wellbeing_self_harmed, value: CommonOption.no },
+        { question: Question.health_wellbeing_attempted_suicide_or_suicidal_thoughts, value: CommonOption.no },
+        { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
+        { question: Question.health_wellbeing_positive_factors, value: [] },
+        { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
+        {
+          question: Question.health_wellbeing_practitioner_analysis_strengths_or_protective_factors,
+          value: CommonOption.no,
+        },
+        { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
+        { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ]).save()
 
     await HealthAndWellbeingPage.navigateTo(
@@ -171,7 +177,7 @@ test.describe('Summary', () => {
     )
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'strengths or protective factors')
 
-    await healthAndWellbeingPage.questions.health_wellbeing_practitioner_analysis_risk_of_reoffending.option('No')
+    await healthAndWellbeingPage.questions.health_wellbeing_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
       .click()
     await healthAndWellbeingPage.markComplete.click()
     await expect(healthAndWellbeingPage.complete).toBeVisible()

@@ -1,3 +1,5 @@
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -13,10 +15,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: 'drug_use', value: 'NO' },
-        { question: 'drugs_section_status', value: 'INCOMPLETE' },
-      ]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }]).save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
@@ -41,10 +40,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: 'drug_use', value: 'NO' },
-        { question: 'drugs_section_status', value: 'INCOMPLETE' },
-      ]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }]).save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
@@ -60,19 +56,18 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'drug_use', value: 'NO' },
-        { question: 'drugs_section_status', value: 'INCOMPLETE' },
-        { question: 'drug_use_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
-        { question: 'drug_use_practitioner_analysis_strengths_or_protective_factors_no_details', value: '' },
-        { question: 'drug_use_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'drug_use_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        { question: Question.drug_use, value: CommonOption.no },
+        { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.no },
+        { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },
+        { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ]).save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary#practitioner-analysis')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'strengths or protective factors')
 
-    await drugUsePage.questions.drug_use_practitioner_analysis_risk_of_reoffending.option('No')
+    await drugUsePage.questions.drug_use_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
       .click()
     await drugUsePage.markComplete.click()
     await expect(drugUsePage.complete).toBeVisible()

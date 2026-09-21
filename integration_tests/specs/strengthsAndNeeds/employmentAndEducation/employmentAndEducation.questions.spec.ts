@@ -1,3 +1,5 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/question'
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
@@ -42,8 +44,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'EMPLOYED' },
-        { question: 'employment_type', value: 'FULL_TIME' },
+        { question: Question.employment_status, value: Option.employed },
+        { question: Question.employment_type, value: Option.full_time },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -187,7 +189,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'EMPLOYED' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.employed }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -205,7 +207,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'SELF_EMPLOYED' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.self_employed }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -223,7 +225,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'RETIRED' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.retired }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -253,8 +255,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-        { question: 'has_been_employed', value: 'YES' },
+        { question: Question.employment_status, value: Option.currently_unavailable_for_work },
+        { question: Question.has_been_employed, value: CommonOption.yes },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -286,8 +288,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' },
-        { question: 'has_been_employed', value: 'NO' },
+        { question: Question.employment_status, value: Option.currently_unavailable_for_work },
+        { question: Question.has_been_employed, value: CommonOption.no },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -316,7 +318,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'CURRENTLY_UNAVAILABLE_FOR_WORK' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.currently_unavailable_for_work }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -338,8 +340,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_ACTIVELY_LOOKING' },
-        { question: 'has_been_employed', value: 'YES' },
+        { question: Question.employment_status, value: Option.unemployed_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.yes },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -371,8 +373,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' },
-        { question: 'has_been_employed', value: 'NO' },
+        { question: Question.employment_status, value: Option.unemployed_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.no },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -401,7 +403,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'employment_status', value: 'UNEMPLOYED_LOOKING_FOR_WORK' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.unemployed_looking_for_work }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -423,8 +425,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
-        { question: 'has_been_employed', value: 'YES' },
+        { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.yes },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -456,8 +458,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
-        { question: 'has_been_employed', value: 'NO' },
+        { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.no },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')

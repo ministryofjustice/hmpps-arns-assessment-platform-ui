@@ -1,3 +1,5 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -40,9 +42,12 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
         {
-          question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+          question: Question.personal_relationships_community_children_details,
+          value: [Option.yes_children_living_with_pop],
+        },
+        {
+          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
           value: 'test',
         },
       ]).save()
@@ -85,14 +90,20 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
         {
-          question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+          question: Question.personal_relationships_community_children_details,
+          value: [Option.yes_children_living_with_pop],
+        },
+        {
+          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
           value: 'test',
         },
-        { question: 'personal_relationships_community_important_people', value: ['PARTNER_INTIMATE_RELATIONSHIP'] },
         {
-          question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
+          question: Question.personal_relationships_community_important_people,
+          value: [Option.partner_intimate_relationship],
+        },
+        {
+          question: Question.personal_relationships_community_important_people_partner_intimate_relationship_details,
           value: '',
         },
       ]).save()
