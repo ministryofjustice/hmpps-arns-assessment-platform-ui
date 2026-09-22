@@ -16,6 +16,8 @@ const strengthsAndNeedsAssets = {
 }
 
 test.describe('Modal', () => {
+  const modalDialogue = '[data-module="modal-dialogue"]'
+
   test('should render modal component', async ({ page, mountForgeComponent }) => {
     await mountForgeComponent(
       modalComponent,
@@ -24,7 +26,7 @@ test.describe('Modal', () => {
     )
 
     // eslint-disable-next-line no-return-assign
-    await page.$eval('[data-module="modal-dialogue"]', el => (el.style.display = 'flex'))
+    await page.$eval(modalDialogue, el => (el.style.display = 'flex'))
     await expect(page.getByRole('dialog')).toBeVisible()
 
     await expect(page.getByRole('dialog')).toHaveAccessibleName('Delete')
@@ -42,11 +44,11 @@ test.describe('Modal', () => {
     )
 
     // eslint-disable-next-line no-return-assign
-    await page.$eval('[data-module="modal-dialogue"]', el => (el.style.display = 'flex'))
+    await page.$eval(modalDialogue, el => (el.style.display = 'flex'))
     await expect(page.getByRole('dialog')).toBeVisible()
 
     const accessibilityScanResults = await makeAxeBuilder()
-      .include('[data-module="modal-dialogue"]')
+      .include(modalDialogue)
       .analyze()
     expect(accessibilityScanResults.violations).toEqual([])
   })
