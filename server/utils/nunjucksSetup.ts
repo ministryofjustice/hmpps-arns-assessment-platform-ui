@@ -126,6 +126,9 @@ export default function nunjucksSetup(app?: express.Express) {
     errors.map(error => ({
       text: error.message,
       href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
+      attributes: {
+        'data-ai-id': `error-summary-link-${error.blockCode}`,
+      },
     })),
   )
 
