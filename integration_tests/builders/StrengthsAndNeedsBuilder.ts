@@ -85,8 +85,11 @@ export class StrengthsAndNeedsBuilderInstance {
   withEventsBackdated(from: Date, to: Date): this {
     this.backdateFrom = from
     this.backdateTo = to
-    
-  /** 
+
+    return this
+  }
+
+  /**
    * Add a collection to the assessment
    */
   withCollectionItems(name: string, answer: AnswerConfig[]): this {
