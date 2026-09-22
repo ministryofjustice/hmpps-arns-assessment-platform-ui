@@ -9,6 +9,7 @@ import type {
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { BlockType, StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { formatDate } from '@server/utils/utils'
 
 interface AssetEntryPoints {
   scripts: readonly string[]
@@ -119,6 +120,7 @@ const test = base.extend<ComponentTestFixtures, ComponentWorkerFixtures>({
           ...props,
         } as EvaluatedBlock<TBlock>
         const assets = await compileAssets(options.assets ?? defaultAssetEntryPoints)
+        nunjucksEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
         const html = await component.render(block, nunjucksEnv)
 
         await page.setContent(html)
