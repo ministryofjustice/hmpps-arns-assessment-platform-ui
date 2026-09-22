@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test'
+import { type Locator, type Page } from '@playwright/test'
 import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
 export default class HistoricAssessmentPage extends StrengthsAndNeedsPage {
