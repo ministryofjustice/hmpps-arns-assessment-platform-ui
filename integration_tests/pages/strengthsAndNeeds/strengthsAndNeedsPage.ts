@@ -1,6 +1,11 @@
 import { expect, Locator, Page } from '@playwright/test'
 import { questionIdOf } from '@server/forms/strengths-and-needs/constants/questionContent'
-import { navigateToStrengthsAndNeeds, sanFormPath, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
+import {
+  navigateToStrengthsAndNeeds,
+  navigateToStrengthsAndNeedsReadOnly,
+  sanFormPath,
+  v1Path,
+} from 'specs/strengthsAndNeeds/sanUtils'
 import AbstractPage from '../abstractPage'
 
 export type PageQuestion = {
@@ -37,6 +42,21 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${this.section}/${step}`)
+    expect(page.url()).toContain(step)
+  }
+
+  /**
+   * Opens the assessment in read-only).
+   */
+  static async navigateToView(
+    page: Page,
+    handoverLink: string,
+    baseUrl: string,
+    assessmentId: string,
+    step: string = this.firstStep,
+  ): Promise<void> {
+    await navigateToStrengthsAndNeedsReadOnly(page, handoverLink)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/view/${assessmentId}${this.section}/${step}`)
     expect(page.url()).toContain(step)
   }
 
