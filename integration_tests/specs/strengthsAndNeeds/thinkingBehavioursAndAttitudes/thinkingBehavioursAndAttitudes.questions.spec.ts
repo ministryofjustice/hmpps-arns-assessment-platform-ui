@@ -1,3 +1,6 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -166,22 +169,25 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_PRESENT' },
-        { question: 'thinking_behaviours_attitudes_supervision', value: 'YES_SUPERVISION' },
-        { question: 'thinking_behaviours_attitudes_consequences', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_peoples_views', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_problem_solving', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'YES_POSITIVE' },
-        { question: 'thinking_behaviours_attitudes_temper_management', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_offending_activities', value: 'NO_OFFENDING_ACTIVITIES' },
-        { question: 'thinking_behaviours_attitudes_peer_pressure_yes_details', value: '' },
-        { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'NO_VIOLENCE' },
-        { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'NO' },
+        { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
+        { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
+        { question: Question.thinking_behaviours_attitudes_consequences, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_peer_pressure, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_peoples_views, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_problem_solving, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_positive_attitude, value: Option.yes_positive },
+        { question: Question.thinking_behaviours_attitudes_temper_management, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_criminal_behaviour, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_hostile_orientation, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.no },
+        {
+          question: Question.thinking_behaviours_attitudes_offending_activities,
+          value: Option.no_offending_activities,
+        },
+        { question: Question.thinking_behaviours_attitudes_peer_pressure_yes_details, value: '' },
+        { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
+        { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
       ])
       .save()
 
@@ -208,7 +214,9 @@ test.describe('Questions', () => {
       - button "Save and continue"
     `)
     await expect(
-      thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_risk_sexual_harm.option('No'),
+      thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_risk_sexual_harm.option(
+        CommonOption.no,
+      ),
     ).not.toBeEnabled()
   })
 
@@ -221,22 +229,25 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_PRESENT' },
-        { question: 'thinking_behaviours_attitudes_supervision', value: 'YES_SUPERVISION' },
-        { question: 'thinking_behaviours_attitudes_consequences', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_peoples_views', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_problem_solving', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'YES_POSITIVE' },
-        { question: 'thinking_behaviours_attitudes_temper_management', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_offending_activities', value: 'NO_OFFENDING_ACTIVITIES' },
-        { question: 'thinking_behaviours_attitudes_peer_pressure_yes_details', value: '' },
-        { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'NO_VIOLENCE' },
-        { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'NO' },
+        { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
+        { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
+        { question: Question.thinking_behaviours_attitudes_consequences, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_peer_pressure, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_peoples_views, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_problem_solving, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_positive_attitude, value: Option.yes_positive },
+        { question: Question.thinking_behaviours_attitudes_temper_management, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_criminal_behaviour, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_hostile_orientation, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.no },
+        {
+          question: Question.thinking_behaviours_attitudes_offending_activities,
+          value: Option.no_offending_activities,
+        },
+        { question: Question.thinking_behaviours_attitudes_peer_pressure_yes_details, value: '' },
+        { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
+        { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
       ])
       .save()
 
@@ -265,7 +276,9 @@ test.describe('Questions', () => {
       - button "Save and continue"
     `)
     await expect(
-      thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_risk_sexual_harm.option('No'),
+      thinkingBehavioursAndAttitudesPage.questions.thinking_behaviours_attitudes_risk_sexual_harm.option(
+        CommonOption.no,
+      ),
     ).toBeEnabled()
   })
 
@@ -277,23 +290,26 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_PRESENT' },
-        { question: 'thinking_behaviours_attitudes_supervision', value: 'YES_SUPERVISION' },
-        { question: 'thinking_behaviours_attitudes_consequences', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_peoples_views', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_problem_solving', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'YES_POSITIVE' },
-        { question: 'thinking_behaviours_attitudes_temper_management', value: 'YES' },
-        { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_offending_activities', value: 'NO_OFFENDING_ACTIVITIES' },
-        { question: 'thinking_behaviours_attitudes_peer_pressure_yes_details', value: '' },
-        { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'NO_VIOLENCE' },
-        { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'NO' },
-        { question: 'thinking_behaviours_attitudes_risk_sexual_harm', value: 'YES' },
+        { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
+        { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
+        { question: Question.thinking_behaviours_attitudes_consequences, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_peer_pressure, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_peoples_views, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_problem_solving, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_positive_attitude, value: Option.yes_positive },
+        { question: Question.thinking_behaviours_attitudes_temper_management, value: CommonOption.yes },
+        { question: Question.thinking_behaviours_attitudes_criminal_behaviour, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_hostile_orientation, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.no },
+        {
+          question: Question.thinking_behaviours_attitudes_offending_activities,
+          value: Option.no_offending_activities,
+        },
+        { question: Question.thinking_behaviours_attitudes_peer_pressure_yes_details, value: '' },
+        { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
+        { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
+        { question: Question.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
       ])
       .save()
 

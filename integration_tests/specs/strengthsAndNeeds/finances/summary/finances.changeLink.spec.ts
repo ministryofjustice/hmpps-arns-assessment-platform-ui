@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
 import { finances } from '../../sanUtils'
 import {
   changeLink,
@@ -24,26 +27,29 @@ const analysisPage = 'finance-analysis'
 
 const fullyAnswered: Scenario = {
   answers: [
-    { question: 'finance_income', value: ['EMPLOYMENT', 'FAMILY_OR_FRIENDS', 'OTHER'] },
-    { question: 'family_or_friends_details', value: 'YES' },
-    { question: 'finance_income_other_details', value: 'Some details' },
-    { question: 'finance_bank_account', value: 'NO' },
-    { question: 'finance_money_management', value: 'FAIRLY_BAD' },
-    { question: 'finance_money_management_fairly_bad_details', value: 'Some details' },
-    { question: 'finance_gambling', value: ['YES_THEIR_GAMBLING'] },
-    { question: 'finance_gambling_yes_their_gambling_details', value: 'Some details' },
-    { question: 'finance_debt', value: ['YES_THEIR_DEBT'] },
-    { question: 'yes_type_of_debt', value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT'] },
-    { question: 'yes_type_of_debt_debt_to_others_details', value: 'Some details' },
-    { question: 'yes_type_of_debt_formal_debt_details', value: 'Some details' },
-    { question: 'finance_changes', value: 'THINKING_ABOUT_MAKING_CHANGES' },
-    { question: 'finance_changes_thinking_about_making_changes_details', value: 'Some details' },
-    { question: 'finance_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
-    { question: 'finance_practitioner_analysis_strengths_or_protective_factors_yes_details', value: 'Some details' },
-    { question: 'finance_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
-    { question: 'finance_practitioner_analysis_risk_of_serious_harm_yes_details', value: 'Some details' },
-    { question: 'finance_practitioner_analysis_risk_of_reoffending', value: 'YES' },
-    { question: 'finance_practitioner_analysis_risk_of_reoffending_yes_details', value: 'Some details' },
+    { question: Question.finance_income, value: [Option.employment, Option.family_or_friends, CommonOption.other] },
+    { question: Question.family_or_friends_details, value: CommonOption.yes },
+    { question: Question.finance_income_other_details, value: 'Some details' },
+    { question: Question.finance_bank_account, value: CommonOption.no },
+    { question: Question.finance_money_management, value: Option.fairly_bad },
+    { question: Question.finance_money_management_fairly_bad_details, value: 'Some details' },
+    { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+    { question: Question.finance_gambling_yes_their_gambling_details, value: 'Some details' },
+    { question: Question.finance_debt, value: [Option.yes_their_debt] },
+    { question: Question.yes_type_of_debt, value: [Option.debt_to_others, Option.formal_debt] },
+    { question: Question.yes_type_of_debt_debt_to_others_details, value: 'Some details' },
+    { question: Question.yes_type_of_debt_formal_debt_details, value: 'Some details' },
+    { question: Question.finance_changes, value: CommonOption.thinking_about_making_changes },
+    { question: Question.finance_changes_thinking_about_making_changes_details, value: 'Some details' },
+    { question: Question.finance_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
+    {
+      question: Question.finance_practitioner_analysis_strengths_or_protective_factors_yes_details,
+      value: 'Some details',
+    },
+    { question: Question.finance_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+    { question: Question.finance_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
+    { question: Question.finance_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+    { question: Question.finance_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
     changeLink('finance', 'finance_income'),

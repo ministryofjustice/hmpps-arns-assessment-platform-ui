@@ -37,6 +37,8 @@ export const sanPageTitles = {
   offenceAnalysis: 'Offence analysis',
 }
 
+export const forDrug = (code: string, drug: string) => code.replace('%1', drug.toLowerCase())
+
 export const sanServiceName = 'Strengths and needs'
 
 type AccessibilityCheckOptions = {

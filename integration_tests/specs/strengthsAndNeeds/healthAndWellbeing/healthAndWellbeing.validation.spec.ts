@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -43,9 +46,9 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'YES' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.yes },
         {
-          question: 'health_wellbeing_physical_health_condition_yes_details',
+          question: Question.health_wellbeing_physical_health_condition_yes_details,
           value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry.
           Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s,
           when an unknown printer took a galley of type and scrambled it to make a type
@@ -91,10 +94,10 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'YES' },
-        { question: 'health_wellbeing_physical_health_condition_yes_details', value: '' },
-        { question: 'health_wellbeing_mental_health_condition', value: 'YES_ONGOING_SEVERE' },
-        { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.yes },
+        { question: Question.health_wellbeing_physical_health_condition_yes_details, value: '' },
+        { question: Question.health_wellbeing_mental_health_condition, value: Option.yes_ongoing_severe },
+        { question: Question.health_wellbeing_mental_health_condition_yes_ongoing_severe_details, value: '' },
       ]).save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')

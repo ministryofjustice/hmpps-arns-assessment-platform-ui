@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -52,10 +55,10 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'YES' },
-        { question: 'health_wellbeing_physical_health_condition_yes_details', value: '' },
-        { question: 'health_wellbeing_mental_health_condition', value: 'YES_ONGOING_SEVERE' },
-        { question: 'health_wellbeing_mental_health_condition_yes_ongoing_severe_details', value: '' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.yes },
+        { question: Question.health_wellbeing_physical_health_condition_yes_details, value: '' },
+        { question: Question.health_wellbeing_mental_health_condition, value: Option.yes_ongoing_severe },
+        { question: Question.health_wellbeing_mental_health_condition_yes_ongoing_severe_details, value: '' },
       ]).save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
@@ -204,8 +207,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'health_wellbeing_physical_health_condition', value: 'NO' },
-        { question: 'health_wellbeing_mental_health_condition', value: 'NO' },
+        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
+        { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
       ]).save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')

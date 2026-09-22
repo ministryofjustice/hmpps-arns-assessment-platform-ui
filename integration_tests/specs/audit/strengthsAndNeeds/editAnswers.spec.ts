@@ -1,3 +1,5 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
@@ -7,8 +9,8 @@ const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
   `/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/current-accommodation`
 
 const settledAnswers = [
-  { question: 'current_accommodation', value: 'SETTLED' },
-  { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
+  { question: Question.current_accommodation, value: Option.settled },
+  { question: Question.type_of_settled_accommodation, value: Option.homeowner },
 ]
 
 test.describe('User changes an answer', () => {

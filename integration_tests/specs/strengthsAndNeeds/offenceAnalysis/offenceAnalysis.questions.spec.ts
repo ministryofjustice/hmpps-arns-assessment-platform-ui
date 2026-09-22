@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -82,24 +85,24 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: 'offence_analysis_description_of_offence',
+          question: Question.offence_analysis_description_of_offence,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
         {
-          question: 'offence_analysis_elements',
-          value: ['ARSON'],
+          question: Question.offence_analysis_elements,
+          value: [Option.arson],
         },
         {
-          question: 'offence_analysis_reason',
+          question: Question.offence_analysis_reason,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
         {
-          question: 'offence_analysis_motivations',
-          value: ['ADDICTIONS_PERCEIVED_NEEDS'],
+          question: Question.offence_analysis_motivations,
+          value: [Option.addictions_or_perceived_needs],
         },
         {
-          question: 'offence_analysis_who_was_the_victim',
-          value: ['ONE_OR_MORE_PEOPLE'],
+          question: Question.offence_analysis_who_was_the_victim,
+          value: [Option.one_or_more_person],
         },
       ]).save()
 
@@ -193,27 +196,27 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: 'offence_analysis_description_of_offence',
+          question: Question.offence_analysis_description_of_offence,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
         {
-          question: 'offence_analysis_elements',
-          value: ['ARSON'],
+          question: Question.offence_analysis_elements,
+          value: [Option.arson],
         },
         {
-          question: 'offence_analysis_reason',
+          question: Question.offence_analysis_reason,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
         {
-          question: 'offence_analysis_motivations',
-          value: ['ADDICTIONS_PERCEIVED_NEEDS'],
+          question: Question.offence_analysis_motivations,
+          value: [Option.addictions_or_perceived_needs],
         },
         {
-          question: 'offence_analysis_who_was_the_victim',
-          value: ['OTHER'],
+          question: Question.offence_analysis_who_was_the_victim,
+          value: [CommonOption.other],
         },
         {
-          question: 'offence_analysis_who_was_the_victim_other_details',
+          question: Question.offence_analysis_who_was_the_victim_other_details,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
       ]).save()
@@ -251,5 +254,80 @@ test.describe('Questions', () => {
         - text: More than 15
       - button "Save and continue"
     `)
+  })
+
+  test('navigates to involved parties', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        {
+          question: 'offence_analysis_index_offence_description',
+          value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        },
+        {
+          question: 'offence_analysis_description_of_offence',
+          value: 'test',
+        },
+        {
+          question: 'offence_analysis_elements',
+          value: ['ARSON'],
+        },
+        {
+          question: 'offence_analysis_why_offence_happened',
+          value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        },
+        {
+          question: 'offence_analysis_motivations',
+          value: ['ADDICTIONS_OR_PERCEIVED_NEEDS'],
+        },
+        {
+          question: 'offence_analysis_commited_against',
+          value: ['OTHER'],
+        },
+        {
+          question: 'offence_analysis_reason',
+          value: 'test',
+        },
+        {
+          question: 'offence_analysis_who_was_the_victim',
+          value: ['ONE_OR_MORE_PERSON'],
+        },
+      ])
+      .withCollectionItems('OFFENCE_ANALYSIS_VICTIM', [
+        {
+          question: 'offence_analysis_victim_relationship',
+          value: 'STRANGER',
+        },
+        {
+          question: 'offence_analysis_victim_age',
+          value: 'AGE_5_TO_11_YEARS',
+        },
+        {
+          question: 'offence_analysis_victim_sex',
+          value: 'MALE',
+        },
+        {
+          question: 'offence_analysis_victim_race',
+          value: 'WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
+        },
+      ])
+      .save()
+
+    await OffenceAnalysisPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'offence-analysis-victim-summary',
+    )
+
+    const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Add another victim')
+
+    await offenceAnalysisPage.saveAndContinue.click()
+
+    await expect(page.getByText('How many other people were involved')).toBeVisible()
+    expect(page.url()).toContain('offence-analysis-involved-parties')
   })
 })

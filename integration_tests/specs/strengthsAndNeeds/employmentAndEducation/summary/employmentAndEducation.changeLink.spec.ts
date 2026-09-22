@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/question'
 import { employment } from '../../sanUtils'
 import {
   changeLink,
@@ -24,35 +27,44 @@ const analysisPage = 'employment-education-analysis'
 
 const fullyAnswered: Scenario = {
   answers: [
-    { question: 'employment_status', value: 'EMPLOYED' },
-    { question: 'employment_type', value: 'FULL_TIME' },
-    { question: 'employment_area', value: 'Some details' },
-    { question: 'employment_history', value: 'PERIODS_OF_INSTABILITY' },
-    { question: 'employment_history_periods_of_instability_details', value: 'Some details' },
-    { question: 'employment_other_responsibilities', value: ['CARER'] },
-    { question: 'employment_other_responsibilities_carer_details', value: 'Some details' },
-    { question: 'education_highest_level_completed', value: 'ENTRY_LEVEL' },
-    { question: 'education_professional_or_vocational_qualifications', value: 'YES' },
-    { question: 'education_professional_or_vocational_qualifications_yes_details', value: 'Some details' },
-    { question: 'education_transferable_skills', value: 'YES' },
-    { question: 'education_transferable_skills_yes_details', value: 'Some details' },
-    { question: 'education_difficulties', value: ['READING'] },
-    { question: 'education_difficulties_reading_severity', value: 'SIGNIFICANT_DIFFICULTIES' },
-    { question: 'employment_experience', value: 'MOSTLY_POSITIVE' },
-    { question: 'employment_experience_mostly_positive_details', value: 'Some details' },
-    { question: 'education_experience', value: 'NEGATIVE' },
-    { question: 'education_experience_negative_details', value: 'Some details' },
-    { question: 'employment_education_changes', value: 'MADE_CHANGES' },
-    { question: 'employment_education_changes_made_changes_details', value: 'Some details' },
-    { question: 'employment_education_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
+    { question: Question.employment_status, value: Option.employed },
+    { question: Question.employment_type, value: Option.full_time },
+    { question: Question.employment_area, value: 'Some details' },
+    { question: Question.employment_history, value: Option.periods_of_instability },
+    { question: Question.employment_history_periods_of_instability_details, value: 'Some details' },
+    { question: Question.employment_other_responsibilities, value: [Option.carer] },
+    { question: Question.employment_other_responsibilities_carer_details, value: 'Some details' },
+    { question: Question.education_highest_level_completed, value: Option.entry_level },
+    { question: Question.education_professional_or_vocational_qualifications, value: CommonOption.yes },
+    { question: Question.education_professional_or_vocational_qualifications_yes_details, value: 'Some details' },
+    { question: Question.education_transferable_skills, value: CommonOption.yes },
+    { question: Question.education_transferable_skills_yes_details, value: 'Some details' },
+    { question: Question.education_difficulties, value: [Option.reading] },
+    { question: Question.education_difficulties_reading_severity, value: Option.significant_difficulties },
+    { question: Question.employment_experience, value: Option.mostly_positive },
+    { question: Question.employment_experience_mostly_positive_details, value: 'Some details' },
+    { question: Question.education_experience, value: Option.negative },
+    { question: Question.education_experience_negative_details, value: 'Some details' },
+    { question: Question.employment_education_changes, value: CommonOption.made_changes },
+    { question: Question.employment_education_changes_made_changes_details, value: 'Some details' },
     {
-      question: 'employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details',
+      question: Question.employment_education_practitioner_analysis_strengths_or_protective_factors,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details,
       value: 'Some details',
     },
-    { question: 'employment_education_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
-    { question: 'employment_education_practitioner_analysis_risk_of_serious_harm_yes_details', value: 'Some details' },
-    { question: 'employment_education_practitioner_analysis_risk_of_reoffending', value: 'YES' },
-    { question: 'employment_education_practitioner_analysis_risk_of_reoffending_yes_details', value: 'Some details' },
+    { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+    {
+      question: Question.employment_education_practitioner_analysis_risk_of_serious_harm_yes_details,
+      value: 'Some details',
+    },
+    { question: Question.employment_education_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+    {
+      question: Question.employment_education_practitioner_analysis_risk_of_reoffending_yes_details,
+      value: 'Some details',
+    },
   ],
   summaryChangeLinks: [
     changeLink('current-employment', 'employment_status'),

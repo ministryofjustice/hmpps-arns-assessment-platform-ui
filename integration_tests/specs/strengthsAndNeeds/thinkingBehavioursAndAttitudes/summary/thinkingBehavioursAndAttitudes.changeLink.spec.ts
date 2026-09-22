@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
 import { thinking } from '../../sanUtils'
 import {
   changeLink,
@@ -24,42 +27,55 @@ const analysisPage = 'thinking-behaviours-analysis'
 
 const fullyAnswered: Scenario = {
   answers: [
-    { question: 'thinking_behaviours_attitudes_consequences', value: 'SOMETIMES' },
-    { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'NO' },
-    { question: 'thinking_behaviours_attitudes_offending_activities', value: 'YES_OFFENDING_ACTIVITIES' },
-    { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'SOME' },
-    { question: 'thinking_behaviours_attitudes_peer_pressure_some_details', value: 'Some details' },
-    { question: 'thinking_behaviours_attitudes_problem_solving', value: 'LIMITED_PROBLEM_SOLVING' },
-    { question: 'thinking_behaviours_attitudes_peoples_views', value: 'SOMETIMES' },
-    { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'SOME' },
-    { question: 'thinking_behaviours_attitudes_temper_management', value: 'NO' },
-    { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'SOMETIMES' },
-    { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'YES' },
-    { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'NEGATIVE_ATTITUDE_AND_CONCERNS' },
-    { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'SOME' },
-    { question: 'thinking_behaviours_attitudes_supervision', value: 'UNSURE_SUPERVISION' },
-    { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'SOMETIMES' },
-    { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_APPLICABLE' },
-    { question: 'thinking_behaviours_attitudes_risk_sexual_harm', value: 'YES' },
-    { question: 'thinking_behaviours_attitudes_sexual_preoccupation', value: 'SOMETIMES' },
+    { question: Question.thinking_behaviours_attitudes_consequences, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.no },
+    { question: Question.thinking_behaviours_attitudes_offending_activities, value: Option.yes_offending_activities },
+    { question: Question.thinking_behaviours_attitudes_peer_pressure, value: Option.some },
+    { question: Question.thinking_behaviours_attitudes_peer_pressure_some_details, value: 'Some details' },
+    { question: Question.thinking_behaviours_attitudes_problem_solving, value: Option.limited_problem_solving },
+    { question: Question.thinking_behaviours_attitudes_peoples_views, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: Option.some },
+    { question: Question.thinking_behaviours_attitudes_temper_management, value: CommonOption.no },
+    { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.yes },
     {
-      question: 'thinking_behaviours_attitudes_offence_related_sexual_interest',
-      value: 'SOME_OFFENCE_RELATED_SEXUAL_INTEREST',
+      question: Question.thinking_behaviours_attitudes_positive_attitude,
+      value: Option.negative_attitude_and_concerns,
     },
-    { question: 'thinking_behaviours_attitudes_emotional_intimacy', value: 'UNKNOWN' },
-    { question: 'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
+    { question: Question.thinking_behaviours_attitudes_hostile_orientation, value: Option.some },
+    { question: Question.thinking_behaviours_attitudes_supervision, value: Option.unsure_supervision },
+    { question: Question.thinking_behaviours_attitudes_criminal_behaviour, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_applicable },
+    { question: Question.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
+    { question: Question.thinking_behaviours_attitudes_sexual_preoccupation, value: Option.sometimes },
     {
-      question: 'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details',
+      question: Question.thinking_behaviours_attitudes_offence_related_sexual_interest,
+      value: Option.some_offence_related_sexual_interest,
+    },
+    { question: Question.thinking_behaviours_attitudes_emotional_intimacy, value: CommonOption.unknown },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors,
+      value: CommonOption.yes,
+    },
+    {
+      question:
+        Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details,
       value: 'Some details',
     },
-    { question: 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
     {
-      question: 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details',
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details,
       value: 'Some details',
     },
-    { question: 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending', value: 'YES' },
     {
-      question: 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details',
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details,
       value: 'Some details',
     },
   ],

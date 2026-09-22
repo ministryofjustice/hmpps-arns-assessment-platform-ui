@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { accommodation } from '../../sanUtils'
 import {
   changeLink,
@@ -24,22 +27,22 @@ const analysisPage = 'accommodation-analysis'
 
 const settledAccommodation: Scenario = {
   answers: [
-    { question: 'current_accommodation', value: 'SETTLED' },
-    { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
-    { question: 'living_with', value: ['FAMILY'] },
-    { question: 'suitable_housing_location', value: 'YES' },
-    { question: 'suitable_housing', value: 'YES' },
-    { question: 'accommodation_changes', value: 'MADE_CHANGES' },
-    { question: 'accommodation_changes_made_changes_details', value: 'Some details' },
-    { question: 'accommodation_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
+    { question: Question.current_accommodation, value: Option.settled },
+    { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+    { question: Question.living_with, value: [Option.family] },
+    { question: Question.suitable_housing_location, value: CommonOption.yes },
+    { question: Question.suitable_housing, value: CommonOption.yes },
+    { question: Question.accommodation_changes, value: CommonOption.made_changes },
+    { question: Question.accommodation_changes_made_changes_details, value: 'Some details' },
+    { question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
     {
-      question: 'accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details',
+      question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
       value: 'Some details',
     },
-    { question: 'accommodation_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
-    { question: 'accommodation_practitioner_analysis_risk_of_serious_harm_yes_details', value: 'Some details' },
-    { question: 'accommodation_practitioner_analysis_risk_of_reoffending', value: 'YES' },
-    { question: 'accommodation_practitioner_analysis_risk_of_reoffending_yes_details', value: 'Some details' },
+    { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+    { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
+    { question: Question.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+    { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
     changeLink('current-accommodation', 'current_accommodation'),
@@ -52,24 +55,24 @@ const settledAccommodation: Scenario = {
 
 const noAccommodation: Scenario = {
   answers: [
-    { question: 'current_accommodation', value: 'NO_ACCOMMODATION' },
-    { question: 'type_of_no_accommodation', value: 'CAMPSITE' },
-    { question: 'no_accommodation_reason', value: ['ALCOHOL_PROBLEMS'] },
-    { question: 'past_accommodation_details', value: 'Some details' },
-    { question: 'suitable_housing_planned', value: 'YES' },
-    { question: 'future_accommodation_type', value: 'AWAITING_ASSESSMENT' },
-    { question: 'future_accommodation_type_awaiting_assessment_details', value: 'Some details' },
-    { question: 'accommodation_changes', value: 'MADE_CHANGES' },
-    { question: 'accommodation_changes_made_changes_details', value: 'Some details' },
-    { question: 'accommodation_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
+    { question: Question.current_accommodation, value: Option.no_accommodation },
+    { question: Question.type_of_no_accommodation, value: Option.campsite },
+    { question: Question.no_accommodation_reason, value: [Option.alcohol_problems] },
+    { question: Question.past_accommodation_details, value: 'Some details' },
+    { question: Question.suitable_housing_planned, value: CommonOption.yes },
+    { question: Question.future_accommodation_type, value: Option.awaiting_assessment },
+    { question: Question.future_accommodation_type_awaiting_assessment_details, value: 'Some details' },
+    { question: Question.accommodation_changes, value: CommonOption.made_changes },
+    { question: Question.accommodation_changes_made_changes_details, value: 'Some details' },
+    { question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
     {
-      question: 'accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details',
+      question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
       value: 'Some details',
     },
-    { question: 'accommodation_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
-    { question: 'accommodation_practitioner_analysis_risk_of_serious_harm_yes_details', value: 'Some details' },
-    { question: 'accommodation_practitioner_analysis_risk_of_reoffending', value: 'YES' },
-    { question: 'accommodation_practitioner_analysis_risk_of_reoffending_yes_details', value: 'Some details' },
+    { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+    { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
+    { question: Question.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+    { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
     changeLink('current-accommodation', 'current_accommodation'),
