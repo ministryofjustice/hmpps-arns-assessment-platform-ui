@@ -1,9 +1,8 @@
 import { expect } from '@playwright/test'
 import { VersionsTable } from '@server/interfaces/coordinator-api/previousVersions'
 import { test, TargetService } from '../../../support/fixtures'
-import { handlePrivacyScreenIfPresent } from '../../sentencePlan/sentencePlanUtils'
-import { formatOrdinalDate } from '../sanUtils'
-import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'
+import { navigateToStrengthsAndNeeds, checkAccessibility, formatOrdinalDate } from '../sanUtils'
+import PreviousVersionsPage from '../../../pages/strengthsAndNeeds/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Countersigned', () => {
@@ -82,13 +81,9 @@ test.describe('Previous Versions - Countersigned', () => {
       countersignedVersions,
     })
 
-    expect(true).toBe(true)
-
-    await page.goto(handoverLink)
-    await handlePrivacyScreenIfPresent(page)
-
+    await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.getByRole('link', { name: /View previous versions/i }).click()
-    const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page)
+    const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
 
     // Verify message is shown when previous versions exist
     await expect(previousVersionsPage.mainContent).toContainText(
@@ -152,6 +147,8 @@ test.describe('Previous Versions - Countersigned', () => {
     const allVersionsColumns = allVersionsRows.first().locator('td')
     await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText(expectedCountersignedDate)
     await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText('Assessment and plan updated')
+
+    await checkAccessibility(page, { include: '#main-content' })
 
   })
 })
