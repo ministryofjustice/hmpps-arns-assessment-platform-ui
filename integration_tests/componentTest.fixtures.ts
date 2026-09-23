@@ -10,6 +10,7 @@ import type {
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { BlockType, StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { AxeBuilder } from '@axe-core/playwright'
+import { formatDate } from '@server/utils/utils'
 
 interface AssetEntryPoints {
   scripts: readonly string[]
@@ -121,6 +122,7 @@ const test = base.extend<ComponentTestFixtures, ComponentWorkerFixtures>({
           ...props,
         } as EvaluatedBlock<TBlock>
         const assets = await compileAssets(options.assets ?? defaultAssetEntryPoints)
+        nunjucksEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
         const html = await component.render(block, nunjucksEnv)
 
         await page.setContent(`<body class="govuk-frontend-supported">${html}</body>`)
