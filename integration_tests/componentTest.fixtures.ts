@@ -9,6 +9,8 @@ import type {
   EvaluatedBlock,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { BlockType, StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { AxeBuilder } from '@axe-core/playwright'
+import { formatDate } from '@server/utils/utils'
 
 interface AssetEntryPoints {
   scripts: readonly string[]
@@ -33,6 +35,7 @@ interface ComponentTestFixtures {
     props: ComponentProps<TBlock>,
     options?: MountOptions,
   ) => Promise<void>
+  makeAxeBuilder: () => AxeBuilder
 }
 
 interface ComponentWorkerFixtures {
@@ -119,9 +122,10 @@ const test = base.extend<ComponentTestFixtures, ComponentWorkerFixtures>({
           ...props,
         } as EvaluatedBlock<TBlock>
         const assets = await compileAssets(options.assets ?? defaultAssetEntryPoints)
+        nunjucksEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
         const html = await component.render(block, nunjucksEnv)
 
-        await page.setContent(html)
+        await page.setContent(`<body class="govuk-frontend-supported">${html}</body>`)
         await page.addStyleTag({ content: assets.css })
 
         if (options.js ?? true) {
@@ -129,6 +133,11 @@ const test = base.extend<ComponentTestFixtures, ComponentWorkerFixtures>({
         }
       },
     )
+  },
+  makeAxeBuilder: async ({ page }, use) => {
+    const makeAxeBuilder = () => new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+
+    await use(makeAxeBuilder)
   },
 })
 
