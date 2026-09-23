@@ -1,7 +1,14 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { commonContentFor } from '../../../../locales'
 import { offenceAnalysisSection } from '../../section'
+import { questionsOf } from '../../../../steps/view-all-answers/sections'
 import { victimCards } from '../offence-analysis-victim-summary/fields'
+import { Section } from '../../../../constants/section'
+
+export const questions = questionsOf({
+  section: Section.offence_analysis,
+  config: offenceAnalysisSection,
+})
 
 export const offenceAnalysisSummary = GovUKSummaryList({
   rows: [

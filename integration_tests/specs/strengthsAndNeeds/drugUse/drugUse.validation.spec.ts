@@ -1,5 +1,9 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
+import { forDrug } from '../sanUtils'
 import { test, TargetService } from '../../../support/fixtures'
 
 test.describe('Validation', () => {
@@ -25,10 +29,7 @@ test.describe('Validation', () => {
     })
 
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: 'drug_use', value: 'YES' },
-        { question: 'drugs_section_status', value: 'INCOMPLETE' },
-      ]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.yes }]).save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
 
@@ -44,18 +45,17 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'drug_use', value: 'YES' },
-        { question: 'drugs_section_status', value: 'INCOMPLETE' },
-        { question: 'select_misused_drugs', value: ['AMPHETAMINES', 'BENZODIAZEPINES'] },
-        { question: 'drug_last_used_amphetamines', value: 'LAST_SIX' },
-        { question: 'drug_last_used_benzodiazepines', value: 'MORE_THAN_SIX' },
-        { question: 'drugs_injected', value: ['NONE'] },
-        { question: 'drugs_is_receiving_treatment', value: 'YES' },
-        { question: 'how_often_used_last_six_months_amphetamines', value: 'DAILY' },
-        { question: 'drugs_is_receiving_treatment_no_details', value: '' },
-        { question: 'how_often_used_last_six_months_amphetamines_details', value: 'test' },
-        { question: 'not_used_in_last_six_months_details', value: 'test' },
-        { question: 'drugs_is_receiving_treatment_yes_details', value: 'test' },
+        { question: Question.drug_use, value: CommonOption.yes },
+        { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.benzodiazepines] },
+        { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
+        { question: forDrug(Question.drug_last_used_value, Option.benzodiazepines), value: Option.more_than_six },
+        { question: Question.drugs_injected, value: [CommonOption.none] },
+        { question: Question.drugs_is_receiving_treatment, value: CommonOption.yes },
+        { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
+        { question: Question.drugs_is_receiving_treatment_no_details, value: '' },
+        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'test' },
+        { question: Question.not_used_in_last_six_months_details, value: 'test' },
+        { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
       ]).save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')

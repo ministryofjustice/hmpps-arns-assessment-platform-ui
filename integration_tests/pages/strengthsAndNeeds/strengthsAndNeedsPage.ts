@@ -1,12 +1,18 @@
 import { expect, Locator, Page } from '@playwright/test'
 import { questionIdOf } from '@server/forms/strengths-and-needs/constants/questionContent'
-import { navigateToStrengthsAndNeeds, sanFormPath, v1Path } from 'specs/strengthsAndNeeds/sanUtils'
+import {
+  navigateToStrengthsAndNeeds,
+  navigateToStrengthsAndNeedsReadOnly,
+  sanFormPath,
+  v1Path,
+} from 'specs/strengthsAndNeeds/sanUtils'
 import AbstractPage from '../abstractPage'
 
-type PageQuestion = {
+export type PageQuestion = {
   input: Locator
   errorLink: Locator
-  option: (label: string) => Locator
+  error: Locator
+  option: (value: string) => Locator
 }
 
 /** A section's questions, keyed by server question code. Templated codes (`..._%1`) take the value to fill in. */
@@ -39,6 +45,21 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     expect(page.url()).toContain(step)
   }
 
+  /**
+   * Opens the assessment in read-only).
+   */
+  static async navigateToView(
+    page: Page,
+    handoverLink: string,
+    baseUrl: string,
+    assessmentId: string,
+    step: string = this.firstStep,
+  ): Promise<void> {
+    await navigateToStrengthsAndNeedsReadOnly(page, handoverLink)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/view/${assessmentId}${this.section}/${step}`)
+    expect(page.url()).toContain(step)
+  }
+
   /** Checks the page shows the heading, and returns the page object for it. */
   static async verifyOnPage<SectionPage extends StrengthsAndNeedsPage>(
     this: new (page: Page) => SectionPage,
@@ -50,16 +71,14 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     return sectionPage
   }
 
-  /** A question, by its server question code */
+  /** A question, by its server question code. Its options are picked by their server option value. */
   protected question(code: string): PageQuestion {
     const root = this.page.locator(`#${questionIdOf(code)}`)
     return {
       input: this.page.locator(`#${code}`),
       errorLink: this.alert.locator(`a[href="#${code}"]`),
-      option: label =>
-        root
-          .getByRole('radio', { name: label, exact: true })
-          .or(root.getByRole('checkbox', { name: label, exact: true })),
+      error: this.page.locator(`#${code}-error`),
+      option: value => root.locator(`input[value="${value}"]`),
     }
   }
 

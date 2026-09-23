@@ -1,3 +1,5 @@
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { test, TargetService } from '../../../support/fixtures'
@@ -33,8 +35,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'current_accommodation', value: 'SETTLED' },
-        { question: 'type_of_settled_accommodation', value: 'HOMEOWNER' },
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
@@ -101,9 +103,9 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'current_accommodation', value: 'TEMPORARY' },
-        { question: 'type_of_temporary_accommodation', value: 'APPROVED_PREMISES' },
-        { question: 'approved_premises_end_date', value: '2030-01-01' },
+        { question: Question.current_accommodation, value: Option.temporary },
+        { question: Question.type_of_temporary_accommodation, value: Option.approved_premises },
+        { question: Question.approved_premises_end_date, value: '2030-01-01' },
       ]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
@@ -123,11 +125,11 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: 'current_accommodation', value: 'TEMPORARY' }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.temporary }]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
-    await accommodationPage.questions.type_of_temporary_accommodation.option('Approved premises')
+    await accommodationPage.questions.type_of_temporary_accommodation.option(Option.approved_premises)
       .click()
     await accommodationPage.saveAndContinue.click()
 
@@ -140,8 +142,8 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'current_accommodation', value: 'NO_ACCOMMODATION' },
-        { question: 'type_of_no_accommodation', value: 'CAMPSITE' },
+        { question: Question.current_accommodation, value: Option.no_accommodation },
+        { question: Question.type_of_no_accommodation, value: Option.campsite },
       ]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')

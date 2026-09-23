@@ -1,3 +1,6 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
 import { personal } from '../../sanUtils'
 import {
   changeLink,
@@ -25,61 +28,74 @@ const analysisPage = 'personal-relationships-community-analysis'
 
 const fullyAnswered: Scenario = {
   answers: [
-    { question: 'personal_relationships_community_children_details', value: ['YES_CHILDREN_LIVING_WITH_POP'] },
     {
-      question: 'personal_relationships_community_children_details_yes_children_living_with_pop_details',
+      question: Question.personal_relationships_community_children_details,
+      value: [Option.yes_children_living_with_pop],
+    },
+    {
+      question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
       value: 'Some details',
     },
     {
-      question: 'personal_relationships_community_important_people',
-      value: ['CHILD_PARENTAL_RESPONSIBILITIES', 'FAMILY'],
+      question: Question.personal_relationships_community_important_people,
+      value: [Option.child_parental_responsibilities, Option.family],
     },
     {
-      question: 'personal_relationships_community_important_people_child_parental_responsibilities_details',
+      question: Question.personal_relationships_community_important_people_child_parental_responsibilities_details,
       value: 'Some details',
     },
-    { question: 'personal_relationships_community_important_people_family_details', value: 'Some details' },
-    { question: 'personal_relationships_community_current_relationship', value: 'HAPPY_RELATIONSHIP' },
+    { question: Question.personal_relationships_community_important_people_family_details, value: 'Some details' },
+    { question: Question.personal_relationships_community_current_relationship, value: Option.happy_relationship },
     {
-      question: 'personal_relationships_community_current_relationship_happy_relationship_details',
+      question: Question.personal_relationships_community_current_relationship_happy_relationship_details,
       value: 'Some details',
     },
-    { question: 'personal_relationships_community_intimate_relationship', value: 'STABLE_RELATIONSHIPS' },
+    { question: Question.personal_relationships_community_intimate_relationship, value: Option.stable_relationships },
     {
-      question: 'personal_relationships_community_intimate_relationship_stable_relationships_details',
+      question: Question.personal_relationships_community_intimate_relationship_stable_relationships_details,
       value: 'Some details',
     },
-    { question: 'personal_relationships_community_challenges_intimate_relationship', value: 'Some details' },
-    { question: 'personal_relationships_community_parental_responsibilities', value: 'YES' },
-    { question: 'personal_relationships_community_parental_responsibilities_yes_details', value: 'Some details' },
-    { question: 'personal_relationships_community_family_relationship', value: 'STABLE_RELATIONSHIP' },
+    { question: Question.personal_relationships_community_challenges_intimate_relationship, value: 'Some details' },
+    { question: Question.personal_relationships_community_parental_responsibilities, value: CommonOption.yes },
     {
-      question: 'personal_relationships_community_family_relationship_stable_relationship_details',
+      question: Question.personal_relationships_community_parental_responsibilities_yes_details,
       value: 'Some details',
     },
-    { question: 'personal_relationships_community_childhood', value: 'POSITIVE_CHILDHOOD' },
-    { question: 'personal_relationships_community_childhood_positive_childhood_details', value: 'Some details' },
-    { question: 'personal_relationships_community_childhood_behaviour', value: 'YES' },
-    { question: 'personal_relationships_community_childhood_behaviour_yes_details', value: 'Some details' },
-    { question: 'personal_relationships_community_belonging', value: 'Some details' },
-    { question: 'personal_relationships_community_changes', value: 'MADE_CHANGES' },
-    { question: 'personal_relationships_community_changes_made_changes_details', value: 'Some details' },
+    { question: Question.personal_relationships_community_family_relationship, value: Option.stable_relationship },
     {
-      question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors',
-      value: 'YES',
-    },
-    {
-      question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details',
+      question: Question.personal_relationships_community_family_relationship_stable_relationship_details,
       value: 'Some details',
     },
-    { question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
+    { question: Question.personal_relationships_community_childhood, value: Option.positive_childhood },
+    { question: Question.personal_relationships_community_childhood_positive_childhood_details, value: 'Some details' },
+    { question: Question.personal_relationships_community_childhood_behaviour, value: CommonOption.yes },
+    { question: Question.personal_relationships_community_childhood_behaviour_yes_details, value: 'Some details' },
+    { question: Question.personal_relationships_community_belonging, value: 'Some details' },
+    { question: Question.personal_relationships_community_changes, value: CommonOption.made_changes },
+    { question: Question.personal_relationships_community_changes_made_changes_details, value: 'Some details' },
     {
-      question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm_yes_details',
+      question: Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
+      value: CommonOption.yes,
+    },
+    {
+      question:
+        Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details,
       value: 'Some details',
     },
-    { question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending', value: 'YES' },
     {
-      question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending_yes_details',
+      question: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_yes_details,
+      value: 'Some details',
+    },
+    {
+      question: Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending_yes_details,
       value: 'Some details',
     },
   ],

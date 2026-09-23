@@ -37,6 +37,8 @@ export const sanPageTitles = {
   offenceAnalysis: 'Offence analysis',
 }
 
+export const forDrug = (code: string, drug: string) => code.replace('%1', drug.toLowerCase())
+
 export const sanServiceName = 'Strengths and needs'
 
 type AccessibilityCheckOptions = {
@@ -91,6 +93,19 @@ export const navigateToStrengthsAndNeeds = async (
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
+  // Wait for the redirect from the handover link to land on the expected page
+  await page.waitForURL(url => url.pathname.includes(expectedPath))
+}
+
+/**
+ * Navigates to a strengths and needs read-only.
+ */
+export const navigateToStrengthsAndNeedsReadOnly = async (
+  page: Page,
+  handoverLink: string,
+  expectedPath: string = 'accommodation-analysis',
+): Promise<void> => {
+  await page.goto(handoverLink)
   // Wait for the redirect from the handover link to land on the expected page
   await page.waitForURL(url => url.pathname.includes(expectedPath))
 }

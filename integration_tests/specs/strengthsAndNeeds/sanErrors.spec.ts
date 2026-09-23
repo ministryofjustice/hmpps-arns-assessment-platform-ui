@@ -1,4 +1,4 @@
-import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
+import HandoverPage from 'pages/strengthsAndNeeds/handoverPage'
 import { login } from 'testUtils'
 import { expect, test, TargetService } from '../../support/fixtures'
 import { employment, handlePrivacyScreenIfPresent, sanFormPath, v1Path } from './sanUtils'
@@ -32,8 +32,8 @@ test.describe('Errors', () => {
 
     await expect(page.getByRole('heading', { name: 'You need to sign in to use this service' })).toBeVisible()
 
-    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'You need to sign in to use this service')
-    await expect(accommodationPage.returnToOASys).toBeVisible()
+    const handoverPage = await HandoverPage.verifyOnPage(page)
+    await expect(handoverPage.returnToOASys).toBeVisible()
   })
 })
 

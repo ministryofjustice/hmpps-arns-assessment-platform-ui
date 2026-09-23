@@ -21,6 +21,10 @@ export default class AbstractPage {
 
   readonly goToPractitionerAnalysis: Locator
 
+  readonly practitionerAnalysisTab: Locator
+
+  readonly practitionerAnalysis: Locator
+
   readonly returnToOASys: Locator
 
   readonly markComplete: Locator
@@ -36,6 +40,8 @@ export default class AbstractPage {
     this.saveAndContinue = page.getByRole('button', { name: 'Save and continue' })
     this.summary = page.getByRole('tabpanel', { name: 'Summary' })
     this.goToPractitionerAnalysis = page.getByRole('button', { name: 'Go to practitioner analysis' })
+    this.practitionerAnalysisTab = page.getByRole('tab', { name: 'Practitioner analysis' })
+    this.practitionerAnalysis = page.getByRole('tabpanel', { name: 'Practitioner analysis' })
     this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
     this.markComplete = page.getByRole('button', { name: 'Mark as complete' })
     this.alert = page.getByRole('alert')

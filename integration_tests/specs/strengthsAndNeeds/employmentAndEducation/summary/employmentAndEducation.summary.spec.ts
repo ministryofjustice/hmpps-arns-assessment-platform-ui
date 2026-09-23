@@ -1,3 +1,6 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -9,15 +12,15 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_NOT_LOOKING_FOR_WORK' },
-        { question: 'has_been_employed', value: 'NO' },
-        { question: 'employment_other_responsibilities', value: ['NONE'] },
-        { question: 'education_highest_level_completed', value: 'NONE_OF_THESE' },
-        { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
-        { question: 'education_transferable_skills', value: 'NO' },
-        { question: 'education_difficulties', value: ['NONE'] },
-        { question: 'education_experience', value: 'UNKNOWN' },
-        { question: 'employment_education_changes', value: 'NOT_PRESENT' },
+        { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.no },
+        { question: Question.employment_other_responsibilities, value: [CommonOption.none] },
+        { question: Question.education_highest_level_completed, value: CommonOption.none_of_these },
+        { question: Question.education_professional_or_vocational_qualifications, value: CommonOption.no },
+        { question: Question.education_transferable_skills, value: CommonOption.no },
+        { question: Question.education_difficulties, value: [CommonOption.none] },
+        { question: Question.education_experience, value: CommonOption.unknown },
+        { question: Question.employment_education_changes, value: CommonOption.not_present },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(
@@ -90,15 +93,15 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-        { question: 'has_been_employed', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
-        { question: 'employment_other_responsibilities', value: ['NONE'] },
-        { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
-        { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
-        { question: 'education_transferable_skills', value: 'NO' },
-        { question: 'education_difficulties', value: ['NO_DIFFICULTIES'] },
-        { question: 'education_experience', value: 'UNKNOWN' },
-        { question: 'employment_education_changes', value: 'NOT_PRESENT' },
+        { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.no },
+        { question: Question.employment_other_responsibilities, value: [CommonOption.none] },
+        { question: Question.education_highest_level_completed, value: CommonOption.none_of_these },
+        { question: Question.education_professional_or_vocational_qualifications, value: CommonOption.no },
+        { question: Question.education_transferable_skills, value: CommonOption.no },
+        { question: Question.education_difficulties, value: [CommonOption.none] },
+        { question: Question.education_experience, value: CommonOption.unknown },
+        { question: Question.employment_education_changes, value: CommonOption.not_present },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(
@@ -120,22 +123,25 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: 'employment_status', value: 'UNEMPLOYED_NOT_ACTIVELY_LOOKING' },
-        { question: 'employment_history', value: 'NO_HAS_NEVER_BEEN_EMPLOYED' },
-        { question: 'employment_other_responsibilities', value: ['NONE'] },
-        { question: 'education_highest_level_completed', value: 'NON_OF_THESE' },
-        { question: 'education_professional_or_vocational_qualifications', value: 'NO' },
-        { question: 'education_transferable_skills', value: 'NO' },
-        { question: 'education_difficulties', value: ['NO_DIFFICULTIES'] },
-        { question: 'education_experience', value: 'UNKNOWN' },
-        { question: 'employment_education_changes', value: 'NOT_PRESENT' },
-        { question: 'employment_education_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+        { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
+        { question: Question.has_been_employed, value: CommonOption.no },
+        { question: Question.employment_other_responsibilities, value: [CommonOption.none] },
+        { question: Question.education_highest_level_completed, value: CommonOption.none_of_these },
+        { question: Question.education_professional_or_vocational_qualifications, value: CommonOption.no },
+        { question: Question.education_transferable_skills, value: CommonOption.no },
+        { question: Question.education_difficulties, value: [CommonOption.none] },
+        { question: Question.education_experience, value: CommonOption.unknown },
+        { question: Question.employment_education_changes, value: CommonOption.not_present },
         {
-          question: 'employment_education_practitioner_analysis_strengths_or_protective_factors_no_details',
+          question: Question.employment_education_practitioner_analysis_strengths_or_protective_factors,
+          value: CommonOption.no,
+        },
+        {
+          question: Question.employment_education_practitioner_analysis_strengths_or_protective_factors_no_details,
           value: '',
         },
-        { question: 'employment_education_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-        { question: 'employment_education_practitioner_analysis_risk_of_serious_harm_no_details', value: '' },
+        { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ]).save()
 
     await EmploymentAndEducationPage.navigateTo(
@@ -151,7 +157,7 @@ test.describe('Summary', () => {
       'strengths or protective factors',
     )
 
-    await employmentAndEducationPage.questions.employment_education_practitioner_analysis_risk_of_reoffending.option('No')
+    await employmentAndEducationPage.questions.employment_education_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
       .click()
     await employmentAndEducationPage.markComplete.click()
     await expect(employmentAndEducationPage.complete).toBeVisible()
