@@ -12,13 +12,13 @@ export default class PreviousVersionsPage extends StrengthsAndNeedsPage {
 
   public constructor(page: Page) {
     super(page)
-    this.pageHeading = page.locator('h1')
+    this.pageHeading = page.getByRole('heading')
     this.mainContent = page.getByTestId('main-form')
-    this.table = page.locator('.previous-versions-table')
-    this.tableCaption = this.table.locator('.govuk-table__caption--m')
+    this.table = page.locator('[data-qa="previous-versions-table"]')
+    this.tableCaption = page.getByRole('caption')
   }
 
   async clickViewVersionOnDate(date: string): Promise<void> {
-    await this.table.locator('tr', { hasText: date }).locator('a').click()
+    await this.table.first().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first().click()
   }
 }

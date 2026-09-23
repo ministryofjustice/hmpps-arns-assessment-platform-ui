@@ -96,57 +96,39 @@ test.describe('Previous Versions - Countersigned', () => {
     const allVersionsTable = previousVersionsPage.table.last()
 
     // Verify table captions
-    await expect(previousVersionsPage.tableCaption).toHaveCount(2)
     await expect(previousVersionsPage.tableCaption.first()).toContainText('Countersigned versions')
     await expect(previousVersionsPage.tableCaption.last()).toContainText('All versions')
 
     // Table headers
-    const dateColumnIndex = 0
-    const assessmentColumnIndex = 1
-    const planColumnIndex = 2
-    const statusColumnIndex = 3
-
     for (const table of [countersignedTable, allVersionsTable]) {
-      const headers = table.locator('thead th')
-      // eslint-disable-next-line no-await-in-loop
-      await expect(headers).toHaveCount(4)
-
-      // eslint-disable-next-line no-await-in-loop
-      await expect(headers.nth(dateColumnIndex)).toContainText('Date')
-      // eslint-disable-next-line no-await-in-loop
-      await expect(headers.nth(assessmentColumnIndex)).toContainText('Assessment')
-      // eslint-disable-next-line no-await-in-loop
-      await expect(headers.nth(planColumnIndex)).toContainText('Plan')
-      // eslint-disable-next-line no-await-in-loop
-      await expect(headers.nth(statusColumnIndex)).toContainText('Status')
+      expect(table.getByRole('columnheader')).toHaveCount(4)
+      expect(table.getByRole('columnheader', { name: 'Date' })).toBeVisible()
+      expect(table.getByRole('columnheader', { name: 'Assessment' })).toBeVisible()
+      expect(table.getByRole('columnheader', { name: 'Plan' })).toBeVisible()
+      expect(table.getByRole('columnheader', { name: 'Status' })).toBeVisible()
     }
 
     // Countersigned table: today's entry trimmed, only yesterday remains
-    const countersignedRows = countersignedTable.locator('tbody tr')
+    const countersignedRows = countersignedTable.locator('tbody').getByRole('row')
     await expect(countersignedRows).toHaveCount(2)
-    const countersignedColumns = countersignedRows.first().locator('td')
-
-    await expect(countersignedColumns).toHaveCount(4)
 
     const expectedCountersignedDate = formatOrdinalDate(today)
 
-    await expect(countersignedColumns.nth(dateColumnIndex)).toContainText(expectedCountersignedDate)
-    await expect(countersignedColumns.nth(dateColumnIndex)).toContainText('Assessment and plan updated')
-    await expect(countersignedColumns.nth(statusColumnIndex)).toContainText('Countersigned')
+    await expect(countersignedRows.first().getByRole('cell', { name: expectedCountersignedDate }).first()).toBeVisible()
+    await expect(countersignedRows.first().getByRole('cell', { name: 'Assessment and plan updated' })).toBeVisible()
+    await expect(countersignedRows.first().getByRole('cell', { name: 'Countersigned' })).toBeVisible()
 
-    for (const linkIndex of [assessmentColumnIndex, planColumnIndex]) {
-      const link = countersignedColumns.nth(linkIndex).locator('a', { hasText: 'View' })
-      // eslint-disable-next-line no-await-in-loop
-      await expect(link).toHaveAttribute('target', '_blank')
-    }
+    const viewLinks = countersignedRows.first().getByRole('link', { name: 'View' })
+    await expect(viewLinks).toHaveCount(2)
+    await expect(viewLinks.first()).toHaveAttribute('target', '_blank')
+    await expect(viewLinks.last()).toHaveAttribute('target', '_blank')
 
     // All Versions table: today's entry trimmed, only yesterday remains
-    const allVersionsRows = allVersionsTable.locator('tbody tr')
+    const allVersionsRows = allVersionsTable.locator('tbody').getByRole('row')
     await expect(allVersionsRows).toHaveCount(2)
 
-    const allVersionsColumns = allVersionsRows.first().locator('td')
-    await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText(expectedCountersignedDate)
-    await expect(allVersionsColumns.nth(dateColumnIndex)).toContainText('Assessment and plan updated')
+    await expect(allVersionsRows.first().getByRole('cell', { name: expectedCountersignedDate }).first()).toBeVisible()
+    await expect(allVersionsRows.first().getByRole('cell', { name: 'Assessment and plan updated' })).toBeVisible()
 
     await checkAccessibility(page, { include: '#main-content' })
 
