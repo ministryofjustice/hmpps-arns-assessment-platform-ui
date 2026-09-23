@@ -8,10 +8,7 @@ test.describe('View Historic Assessment', () => {
   const startOfDay = new Date(2026, 0, 1, 9)
   const endOfDay = new Date(2026, 0, 1, 17)
 
-  const navigateToHistoricPlan = async (
-    page: Page,
-    handoverLink: string,
-  ): Promise<{ historicAssessmentPage: HistoricAssessmentPage; newPage: Page }> => {
+  const navigateToHistoricPlan = async (page: Page, handoverLink: string): Promise<{ newPage: Page }> => {
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.getByRole('link', { name: /View previous versions/i }).click()
     const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
@@ -21,14 +18,7 @@ test.describe('View Historic Assessment', () => {
       previousVersionsPage.clickViewVersionOnDate('1st January 2026'),
     ])
 
-    await newPage.waitForLoadState()
-    const historicAssessmentPage = await HistoricAssessmentPage.verifyOnPage(newPage, 'Employment and education')
-    await expect(newPage).toHaveTitle('Accommodation analysis - Strengths and needs')
-    await expect(historicAssessmentPage.alertHeading).toHaveCount(1)
-    await expect(historicAssessmentPage.alertHeading).toContainText(
-      'This version is from Thursday 1st January 2026 5:00pm',
-    )
-    return { historicAssessmentPage, newPage }
+    return { newPage }
   }
 
   test.describe('Banner', () => {
@@ -38,9 +28,16 @@ test.describe('View Historic Assessment', () => {
       })
       await strengthsAndNeedsBuilder.extend(sanAssessmentId).withEventsBackdated(startOfDay, endOfDay).save()
 
-      const { historicAssessmentPage } = await navigateToHistoricPlan(page, handoverLink)
+      const { newPage } = await navigateToHistoricPlan(page, handoverLink)
+      await expect(newPage).toHaveTitle('Accommodation analysis - Strengths and needs')
 
+      const historicAssessmentPage = await HistoricAssessmentPage.verifyOnPage(newPage, 'Employment and education')
       await expect(historicAssessmentPage.returnToOasysButton).toBeHidden()
+
+      await expect(historicAssessmentPage.alertHeading).toHaveCount(1)
+      await expect(historicAssessmentPage.alertHeading).toContainText(
+        'This version is from Thursday 1st January 2026 5:00pm',
+      )
     })
   })
 })

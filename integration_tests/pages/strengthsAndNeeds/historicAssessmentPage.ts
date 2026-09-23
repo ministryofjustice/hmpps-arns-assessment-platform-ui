@@ -10,8 +10,8 @@ export default class HistoricAssessmentPage extends StrengthsAndNeedsPage {
 
   public constructor(page: Page) {
     super(page)
-    this.pageHeading = page.locator('h1')
-    this.alertHeading = page.locator('.moj-alert__heading')
+    this.pageHeading = page.getByRole('heading', { name: 'Accommodation' })
+    this.alertHeading = page.getByRole('region', { name: 'information: Assessment' })
     this.returnToOasysButton = page.getByRole('button', { name: /return to oasys/i })
   }
 }
