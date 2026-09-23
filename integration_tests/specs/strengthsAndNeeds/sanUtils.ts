@@ -96,3 +96,16 @@ export const navigateToStrengthsAndNeeds = async (
   // Wait for the redirect from the handover link to land on the expected page
   await page.waitForURL(url => url.pathname.includes(expectedPath))
 }
+
+/**
+ * Navigates to a strengths and needs read-only.
+ */
+export const navigateToStrengthsAndNeedsReadOnly = async (
+  page: Page,
+  handoverLink: string,
+  expectedPath: string = 'accommodation-analysis',
+): Promise<void> => {
+  await page.goto(handoverLink)
+  // Wait for the redirect from the handover link to land on the expected page
+  await page.waitForURL(url => url.pathname.includes(expectedPath))
+}

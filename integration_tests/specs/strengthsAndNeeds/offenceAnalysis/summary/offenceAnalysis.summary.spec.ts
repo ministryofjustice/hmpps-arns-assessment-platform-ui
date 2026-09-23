@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
