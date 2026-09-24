@@ -75,6 +75,7 @@ export const changeGoalStep = step({
             type: 'success',
             message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
+            onlyWhen: Data('activeGoalChanged'),
           }),
         ],
         next: [
@@ -129,6 +130,7 @@ export const changeGoalStep = step({
             type: 'success',
             message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
+            onlyWhen: Data('activeGoalChanged'),
           }),
         ],
         next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],
