@@ -2,8 +2,8 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
-import { test, TargetService } from '../../../support/fixtures'
-import { navigateToStrengthsAndNeeds } from '../sanUtils'
+import { test, TargetService } from '../../../../support/fixtures'
+import { navigateToStrengthsAndNeeds } from '../../sanUtils'
 
 test.describe('Validation', () => {
   test('validation settled option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {

@@ -1,3 +1,5 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Section } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
@@ -6,15 +8,15 @@ import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 export const sanFormPath = '/strengths-and-needs'
 export const v1Path = '/v1.0'
 const privacyStepPath = '/privacy'
-export const accommodation = '/accommodation'
-export const employment = '/employment-and-education'
-export const health = '/health-and-wellbeing'
-export const offence = '/offence-analysis'
-export const drugUse = '/drug-use'
-export const alcohol = '/alcohol-use'
-export const personal = '/personal-relationships-and-community'
-export const thinking = '/thinking-behaviours-and-attitudes'
-export const finances = '/finances'
+export const accommodation = Section.accommodation.path
+export const employment = Section.employment_and_education.path
+export const health = Section.health_and_wellbeing.path
+export const offence = Section.offence_analysis.path
+export const drugUse = Section.drug_use.path
+export const alcohol = Section.alcohol_use.path
+export const personal = Section.personal_relationships_and_community.path
+export const thinking = Section.thinking_behaviours_and_attitudes.path
+export const finances = Section.finance.path
 export const viewAllAnswers = '/view-all-answers'
 
 export const sentencePlanV1URLs = {
@@ -36,6 +38,17 @@ export const sanPageTitles = {
   finances: 'Finances',
   offenceAnalysis: 'Offence analysis',
 }
+
+/** Every option of the "do they want to make changes" question each section ends with. */
+export const changeOptions = [
+  CommonOption.made_changes,
+  CommonOption.making_changes,
+  CommonOption.want_to_make_changes,
+  CommonOption.needs_help_to_make_changes,
+  CommonOption.thinking_about_making_changes,
+  CommonOption.does_not_want_to_make_changes,
+  CommonOption.does_not_want_to_answer,
+]
 
 export const forDrug = (code: string, drug: string) => code.replace('%1', drug.toLowerCase())
 

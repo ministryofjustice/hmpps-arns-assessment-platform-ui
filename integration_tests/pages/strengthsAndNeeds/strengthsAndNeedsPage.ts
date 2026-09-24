@@ -72,7 +72,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
   }
 
   /** A question, by its server question code. Its options are picked by their server option value. */
-  protected question(code: string): PageQuestion {
+  question(code: string): PageQuestion {
     const root = this.page.locator(`#${questionIdOf(code)}`)
     return {
       input: this.page.locator(`#${code}`),
