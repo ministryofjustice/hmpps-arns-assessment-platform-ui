@@ -3,8 +3,8 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
-import { forDrug } from '../sanUtils'
-import { test, TargetService } from '../../../support/fixtures'
+import { forDrug } from '../../sanUtils'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
   test('validation ever misused drugs', async ({ page, createSession, baseURL }) => {

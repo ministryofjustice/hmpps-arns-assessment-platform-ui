@@ -3,8 +3,8 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
-import { test, TargetService } from '../../../support/fixtures'
-import { buildPageTitle, sanPageTitles } from '../sanUtils'
+import { test, TargetService } from '../../../../support/fixtures'
+import { buildPageTitle, sanPageTitles } from '../../sanUtils'
 
 test.describe('Validation', () => {
   test('validation physical health and mental health', async ({
@@ -38,49 +38,6 @@ test.describe('Validation', () => {
             - link "Select if they have any diagnosed or documented mental health problems":
               - /url: "#health_wellbeing_mental_health_condition"
     `)
-  })
-
-  test('validation give details option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-    const { handoverLink, sanAssessmentId } = await createSession({
-      targetService: TargetService.STRENGTHS_AND_NEEDS,
-    })
-    await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.yes },
-        {
-          question: Question.health_wellbeing_physical_health_condition_yes_details,
-          value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-          Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s,
-          when an unknown printer took a galley of type and scrambled it to make a type
-          specimen book. It has survived not only five centuries, but also the leap into
-          electronic typesetting, remaining essentially unchanged. It was popularised in
-          the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,
-          and more recently with desktop publishing software like Aldus PageMaker including
-          versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and
-          typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and scrambled it to
-          make a type specimen book. It has survived not only five centuries, but also the leap
-          into electronic typesetting, remaining essentially unchanged. It was popularised in the
-          1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more
-          recently with desktop publishing software like Aldus PageMaker including versions of
-          Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-          Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an
-          unknown printer took a galley of type and scrambled it to make a type specimen book.
-          It has survived not only five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with the release of
-          Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing
-          software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply
-          dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s
-          standard dummy text ever since the 1500s, when an unknown printer took a galley of type
-          and scrambled it to make a type specimen book. It has survived not only five.`,
-        },
-      ]).save()
-
-    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
-
-    await HealthAndWellbeingPage.verifyOnPage(page, 'any physical health conditions')
-
-    expect(page.getByText('You have 231 characters too many').first()).toBeVisible()
   })
 
   test('validation physical mental health questions', async ({

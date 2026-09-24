@@ -2,7 +2,7 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
   test('validation employed option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
