@@ -1,7 +1,12 @@
 import { access, Data, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { commonContentFor, stepTitle } from '../../locales'
-import { checkYourAnswersBlock } from './fields'
+import {
+  dynamicCheckYourAnswersBlock,
+  dynamicFactorsHeader,
+  staticCheckYourAnswersBlock,
+  staticFactorsHeader,
+} from './fields'
 import { TieringAssessmentEffects } from '../../../../effects/TieringAssessmentEffects'
 import { CaseData } from '../../../../../sentence-plan/versions/v1.0/constants'
 import {
@@ -36,9 +41,12 @@ export const checkYourAnswersStep = step({
     },
   },
   blocks: [
+    staticFactorsHeader,
     currentOffenceHeadingQuestion,
     currentOffenceSummaryListQuestion,
-    ...checkYourAnswersBlock,
+    ...staticCheckYourAnswersBlock,
+    dynamicFactorsHeader,
+    ...dynamicCheckYourAnswersBlock,
     GovUKButton({ text: contentFor('view_reoffending_predictor_scores') }),
   ],
   onSubmission: [
