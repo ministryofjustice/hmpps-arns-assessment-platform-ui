@@ -33,7 +33,7 @@ export const english = {
     },
     [Question.offence_weapon_details]: {
       text: 'What was the weapon? (optional)',
-      validation: 'Weapon details must be 2000 characters or less',
+      validation: 'Weapon must be %1 characters or less',
     },
     [Question.offence_analysis_reason]: {
       text: 'Why did the current index offence(s) happen?',

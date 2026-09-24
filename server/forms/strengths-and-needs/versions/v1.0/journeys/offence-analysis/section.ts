@@ -21,6 +21,7 @@ import {
 } from '../../constants/questionContent'
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 import { Section } from '../../constants/section'
 import { Question } from './constants/question'
 import { Option } from './constants/option'
@@ -39,7 +40,7 @@ const indexOffenceDescription = question({
     validationMessage: commonContentFor('validation.enter_details'),
   },
   displayModes: {
-    field: characterCountField({ maxLength: 4000 }),
+    field: characterCountField({ maxLength: CharacterLimit.c4000 }),
     summaryRow: textSummaryRow({ changeHref: Step.offence_analysis.path }),
   },
 })
@@ -63,8 +64,8 @@ const weaponDetailsRevealed = revealedQuestion({
         dependentWhen: parent.selectedWhen,
         validWhen: [
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(2000)),
-            message: contentFor('question.offence_weapon_details.validation'),
+            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c200)),
+            message: contentFor('question.offence_weapon_details.validation', CharacterLimit.c200),
           }),
         ],
       }),
@@ -105,7 +106,7 @@ const offenceElements = question({
         reveals: requiredDetails({
           code: Question.offence_analysis_elements_victim_targeted_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
       {
@@ -142,7 +143,7 @@ const whyOffenceHappened = question({
     validationMessage: commonContentFor('validation.enter_details'),
   },
   displayModes: {
-    field: characterCountField({ maxLength: 4000 }),
+    field: characterCountField({ maxLength: CharacterLimit.c4000 }),
     summaryRow: textSummaryRow({ changeHref: Step.offence_analysis.path }),
   },
 })
@@ -191,7 +192,7 @@ const motivations = question({
         reveals: requiredDetails({
           code: Question.offence_analysis_motivations_other_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 200,
+          maxLength: CharacterLimit.c128,
         }),
       },
     ],
@@ -205,9 +206,6 @@ const motivations = question({
 
 // --- Offence Committed Against ---
 
-// Mismatched on purpose, preserved from the original: the field allows up to
-// 2000 characters but validation only accepts up to 200 (message still says
-// 2000). Pre-existing behaviour, not changed here.
 const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
   content: {
     code: Question.offence_analysis_who_was_the_victim_other_details,
@@ -220,7 +218,7 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
         code: content.code,
         formGroup: questionFormGroupOf(content.code),
         label: content.text,
-        maxLength: 2000,
+        maxLength: CharacterLimit.c2000,
         dependentWhen: parent.selectedWhen,
         validWhen: [
           validation({
@@ -228,8 +226,8 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
             message: commonContentFor('validation.enter_details'),
           }),
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(200)),
-            message: commonContentFor('validation.details_must_be_less_than', 2000),
+            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+            message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
       }),
@@ -307,8 +305,6 @@ const offenceAnalysisLeader = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.offence_analysis_leader.text', CaseData.Forename),
     options: yesNo({
-      // Mismatched on purpose, preserved from the original: the field allows
-      // up to 2000 characters but validation checks up to 4000.
       yes: revealedQuestion({
         content: {
           code: Question.offence_analysis_leader_yes_details,
@@ -321,12 +317,12 @@ const offenceAnalysisLeader = question({
               code: content.code,
               formGroup: questionFormGroupOf(content.code),
               label: content.text,
-              maxLength: 2000,
+              maxLength: CharacterLimit.c4000,
               dependentWhen: parent.selectedWhen,
               validWhen: [
                 validation({
-                  condition: Self().match(Condition.String.HasMaxLength(4000)),
-                  message: commonContentFor('validation.details_must_be_less_than', 4000),
+                  condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c4000)),
+                  message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
                 }),
                 validation({
                   condition: Self().match(Condition.IsRequired()),
@@ -348,12 +344,12 @@ const offenceAnalysisLeader = question({
               code: content.code,
               formGroup: questionFormGroupOf(content.code),
               label: content.text,
-              maxLength: 2000,
+              maxLength: CharacterLimit.c4000,
               dependentWhen: parent.selectedWhen,
               validWhen: [
                 validation({
-                  condition: Self().match(Condition.String.HasMaxLength(4000)),
-                  message: commonContentFor('validation.details_must_be_less_than', 4000),
+                  condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c4000)),
+                  message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
                 }),
               ],
             }),
@@ -378,11 +374,11 @@ const offenceImpactOnVictims = question({
     options: yesNo({
       yes: optionalDetails({
         code: Question.offence_analysis_impact_on_victims_yes_details,
-        maxLength: 2000,
+        maxLength: CharacterLimit.c2000,
       }),
       no: optionalDetails({
         code: Question.offence_analysis_impact_on_victims_no_details,
-        maxLength: 2000,
+        maxLength: CharacterLimit.c2000,
       }),
     }),
     validationMessage: contentFor('question.offence_analysis_impact_on_victims.validation'),
@@ -403,11 +399,11 @@ const offenceAnalysisAcceptResponsibility = question({
     options: yesNo({
       yes: optionalDetails({
         code: Question.offence_analysis_accept_responsibility_yes_details,
-        maxLength: 2000,
+        maxLength: CharacterLimit.c4000,
       }),
       no: optionalDetails({
         code: Question.offence_analysis_accept_responsibility_no_details,
-        maxLength: 2000,
+        maxLength: CharacterLimit.c4000,
       }),
     }),
     validationMessage: contentFor('question.offence_analysis_accept_responsibility.validation'),
@@ -429,12 +425,18 @@ const offenceAnalysisEscalation = question({
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: optionalDetails({ code: Question.offence_analysis_escalation_yes_details, maxLength: 2000 }),
+        reveals: optionalDetails({
+          code: Question.offence_analysis_escalation_yes_details,
+          maxLength: CharacterLimit.c2000,
+        }),
       },
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
-        reveals: optionalDetails({ code: Question.offence_analysis_escalation_no_details, maxLength: 2000 }),
+        reveals: optionalDetails({
+          code: Question.offence_analysis_escalation_no_details,
+          maxLength: CharacterLimit.c2000,
+        }),
       },
       { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
     ],
@@ -460,7 +462,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeRevealed = revealedQuestion({
         reveals: requiredDetails({
           code: Question.offence_analysis_perpetrator_of_domestic_abuse_type_family_member_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
       {
@@ -469,7 +471,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeRevealed = revealedQuestion({
         reveals: requiredDetails({
           code: Question.offence_analysis_perpetrator_of_domestic_abuse_type_intimate_partner_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
       {
@@ -478,7 +480,7 @@ const offenceAnalysisPerpetratorOfDomesticAbuseTypeRevealed = revealedQuestion({
         reveals: requiredDetails({
           code: Question.offence_analysis_perpetrator_of_domestic_abuse_type_family_member_and_intimate_partner_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
     ],
@@ -522,7 +524,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeRevealed = revealedQuestion({
         reveals: requiredDetails({
           code: Question.offence_analysis_victim_of_domestic_abuse_type_family_member_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
       {
@@ -531,7 +533,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeRevealed = revealedQuestion({
         reveals: requiredDetails({
           code: Question.offence_analysis_victim_of_domestic_abuse_type_intimate_partner_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
       {
@@ -540,7 +542,7 @@ const offenceAnalysisVictimOfDomesticAbuseTypeRevealed = revealedQuestion({
         reveals: requiredDetails({
           code: Question.offence_analysis_victim_of_domestic_abuse_type_family_member_and_intimate_partner_details,
           validationMessage: commonContentFor('validation.enter_details'),
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
     ],
@@ -581,27 +583,26 @@ const patternsOfOffending = question({
     validationMessage: commonContentFor('validation.enter_details'),
   },
   displayModes: {
-    field: characterCountField({ maxLength: 4000 }),
+    field: characterCountField({ maxLength: CharacterLimit.c4000 }),
     summaryRow: textSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
 
 // --- Impact: Previous offences group ---
 
-// Mismatched on purpose, preserved from the original: the field allows up to
-// 2000 characters but validation checks up to 4000. Both branches are
-// required, including "no" (the original labels it "required_details" too).
+// Both branches are required, including "no" (the original labels it
+// "required_details" too).
 const offenceAnalysisRiskDetailsField = (content: QuestionContent, parent: ParentOption) =>
   GovUKCharacterCount({
     code: content.code,
     formGroup: questionFormGroupOf(content.code),
     label: content.text,
-    maxLength: 2000,
+    maxLength: CharacterLimit.c4000,
     dependentWhen: parent.selectedWhen,
     validWhen: [
       validation({
-        condition: Self().match(Condition.String.HasMaxLength(4000)),
-        message: commonContentFor('validation.details_must_be_less_than', 4000),
+        condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c4000)),
+        message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
       }),
       validation({
         condition: Self().match(Condition.IsRequired()),
@@ -699,7 +700,7 @@ const victimType = question({
         text: commonContentFor('option.OTHER'),
         reveals: optionalDetails({
           code: Question.offence_analysis_victim_relationship_other_details,
-          maxLength: 2000,
+          maxLength: CharacterLimit.c2000,
         }),
       },
     ],

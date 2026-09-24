@@ -3,66 +3,9 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
-  test('validation give details option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-    const { handoverLink, sanAssessmentId } = await createSession({
-      targetService: TargetService.STRENGTHS_AND_NEEDS,
-    })
-    await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        {
-          question: Question.offence_analysis_description_of_offence,
-          value: `Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                  when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                  It has survived not only five centuries, but also the leap into electronic typesetting, 
-                  remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset 
-                  sheets containing Lorem Ipsum passages, and more recently with desktop publishing software 
-                  like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of 
-                  the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy 
-                  text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-                  make a type specimen book. It has survived not only five centuries, but also the leap into 
-                  electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with 
-                  the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop 
-                  publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply 
-                  dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard 
-                  dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to 
-                  make a type specimen book. It has survived not only five centuries, but also the leap into electronic 
-                  typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset 
-                  sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus 
-                  PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and 
-                  typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                  when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                  It has survived not only five. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                  when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                  It has survived not only five centuries, but also the leap into electronic typesetting, 
-                  remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets 
-                  containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker 
-                  including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                  when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                  It has survived not only five centuries, but also the leap into electronic typesetting, 
-                  remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets 
-                  containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker 
-                  including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                  when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                  It has survived not only five centuries, but also the leap into electronic typesetting, 
-                  remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets 
-                  containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker 
-                  including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                  when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
-                  It has survived not only fi.`,
-        },
-      ]).save()
-
-    await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
-  })
-
   test('validation other options', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
@@ -105,7 +48,7 @@ test.describe('Validation', () => {
         - checkbox "Other" [checked] [expanded]
         - text: Other Give details
         - textbox "Give details"
-        - text: You can enter up to 200 characters You have 200 characters remaining
+        - text: You can enter up to 128 characters You have 128 characters remaining
       - group "Who was the offence committed against?":
         - text: Who was the offence committed against? Select all that apply.
         - checkbox "One or more people"

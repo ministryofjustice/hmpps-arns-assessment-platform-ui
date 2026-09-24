@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
-import { test, TargetService } from '../../../support/fixtures'
+import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
   test('validation finance options', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {

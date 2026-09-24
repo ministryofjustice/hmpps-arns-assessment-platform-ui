@@ -21,6 +21,7 @@ import { Step } from './constants/step'
 import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
+import { CharacterLimit } from '../../../../constants/characterLimit'
 
 // Base usage applies whenever they have drunk alcohol; the recency questions
 // (frequency, units, binge drinking) only when they drank in the last 3 months.
@@ -449,9 +450,11 @@ const strengthsOrProtectiveFactors = question({
         validationMessage: contentFor(
           'question.alcohol_use_practitioner_analysis_strengths_or_protective_factors_yes_details.validation',
         ),
+        maxLength: CharacterLimit.c1425,
       }),
       no: optionalDetails({
         code: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details,
+        maxLength: CharacterLimit.c1425,
       }),
     }),
     validationMessage: contentFor(
@@ -480,8 +483,12 @@ const riskOfSeriousHarm = question({
         validationMessage: contentFor(
           'question.alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details.validation',
         ),
+        maxLength: CharacterLimit.c1425,
       }),
-      no: optionalDetails({ code: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_no_details }),
+      no: optionalDetails({
+        code: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_no_details,
+        maxLength: CharacterLimit.c1425,
+      }),
     }),
     validationMessage: contentFor('question.alcohol_use_practitioner_analysis_risk_of_serious_harm.validation'),
   },
@@ -507,8 +514,12 @@ const riskOfReoffending = question({
         validationMessage: contentFor(
           'question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details.validation',
         ),
+        maxLength: CharacterLimit.c1000,
       }),
-      no: optionalDetails({ code: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_no_details }),
+      no: optionalDetails({
+        code: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_no_details,
+        maxLength: CharacterLimit.c1000,
+      }),
     }),
     validationMessage: contentFor('question.alcohol_use_practitioner_analysis_risk_of_reoffending.validation'),
   },
