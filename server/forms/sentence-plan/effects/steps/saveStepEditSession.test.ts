@@ -1,3 +1,4 @@
+import type { User } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/User.type'
 import { saveStepEditSession } from './saveStepEditSession'
 import type {
   DerivedGoal,
@@ -7,7 +8,6 @@ import type {
   StepChanges,
   StepSession,
 } from '../types'
-import type { User } from '../../../../interfaces/user'
 
 const user: User = {
   id: 'user-1',

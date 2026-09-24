@@ -1,6 +1,6 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKWarningText } from '@ministryofjustice/hmpps-forge/govuk-components'
-import config from '../../../../../../config'
+import { sentencePlanConfig } from '../../../../config'
 import { SupervisionPackage } from '../../../../components'
 import { CaseData } from '../../constants'
 import { canDisplaySupervisionPackage, hasSupervisionPackageError, isMpopAccess } from '../../guards'
@@ -10,7 +10,7 @@ export const supervisionPackageSection = SupervisionPackage({
   crn: CaseData.Crn,
   tierCalculation: Data('tierCalculation'),
   supervisionPackageDetails: Data('supervisionPackageDetails'),
-  oasysReviewHref: config.oasysReviewUrl,
+  oasysReviewHref: sentencePlanConfig.oasysReviewUrl,
   openInNewTab: isMpopAccess,
 })
 

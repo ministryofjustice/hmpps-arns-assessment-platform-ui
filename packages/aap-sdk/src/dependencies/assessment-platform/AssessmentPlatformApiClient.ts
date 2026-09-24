@@ -1,0 +1,121 @@
+import { RestClient, asSystem, type ApiConfig } from '@ministryofjustice/hmpps-rest-client'
+import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
+import type Logger from 'bunyan'
+import type { CommandsRequest, QueriesRequest } from './AssessmentRequest.type'
+import type { CommandsResponse, QueriesResponse } from './AssessmentResponse.type'
+import type { Commands } from './AssessmentCommand.type'
+import type { Queries } from './AssessmentQuery.type'
+import type { CommandResultFor, CommandResultsFor } from './AssessmentCommandResult.type'
+import type { QueryResultFor, QueryResultsFor } from './AssessmentQueryResult.type'
+import type { DataDeletionDataResponse, DataDeletionRequest, DataDeletionResponse } from './AssessmentDataDeletion.type'
+import type { AssessmentCache } from './AssessmentPlatformApi.type'
+import { CommandError } from './CommandError'
+import { QueryError } from './QueryError'
+
+export default class AssessmentPlatformApiClient extends RestClient {
+  constructor(
+    apiConfig: ApiConfig,
+    authenticationClient: AuthenticationClient,
+    logger: Logger | Console,
+    private readonly assessmentCache?: AssessmentCache,
+  ) {
+    super('Assessment Platform API', apiConfig, logger, authenticationClient)
+  }
+
+  /**
+   * Execute a single command and return the typed result.
+   * Throws if the command fails.
+   */
+  async executeCommand<T extends Commands>(command: T): Promise<CommandResultFor<T>> {
+    const [result] = await this.executeCommands(command)
+    return result
+  }
+
+  /**
+   * Execute multiple commands as a batch and return typed results.
+   * All commands succeed or fail together (transactional).
+   * Throws if any command fails.
+   *
+   * @example
+   * const [collectionResult, itemResult] = await api.executeCommands(
+   *   { type: 'CreateCollectionCommand', ... },
+   *   { type: 'AddCollectionItemCommand', ... },
+   * )
+   */
+  async executeCommands<T extends Commands[]>(...commands: T): Promise<CommandResultsFor<T>> {
+    const response = await this.executeCommandsRaw({ commands })
+
+    response.commands.forEach((cmd, i) => {
+      if (!cmd.result?.success) {
+        throw new CommandError(commands[i].type, cmd.result, i)
+      }
+    })
+
+    return response.commands.map(c => c.result) as CommandResultsFor<T>
+  }
+
+  /**
+   * Execute a single query and return the typed result.
+   * For AssessmentVersionQuery with a UUID identifier and no timestamp,
+   * checks Redis cache before calling the API.
+   * Throws if the query fails (no result returned).
+   */
+  async executeQuery<T extends Queries>(query: T): Promise<QueryResultFor<T>> {
+    if (query.type === 'AssessmentVersionQuery' && query.assessmentIdentifier.type === 'UUID' && !query.timestamp) {
+      const cached = await this.assessmentCache?.get(query.assessmentIdentifier.uuid)
+
+      if (cached) {
+        this.logger.debug({ assessmentUuid: query.assessmentIdentifier.uuid }, 'Assessment cache hit')
+
+        return cached as QueryResultFor<T>
+      }
+    }
+
+    const [result] = await this.executeQueries(query)
+
+    return result
+  }
+
+  /**
+   * Execute multiple queries and return typed results.
+   * Throws if any query fails.
+   *
+   * @example
+   * const [assessmentResult, timelineResult] = await api.executeQueries(
+   *   { type: 'AssessmentVersionQuery', ... },
+   *   { type: 'TimelineQuery', ... },
+   * )
+   */
+  async executeQueries<T extends Queries[]>(...queries: T): Promise<QueryResultsFor<T>> {
+    const response = await this.executeQueriesRaw({ queries })
+
+    response.queries.forEach((q, i) => {
+      if (!q.result) {
+        throw new QueryError(queries[i].type, q.result, i)
+      }
+    })
+
+    return response.queries.map(q => q.result) as QueryResultsFor<T>
+  }
+
+  // Raw CQRS endpoints - used internally
+  private async executeCommandsRaw(request: CommandsRequest): Promise<CommandsResponse> {
+    return this.post({ path: '/command', data: request as unknown as Record<string, unknown> }, asSystem())
+  }
+
+  private async executeQueriesRaw(request: QueriesRequest): Promise<QueriesResponse> {
+    return this.post({ path: '/query', data: request as unknown as Record<string, unknown> }, asSystem())
+  }
+
+  // Data deletion endpoints
+  async getDataDeletionData(assessmentUuid: string): Promise<DataDeletionDataResponse> {
+    return this.get({ path: `/data-deletion/${assessmentUuid}` }, asSystem())
+  }
+
+  async postDataDeletionRequest(assessmentUuid: string, request: DataDeletionRequest): Promise<DataDeletionResponse> {
+    return this.post(
+      { path: `/data-deletion/${assessmentUuid}`, data: request as unknown as Record<string, unknown> },
+      asSystem(),
+    )
+  }
+}

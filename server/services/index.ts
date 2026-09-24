@@ -4,6 +4,7 @@ import AuditService from './auditService'
 import AssessmentService from './assessmentService'
 import FeatureFlagService from './featureFlagService'
 import DomainEventsService from './domainEventsService'
+import AssessmentPlatformApiFactory from './AssessmentPlatformApiFactory'
 
 export const services = () => {
   const {
@@ -20,6 +21,7 @@ export const services = () => {
 
   return {
     applicationInfo,
+    assessmentPlatformApiFactory: new AssessmentPlatformApiFactory(),
     assessmentPlatformApiClient,
     deliusApiClient,
     coordinatorApiClient,

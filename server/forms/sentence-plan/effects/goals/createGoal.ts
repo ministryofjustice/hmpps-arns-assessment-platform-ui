@@ -1,7 +1,7 @@
 import { BadRequest } from 'http-errors'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { wrapAll } from '../../assessmentValueWrappers'
 import {
   getRequiredEffectContext,
   calculateTargetDate,
@@ -11,7 +11,7 @@ import {
   getPractitionerName,
 } from './goalUtils'
 import { GoalSnapshotData } from './goalSnapshot'
-import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
+import { hashGoalText, matchSuggestedGoal } from './goalTelemetry'
 import { areasOfNeed } from '../../versions/v1.0/constants'
 import { publishGoalsAddedEvent } from '../domain-events/publishGoalsDomainEvent'
 

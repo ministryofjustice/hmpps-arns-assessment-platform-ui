@@ -1,5 +1,8 @@
-import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Answers, Properties } from '../../../../interfaces/aap-api/dataModel'
+import {
+  Answers,
+  Properties,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
+import { wrapAll } from '../../assessmentValueWrappers'
 import { AreaOfNeed, RawCollection, RawCollectionItem } from '../types'
 import { deriveGoalsWithSteps } from './deriveGoalsWithStepsFromAssessment'
 

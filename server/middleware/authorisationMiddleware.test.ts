@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 import type { Request, Response } from 'express'
 
+import { AccessPermissions } from '@ministryofjustice/hmpps-aap-sdk/dependencies/delius/DeliusAccessPermissions.type'
 import authorisationMiddleware from './authorisationMiddleware'
-import { AccessPermissions } from '../interfaces/delius-api/accessPermissions'
 
 function createToken(authorities: string[]) {
   const payload = {

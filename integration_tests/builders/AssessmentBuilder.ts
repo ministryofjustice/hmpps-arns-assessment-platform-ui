@@ -1,12 +1,15 @@
 // eslint-disable-next-line max-classes-per-file
 import { test } from '@playwright/test'
-import type { User } from '../../server/interfaces/user'
-import type { SingleValue, MultiValue } from '../../server/interfaces/aap-api/dataModel'
+import type { User } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/User.type'
+import type {
+  SingleValue,
+  MultiValue,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 import type {
   CreateAssessmentCommandResult,
   CreateCollectionCommandResult,
   AddCollectionItemCommandResult,
-} from '../../server/interfaces/aap-api/commandResult'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommandResult.type'
 import type {
   AssessmentDefinition,
   CollectionDefinition,

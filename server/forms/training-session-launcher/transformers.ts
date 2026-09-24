@@ -1,6 +1,11 @@
 import { TransformerRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { assertNumber } from '../shared/asserts'
 import type { TrainingSessionLauncherEffectsDeps } from './effects/types'
+
+function assertNumber(value: unknown, functionName: string): asserts value is number {
+  if (typeof value !== 'number' || Number.isNaN(value)) {
+    throw new TypeError(`${functionName} expected a number`)
+  }
+}
 
 export const trainingSessionLauncherTransformerRegistry = new TransformerRegistry<TrainingSessionLauncherEffectsDeps>()
 

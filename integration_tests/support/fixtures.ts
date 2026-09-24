@@ -2,8 +2,11 @@ import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
-import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
-import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import type {
+  AccessMode,
+  CriminogenicNeedsData,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
+import type { AssessmentType } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorOasysCreate.type'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'

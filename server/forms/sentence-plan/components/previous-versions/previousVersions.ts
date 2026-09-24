@@ -6,8 +6,8 @@ import {
   ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
-import { PreviousVersionsResponse } from '../../../../interfaces/coordinator-api/previousVersions'
-import config from '../../../../config'
+import { PreviousVersionsResponse } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorPreviousVersions.type'
+import { sentencePlanConfig } from '../../config'
 
 /**
  * Previous versions list component.
@@ -28,7 +28,7 @@ function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
     personName: props.personName,
     versions: props.previousVersions,
     showAssessmentColumn: props.showAssessmentColumn ?? true,
-    sanUrl: config.sanUrl,
+    sanUrl: sentencePlanConfig.sanUrl,
     tables: {
       allVersions: {
         tableHeading: 'All versions',

@@ -1,4 +1,4 @@
-import type { MotivationLevel } from '@server/interfaces/coordinator-api/entityAssessment'
+import type { MotivationLevel } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 import type { SanAssessmentData } from '../mockApis/coordinatorApi'
 
 export type AssessmentCompleteness = 'complete' | 'incomplete'

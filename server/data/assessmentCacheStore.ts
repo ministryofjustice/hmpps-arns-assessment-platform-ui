@@ -1,5 +1,5 @@
+import { AssessmentVersionQueryResult } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentQueryResult.type'
 import { RedisClient, createRedisClient } from './redisClient'
-import { AssessmentVersionQueryResult } from '../interfaces/aap-api/queryResult'
 import logger from '../../logger'
 import config from '../config'
 

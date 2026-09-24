@@ -1,7 +1,7 @@
 import { InternalServerError } from 'http-errors'
+import { IdentifierType } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentIdentifier.type'
 import { SentencePlanContext } from '../types'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
-import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 
 /**
  * Initialize sentence plan session from access form data.

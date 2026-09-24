@@ -1,6 +1,6 @@
 import { FliptClient } from '@flipt-io/flipt-client-js'
+import { FeatureFlagsConfig } from '@ministryofjustice/hmpps-aap-sdk/dependencies/feature-flags/featureFlags'
 import FeatureFlagService from './featureFlagService'
-import { FeatureFlagsConfig } from '../utils/featureFlagsUtils'
 
 jest.mock('@flipt-io/flipt-client-js')
 jest.mock('../config', () => ({

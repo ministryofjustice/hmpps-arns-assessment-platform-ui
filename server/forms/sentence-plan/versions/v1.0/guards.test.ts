@@ -7,7 +7,7 @@ import {
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
-import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
+import { PDF_RENDER_HEADER, PDF_RENDER_HEADER_VALUE } from '@ministryofjustice/hmpps-aap-sdk/utils/pdf/pdfRender'
 import { isPdfRenderRequest } from './guards'
 
 describe('guards', () => {
@@ -66,7 +66,7 @@ describe('guards', () => {
       const client = createClient()
 
       await client.get('/test/page', {
-        headers: { [GOTENBERG_RENDER_HEADER]: GOTENBERG_RENDER_HEADER_VALUE },
+        headers: { [PDF_RENDER_HEADER]: PDF_RENDER_HEADER_VALUE },
         session: {},
       })
 
@@ -78,7 +78,7 @@ describe('guards', () => {
       const client = createClient()
 
       await client.get('/test/page', {
-        headers: { [GOTENBERG_RENDER_HEADER]: 'unexpected' },
+        headers: { [PDF_RENDER_HEADER]: 'unexpected' },
         session: {},
       })
 

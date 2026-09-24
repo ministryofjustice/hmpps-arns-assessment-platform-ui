@@ -1,27 +1,30 @@
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
-import { User } from '../../../interfaces/user'
-import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
-import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
+import type { ArnsApi } from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsApi.type'
+import type { AssessmentPlatformApi } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentPlatformApi.type'
+import type { Audit } from '@ministryofjustice/hmpps-aap-sdk/dependencies/audit/Audit.type'
+import type { CoordinatorApi } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorApi.type'
+import type { DeliusApi } from '@ministryofjustice/hmpps-aap-sdk/dependencies/delius/DeliusApi.type'
+import type { DomainEvents } from '@ministryofjustice/hmpps-aap-sdk/dependencies/domain-events/DomainEvents.type'
+import type { FeatureFlags } from '@ministryofjustice/hmpps-aap-sdk/dependencies/feature-flags/FeatureFlags.type'
+import type { JourneyLogger } from '@ministryofjustice/hmpps-aap-sdk/dependencies/logging/JourneyLogger.type'
+import type { MpopComponents } from '@ministryofjustice/hmpps-aap-sdk/dependencies/mpop/MpopComponents.type'
+import { User } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/User.type'
 import {
-  AssessmentPlatformApiClient,
-  CoordinatorApiClient,
-  DeliusApiClient,
-  MPoPComponents,
-  ArnsApiClient,
-} from '../../../data'
-import AuditService from '../../../services/auditService'
-import DomainEventsService from '../../../services/domainEventsService'
-import { HandoverContext } from '../../../interfaces/handover-api/response'
-import { SessionDetails } from '../../../interfaces/sessionDetails'
-import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
-import { CaseDetails } from '../../../interfaces/delius-api/caseDetails'
-import { AccessMode } from '../../../interfaces/handover-api/shared'
-import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
-import { CreateAssessmentCommandResult } from '../../../interfaces/aap-api/commandResult'
-import { AssessmentArea } from '../../../interfaces/coordinator-api/entityAssessment'
-import { AuthSource } from '../../../interfaces/hmppsUser'
-import { PreviousVersionsResponse } from '../../../interfaces/coordinator-api/previousVersions'
-import FeatureFlagService from '../../../services/featureFlagService'
+  Answers,
+  Properties,
+  TimelineItem,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
+import { HandoverContext } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverResponse.type'
+import { SessionDetails } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/SessionDetails.type'
+import { PractitionerDetails } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/PractitionerDetails.type'
+import { CaseDetails } from '@ministryofjustice/hmpps-aap-sdk/dependencies/delius/DeliusCaseDetails.type'
+import { AccessMode } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
+import { AssessmentVersionQueryResult } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentQueryResult.type'
+import { CreateAssessmentCommandResult } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommandResult.type'
+import { AssessmentArea } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { AuthSource } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/HmppsUser.type'
+import { PreviousVersionsResponse } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorPreviousVersions.type'
+import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
 
 /**
  * Status of the assessment info loading operation.
@@ -184,8 +187,8 @@ export interface GoalCreatedHistoryEntry extends GoalEventContext {
   type: 'goal_created'
   uuid: string
   date: string
-  goalUuid: string
-  goalTitle: string
+  goalUuid?: string
+  goalTitle?: string
   createdBy?: string
 }
 
@@ -193,8 +196,8 @@ export interface GoalAchievedHistoryEntry extends GoalEventContext {
   type: 'goal_achieved'
   uuid: string
   date: string
-  goalUuid: string
-  goalTitle: string
+  goalUuid?: string
+  goalTitle?: string
   achievedBy?: string
   notes?: string
 }
@@ -203,8 +206,8 @@ export interface GoalRemovedHistoryEntry extends GoalEventContext {
   type: 'goal_removed'
   uuid: string
   date: string
-  goalUuid: string
-  goalTitle: string
+  goalUuid?: string
+  goalTitle?: string
   removedBy?: string
   reason?: string
   /** True if the goal has been re-added and is now active/future */
@@ -215,8 +218,8 @@ export interface GoalReaddedHistoryEntry extends GoalEventContext {
   type: 'goal_readded'
   uuid: string
   date: string
-  goalUuid: string
-  goalTitle: string
+  goalUuid?: string
+  goalTitle?: string
   readdedBy?: string
   reason?: string
 }
@@ -225,8 +228,8 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
   type: 'goal_updated'
   uuid: string
   date: string
-  goalUuid: string
-  goalTitle: string
+  goalUuid?: string
+  goalTitle?: string
   updatedBy?: string
   notes?: string
 }
@@ -241,10 +244,10 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
  * supervision package. The method can return null (no package yet), so unwrap it.
  */
 export type SupervisionPackageDetails = NonNullable<
-  Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
+  Awaited<ReturnType<MpopComponents['getSupervisionPackageFrontendContext']>>
 >
 
-export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
+export type TierDetailsResponse = Awaited<ReturnType<MpopComponents['getTierDetails']>>
 export type TierCalculation = TierDetailsResponse['calculation']
 
 export type AreaOfNeed = (typeof areasOfNeed)[number]
@@ -498,12 +501,13 @@ export type SentencePlanContext = EffectFunctionContext<
  * Note: delius api used to load sentence information for about page via handover context access.
  */
 export interface SentencePlanEffectsDeps {
-  api: AssessmentPlatformApiClient
-  coordinatorApi: CoordinatorApiClient
-  arnsApi: ArnsApiClient
-  deliusApi: DeliusApiClient
-  mpopComponents: MPoPComponents
-  auditService: AuditService
-  featureFlagService: FeatureFlagService
-  domainEventsService: DomainEventsService
+  api: AssessmentPlatformApi
+  coordinatorApi: CoordinatorApi
+  arnsApi: ArnsApi
+  deliusApi: DeliusApi
+  mpopComponents: MpopComponents
+  auditService: Audit
+  featureFlagService: FeatureFlags
+  logger: JourneyLogger
+  domainEventsService: DomainEvents
 }

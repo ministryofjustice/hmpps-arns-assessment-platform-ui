@@ -1,6 +1,6 @@
-import { User } from '../../../../interfaces/user'
-import { Commands } from '../../../../interfaces/aap-api/command'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { User } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/User.type'
+import { Commands } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
+import { wrapAll } from '../../assessmentValueWrappers'
 import { DerivedGoal, SentencePlanEffectsDeps } from '../types'
 
 /**

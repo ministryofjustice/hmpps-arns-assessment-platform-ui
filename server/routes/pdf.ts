@@ -2,13 +2,9 @@ import { Router } from 'express'
 import { NotFound, Unauthorized } from 'http-errors'
 import GotenbergClient from '../data/gotenbergClient'
 import { SESSION_COOKIE_NAME } from '../middleware/setUpWebSession'
-import {
-  sentencePlanPrintPreviewPath,
-  sentencePlanPrintPreviewPdfPath,
-} from '../forms/sentence-plan/versions/v1.0/constants'
 
-export const PRINT_PREVIEW_PATH = sentencePlanPrintPreviewPath
-export const PRINT_PREVIEW_PDF_PATH = sentencePlanPrintPreviewPdfPath
+export const PRINT_PREVIEW_PATH = '/sentence-plan/v1.0/plan/print-preview'
+export const PRINT_PREVIEW_PDF_PATH = `${PRINT_PREVIEW_PATH}/pdf`
 
 const getSessionCookie = (cookieHeader?: string): string | undefined => {
   const cookieName = `${SESSION_COOKIE_NAME}=`

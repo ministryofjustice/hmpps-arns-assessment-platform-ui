@@ -1,5 +1,4 @@
-import logger from '../../../../../logger'
-import { transformAssessmentData } from '../../../../utils/assessmentUtils'
+import { transformAssessmentData } from './assessmentData'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { canAccessSanInfo } from '../helpers'
 import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
@@ -18,7 +17,7 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
   const isMpop = session.sessionDetails?.accessType === 'HMPPS_AUTH'
 
   if (!assessmentUuid || !currentAreaOfNeed) {
-    logger.error(
+    deps.logger.error(
       {
         assessmentUuid,
         crn,
@@ -46,7 +45,7 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
 
     const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
     if (!criminogenicNeedsData) {
-      logger.error(
+      deps.logger.error(
         { assessmentUuid, crn, areaOfNeed: currentAreaOfNeed.slug },
         'Cannot load area assessment info: ARNS API returned no needs data',
       )
@@ -63,7 +62,7 @@ export const loadAreaAssessmentInfo = (deps: SentencePlanEffectsDeps) => async (
     context.setData('currentAreaAssessment', currentAreaAssessment)
     context.setData('currentAreaAssessmentStatus', 'success')
   } catch (error) {
-    logger.error(
+    deps.logger.error(
       {
         err: error,
         assessmentUuid,

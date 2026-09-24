@@ -1,5 +1,4 @@
-import logger from '../../../../../logger'
-import { DomainEvent } from '../../../../services/domainEventsService'
+import type { DomainEvent } from '@ministryofjustice/hmpps-aap-sdk/dependencies/domain-events/DomainEvents.type'
 import { POST_AGREEMENT_PROCESS_STATUSES, SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { hasNoOtherOpenGoals } from './openGoals'
 import { goalsAddedEvent, goalsCompletedEvent } from './goalsDomainEvents'
@@ -30,7 +29,7 @@ const publishOnOpenGoalBoundary = async (
 
   const crn = context.getSession().caseDetails?.crn
   if (!crn) {
-    logger.error('Cannot publish goals domain event: missing crn')
+    deps.logger.error('Cannot publish goals domain event: missing crn')
     return
   }
 

@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test'
-import { VersionsTable } from '@server/interfaces/coordinator-api/previousVersions'
+import { VersionsTable } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorPreviousVersions.type'
 import { test, TargetService } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
 import PreviousVersionsPage from '../../../pages/sentencePlan/previousVersionsPage'

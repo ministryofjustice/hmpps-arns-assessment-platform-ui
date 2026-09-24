@@ -1,4 +1,4 @@
-import config from '../../../../config'
+import { trainingSessionLauncherConfig } from '../../config'
 import { getExcludedFields, resolveHandoverConfig } from '../../flags/handlers'
 import { applyRandomization, ScenarioValues, generateSeed, getRandomizeFields } from '../../scenarios'
 import {
@@ -157,7 +157,7 @@ function computeAvailableServices(session: Session): ServiceOption[] {
 
   return handoverConfig.availableServices.map(service => ({
     value: service,
-    text: config.handoverTargets[service].displayName,
+    text: trainingSessionLauncherConfig.handoverTargets[service].displayName,
   }))
 }
 

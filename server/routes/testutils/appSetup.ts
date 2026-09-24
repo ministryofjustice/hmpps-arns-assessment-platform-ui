@@ -2,13 +2,13 @@ import express, { Express } from 'express'
 import { NotFound } from 'http-errors'
 
 import { randomUUID } from 'crypto'
+import { HmppsUser } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/HmppsUser.type'
 import routes from '../index'
 import nunjucksSetup from '../../utils/nunjucksSetup'
 import errorHandler from '../error/errorHandler'
 import type { Services } from '../../services'
 import AuditService from '../../services/auditService'
 import AssessmentService from '../../services/assessmentService'
-import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 
 jest.mock('../../services/auditService')

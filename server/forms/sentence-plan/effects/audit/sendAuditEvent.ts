@@ -1,5 +1,5 @@
-import { AuditEvent } from '../../../../services/auditService'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+import type { AuditEvent } from '..'
 
 /**
  * Send an audit event via the existing AuditService.

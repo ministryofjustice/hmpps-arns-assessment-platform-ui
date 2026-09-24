@@ -1,5 +1,5 @@
 import { sendAuditEvent } from './sendAuditEvent'
-import { AuditEvent } from '../../../../services/auditService'
+import { AuditEvent } from '..'
 import type { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 interface MockContextOptions {

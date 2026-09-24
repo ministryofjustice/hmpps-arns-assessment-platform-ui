@@ -17,10 +17,11 @@ services:
   aap-ui:
     build:
       target: development
-    command: npm run start:dev
+    command: npm run start:dev:assembly
     volumes:
       - ../:/app:cached
       - node_modules:/app/node_modules
+      - ../packages/aap-sdk:/app/node_modules/@ministryofjustice/hmpps-aap-sdk:cached
     environment:
       NODE_ENV: development
       NODE_CLUSTER_ENABLED: false

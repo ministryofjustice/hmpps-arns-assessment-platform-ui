@@ -1,8 +1,8 @@
 import { InternalServerError } from 'http-errors'
+import { Commands } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Commands } from '../../../../interfaces/aap-api/command'
+import { wrapAll } from '../../assessmentValueWrappers'
 import {
   getRequiredEffectContext,
   getPractitionerName,
@@ -12,7 +12,7 @@ import {
   buildGoalAnswers,
 } from './goalUtils'
 import { snapshotFromGoal } from './goalSnapshot'
-import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
+import { hashGoalText, matchSuggestedGoal } from './goalTelemetry'
 import { areasOfNeed } from '../../versions/v1.0/constants'
 
 /**

@@ -9,7 +9,7 @@ import {
   AssessmentArea,
   LinkedIndicator,
   MotivationLevel,
-} from '../../../../interfaces/coordinator-api/entityAssessment'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 
 export interface AssessmentInfoDetails extends BlockDefinition {
   personName: ResolvableString

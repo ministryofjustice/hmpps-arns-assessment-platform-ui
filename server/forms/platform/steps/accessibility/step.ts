@@ -5,7 +5,7 @@ export const accessibilityStep = step({
   path: '/accessibility',
   title: 'Accessibility statement for Assess and plan: Sentence plan',
   view: {
-    template: 'platform/views/platform-policy-step',
+    template: 'platform-policies/views/platform-policy-step',
     locals: {
       footerBaseUrl: '/platform',
       hideSessionTimeoutModal: true,

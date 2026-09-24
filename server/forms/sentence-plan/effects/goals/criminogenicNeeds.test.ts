@@ -1,13 +1,13 @@
+import { CriminogenicNeedsData } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { AssessmentNeedsDto } from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeeds.type'
+import { AssessmentNeedsDetailsDto } from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeedsDetails.type'
 import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { mapArnsNeedsToCriminogenicNeeds } from '../../../../utils/arnsApiMapper'
-import { mapArnsIntegrationNeedsToCriminogenicNeeds } from '../../../../utils/arnsIntegrationMapper'
-import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
-import { AssessmentNeedsDto } from '../../../../interfaces/arns-api/assessmentNeeds'
-import { AssessmentNeedsDetailsDto } from '../../../../interfaces/arns-api/assessmentNeedsDetails'
+import { mapArnsNeedsToCriminogenicNeeds } from './arnsApiMapper'
+import { mapArnsIntegrationNeedsToCriminogenicNeeds } from './arnsIntegrationMapper'
 
-jest.mock('../../../../utils/arnsApiMapper')
-jest.mock('../../../../utils/arnsIntegrationMapper')
+jest.mock('./arnsApiMapper')
+jest.mock('./arnsIntegrationMapper')
 
 const mockMapArns = mapArnsNeedsToCriminogenicNeeds as jest.Mock
 const mockMapArnsIntegration = mapArnsIntegrationNeedsToCriminogenicNeeds as jest.Mock

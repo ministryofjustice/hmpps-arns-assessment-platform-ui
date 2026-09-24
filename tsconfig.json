@@ -14,7 +14,10 @@
     "experimentalDecorators": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@ministryofjustice/hmpps-forge/jsx-components",
-    "typeRoots": ["./server/@types", "./node_modules/@types"]
+    "typeRoots": ["./server/@types", "./node_modules/@types"],
+    "paths": {
+      "@ministryofjustice/hmpps-aap-sdk/*": ["./packages/aap-sdk/src/*"]
+    }
   },
   "exclude": [
     "node_modules",
@@ -22,8 +25,7 @@
     "integration_tests",
     "dist",
     "esbuild",
-    "eslint.config.mjs",
-    "packages"
+    "eslint.config.mjs"
   ],
   "include": ["**/*.js", "**/*.ts", "**/*.tsx"]
 }

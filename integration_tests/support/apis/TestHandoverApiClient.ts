@@ -4,8 +4,11 @@ import type { TestInfo } from '@playwright/test'
 import type {
   CreateHandoverLinkRequest,
   UpdateHandoverContextRequest,
-} from '../../../server/interfaces/handover-api/request'
-import type { CreateHandoverLinkResponse, HandoverContext } from '../../../server/interfaces/handover-api/response'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverRequest.type'
+import type {
+  CreateHandoverLinkResponse,
+  HandoverContext,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverResponse.type'
 import { noopLogger } from './noopLogger'
 
 export interface TestHandoverApiClientConfig {

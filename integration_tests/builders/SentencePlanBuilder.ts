@@ -1,5 +1,4 @@
-import type { Commands } from '@server/interfaces/aap-api/command'
-import { wrapAll } from '@server/data/aap-api/wrappers'
+import type { Commands } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
 import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance } from './AssessmentBuilder'
@@ -493,7 +492,7 @@ export class SentencePlanBuilderInstance {
       const command: Commands = {
         type: 'UpdateCollectionItemPropertiesCommand',
         collectionItemUuid: item.uuid,
-        added: wrapAll({ status_date: date }),
+        added: { status_date: { type: 'Single', value: date } },
         removed: [],
         assessmentUuid: assessment.uuid,
         user,

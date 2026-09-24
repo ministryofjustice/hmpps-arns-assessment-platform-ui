@@ -1,17 +1,16 @@
-import AssessmentPlatformApiClient from '../data/assessmentPlatformApiClient'
 import {
   AddCollectionItemCommandResult,
   CommandResult,
   CreateAssessmentCommandResult,
   CreateCollectionCommandResult,
   GroupCommandResult,
-} from '../interfaces/aap-api/commandResult'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommandResult.type'
 import {
   TimelineQueryResult,
   AssessmentVersionQueryResult,
   CollectionItemQueryResult,
   CollectionQueryResult,
-} from '../interfaces/aap-api/queryResult'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentQueryResult.type'
 import {
   AddCollectionItemCommand,
   Commands,
@@ -26,13 +25,14 @@ import {
   UpdateCollectionItemAnswersCommand,
   UpdateCollectionItemPropertiesCommand,
   UpdateFormVersionCommand,
-} from '../interfaces/aap-api/command'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
 import {
   TimelineQuery,
   AssessmentVersionQuery,
   CollectionItemQuery,
   CollectionQuery,
-} from '../interfaces/aap-api/query'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentQuery.type'
+import type { AssessmentPlatformApi } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentPlatformApi.type'
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
@@ -57,19 +57,21 @@ interface QueryMap {
 }
 
 export default class AssessmentService {
-  constructor(private readonly assessmentPlatformApiClient: AssessmentPlatformApiClient) {}
+  constructor(private readonly assessmentPlatformApi: AssessmentPlatformApi) {}
 
   async command<T extends keyof CommandMap>(cmd: CommandMap[T]['cmd']): Promise<CommandMap[T]['res']> {
-    const [result] = await this.assessmentPlatformApiClient.executeCommands(cmd)
+    const [result] = await this.assessmentPlatformApi.executeCommands(cmd)
+
     return result as CommandMap[T]['res']
   }
 
   async commands(commands: readonly Commands[]) {
-    await this.assessmentPlatformApiClient.executeCommands(...commands)
+    await this.assessmentPlatformApi.executeCommands(...commands)
   }
 
   async query<T extends keyof QueryMap>(query: QueryMap[T]['query']): Promise<QueryMap[T]['res']> {
-    const [result] = await this.assessmentPlatformApiClient.executeQueries(query)
+    const result = await this.assessmentPlatformApi.executeQuery(query)
+
     return result as QueryMap[T]['res']
   }
 }

@@ -1,6 +1,9 @@
-import config from '../../../../config'
-import { CreateHandoverLinkRequest } from '../../../../interfaces/handover-api/request'
-import { CriminogenicNeedsData, HandoverSubjectDetails } from '../../../../interfaces/handover-api/shared'
+import { CreateHandoverLinkRequest } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverRequest.type'
+import {
+  CriminogenicNeedsData,
+  HandoverSubjectDetails,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
+import { trainingSessionLauncherConfig } from '../../config'
 import { resolveHandoverConfig } from '../../flags/handlers'
 import { ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session, TargetApplication } from '../../types'
@@ -10,7 +13,7 @@ import { TrainingSessionLauncherEffectsDeps } from '../types'
  * Get the OAuth client ID for a target application
  */
 function getClientIdForTarget(targetApplication: TargetApplication): string {
-  return config.handoverTargets[targetApplication].clientId
+  return trainingSessionLauncherConfig.handoverTargets[targetApplication].clientId
 }
 
 /**
@@ -176,7 +179,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
       displayName: values.practitionerDisplayName,
       accessMode: values.accessMode,
       planAccessMode: values.planAccessMode,
-      returnUrl: `${config.ingressUrl}/training-session-launcher/sessions`,
+      returnUrl: `${trainingSessionLauncherConfig.ingressUrl}/training-session-launcher/sessions`,
     },
     subjectDetails: buildSubjectDetails(values),
     oasysAssessmentPk: values.oasysAssessmentPk,

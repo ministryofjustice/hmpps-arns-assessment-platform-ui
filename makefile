@@ -7,6 +7,9 @@ PROJECT_NAME = hmpps-assess-risks-and-needs
 SERVICE_NAME = aap-ui
 
 APP_VERSION ?= local
+PLATFORM_VERSION ?= local
+
+PLATFORM_IMAGE = ghcr.io/ministryofjustice/hmpps-arns-assessment-platform-ui
 
 ## Compose files to stack on each other
 DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
@@ -23,6 +26,18 @@ help: ## The help text you're reading.
 
 prod-build: ## Builds a production image of the UI.
 	docker compose ${PROD_COMPOSE_FILES} build aap-ui
+
+platform-images: ## Builds the local platform development, builder and runtime images.
+	docker build --target development -t ${PLATFORM_IMAGE}:${PLATFORM_VERSION}-development .
+	docker build --target builder -t ${PLATFORM_IMAGE}:${PLATFORM_VERSION}-builder .
+	docker build --target runtime -t ${PLATFORM_IMAGE}:${PLATFORM_VERSION}-runtime .
+
+assembly-build: ## Builds an image assembled from the journeys installed in package.json.
+	docker build --target assembly \
+		--build-arg BUILD_NUMBER=local \
+		--build-arg GIT_REF=local \
+		--build-arg GIT_BRANCH=local \
+		-t ${PLATFORM_IMAGE}:${APP_VERSION} .
 
 prod-up: ## Starts/restarts the UI in a production container.
 	docker compose ${PROD_COMPOSE_FILES} down aap-ui

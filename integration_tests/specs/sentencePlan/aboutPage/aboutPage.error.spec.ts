@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test'
-import type { CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
+import type { CriminogenicNeedsData } from '@ministryofjustice/hmpps-aap-sdk/dependencies/handover/HandoverShared.type'
 import { test } from '../../../support/fixtures'
 import AboutPage from '../../../pages/sentencePlan/aboutPage'
 import { navigateToAboutPage } from '../sentencePlanUtils'

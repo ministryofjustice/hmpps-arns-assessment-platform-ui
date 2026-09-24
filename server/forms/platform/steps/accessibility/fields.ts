@@ -1,6 +1,6 @@
 import { Format, Literal, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import config from '../../../../config'
+import { platformJourneyConfig } from '../../config'
 
 export const pageHeading = HtmlBlock({
   content: '<h1 class="govuk-heading-l">Accessibility statement for Assess and plan: Sentence plan</h1>',
@@ -80,6 +80,6 @@ export const pageContent = HtmlBlock({
             </li>
         </ul>
   `,
-    Literal(config.nationalRolloutFeedbackUrl).pipe(Transformer.String.EscapeHtml()),
+    Literal(platformJourneyConfig.nationalRolloutFeedbackUrl).pipe(Transformer.String.EscapeHtml()),
   ),
 })

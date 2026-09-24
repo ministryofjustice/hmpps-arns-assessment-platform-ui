@@ -1,5 +1,5 @@
 import { InternalServerError } from 'http-errors'
-import { User } from '../../../../interfaces/user'
+import { User } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/User.type'
 import { AreaOfNeed, DerivedGoal, GoalAnswers, GoalProperties, GoalStatus, SentencePlanContext } from '../types'
 
 /**

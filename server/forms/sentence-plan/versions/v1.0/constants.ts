@@ -1,5 +1,5 @@
 import { Data, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
+import { CriminogenicNeedsData } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 
 export const formVersion = 'v1.0'
 export const sentencePlanBasePath = `/sentence-plan/${formVersion}`

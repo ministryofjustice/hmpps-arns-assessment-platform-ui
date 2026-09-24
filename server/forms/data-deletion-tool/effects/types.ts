@@ -1,13 +1,13 @@
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
-import { AssessmentPlatformApiClient } from '../../../data'
+import type { AssessmentPlatformApiFactory } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentPlatformApi.type'
 import {
   DataDeletionDataResponse,
   DataDeletionRequest,
   DataDeletionResponse,
-} from '../../../interfaces/aap-api/dataDeletion'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataDeletion.type'
 
 export interface DataDeletionToolEffectsDeps {
-  api: AssessmentPlatformApiClient
+  assessmentPlatformApiFactory: AssessmentPlatformApiFactory
 }
 
 // -----------------------------------------------------------------------------

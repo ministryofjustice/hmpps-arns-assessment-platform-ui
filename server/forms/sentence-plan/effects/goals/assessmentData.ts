@@ -1,0 +1,216 @@
+import {
+  SanAssessmentData,
+  LinkedIndicator,
+  MotivationLevel,
+  AssessmentArea,
+  CriminogenicNeedsData,
+  CriminogenicNeedArea,
+  SubAreaData,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { areasOfNeed, subAreasOfNeed } from '../../versions/v1.0/constants'
+import { AreaOfNeed } from '../types'
+
+/**
+ * Converts a needs-data boolean (handover for OASys, ARNS for MPoP) to LinkedIndicator format.
+ */
+function toLinkedIndicator(value: boolean | null | undefined): LinkedIndicator {
+  if (value === true) return 'YES'
+  if (value === false) return 'NO'
+  return null
+}
+
+function toLinkedIndicatorFromSanValue(value: string): LinkedIndicator {
+  return value === 'YES' || value === 'NO' ? value : null
+}
+
+function getAssessmentValue(sanAssessmentData: SanAssessmentData, key: string): string {
+  const answer = sanAssessmentData[key]
+  if (!answer) return ''
+  if (Array.isArray(answer.values)) {
+    return answer.values.join(', ')
+  }
+  return typeof answer.value === 'string' ? answer.value : ''
+}
+
+function parseMotivation(value: string): MotivationLevel {
+  const validLevels: MotivationLevel[] = [
+    'MADE_CHANGES',
+    'MAKING_CHANGES',
+    'WANT_TO_MAKE_CHANGES',
+    'NEEDS_HELP_TO_MAKE_CHANGES',
+    'THINKING_ABOUT_MAKING_CHANGES',
+    'DOES_NOT_WANT_TO_MAKE_CHANGES',
+    'DOES_NOT_WANT_TO_ANSWER',
+    'NOT_PRESENT',
+    'NOT_APPLICABLE',
+  ]
+  return validLevels.includes(value as MotivationLevel) ? (value as MotivationLevel) : null
+}
+
+// clamps a score to the area's upperBound:
+// guards against bad data where score exceeds the valid range.
+const clampScore = (score: number | null | undefined, upperBound: number): number | null => {
+  if (score === null || score === undefined) return null
+  return score > upperBound ? upperBound : score
+}
+
+// calculates the effective distance from threshold for sorting purposes (accounts for sub-areas):
+const calculateEffectiveScoreToThresholdDistance = (
+  score: number | null,
+  threshold: number | null,
+  subArea: SubAreaData | undefined,
+): number | null => {
+  if (score === null || threshold === null) return null
+
+  const mainDistance = score - threshold
+
+  if (!subArea || subArea.score === null || subArea.threshold === null) {
+    return mainDistance
+  }
+
+  const subAreaDistance = subArea.score - subArea.threshold
+  return Math.max(mainDistance, subAreaDistance)
+}
+
+function getLinkedDetails(
+  sanAssessmentData: SanAssessmentData,
+  assessmentKey: string,
+  detailType: 'risk_of_serious_harm' | 'risk_of_reoffending' | 'strengths_or_protective_factors',
+  linkedIndicator: LinkedIndicator,
+): string {
+  if (!linkedIndicator) return ''
+
+  const suffix = linkedIndicator.toLowerCase()
+  const key = `${assessmentKey}_practitioner_analysis_${detailType}_${suffix}_details`
+  return getAssessmentValue(sanAssessmentData, key)
+}
+
+function processAssessmentArea(
+  areaOfNeed: AreaOfNeed,
+  sanAssessmentData: SanAssessmentData,
+  criminogenicNeedsData: CriminogenicNeedsData | null,
+): AssessmentArea {
+  const { assessmentKey, crimNeedsKey, text: title, slug: goalRoute, upperBound, threshold } = areaOfNeed
+
+  const crimNeedsArea: CriminogenicNeedArea | null = criminogenicNeedsData
+    ? (criminogenicNeedsData[crimNeedsKey] ?? null)
+    : null
+
+  // Section complete comes from coordinator API (sanAssessmentData)
+  const sectionCompleteValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_section_complete`)
+  const isAssessmentSectionComplete = sectionCompleteValue === 'YES'
+
+  // Linked indicators come from the ARNS needs data, which covers risk-of-harm / risk-of-reoffending
+  // for the scored sections only and never carries a strengths indicator. For the unscored areas
+  // (Finances, Health and wellbeing, identified by a null threshold) the needs data has no harm /
+  // reoffending indicator, so fall back to the coordinator's SAN practitioner-analysis answer there;
+  // the strengths indicator falls back on every area. Scored areas keep whatever the needs data says
+  // (including null for an unanswered section). With no needs data at all, indicators stay null.
+  const isUnscoredArea = threshold === null
+  const harmFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_serious_harm`),
+  )
+  const reoffendingFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_risk_of_reoffending`),
+  )
+  const strengthsFromCoordinator = toLinkedIndicatorFromSanValue(
+    getAssessmentValue(sanAssessmentData, `${assessmentKey}_practitioner_analysis_strengths_or_protective_factors`),
+  )
+  const linkedToHarm = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToHarm) ?? (isUnscoredArea ? harmFromCoordinator : null))
+    : null
+  const linkedToReoffending = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToReoffending) ?? (isUnscoredArea ? reoffendingFromCoordinator : null))
+    : null
+  const linkedToStrengthsOrProtectiveFactors = crimNeedsArea
+    ? (toLinkedIndicator(crimNeedsArea.linkedToStrengthsOrProtectiveFactors) ?? strengthsFromCoordinator)
+    : null
+
+  // Details come from coordinator API (sanAssessmentData), keyed by the linked indicator value
+  const riskOfSeriousHarmDetails = getLinkedDetails(
+    sanAssessmentData,
+    assessmentKey,
+    'risk_of_serious_harm',
+    linkedToHarm,
+  )
+
+  const riskOfReoffendingDetails = getLinkedDetails(
+    sanAssessmentData,
+    assessmentKey,
+    'risk_of_reoffending',
+    linkedToReoffending,
+  )
+
+  const strengthsOrProtectiveFactorsDetails = getLinkedDetails(
+    sanAssessmentData,
+    assessmentKey,
+    'strengths_or_protective_factors',
+    linkedToStrengthsOrProtectiveFactors,
+  )
+
+  // Motivation comes from coordinator API (sanAssessmentData)
+  const motivationValue = getAssessmentValue(sanAssessmentData, `${assessmentKey}_changes`)
+  const motivationToMakeChanges = parseMotivation(motivationValue)
+
+  // sub area section:
+  let subArea: SubAreaData | undefined
+  let isSubAreaHighScoring = false
+
+  // attach sub-area data to parent area of need:
+  const childSubAreaMatch = subAreasOfNeed.find(childArea => childArea.parentAreaOfNeedCrimKey === crimNeedsKey)
+  if (childSubAreaMatch && criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]) {
+    const subAreaCrimNeeds = criminogenicNeedsData?.[childSubAreaMatch.crimNeedsKey]
+    const subAreaScore = clampScore(subAreaCrimNeeds?.score, childSubAreaMatch.upperBound)
+    if (subAreaScore !== null) {
+      subArea = {
+        title: childSubAreaMatch.text,
+        score: subAreaScore,
+        upperBound: childSubAreaMatch.upperBound,
+        threshold: childSubAreaMatch.threshold,
+      }
+      if (childSubAreaMatch.threshold !== null && subAreaScore > childSubAreaMatch.threshold) {
+        isSubAreaHighScoring = true
+      }
+    }
+  }
+
+  // Score comes from the needs data only (handover for OASys, ARNS for MPoP)
+  const score = clampScore(crimNeedsArea?.score, upperBound)
+
+  // High scoring: main area score > threshold or sub-area exceeds its threshold
+  // Low scoring: main area score <= threshold AND no sub-area is high-scoring
+  // Areas without scoring (Finance, Health) have both as false
+  const isMainAreaScoredAndNotNull = threshold !== null && score !== null
+  const isMainAreaHighScoring = isMainAreaScoredAndNotNull && score > threshold
+
+  const isHighScoring = isMainAreaHighScoring || (isMainAreaScoredAndNotNull && isSubAreaHighScoring)
+  const isLowScoring = isMainAreaScoredAndNotNull && score <= threshold && !isSubAreaHighScoring
+  const effectiveScoreToThresholdDistance = calculateEffectiveScoreToThresholdDistance(score, threshold, subArea)
+
+  return {
+    title,
+    goalRoute,
+    isAssessmentSectionComplete,
+    linkedToHarm,
+    linkedToReoffending,
+    linkedToStrengthsOrProtectiveFactors,
+    riskOfSeriousHarmDetails,
+    riskOfReoffendingDetails,
+    strengthsOrProtectiveFactorsDetails,
+    motivationToMakeChanges,
+    score,
+    upperBound,
+    threshold,
+    isHighScoring,
+    isLowScoring,
+    subArea,
+    effectiveScoreToThresholdDistance,
+  }
+}
+
+export function transformAssessmentData(
+  sanAssessmentData: SanAssessmentData,
+  criminogenicNeedsData: CriminogenicNeedsData | null = null,
+): AssessmentArea[] {
+  return areasOfNeed.map(areaOfNeed => processAssessmentArea(areaOfNeed, sanAssessmentData, criminogenicNeedsData))
+}

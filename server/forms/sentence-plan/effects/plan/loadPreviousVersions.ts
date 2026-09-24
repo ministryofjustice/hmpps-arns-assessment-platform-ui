@@ -1,6 +1,9 @@
 import { InternalServerError, NotFound } from 'http-errors'
+import {
+  PreviousVersionsResponse,
+  VersionsTable,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorPreviousVersions.type'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { PreviousVersionsResponse, VersionsTable } from '../../../../interfaces/coordinator-api/previousVersions'
 
 // The previous-versions page should not show today's entry in the history list.
 // Keep this in one helper so all modes (beta + sentence-plan-only) apply the same rule.

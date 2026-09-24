@@ -1,7 +1,7 @@
 import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { createNavigationEffects } from '@ministryofjustice/hmpps-aap-sdk/utils/navigation/createNavigationEffects'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { createNavigationEffects } from '../../shared/navigation/createNavigationEffects'
 import { Nav } from './navigation'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
@@ -48,11 +48,46 @@ const { trackNavigation, insertNavigationReferrer } = createNavigationEffects({
 
 export const sentencePlanEffectRegistry = new EffectRegistry<SentencePlanEffectsDeps>()
 
+export enum AuditEvent {
+  CONFIRM_PRIVACY_SCREEN = 'CONFIRM_PRIVACY_SCREEN',
+  VIEW_PLAN_OVERVIEW = 'VIEW_PLAN_OVERVIEW',
+  PRINT_ALL_GOALS = 'PRINT_ALL_GOALS',
+  VIEW_SELECT_AREA_OF_NEED = 'VIEW_SELECT_AREA_OF_NEED',
+  VIEW_CREATE_GOAL = 'VIEW_CREATE_GOAL',
+  CREATE_GOAL = 'CREATE_GOAL',
+  VIEW_CHANGE_GOAL = 'VIEW_CHANGE_GOAL',
+  VIEW_CHANGE_AREA_OF_NEED = 'VIEW_CHANGE_AREA_OF_NEED',
+  EDIT_GOAL = 'EDIT_GOAL',
+  VIEW_ADD_STEPS = 'VIEW_ADD_STEPS',
+  ADD_STEPS = 'ADD_STEPS',
+  EDIT_STEPS = 'EDIT_STEPS',
+  VIEW_DELETE_GOAL = 'VIEW_DELETE_GOAL',
+  DELETE_GOAL = 'DELETE_GOAL',
+  VIEW_PLAN_AGREEMENT = 'VIEW_PLAN_AGREEMENT',
+  EDIT_PLAN_AGREEMENT = 'EDIT_PLAN_AGREEMENT',
+  VIEW_PLAN_AGREEMENT_UPDATE = 'VIEW_PLAN_AGREEMENT_UPDATE',
+  EDIT_PLAN_AGREEMENT_UPDATE = 'EDIT_PLAN_AGREEMENT_UPDATE',
+  VIEW_UPDATE_GOAL_AND_STEPS = 'VIEW_UPDATE_GOAL_AND_STEPS',
+  EDIT_STEP_PROGRESS = 'EDIT_STEP_PROGRESS',
+  VIEW_CONFIRM_GOAL_ACHIEVED = 'VIEW_CONFIRM_GOAL_ACHIEVED',
+  EDIT_GOAL_ACHIEVED = 'EDIT_GOAL_ACHIEVED',
+  VIEW_CONFIRM_GOAL_REMOVED = 'VIEW_CONFIRM_GOAL_REMOVED',
+  EDIT_GOAL_REMOVED = 'EDIT_GOAL_REMOVED',
+  VIEW_CONFIRM_RE_ADD_GOAL = 'VIEW_CONFIRM_RE_ADD_GOAL',
+  CREATE_RE_ADD_GOAL = 'CREATE_RE_ADD_GOAL',
+  VIEW_INACTIVE_GOAL = 'VIEW_INACTIVE_GOAL',
+  VIEW_ABOUT_PERSON = 'VIEW_ABOUT_PERSON',
+  VIEW_SUPERVISION_PACKAGE = 'VIEW_SUPERVISION_PACKAGE',
+  VIEW_PLAN_HISTORY = 'VIEW_PLAN_HISTORY',
+  VIEW_PREVIOUS_VERSIONS = 'VIEW_PREVIOUS_VERSIONS',
+  VIEW_HISTORIC_PLAN = 'VIEW_HISTORIC_PLAN',
+  VIEW_HISTORIC_ASSESSMENT = 'VIEW_HISTORIC_ASSESSMENT',
+}
+
 export { POST_AGREEMENT_PROCESS_STATUSES } from './types'
 export type { AgreementStatus } from './types'
 export { Nav } from './navigation'
 export type { NavigationReferrer } from './navigation'
-export { AuditEvent } from '../../../services/auditService'
 
 /**
  * Sentence Plan Effects

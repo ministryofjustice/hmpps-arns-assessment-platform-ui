@@ -1,10 +1,7 @@
-import nunjucks from 'nunjucks'
+import JourneyTemplateLoader from '../../test-support/JourneyTemplateLoader'
 
 const template = 'sentence-plan/views/partials/print-no-js-message.njk'
-const nunjucksEnv = nunjucks.configure(
-  ['server/forms', 'server/views', 'node_modules/govuk-frontend/dist/', 'node_modules/@ministryofjustice/frontend/'],
-  { autoescape: true },
-)
+const nunjucksEnv = JourneyTemplateLoader.createEnvironment()
 
 describe('print no-JavaScript message', () => {
   it('renders a keyboard-print message inside a <noscript> when the print button is shown', () => {

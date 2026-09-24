@@ -1,13 +1,11 @@
-import nunjucks from 'nunjucks'
-import { formatDate } from '../../../../utils/utils'
+import JourneyTemplateLoader from '../../test-support/JourneyTemplateLoader'
 
 const template = 'sentence-plan/views/partials/plan-header.njk'
-const nunjucksEnv = nunjucks.configure(
-  ['server/forms', 'server/views', 'node_modules/govuk-frontend/dist/', 'node_modules/@ministryofjustice/frontend/'],
-  { autoescape: true },
-)
+const nunjucksEnv = JourneyTemplateLoader.createEnvironment()
 
-nunjucksEnv.addFilter('formatSimpleDate', date => formatDate(date, 'simple'))
+nunjucksEnv.addFilter('formatSimpleDate', date =>
+  new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+)
 
 describe('plan header', () => {
   describe('print preview', () => {

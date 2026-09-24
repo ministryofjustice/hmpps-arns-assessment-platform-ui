@@ -4,10 +4,15 @@ const config = {
   transform: { '^.+\\.tsx?$': ['ts-jest', { useESM: true }] },
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
+  moduleNameMapper: {
+    '^@ministryofjustice/hmpps-aap-sdk/(.*)$': '<rootDir>/packages/aap-sdk/src/$1',
+  },
+
   // keep your existing bits:
-  collectCoverageFrom: ['server/**/*.{ts,js,jsx,mjs}', '!server/forms/**'],
-  testMatch: ['<rootDir>/server/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
+  collectCoverageFrom: ['{server,packages}/**/*.{ts,js,jsx,mjs}', '!server/forms/**'],
+  testMatch: ['<rootDir>/(server|packages|esbuild)/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
   testPathIgnorePatterns: ['/node_modules/'],
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
   reporters: [
     'default',
     ['jest-junit', { outputDirectory: 'test_results/jest/' }],

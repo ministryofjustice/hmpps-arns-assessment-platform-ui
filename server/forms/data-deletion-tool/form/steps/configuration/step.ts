@@ -13,8 +13,8 @@ import {
   GovUKSelectInput,
   GovUKTextInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import config from '../../../../../config'
 import { DataDeletionToolEffects } from '../../../effects'
+import { dataDeletionToolConfig } from '../../../config'
 
 export const configurationStep = step({
   path: '/configuration',
@@ -38,7 +38,7 @@ export const configurationStep = step({
       label: 'Environment',
       items: [
         { value: '', text: '' },
-        ...Object.entries(config.forms.dataDeletionTool.environments).map(([key, value]) => ({
+        ...Object.entries(dataDeletionToolConfig.environments).map(([key, value]) => ({
           value: key,
           text: value.apiUrl,
         })),

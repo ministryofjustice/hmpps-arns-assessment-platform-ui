@@ -1,12 +1,35 @@
+import { readdirSync } from 'node:fs'
 import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 import prettierConfig from './prettier.config.mjs'
 
+const journeyDirs = readdirSync('server/forms', { withFileTypes: true })
+  .filter(entry => entry.isDirectory())
+  .map(entry => entry.name)
+
 export default [
   ...hmppsConfig({
-    extraIgnorePaths: ['test_results/', 'server/forms/**/components/**/*.mjs'],
+    extraIgnorePaths: ['test_results/', 'packages/*/dist/'],
   }),
   {
-    ignores: ['test_results/**'],
+    ignores: ['test_results/**', 'packages/*/dist/**'],
+  },
+  {
+    // Journeys own their source and consume platform capabilities through the SDK.
+    files: ['server/forms/**/*.{js,mjs,cjs,ts,tsx}'],
+    rules: {
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: journeyDirs.map(dir => ({
+            target: `./server/forms/${dir}`,
+            from: './',
+            except: [`./server/forms/${dir}`, './packages/aap-sdk', './node_modules'],
+            message:
+              'Journeys may import only themselves, @ministryofjustice/hmpps-aap-sdk/*, Forge and their own dependencies.',
+          })),
+        },
+      ],
+    },
   },
   {
     rules: {
@@ -15,6 +38,7 @@ export default [
       'prefer-destructuring': 'off',
       'import/prefer-default-export': 'off',
       'import/no-cycle': 'off',
+      'import/no-unresolved': ['error', { ignore: ['^aap:'] }],
       'no-plusplus': 'off',
     },
     settings: {
@@ -49,8 +73,27 @@ export default [
   {
     files: ['**/*.mjs'],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       sourceType: 'module',
+    },
+  },
+  {
+    files: ['server/forms/**/*.{js,mjs,cjs}', 'packages/aap-sdk/src/utils/browser/**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: {
+        CustomEvent: 'readonly',
+        HTMLElement: 'readonly',
+        MutationObserver: 'readonly',
+        customElements: 'readonly',
+        document: 'readonly',
+        navigator: 'readonly',
+        window: 'readonly',
+      },
+    },
+    rules: {
+      'default-case': 'off',
+      'max-classes-per-file': 'off',
+      'no-console': 'off',
     },
   },
   {

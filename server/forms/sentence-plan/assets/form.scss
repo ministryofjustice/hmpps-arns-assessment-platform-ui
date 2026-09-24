@@ -6,11 +6,13 @@
 @import 'govuk-frontend/dist/govuk/base';
 
 // Components
+@import '../components/accessible-autocomplete/accessible-autocomplete';
 @import '../components/button-as-link/buttonAsLink';
 @import '../components/goal-summary-card/goal-summary-card';
 @import '../components/goal-summary-card/goal-list';
 @import '../components/print-goal-summary-card/print-goal-summary-card';
 @import '../components/sentence-information-table/sentence-information-table';
+@import '../components/wrapping-select/wrapping-select';
 @import '../components/about-accordion/about-accordion';
 @import '../components/score-bar/needs-score';
 @import '../components/previous-versions/previous-versions';

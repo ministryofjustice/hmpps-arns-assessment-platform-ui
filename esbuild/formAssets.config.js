@@ -1,4 +1,3 @@
-const path = require('node:path')
 const { sassPlugin } = require('esbuild-sass-plugin')
 const manifestPlugin = require('esbuild-plugin-manifest')
 const { buildNotificationPlugin } = require('./utils')
@@ -6,11 +5,9 @@ const { buildNotificationPlugin } = require('./utils')
 /**
  * Build form-specific scss and javascript assets
  *
- * Form assets are co-located with their form definitions:
- *   server/forms/{form-name}/form.js
- *   server/forms/{form-name}/form.scss
- *
- * Output structure preserves the form name:
+ * Package manifests supply named entry points so their source can live either
+ * in the platform or in an installed journey package. Output is namespaced by
+ * the root journey code:
  *   dist/assets/js/forms/{form-name}/form.[hash].js
  *   dist/assets/css/forms/{form-name}/form.[hash].css
  */
@@ -23,7 +20,6 @@ const getFormAssetsConfig = buildConfig => {
   return {
     entryPoints: buildConfig.formAssets.entryPoints,
     outdir: buildConfig.formAssets.outDir,
-    outbase: buildConfig.formAssets.outbase,
     entryNames: '[ext]/forms/[dir]/[name].[hash]',
     minify: buildConfig.isProduction,
     sourcemap: !buildConfig.isProduction,
@@ -35,7 +31,7 @@ const getFormAssetsConfig = buildConfig => {
       sassPlugin({
         quietDeps: true,
         silenceDeprecations: ['import'],
-        loadPaths: [process.cwd(), path.join(process.cwd(), 'node_modules')],
+        loadPaths: buildConfig.formAssets.loadPaths,
       }),
       manifestPlugin({
         append: true,

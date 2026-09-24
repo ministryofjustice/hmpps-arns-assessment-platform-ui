@@ -1,4 +1,7 @@
-import { Answers, Properties } from '@server/interfaces/aap-api/dataModel'
+import {
+  Answers,
+  Properties,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 import { GoalStatus, StepStatus, AreaOfNeedSlug } from '@server/forms/sentence-plan/effects/types'
 
 export { GoalStatus, StepStatus, AreaOfNeedSlug }

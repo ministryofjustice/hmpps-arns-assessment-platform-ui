@@ -1,4 +1,5 @@
 import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { setTargetService } from '@ministryofjustice/hmpps-aap-sdk/utils/setTargetService'
 import { TrainingSessionLauncherEffectsDeps } from './types'
 import { loadScenarios } from './scenarios/loadScenarios'
 import { storeCsrf } from './storeCsrf'
@@ -12,7 +13,6 @@ import { createSessionFromCustomize } from './sessions/createSessionFromCustomiz
 import { generateHandoverLink } from './sessions/generateHandoverLink'
 import { addNotification } from './notifications/addNotification'
 import { loadNotifications } from './notifications/loadNotifications'
-import { setTargetService } from '../../shared/setTargetService'
 
 export const trainingSessionLauncherEffectRegistry = new EffectRegistry<TrainingSessionLauncherEffectsDeps>()
 

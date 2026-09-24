@@ -1,6 +1,6 @@
 import express from 'express'
+import { BooleanFeatureFlags } from '@ministryofjustice/hmpps-aap-sdk/dependencies/feature-flags/featureFlags'
 import type FeatureFlagService from '../services/featureFlagService'
-import { BooleanFeatureFlags } from '../utils/featureFlagsUtils'
 
 export default function setUpFeatureFlags(featureFlagService: FeatureFlagService) {
   const router = express.Router()

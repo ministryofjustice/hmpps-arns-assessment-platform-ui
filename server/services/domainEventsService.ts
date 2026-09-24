@@ -1,19 +1,6 @@
 import { SNSClient, PublishCommand } from '@aws-sdk/client-sns'
+import type { DomainEvent } from '@ministryofjustice/hmpps-aap-sdk/dependencies/domain-events/DomainEvents.type'
 import logger from '../../logger'
-
-/**
- * An HMPPS domain event, per the shared hmpps-domain-event schema.
- */
-export interface DomainEvent {
-  eventType: string
-  version: number
-  occurredAt: string
-  description?: string
-  additionalInformation?: Record<string, unknown>
-  personReference?: {
-    identifiers: Array<{ type: string; value: string }>
-  }
-}
 
 export default class DomainEventsService {
   private readonly client: SNSClient

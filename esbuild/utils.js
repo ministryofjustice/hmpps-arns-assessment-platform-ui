@@ -122,11 +122,15 @@ class ESBuildManager {
   /**
    * Start the ESBuild watcher in development mode
    */
-  start(isWatchMode) {
+  start({ isAssembly, isWatchMode }) {
     const args = ['esbuild/runner.js']
 
     if (isWatchMode) {
       args.push('--watch')
+    }
+
+    if (isAssembly) {
+      args.push('--assembly')
     }
 
     this.watchProcess = spawnPrefixed('node', args, {

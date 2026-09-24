@@ -5,7 +5,7 @@ export const cookiesPolicyStep = step({
   path: '/cookies-policy',
   title: 'Cookies policy for Assess and plan',
   view: {
-    template: 'platform/views/platform-policy-step',
+    template: 'platform-policies/views/platform-policy-step',
     locals: {
       footerBaseUrl: '/platform',
       hideSessionTimeoutModal: true,

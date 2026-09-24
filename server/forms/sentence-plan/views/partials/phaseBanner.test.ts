@@ -1,13 +1,10 @@
-import nunjucks from 'nunjucks'
+import JourneyTemplateLoader from '../../test-support/JourneyTemplateLoader'
 
 const template = 'sentence-plan/views/partials/phase-banner.njk'
 const privateBetaFeedbackUrl = 'https://forms.office.com/private-beta-feedback'
 const nationalRolloutFeedbackUrl = 'https://www.smartsurvey.co.uk/t/AAGPPN?service=ARNS%20Sentence%20Plan'
 
-const nunjucksEnv = nunjucks.configure(
-  ['server/forms', 'node_modules/govuk-frontend/dist/', 'node_modules/@ministryofjustice/frontend/'],
-  { autoescape: true },
-)
+const nunjucksEnv = JourneyTemplateLoader.createEnvironment()
 
 describe('phase banner', () => {
   it('uses the national rollout feedback URL when the user cohort is unknown', () => {

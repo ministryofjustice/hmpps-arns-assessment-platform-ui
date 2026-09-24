@@ -1,6 +1,6 @@
-import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
-import { mapArnsNeedsToCriminogenicNeeds } from '../../../../utils/arnsApiMapper'
-import { mapArnsIntegrationNeedsToCriminogenicNeeds } from '../../../../utils/arnsIntegrationMapper'
+import { CriminogenicNeedsData } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { mapArnsNeedsToCriminogenicNeeds } from './arnsApiMapper'
+import { mapArnsIntegrationNeedsToCriminogenicNeeds } from './arnsIntegrationMapper'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 /**
