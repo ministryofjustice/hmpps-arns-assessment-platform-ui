@@ -44,7 +44,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-      .withAnswers([{ question: Question.alcohol_binge_drinking, value: 'YES' }])
+      .withAnswers([{ question: Question.alcohol_binge_drinking, value: CommonOption.yes }])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
