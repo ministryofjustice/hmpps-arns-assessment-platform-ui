@@ -82,6 +82,7 @@ export const customTargetDate = MOJDatePicker({
   hint: 'For example, 31/3/2023.',
   // Set a minimum date of today in the DD/MM/YYYY format
   minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
+  maxDate: Generator.Date.Today().pipe(Transformer.Date.AddYears(5), Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
   validWhen: [
     validation({
@@ -102,6 +103,21 @@ export const customTargetDate = MOJDatePicker({
         Self().match(Condition.Date.IsFutureDate()),
       ),
       message: 'Date must be today or in the future',
+    }),
+    validation({
+      condition: or(
+        Self().not.match(Condition.Date.IsValid()),
+        Self().match(
+          Condition.Date.IsBefore(
+            Generator.Date.Today().pipe(
+              Transformer.Date.AddYears(5),
+              Transformer.Date.AddDays(1),
+              Transformer.Date.Format('YYYY-MM-DD'),
+            ),
+          ),
+        ),
+      ),
+      message: 'Date must be within the next 5 years',
     }),
   ],
   dependentWhen: Answer('target_date_option').match(Condition.Equals('set_another_date')),
