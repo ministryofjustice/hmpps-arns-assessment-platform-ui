@@ -20,6 +20,7 @@ const sectionHeader = (step: StepDefinition, visibleWhen?: ReturnType<typeof any
           text: stepTitle(step),
           size: 'm',
           level: 2,
+          attributes: { 'data-qa': `heading_${step.code}` },
         }),
       ],
     },
