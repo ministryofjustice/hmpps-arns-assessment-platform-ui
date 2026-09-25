@@ -325,10 +325,7 @@ test.describe('Questions', () => {
 
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Alcohol use')
 
-    await expect(alcoholUsePage.mainForm).toMatchAriaSnapshot(`
-      - tablist:
-        - tab "Summary" [selected]
-        - tab "Practitioner analysis"
+    await expect(alcoholUsePage.summary).toMatchAriaSnapshot(`
       - tabpanel "Summary":
         - term: Has Test ever drunk alcohol?
         - definition:
