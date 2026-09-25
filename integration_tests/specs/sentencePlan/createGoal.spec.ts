@@ -526,7 +526,10 @@ test.describe('Create Goal Journey', () => {
       await expect(fieldError).toContainText('Select all related areas')
     })
 
-    test('shows error when set another date is selected but left empty', async ({ page, createSession }) => {
+    test('shows errors when set another date is selected but left empty/has invalid date format/date is in the past or beyond 5 years', async ({
+      page,
+      createSession,
+    }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
       await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
@@ -541,6 +544,18 @@ test.describe('Create Goal Journey', () => {
 
       const fieldError = page.locator('#custom_target_date-error')
       await expect(fieldError).toContainText('Select a date')
+
+      await createGoalPage.setCustomTargetDate('not-a-date')
+      await createGoalPage.clickSaveWithoutSteps()
+      await expect(fieldError).toContainText('Select a valid date')
+
+      await createGoalPage.setCustomTargetDate('01/01/2020')
+      await createGoalPage.clickSaveWithoutSteps()
+      await expect(fieldError).toContainText('Date must be today or in the future')
+
+      await createGoalPage.setCustomTargetDate('01/01/3099')
+      await createGoalPage.clickSaveWithoutSteps()
+      await expect(fieldError).toContainText('Date must be within the next 5 years')
     })
 
     // TODO: Skipping this test because the official GOVUK components doesn't natively support

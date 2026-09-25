@@ -345,6 +345,41 @@ test.describe('Change goal journey', () => {
       // Check target date options are visible for active goal
       await expect(changeGoalPage.targetDate3Months).toBeVisible()
     })
+
+    test('shows errors when set another date is selected but left empty/has invalid date format/date is in the past or beyond 5 years', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      // Navigate to change goal
+      await page.getByRole('link', { name: 'Update goal' }).click()
+
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+      // Select custom date option
+      await changeGoalPage.selectTargetDateOption('custom')
+      await changeGoalPage.saveGoal()
+
+      const fieldError = page.locator('#custom_target_date-error')
+      await expect(fieldError).toContainText('Select a date')
+
+      await changeGoalPage.setCustomTargetDate('not-a-date')
+      await changeGoalPage.saveGoal()
+      await expect(fieldError).toContainText('Select a valid date')
+
+      await changeGoalPage.setCustomTargetDate('01/01/2020')
+      await changeGoalPage.saveGoal()
+      await expect(fieldError).toContainText('Date must be today or in the future')
+
+      await changeGoalPage.setCustomTargetDate('01/01/3099')
+      await changeGoalPage.saveGoal()
+      await expect(fieldError).toContainText('Date must be within the next 5 years')
+    })
   })
 
   test.describe('future goal workflow', () => {
