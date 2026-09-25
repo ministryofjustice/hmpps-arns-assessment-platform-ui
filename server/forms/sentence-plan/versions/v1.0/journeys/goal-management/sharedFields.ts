@@ -82,6 +82,7 @@ export const customTargetDate = MOJDatePicker({
   hint: 'For example, 31/3/2023.',
   // Set a minimum date of today in the DD/MM/YYYY format
   minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
+  maxDate: Generator.Date.Today().pipe(Transformer.Date.AddYears(5), Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
   validWhen: [
     validation({
