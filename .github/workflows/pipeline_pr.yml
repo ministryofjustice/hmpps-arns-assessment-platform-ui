@@ -56,4 +56,4 @@ jobs:
     with:
       app_version: ${{ needs.build_docker.outputs.app_version }}
       docker_multiplatform: false
-      total_shards: 4
+      total_shards: 5
