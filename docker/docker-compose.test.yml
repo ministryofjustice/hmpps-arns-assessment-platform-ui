@@ -22,7 +22,7 @@ services:
   aap-ui:
     build:
       target: production
-    command: npm run start
+    command: node --run start
     environment:
       NODE_ENV: production
       HMPPS_AUTH_URL: http://wiremock:8080/auth
