@@ -67,7 +67,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     heading: string,
   ): Promise<SectionPage> {
     const sectionPage = new this(page)
-    await expect(page.getByText(heading)).toBeVisible()
+    await expect(page.getByText(heading).first()).toBeVisible()
     return sectionPage
   }
 
