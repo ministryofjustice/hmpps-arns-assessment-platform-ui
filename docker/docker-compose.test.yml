@@ -22,7 +22,7 @@ services:
   aap-ui:
     build:
       target: production
-    command: npm run start
+    command: node --run start
     environment:
       NODE_ENV: production
       HMPPS_AUTH_URL: http://wiremock:8080/auth
@@ -40,7 +40,7 @@ services:
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.60.0-noble # Must match version in package-lock
+    image: mcr.microsoft.com/playwright:v1.63.0-noble # Must match version in package-lock
     networks:
       - hmpps
     depends_on:
