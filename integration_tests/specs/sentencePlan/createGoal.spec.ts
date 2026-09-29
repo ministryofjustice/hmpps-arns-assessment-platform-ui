@@ -547,15 +547,15 @@ test.describe('Create Goal Journey', () => {
 
       await createGoalPage.setCustomTargetDate('not-a-date')
       await createGoalPage.clickSaveWithoutSteps()
-      await expect(fieldError).toContainText('Select a valid date')
+      await expect(fieldError).toContainText('Enter a date in the correct format, for example 31/3/2028')
 
       await createGoalPage.setCustomTargetDate('01/01/2020')
       await createGoalPage.clickSaveWithoutSteps()
-      await expect(fieldError).toContainText('Date must be today or in the future')
+      await expect(fieldError).toContainText('The date must be today or in the future')
 
       await createGoalPage.setCustomTargetDate('01/01/3099')
       await createGoalPage.clickSaveWithoutSteps()
-      await expect(fieldError).toContainText('Date must be within the next 5 years')
+      await expect(fieldError).toContainText('The date must be within the next 5 years')
     })
 
     // TODO: Skipping this test because the official GOVUK components doesn't natively support

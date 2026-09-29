@@ -370,15 +370,15 @@ test.describe('Change goal journey', () => {
 
       await changeGoalPage.setCustomTargetDate('not-a-date')
       await changeGoalPage.saveGoal()
-      await expect(fieldError).toContainText('Select a valid date')
+      await expect(fieldError).toContainText('Enter a date in the correct format, for example 31/3/2028')
 
       await changeGoalPage.setCustomTargetDate('01/01/2020')
       await changeGoalPage.saveGoal()
-      await expect(fieldError).toContainText('Date must be today or in the future')
+      await expect(fieldError).toContainText('The date must be today or in the future')
 
       await changeGoalPage.setCustomTargetDate('01/01/3099')
       await changeGoalPage.saveGoal()
-      await expect(fieldError).toContainText('Date must be within the next 5 years')
+      await expect(fieldError).toContainText('The date must be within the next 5 years')
     })
   })
 
