@@ -102,7 +102,7 @@ export const customTargetDate = MOJDatePicker({
         Self().match(Condition.Date.IsToday()),
         Self().match(Condition.Date.IsFutureDate()),
       ),
-      message: 'Date must be today or in the future',
+      message: 'The date must be today or in the future',
     }),
     validation({
       condition: or(
@@ -117,7 +117,7 @@ export const customTargetDate = MOJDatePicker({
           ),
         ),
       ),
-      message: 'Date must be within the next 5 years',
+      message: 'The date must be within the next 5 years',
     }),
   ],
   dependentWhen: Answer('target_date_option').match(Condition.Equals('set_another_date')),
