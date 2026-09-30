@@ -35,28 +35,22 @@ test.describe('Add or update steps page', () => {
       await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.addSteps))
     })
 
-    test('shows "Add or update steps" heading when editing an existing goal', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Existing goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
+    test('shows "Add or update steps" heading when editing an existing goal', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Existing goal',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -67,26 +61,23 @@ test.describe('Add or update steps page', () => {
 
     test('shows "Add steps" heading when editing an existing goal with no steps', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Existing goal with no steps',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Existing goal with no steps',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -99,18 +90,14 @@ test.describe('Add or update steps page', () => {
   test.describe('goal context inset text', () => {
     test('displays the area of need in the inset in lower case when goal has no related areas', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoals(1))
-        .withAgreementStatus('AGREED')
-        .save()
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoals(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -125,27 +112,24 @@ test.describe('Add or update steps page', () => {
 
     test('displays related areas in the inset in alphabetical order when goal has related areas', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Goal with related areas',
-            areaOfNeed: 'accommodation',
-            relatedAreasOfNeed: ['finances', 'employment-and-education'],
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal with related areas',
+                areaOfNeed: 'accommodation',
+                relatedAreasOfNeed: ['finances', 'employment-and-education'],
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -158,24 +142,22 @@ test.describe('Add or update steps page', () => {
       await expect(addStepsPage.goalContextInset).toContainText('Also relates to: employment and education, finances')
     })
 
-    test('displays the goal title in the inset', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Find suitable housing',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
+    test('displays the goal title in the inset', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Find suitable housing',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -210,20 +192,13 @@ test.describe('Add or update steps page', () => {
       await expect(addStepsPage.goalContextInset).toContainText('Goal: Test goal during creation')
     })
 
-    test('displays the area of need in the inset for a future goal', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(futureGoals(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('displays the area of need in the inset for a future goal', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(futureGoals(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -233,16 +208,13 @@ test.describe('Add or update steps page', () => {
       await expect(addStepsPage.goalContextInset.locator('strong').first()).toHaveText('finances')
     })
 
-    test('inset text is accessible', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoals(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('inset text is accessible', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoals(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
@@ -252,27 +224,21 @@ test.describe('Add or update steps page', () => {
   })
 
   test.describe('inset text on update flow', () => {
-    test('inset is displayed when navigating from update goal and steps page', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Current Goal 1',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('inset is displayed when navigating from update goal and steps page', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Current Goal 1',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
 
       // Navigate via update goal -> add or change steps link
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

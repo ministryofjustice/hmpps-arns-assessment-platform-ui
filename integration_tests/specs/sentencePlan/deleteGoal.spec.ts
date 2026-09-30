@@ -1,28 +1,19 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
+import { test } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
-import {
-  checkAccessibility,
-  navigateToSentencePlan,
-  sentencePlanV1UrlBuilders,
-  sentencePlanV1URLs,
-} from './sentencePlanUtils'
+import { checkAccessibility, sentencePlanV1UrlBuilders, sentencePlanV1URLs } from './sentencePlanUtils'
 
 const planOverviewPageAchievedGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`
 
 test.describe('Delete goal journey', () => {
   test.describe('redirect after deletion', () => {
-    test('deleting a current goal redirects to current goals tab', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+    test('deleting a current goal redirects to current goals tab', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
       await expect(
@@ -42,16 +33,12 @@ test.describe('Delete goal journey', () => {
       await expect(planOverviewPage.notificationBannerText).toContainText(/You deleted a goal from .+'s plan/i)
     })
 
-    test('deleting a future goal redirects to future goals tab', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
+    test('deleting a future goal redirects to future goals tab', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(futureGoals(1)),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
       await page.getByRole('button', { name: 'Confirm' }).click()
@@ -61,43 +48,35 @@ test.describe('Delete goal journey', () => {
   })
 
   test.describe('access control', () => {
-    test('redirects to plan overview when plan is agreed', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoals(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('redirects to plan overview when plan is agreed', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoals(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
       // Should redirect to plan overview since delete is only for draft plans
       await PlanOverviewPage.verifyOnPage(page)
     })
 
-    test('redirects to achieved goals when goal has already been achieved', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Achieved Goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACHIEVED',
-            targetDate: '2025-06-01',
-            steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
-          },
-        ])
-        .save()
+    test('redirects to achieved goals when goal has already been achieved', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Achieved Goal',
+              areaOfNeed: 'accommodation',
+              status: 'ACHIEVED',
+              targetDate: '2025-06-01',
+              steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+            },
+          ]),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
       await PlanOverviewPage.verifyOnPage(page)

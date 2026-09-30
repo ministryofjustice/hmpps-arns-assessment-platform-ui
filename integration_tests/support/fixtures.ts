@@ -12,7 +12,11 @@ import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
 import { AssessmentBuilder } from '../builders/AssessmentBuilder'
 import type { AssessmentBuilderFactory } from '../builders/AssessmentBuilder'
 import { SentencePlanBuilder } from '../builders/SentencePlanBuilder'
-import type { SentencePlanBuilderFactory } from '../builders/SentencePlanBuilder'
+import type {
+  CreatedSentencePlan,
+  SentencePlanBuilderFactory,
+  SentencePlanBuilderInstance,
+} from '../builders/SentencePlanBuilder'
 import { CoordinatorBuilder } from '../builders/CoordinatorBuilder'
 import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
@@ -20,6 +24,7 @@ import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
 import arnsApi, { criminogenicNeedsToArnsDetails } from '../mockApis/arnsApi'
+import { navigateToSentencePlan } from '../specs/sentencePlan/sentencePlanUtils'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -124,6 +129,16 @@ export interface SessionFixture {
   sanAssessmentVersion: number
 }
 
+export interface OpenSentencePlanOptions {
+  session?: Omit<CreateSessionOptions, 'targetService'>
+  /** Adds goals, agreement status etc. to the plan before it is saved. */
+  plan?: (builder: SentencePlanBuilderInstance) => SentencePlanBuilderInstance
+}
+
+export interface OpenedSentencePlan extends SessionFixture {
+  plan: CreatedSentencePlan
+}
+
 /**
  * Worker-scoped fixtures shared across all tests in a worker.
  * The auth client is worker-scoped so a single token is cached and reused
@@ -146,6 +161,11 @@ type TestApiFixtures = {
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
+  /**
+   * Creates a sentence plan session, saves the plan, then opens the plan overview via the handover link.
+   * Replaces the createSession, sentencePlanBuilder and navigateToSentencePlan steps most specs repeat.
+   */
+  openSentencePlan: (options?: OpenSentencePlanOptions) => Promise<OpenedSentencePlan>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
 }
@@ -310,6 +330,21 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
     await use(createSessionFn)
   },
+
+  openSentencePlan: async ({ page, createSession, sentencePlanBuilder }, use) => {
+    const openSentencePlanFn = async (options: OpenSentencePlanOptions = {}): Promise<OpenedSentencePlan> => {
+      const session = await createSession({ ...options.session, targetService: TargetService.SENTENCE_PLAN })
+      const builder = sentencePlanBuilder.extend(session.sentencePlanId)
+      const plan = await (options.plan?.(builder) ?? builder).save()
+
+      await navigateToSentencePlan(page, session.handoverLink)
+
+      return { ...session, plan }
+    }
+
+    await use(openSentencePlanFn)
+  },
+
   auditQueue: async ({ apis }, use) => {
     const client = AuditQueueClient.getInstance({
       queueUrl: apis.localstack.queueUrl,

@@ -36,14 +36,13 @@ import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOn
  * True when at least one goal appears in a tab a draft plan can show.
  * REMOVED is left out because the removed tab only appears after agreement.
  */
-const hasGoalsInDisplayedTabs = Data('goals')
-  .each(
-    Iterator.Filter(
-      Item().path('status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE', 'ACHIEVED'])),
-    ),
-  )
-  .pipe(Transformer.Array.Length())
-  .match(Condition.Number.GreaterThan(0))
+const hasGoalsInDisplayedTabs = Data('goals').each(
+  Iterator.Some(
+    Item()
+      .path('status')
+      .match(Condition.Array.IsIn(['ACTIVE', 'FUTURE', 'ACHIEVED'])),
+  ),
+)
 
 /**
  * A draft plan with no goals on show has nothing to print, so the button is hidden.
@@ -69,10 +68,7 @@ export const planStep = step({
   },
   validWhen: [
     validation({
-      condition: Data('goals')
-        .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-        .pipe(Transformer.Array.Length())
-        .match(Condition.Number.GreaterThan(0)),
+      condition: Data('goals').each(Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE')))),
       message: 'To agree the plan, create a goal to work on now',
       details: { href: '#blank-plan-content' },
     }),
