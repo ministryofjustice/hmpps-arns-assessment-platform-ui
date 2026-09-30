@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import TieringAssessmentPage from '../tieringAssessmentPage'
 
 export default class OffencesSinceCommunityDatePage extends TieringAssessmentPage {
@@ -20,6 +20,12 @@ export default class OffencesSinceCommunityDatePage extends TieringAssessmentPag
     this.recentOffenceMonth = page.getByRole('textbox', { name: 'Month' })
     this.recentOffenceYear = page.getByRole('textbox', { name: 'Year' })
     this.offencesSinceCommunityNo = page.getByRole('radio', { name: 'No' })
+  }
+
+  async checkRevealRecentOffenceDateVisible(isVisible: boolean) {
+    await expect(this.recentOffenceDay).toBeVisible({ visible: isVisible })
+    await expect(this.recentOffenceMonth).toBeVisible({ visible: isVisible })
+    await expect(this.recentOffenceYear).toBeVisible({ visible: isVisible })
   }
 
   async clickOffencesSinceCommunityYesRadioOption() {

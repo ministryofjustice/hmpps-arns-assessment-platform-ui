@@ -101,7 +101,9 @@ test.describe('Assessment Dynamic', () => {
     /** Offences since community date page */
     await offencesSinceCommunityDatePage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_SINCE_SUPERVISION)
     await offencesSinceCommunityDatePage.checkPageHeading(tieringAssessmentPageTitles.offencesSinceSupervision)
+    await offencesSinceCommunityDatePage.checkRevealRecentOffenceDateVisible(false)
     await offencesSinceCommunityDatePage.clickOffencesSinceCommunityYesRadioOption()
+    await offencesSinceCommunityDatePage.checkRevealRecentOffenceDateVisible(true)
     await offencesSinceCommunityDatePage.fillRecentOffenceDayTextbox()
     await offencesSinceCommunityDatePage.fillRecentOffenceMonthTextbox()
     await offencesSinceCommunityDatePage.fillRecentOffenceYearTextbox()
