@@ -70,7 +70,7 @@ const goalsByStatus = (status: GoalStatus) =>
   Data('goals').each(Iterator.Filter(Item().path('status').match(Condition.Equals(status))))
 
 const hasGoalsByStatus = (status: GoalStatus) =>
-  goalsByStatus(status).pipe(Transformer.Array.Length()).match(Condition.Number.GreaterThan(0))
+  Data('goals').each(Iterator.Some(Item().path('status').match(Condition.Equals(status))))
 
 const goalCard = () =>
   PrintGoalSummaryCard({

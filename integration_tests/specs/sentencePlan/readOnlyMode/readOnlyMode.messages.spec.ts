@@ -1,23 +1,16 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
-import { navigateToSentencePlan } from '../sentencePlanUtils'
+import {} from '../sentencePlanUtils'
 
 test.describe('READ_ONLY Access Mode', () => {
   test.describe('Plan Created Message', () => {
-    test('shows plan creation date with View plan history link', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('shows plan creation date with View plan history link', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder => builder.withGoals(currentGoals(1)).withAgreementStatus('AGREED'),
       })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
-
-      await navigateToSentencePlan(page, handoverLink)
 
       const agreedMessage = page.getByText(/agreed to their plan on/i)
       await expect(agreedMessage).toBeVisible()
@@ -27,15 +20,12 @@ test.describe('READ_ONLY Access Mode', () => {
       await expect(viewHistoryLink).toBeVisible()
     })
 
-    test('hides update agreement link', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('hides update agreement link', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder => builder.withGoals(currentGoals(1)).withAgreementStatus('AGREED'),
       })
 
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
-
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.updateAgreementLink).not.toBeVisible()
@@ -43,18 +33,9 @@ test.describe('READ_ONLY Access Mode', () => {
   })
 
   test.describe('Empty Plan State', () => {
-    test('shows simplified no goals message without action links', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
-      })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
+    test('shows simplified no goals message without action links', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({ session: { planAccessMode: 'READ_ONLY' } })
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       // Should show the no goals message

@@ -51,21 +51,13 @@ function buildMoveButtonProps() {
 
 // Calculate goal counts for sub-navigation tabs
 // Achieved and removed tabs are conditionally shown only when count > 0
-const activeGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-  .pipe(Transformer.Array.Length())
+const activeGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('ACTIVE'))))
 
-const futureGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
-  .pipe(Transformer.Array.Length())
+const futureGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('FUTURE'))))
 
-const achievedGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACHIEVED'))))
-  .pipe(Transformer.Array.Length())
+const achievedGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('ACHIEVED'))))
 
-const removedGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
-  .pipe(Transformer.Array.Length())
+const removedGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('REMOVED'))))
 
 export const planLastUpdatedMessage = GovUKBody({
   visibleWhen: not(

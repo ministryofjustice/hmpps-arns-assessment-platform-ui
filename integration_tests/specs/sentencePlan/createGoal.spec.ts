@@ -558,65 +558,6 @@ test.describe('Create Goal Journey', () => {
       await expect(fieldError).toContainText('The date must be within the next 5 years')
     })
 
-    // TODO: Skipping this test because the official GOVUK components doesn't natively support
-    //  this, and on some investigation, it leads to screen-readers repeating themselves in a confusing way
-    test.skip(`related areas of need checkboxes' inputs have individual aria-describedby attribute for inline errors`, async ({
-      page,
-      createSession,
-    }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('button', { name: 'Create goal' }).click()
-
-      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
-      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
-
-      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-      await createGoalPage.selectIsRelated(true)
-
-      // click add steps to trigger error:
-      await createGoalPage.clickAddSteps()
-
-      const checkboxAriaValues = await page
-        .locator('fieldset input[type="checkbox"]')
-        .evaluateAll(els => els.map(el => el.getAttribute('aria-describedby')))
-
-      expect(checkboxAriaValues.length).toBeGreaterThan(0)
-      checkboxAriaValues.forEach(value => {
-        expect(value).toBe('related_areas_of_need-error')
-      })
-    })
-
-    // TODO: Skipping this test because the official GOVUK components doesn't natively support
-    //  this, and on some investigation, it leads to screen-readers repeating themselves in a confusing way
-    test.skip(`related areas of need radio buttons' inputs have individual aria-describedby attribute for inline errors`, async ({
-      page,
-      createSession,
-    }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('button', { name: 'Create goal' }).click()
-
-      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
-      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
-
-      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-
-      // click add steps to trigger error:
-      await createGoalPage.clickAddSteps()
-
-      const radioInputAriaDescribedByValues = await page
-        .locator('fieldset input[id="is_related_to_other_areas"]')
-        .evaluateAll(radioButtonInputElements =>
-          radioButtonInputElements.map(element => element.getAttribute('aria-describedby')),
-        )
-
-      expect(radioInputAriaDescribedByValues.length).toBeGreaterThan(0)
-      radioInputAriaDescribedByValues.forEach(value => {
-        expect(value).toBe('is_related_to_other_areas-error')
-      })
-    })
-
     test(`inline error id is referenced in aria-describedby attribute for goal title input`, async ({
       page,
       createSession,
