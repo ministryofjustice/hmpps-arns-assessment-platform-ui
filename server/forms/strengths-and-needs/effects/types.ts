@@ -30,6 +30,7 @@ export interface StrengthsAndNeedsSession {
   countersignedVersions: PreviousVersionDisplay[]
   previousVersions?: PreviousVersionDisplay[]
   patternDrafts?: Record<string, Record<string, unknown>>
+  userSubmitted?: Record<string, boolean>
 }
 
 /**

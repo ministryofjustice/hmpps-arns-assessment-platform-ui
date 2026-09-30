@@ -15,6 +15,9 @@ export const autosaveSubmit = submit({
   guards: isEditMode,
   validate: false,
   onAlways: {
-    effects: [StrengthsAndNeedsEffects.autosaveCurrentStepAnswers()],
+    effects: [
+      StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+      StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+    ],
   },
 })
