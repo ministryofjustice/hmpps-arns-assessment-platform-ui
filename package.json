@@ -95,7 +95,10 @@
       "proxy-addr": "^2.0.8"
     },
     "glob@6.0.4": {
-      "minimatch": "^10.2.4"
+      "minimatch": {
+        ".": "^10.2.4",
+        "brace-expansion": "^5.0.12"
+      }
     },
     "glob@10.5.0": {
       "minimatch": "^10.2.4"
@@ -106,15 +109,12 @@
     "minimatch@3.1.5": {
       "brace-expansion": "^1.1.21"
     },
-    "minimatch@10.2.4": {
-      "brace-expansion": "^5.0.12"
-    },
-    "minimatch@10.2.6": {
-      "brace-expansion": "^5.0.12"
-    },
     "mocha": {
       "diff": "^8.0.4",
-      "minimatch": "^10.2.4",
+      "minimatch": {
+        ".": "^10.2.4",
+        "brace-expansion": "^5.0.12"
+      },
       "serialize-javascript": "^7.1.2"
     }
   },
