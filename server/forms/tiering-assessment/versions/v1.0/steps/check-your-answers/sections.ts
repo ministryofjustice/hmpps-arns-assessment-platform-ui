@@ -16,24 +16,29 @@ import { drugUseFields } from '../drug-use/fields'
 import { personalRelationshipsFields } from '../personal-relationships-and-community/fields'
 import { thinkingAttitudesBehavioursFields } from '../thinking-attitudes-and-behaviours/fields'
 import { previousConvictionsFields } from '../previous-convictions/fields'
+import { offenceAnalysisFields } from '../offence-analysis/fields'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
   config?: SectionDefinition | SectionDefinition[]
 }
 
-export const checkYourAnswersSections: CheckYourAnswersSection[] = [
+export const staticCheckYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.current_offence_and_offending_history, config: currentOffenceAndOffendingHistoryFields },
   { step: Step.sexual_offending, config: sexualOffendingFields },
   { step: Step.date_of_current_supervision, config: dateOfCurrentSupervisionFields },
   { step: Step.offences_since_community_date, config: offencesSinceSupervisionFields },
   { step: Step.interview_question, config: interviewFields },
+]
+
+export const dynamicCheckYourAnswersSections: CheckYourAnswersSection[] = [
   { step: Step.accommodation, config: accommodationFields },
   { step: Step.employment, config: employmentFields },
   { step: Step.drug_misuse, config: [drugMisuseFields, drugUseFields] },
   { step: Step.alcohol_ever_used, config: [alcoholEverUsedFields, alcoholFields, bingeDrinkingFields] },
   { step: Step.personal_relationships_and_community, config: personalRelationshipsFields },
   { step: Step.thinking_attitudes_and_behaviours, config: thinkingAttitudesBehavioursFields },
+  { step: Step.offence_analysis, config: offenceAnalysisFields },
   { step: Step.previous_convictions, config: previousConvictionsFields },
 ]
 

@@ -21,6 +21,7 @@ export interface TieringAssessmentEffectShape {
   LoadCaseData: () => EffectFunctionExpr
   TransformRiskData: () => EffectFunctionExpr
   ReadWriteAccess: () => EffectFunctionExpr
+  IsAssessmentStatusComplete: () => EffectFunctionExpr
 }
 
 export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
@@ -150,6 +151,25 @@ export const TieringAssessmentEffectsImplementations = defineEffectFunctions<
     session.accessMode = 'READ_WRITE'
     context.setData('accessMode', session.accessMode)
   },
+  IsAssessmentStatusComplete:
+    (deps: TieringAssessmentEffectsDeps) => async (context: TieringAssessmentEffectContext) => {
+      const session = context.getSession()
+      const assessmentUuid = session.assessmentUuid
+
+      if (assessmentUuid != null) {
+        const assessment = await deps.api.executeQuery({
+          type: 'AssessmentVersionQuery',
+          user: context.getState('user'),
+          assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+        })
+        const isAssessmentCompleteStatus = assessment.properties.status
+        const isAssessmentComplete =
+          isAssessmentCompleteStatus?.type === 'Single' ? isAssessmentCompleteStatus.value : undefined
+        if (isAssessmentComplete === 'COMPLETE') {
+          context.setData('isAssessmentComplete', true)
+        }
+      }
+    },
 })
 
 export const TieringAssessmentEffectsRegistry = new EffectRegistry<TieringAssessmentEffectsDeps>()
@@ -198,5 +218,9 @@ export const TieringAssessmentEffects: TieringAssessmentEffectShape = {
   ReadWriteAccess: TieringAssessmentEffectsRegistry.register(
     'ReadWriteAccess',
     TieringAssessmentEffectsImplementations.implementations.ReadWriteAccess,
+  ),
+  IsAssessmentStatusComplete: TieringAssessmentEffectsRegistry.register(
+    'IsAssessmentStatusComplete',
+    TieringAssessmentEffectsImplementations.implementations.IsAssessmentStatusComplete,
   ),
 }

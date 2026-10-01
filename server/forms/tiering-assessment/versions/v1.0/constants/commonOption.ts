@@ -11,4 +11,5 @@ export const CommonOption = {
   full_motivation: 'FULL_MOTIVATION',
   partial_motivation: 'PARTIAL_MOTIVATION',
   no_motivation: 'NO_MOTIVATION',
+  na: 'NA',
 } as const
