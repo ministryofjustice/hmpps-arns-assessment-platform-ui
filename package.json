@@ -46,7 +46,7 @@
     "@ministryofjustice/hmpps-forge": "0.4.4",
     "@ministryofjustice/hmpps-monitoring": "^1.1.0",
     "@ministryofjustice/hmpps-mpop-frontend-components-lib": "0.0.25",
-    "@ministryofjustice/hmpps-rest-client": "^1.2.1",
+    "@ministryofjustice/hmpps-rest-client": "^2.2.0",
     "accessible-autocomplete": "^3.0.2",
     "body-parser": "^2.3.0",
     "bunyan": "^1.8.15",
