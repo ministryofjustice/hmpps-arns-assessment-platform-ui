@@ -12,6 +12,8 @@ import {
 import { EmploymentOption } from '../versions/v1.0/steps/employment/constants/employmentOption'
 import { CommonOption } from '../versions/v1.0/constants/commonOption'
 import { DrugOption } from '../versions/v1.0/steps/drug-use/constants/DrugOption'
+import { OffenceOption } from '../versions/v1.0/steps/offence-analysis/constants/OffenceOption'
+import { DomesticAbuseOption } from '../versions/v1.0/steps/offence-analysis/constants/DomesticAbuseOption'
 
 describe('RiskActuarialService', () => {
   let service: RiskActuarialService
@@ -344,7 +346,7 @@ describe('RiskActuarialService', () => {
       ever_misused_drugs: 'YES',
       motivation_to_tackle_drug_misuse: 'PARTIAL_MOTIVATION',
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
+      current_alcohol_use: 'TWO_TO_THREE_TIMES_A_WEEK',
       units_of_alcohol: 'FIVE_TO_SIX_UNITS',
       alcohol_use_binge_drinking: 'SIGNIFICANT_PROBLEMS',
       who_are_they_living_with: 'partner',
@@ -355,9 +357,13 @@ describe('RiskActuarialService', () => {
       impulsivity_problems: 'NO_PROBLEMS',
       pro_criminal_attitudes: 'SIGNIFICANT_PROBLEMS',
       previous_convictions: ['FIREARMS', 'ROBBERY', 'WEAPON'],
-      'offence-elements': 'domestic-abuse,excessive-violence-or-sadistic-violence,weapon',
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'intimate-partner',
+      offence_elements: [
+        OffenceOption.domestic_abuse,
+        OffenceOption.excessive_violence_or_sadistic_violence,
+        OffenceOption.weapon,
+      ],
+      evidence_of_domestic_abuse: 'true',
+      domestic_abuse_against: DomesticAbuseOption.intimate_partner,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -784,10 +790,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and current_alcohol_use_frequency is unknown', async () => {
+  it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and current_alcohol_use is unknown', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      current_alcohol_use_frequency: 'unknown',
+      current_alcohol_use: 'unknown',
       units_of_alcohol: 'TEN_OR_MORE_UNITS',
     }
 
@@ -805,7 +811,7 @@ describe('RiskActuarialService', () => {
   it('should return null if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and units_of_alcohol is unknown', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      current_alcohol_use_frequency: 'MORE_THAN_FOUR_TIME_A_WEEK',
+      current_alcohol_use: 'MORE_THAN_FOUR_TIME_A_WEEK',
       units_of_alcohol: 'unknown',
     }
 
@@ -820,10 +826,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol <= 4', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use and units_of_alcohol <= 4', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
+      current_alcohol_use: 'TWO_TO_THREE_TIMES_A_WEEK',
       units_of_alcohol: 'THREE_TO_FOUR_UNITS',
     }
 
@@ -838,10 +844,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol <= 7', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use and units_of_alcohol <= 7', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      current_alcohol_use_frequency: 'TWO_TO_THREE_TIMES_A_WEEK',
+      current_alcohol_use: 'TWO_TO_THREE_TIMES_A_WEEK',
       units_of_alcohol: 'TEN_OR_MORE_UNITS',
     }
 
@@ -856,10 +862,10 @@ describe('RiskActuarialService', () => {
     )
   })
 
-  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use_frequency and units_of_alcohol => 8', async () => {
+  it('should return the parsed problem level if "has_ever_drunk_alcohol" is YES_IN_LAST_THREE_MONTHS and summary of current_alcohol_use and units_of_alcohol => 8', async () => {
     const answers: Record<string, unknown> = {
       has_ever_drunk_alcohol: 'YES_IN_LAST_THREE_MONTHS',
-      current_alcohol_use_frequency: 'MORE_THAN_FOUR_TIME_A_WEEK',
+      current_alcohol_use: 'MORE_THAN_FOUR_TIME_A_WEEK',
       units_of_alcohol: 'TEN_OR_MORE_UNITS',
     }
 
@@ -998,72 +1004,10 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "intimate-partner"', async () => {
+
+  it('should return true if "offence_elements" contains "WEAPON"', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'intimate-partner',
-    }
-
-    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
-
-    await service.calculateAndSaveScores(mockContext)
-
-    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
-      expect.objectContaining({
-        evidenceOfDomesticAbuse: true,
-      }),
-    )
-  })
-  it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member-and-intimate-partner"', async () => {
-    const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member-and-intimate-partner',
-    }
-
-    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
-
-    await service.calculateAndSaveScores(mockContext)
-
-    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
-      expect.objectContaining({
-        evidenceOfDomesticAbuse: true,
-      }),
-    )
-  })
-  it('should return false if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member"', async () => {
-    const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member',
-    }
-
-    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
-
-    await service.calculateAndSaveScores(mockContext)
-
-    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
-      expect.objectContaining({
-        evidenceOfDomesticAbuse: false,
-      }),
-    )
-  })
-  it('should return false if "evidence-of-domestic-abuse" is false', async () => {
-    const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'false',
-    }
-
-    mockContext.getAnswer.mockImplementation((key: string) => answers[key])
-
-    await service.calculateAndSaveScores(mockContext)
-
-    expect(mockApiClient.getRiskScores).toHaveBeenCalledWith(
-      expect.objectContaining({
-        evidenceOfDomesticAbuse: false,
-      }),
-    )
-  })
-  it('should return true if "offence-elements" contains "weapon"', async () => {
-    const answers: Record<string, unknown> = {
-      'offence-elements': 'arson,weapon',
+      offence_elements: [OffenceOption.arson, OffenceOption.weapon],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1076,9 +1020,9 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return true if "offence-elements" contains "weapon"', async () => {
+  it('should return true if "offence_elements" contains "VIOLENT_OR_THREAT_OF_VIOLENCE_WITH_A_WEAPON"', async () => {
     const answers: Record<string, unknown> = {
-      'offence-elements': 'arson,weapon,violent-or-threat-of-violence-with-a-weapon',
+      offence_elements: [OffenceOption.arson, OffenceOption.violent_or_threat_of_violence_with_a_weapon],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1091,9 +1035,9 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return false if "offence-elements" does not contain "weapon"', async () => {
+  it('should return false if "offence_elements" does not contain "WEAPON"', async () => {
     const answers: Record<string, unknown> = {
-      'offence-elements': 'arson,hatred-of-identifiable-group',
+      offence_elements: [OffenceOption.arson, OffenceOption.hatred_of_identifiable_group],
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1106,10 +1050,10 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "intimate-partner"', async () => {
+  it('should return true if "evidence_of_domestic_abuse" is true and "domestic_abuse_against" is "INTIMATE_PARTNER"', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'intimate-partner',
+      evidence_of_domestic_abuse: CommonOption.yes,
+      domestic_abuse_against: DomesticAbuseOption.intimate_partner,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1122,10 +1066,10 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return true if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member-and-intimate-partner"', async () => {
+  it('should return true if "evidence_of_domestic_abuse" is true and "domestic_abuse_against" is "FAMILY_MEMBER_AND_INTIMATE_PARTNER"', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member-and-intimate-partner',
+      evidence_of_domestic_abuse: CommonOption.yes,
+      domestic_abuse_against: DomesticAbuseOption.family_member_and_intimate_partner,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1138,10 +1082,10 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return false if "evidence-of-domestic-abuse" is true and "domestic-abuse-against" is "family-member"', async () => {
+  it('should return false if "evidence_of_domestic_abuse" is false and "domestic_abuse_against" is "FAMILY_MEMBER"', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'true',
-      'domestic-abuse-against': 'family-member',
+      evidence_of_domestic_abuse: CommonOption.yes,
+      domestic_abuse_against: DomesticAbuseOption.family_member,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])
@@ -1154,9 +1098,9 @@ describe('RiskActuarialService', () => {
       }),
     )
   })
-  it('should return false if "evidence-of-domestic-abuse" is false', async () => {
+  it('should return false if "evidence_of_domestic_abuse" is false', async () => {
     const answers: Record<string, unknown> = {
-      'evidence-of-domestic-abuse': 'false',
+      evidence_of_domestic_abuse: CommonOption.no,
     }
 
     mockContext.getAnswer.mockImplementation((key: string) => answers[key])

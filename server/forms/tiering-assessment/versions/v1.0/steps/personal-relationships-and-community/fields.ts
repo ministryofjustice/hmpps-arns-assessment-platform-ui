@@ -31,7 +31,7 @@ const importantRelationshipsQuestion = question({
       },
       {
         value: RelationshipOption.other_children,
-        text: contentFor('question.important_relationships.option.OTHER_RELATIONSHIP'),
+        text: contentFor('question.important_relationships.option.OTHER_CHILDREN'),
       },
       {
         value: RelationshipOption.family_members,
