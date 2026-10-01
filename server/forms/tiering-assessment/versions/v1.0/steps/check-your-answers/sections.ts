@@ -1,4 +1,4 @@
-import { QuestionContent, SectionDefinition, SummaryRow } from '../../../../constants/questionContent'
+import { QuestionContent, SectionDefinition } from '../../../../constants/questionContent'
 import { Step } from '../../constants/page'
 import { StepDefinition } from '../../locales'
 import { accommodationFields } from '../accommodation/fields'
@@ -17,6 +17,7 @@ import { personalRelationshipsFields } from '../personal-relationships-and-commu
 import { thinkingAttitudesBehavioursFields } from '../thinking-attitudes-and-behaviours/fields'
 import { previousConvictionsFields } from '../previous-convictions/fields'
 import { offenceAnalysisFields } from '../offence-analysis/fields'
+import { SummaryListRow } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition
@@ -44,7 +45,7 @@ export const dynamicCheckYourAnswersSections: CheckYourAnswersSection[] = [
 
 export interface Answerable {
   content: QuestionContent
-  displayModes?: { summaryRow?: SummaryRow }
+  displayModes?: { summaryRow?: SummaryListRow }
 }
 
 const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)
