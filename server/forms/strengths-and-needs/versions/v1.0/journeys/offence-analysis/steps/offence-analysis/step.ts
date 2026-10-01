@@ -108,7 +108,6 @@ export const offenceAnalysisStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          // StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
         ],
         next: [
           redirect({

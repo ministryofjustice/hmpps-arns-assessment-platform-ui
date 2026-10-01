@@ -54,6 +54,8 @@ import {
   yesNo,
 } from '../../constants/questionContent'
 import { isEditMode } from '../../guards'
+import { StrengthsAndNeedsTransformers } from '../../../../transformers';
+import { StrengthsAndNeedsConditions } from '../../../../conditions';
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
@@ -168,10 +170,12 @@ export const drugHowOftenUsedDetails = questionTemplate({
         maxLength: CharacterLimit.c2000,
         validWhen: [
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+            condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
             message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
+        parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     collectionSummaryRow: content => ({
       key: { text: content.text },

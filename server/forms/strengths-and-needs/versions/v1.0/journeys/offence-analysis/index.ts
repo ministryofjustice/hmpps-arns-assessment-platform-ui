@@ -8,7 +8,6 @@ import { offenceAnalysisEditVictimStep } from './steps/offence-analysis-edit-vic
 import { offenceAnalysisInvolvedPartiesStep } from './steps/offence-analysis-involved-parties/step'
 import { offenceAnalysisImpactStep } from './steps/offence-analysis-impact/step'
 import { offenceAnalysisSummaryStep } from './steps/offence_analysis_summary/step'
-import { offenceAnalysisAnalysisStep } from './steps/offence_analysis_analysis/step'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
 
@@ -29,7 +28,7 @@ export const offenceAnalysisJourney = journey({
   title: 'Offence analysis',
   path: Section.offence_analysis.path,
   reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
-  onAccess: [redirectToAnalysisIfReadOnly(Section.offence_analysis.path, Step.offence_analysis_analysis.path)],
+  onAccess: [redirectToAnalysisIfReadOnly(Section.offence_analysis.path, Step.offence_analysis_summary.path)],
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.offence_analysis),
@@ -44,6 +43,5 @@ export const offenceAnalysisJourney = journey({
     offenceAnalysisInvolvedPartiesStep,
     offenceAnalysisImpactStep,
     offenceAnalysisSummaryStep,
-    offenceAnalysisAnalysisStep,
   ],
 })
