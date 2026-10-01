@@ -105,6 +105,10 @@ export default class CreateGoalPage extends AbstractPage {
     return this.targetDate.selectOption(option)
   }
 
+  async setCustomTargetDate(date: string): Promise<void> {
+    return this.targetDate.setCustomDate(date)
+  }
+
   async clickAddSteps(): Promise<void> {
     await this.addStepsButton.click()
   }

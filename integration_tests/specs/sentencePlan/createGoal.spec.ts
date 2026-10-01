@@ -526,7 +526,10 @@ test.describe('Create Goal Journey', () => {
       await expect(fieldError).toContainText('Select all related areas')
     })
 
-    test('shows error when set another date is selected but left empty', async ({ page, createSession }) => {
+    test('shows errors when set another date is selected but left empty/has invalid date format/date is in the past or beyond 5 years', async ({
+      page,
+      createSession,
+    }) => {
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
       await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
@@ -541,65 +544,18 @@ test.describe('Create Goal Journey', () => {
 
       const fieldError = page.locator('#custom_target_date-error')
       await expect(fieldError).toContainText('Select a date')
-    })
 
-    // TODO: Skipping this test because the official GOVUK components doesn't natively support
-    //  this, and on some investigation, it leads to screen-readers repeating themselves in a confusing way
-    test.skip(`related areas of need checkboxes' inputs have individual aria-describedby attribute for inline errors`, async ({
-      page,
-      createSession,
-    }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('button', { name: 'Create goal' }).click()
+      await createGoalPage.setCustomTargetDate('not-a-date')
+      await createGoalPage.clickSaveWithoutSteps()
+      await expect(fieldError).toContainText('Enter a date in the correct format, for example 31/3/2028')
 
-      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
-      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
+      await createGoalPage.setCustomTargetDate('01/01/2020')
+      await createGoalPage.clickSaveWithoutSteps()
+      await expect(fieldError).toContainText('The date must be today or in the future')
 
-      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-      await createGoalPage.selectIsRelated(true)
-
-      // click add steps to trigger error:
-      await createGoalPage.clickAddSteps()
-
-      const checkboxAriaValues = await page
-        .locator('fieldset input[type="checkbox"]')
-        .evaluateAll(els => els.map(el => el.getAttribute('aria-describedby')))
-
-      expect(checkboxAriaValues.length).toBeGreaterThan(0)
-      checkboxAriaValues.forEach(value => {
-        expect(value).toBe('related_areas_of_need-error')
-      })
-    })
-
-    // TODO: Skipping this test because the official GOVUK components doesn't natively support
-    //  this, and on some investigation, it leads to screen-readers repeating themselves in a confusing way
-    test.skip(`related areas of need radio buttons' inputs have individual aria-describedby attribute for inline errors`, async ({
-      page,
-      createSession,
-    }) => {
-      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('button', { name: 'Create goal' }).click()
-
-      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
-      await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
-
-      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
-
-      // click add steps to trigger error:
-      await createGoalPage.clickAddSteps()
-
-      const radioInputAriaDescribedByValues = await page
-        .locator('fieldset input[id="is_related_to_other_areas"]')
-        .evaluateAll(radioButtonInputElements =>
-          radioButtonInputElements.map(element => element.getAttribute('aria-describedby')),
-        )
-
-      expect(radioInputAriaDescribedByValues.length).toBeGreaterThan(0)
-      radioInputAriaDescribedByValues.forEach(value => {
-        expect(value).toBe('is_related_to_other_areas-error')
-      })
+      await createGoalPage.setCustomTargetDate('01/01/3099')
+      await createGoalPage.clickSaveWithoutSteps()
+      await expect(fieldError).toContainText('The date must be within the next 5 years')
     })
 
     test(`inline error id is referenced in aria-describedby attribute for goal title input`, async ({
