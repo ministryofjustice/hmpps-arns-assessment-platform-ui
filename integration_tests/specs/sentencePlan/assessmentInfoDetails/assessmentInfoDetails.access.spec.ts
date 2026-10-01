@@ -43,7 +43,7 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       await expect(changeGoalPage.assessmentInfoDetails).toBeVisible()
@@ -112,7 +112,7 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
         .save()
 
       await navigateToSentencePlan(page, handoverLink)
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       await expect(changeGoalPage.assessmentInfoDetails).not.toBeVisible()
@@ -174,7 +174,7 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
     })
 
     test('hides assessment info details on change goal page', async ({ page }) => {
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       await expect(changeGoalPage.assessmentInfoDetails).not.toBeVisible()
@@ -218,7 +218,7 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
     })
 
     test('hides assessment info details on change goal page', async ({ page }) => {
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       await expect(changeGoalPage.assessmentInfoDetails).not.toBeVisible()

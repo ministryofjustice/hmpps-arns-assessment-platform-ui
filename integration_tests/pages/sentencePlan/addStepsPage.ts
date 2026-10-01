@@ -11,6 +11,8 @@ export default class AddStepsPage extends AbstractPage {
 
   readonly backLink: Locator
 
+  readonly goalContextInset: Locator
+
   private assessmentInfo: AssessmentInfoHelper
 
   private constructor(page: Page) {
@@ -19,6 +21,7 @@ export default class AddStepsPage extends AbstractPage {
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
     this.backLink = page.locator('.govuk-back-link')
+    this.goalContextInset = page.locator('.govuk-inset-text').filter({ hasText: 'Area of need' })
     this.assessmentInfo = new AssessmentInfoHelper(page)
   }
 
@@ -32,7 +35,7 @@ export default class AddStepsPage extends AbstractPage {
 
   static async verifyOnPage(page: Page): Promise<AddStepsPage> {
     const addStepsPage = new AddStepsPage(page)
-    await expect(addStepsPage.pageHeading).toContainText(/Add or change steps/i)
+    await expect(addStepsPage.pageHeading).toContainText(/Add( or update)? steps/i)
     return addStepsPage
   }
 

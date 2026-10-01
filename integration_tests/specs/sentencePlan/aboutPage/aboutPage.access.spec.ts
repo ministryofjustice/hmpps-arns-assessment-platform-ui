@@ -95,6 +95,57 @@ test.describe('About Person Tab', () => {
     })
   })
 
+  test.describe('SAN_SP assessment type with no CRN', () => {
+    test('hides About tab in primary navigation', async ({ page, createSession, sentencePlanBuilder }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+        noCrn: true,
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const primaryNavigation = page.getByLabel('Primary navigation')
+      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).not.toBeVisible()
+    })
+
+    test('redirects to plan overview when visiting About page directly', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+        noCrn: true,
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto(sentencePlanV1URLs.ABOUT_PERSON)
+      await expect(page).toHaveURL(/\/plan\/overview/)
+    })
+
+    test('hides "view information from assessment" link on plan overview', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({
+        targetService: TargetService.SENTENCE_PLAN,
+        assessmentType: 'SAN_SP',
+        noCrn: true,
+      })
+      await sentencePlanBuilder.extend(sentencePlanId).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).not.toBeVisible()
+    })
+  })
+
   test.describe('SAN_SP assessment type via MPoP access', () => {
     test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, crn } = await createSession({
@@ -106,8 +157,9 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides About tab in primary navigation', async ({ page }) => {
+      // The About nav item is omitted server-side in MPoP, so assert it is absent from the DOM.
       const primaryNavigation = page.getByLabel('Primary navigation')
-      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).not.toBeVisible()
+      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toHaveCount(0)
     })
 
     test('redirects to plan overview when visiting About page directly', async ({ page }) => {
@@ -116,7 +168,8 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides "view information from assessment" link on plan overview', async ({ page }) => {
-      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).not.toBeVisible()
+      // The assessment-info link is omitted server-side in MPoP, so assert it is absent from the DOM.
+      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toHaveCount(0)
     })
   })
 
@@ -131,8 +184,9 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides About tab in primary navigation', async ({ page }) => {
+      // The About nav item is omitted server-side in MPoP, so assert it is absent from the DOM.
       const primaryNavigation = page.getByLabel('Primary navigation')
-      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).not.toBeVisible()
+      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toHaveCount(0)
     })
 
     test('redirects to plan overview when visiting About page directly', async ({ page }) => {
@@ -141,7 +195,8 @@ test.describe('About Person Tab', () => {
     })
 
     test('hides "view information from assessment" link on plan overview', async ({ page }) => {
-      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).not.toBeVisible()
+      // The assessment-info link is omitted server-side in MPoP, so assert it is absent from the DOM.
+      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toHaveCount(0)
     })
   })
 })

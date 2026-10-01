@@ -10,6 +10,7 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
+      "assessmentVersion": "SAN",
       "assessedOn": "{{now}}",
       "identifiedNeeds": [
         {
@@ -17,83 +18,60 @@
           "name": "Accommodation",
           "riskOfHarm": false,
           "riskOfReoffending": true,
-          "severity": "SEVERE",
           "score": 6,
-          "oasysThreshold": 3,
-          "tierThreshold": 5
+          "oasysThreshold": { "standard": 3 }
         },
         {
-          "section": "EDUCATION_TRAINING_AND_EMPLOYABILITY",
-          "name": "Education, training and employability",
-          "riskOfHarm": false,
-          "riskOfReoffending": true,
-          "severity": "STANDARD",
-          "score": 4,
-          "oasysThreshold": 3,
-          "tierThreshold": 4
-        },
-        {
-          "section": "FINANCIAL_MANAGEMENT_AND_INCOME",
-          "name": "Financial management and income",
-          "riskOfHarm": false,
-          "riskOfReoffending": false,
-          "severity": "STANDARD",
-          "score": 3,
-          "oasysThreshold": 2,
-          "tierThreshold": 3
-        },
-        {
-          "section": "DRUG_MISUSE",
-          "name": "Drug misuse",
+          "section": "DRUG_USE",
+          "name": "Drug use",
           "riskOfHarm": true,
           "riskOfReoffending": true,
-          "severity": "SEVERE",
           "score": 5,
-          "oasysThreshold": 2,
-          "tierThreshold": 4
+          "oasysThreshold": { "standard": 2 }
         },
         {
-          "section": "ALCOHOL_MISUSE",
-          "name": "Alcohol misuse",
+          "section": "PERSONAL_RELATIONSHIPS_AND_COMMUNITY",
+          "name": "Personal relationships and community",
           "riskOfHarm": true,
           "riskOfReoffending": true,
-          "severity": "STANDARD",
-          "score": 4,
-          "oasysThreshold": 3,
-          "tierThreshold": 4
-        },
-        {
-          "section": "EMOTIONAL_WELLBEING",
-          "name": "Emotional wellbeing",
-          "riskOfHarm": false,
-          "riskOfReoffending": false,
-          "severity": "STANDARD",
-          "score": 3,
-          "oasysThreshold": 2,
-          "tierThreshold": 3
-        },
-        {
-          "section": "RELATIONSHIPS",
-          "name": "Relationships",
-          "riskOfHarm": true,
-          "riskOfReoffending": true,
-          "severity": "SEVERE",
           "score": 5,
-          "oasysThreshold": 3,
-          "tierThreshold": 4
+          "oasysThreshold": { "standard": 3 }
         },
         {
-          "section": "THINKING_AND_BEHAVIOUR",
-          "name": "Thinking and behaviour",
+          "section": "THINKING_ATTITUDES_AND_BEHAVIOUR",
+          "name": "Thinking, behaviours and attitudes",
           "riskOfHarm": true,
           "riskOfReoffending": true,
-          "severity": "SEVERE",
           "score": 7,
-          "oasysThreshold": 4,
-          "tierThreshold": 5
+          "oasysThreshold": { "standard": 4 }
         }
       ],
-      "notIdentifiedNeeds": [],
+      "notIdentifiedNeeds": [
+        {
+          "section": "EMPLOYMENT_AND_EDUCATION",
+          "name": "Employment and education",
+          "riskOfHarm": false,
+          "riskOfReoffending": false,
+          "score": 1,
+          "oasysThreshold": { "standard": 3 }
+        },
+        {
+          "section": "ALCOHOL_USE",
+          "name": "Alcohol use",
+          "riskOfHarm": false,
+          "riskOfReoffending": false,
+          "score": 2,
+          "oasysThreshold": { "standard": 3 }
+        },
+        {
+          "section": "LIFESTYLE_AND_ASSOCIATES",
+          "name": "Lifestyle and associates",
+          "riskOfHarm": null,
+          "riskOfReoffending": null,
+          "score": 1,
+          "oasysThreshold": { "standard": 2 }
+        }
+      ],
       "unansweredNeeds": []
     },
     "transformers": ["response-template"]

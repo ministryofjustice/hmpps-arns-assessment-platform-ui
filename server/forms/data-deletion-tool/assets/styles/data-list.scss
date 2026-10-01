@@ -1,0 +1,69 @@
+.data-list {
+  * {
+    font-size: 18px;
+  }
+
+  .govuk-input, .govuk-textarea {
+    font-family: ui-monospace, menlo, "Cascadia Mono", "Segoe UI Mono", consolas, "Liberation Mono", monospace;
+    font-size: 16px;
+  }
+
+  .govuk-summary-card {
+    &--error {
+      border: 5px solid;
+      border-color: var(--govuk-error-colour);
+    }
+  }
+
+  .govuk-summary-list {
+    &__key {
+      width: 20%;
+      vertical-align: top;
+    }
+
+    &__row {
+      &:last-child {
+        .govuk-summary-list__key {
+          padding-top: 20px;
+        }
+      }
+    }
+  }
+
+  .govuk-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+
+    &__item {
+      flex-basis: 130px;
+    }
+
+    &__conditional {
+      flex-basis: 100%;
+    }
+  }
+
+  .json-diff {
+    background-color: #eee;
+    font-family: monospace;
+    padding: 12px;
+    overflow-x: auto;
+
+    .line {
+      white-space: pre;
+      padding: 2px 6px;
+      font-size: 16px;
+      width: fit-content;
+
+      &.added {
+        background: govuk-colour("green");
+        color: govuk-colour("teal", $variant: "accent");
+      }
+
+      &.removed {
+        background: govuk-colour("red");
+        color: govuk-colour("magenta", $variant: "tint-80");
+      }
+    }
+  }
+}

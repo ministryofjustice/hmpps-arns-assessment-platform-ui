@@ -1,5 +1,5 @@
-import { Format, step, access, when } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { isOasysAccess, isReadWriteAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
+import { Format, step, access, not, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { isOasysAccess, isReadOnlyAccess, redirectToPrivacyUnlessAccepted, redirectUnlessSanSp } from '../../guards'
 import {
   assessmentDataLoadFailureWarning,
   incompleteAssessmentWarning,
@@ -31,7 +31,7 @@ export const aboutPersonStep = step({
         .else(Format(`About %1`, CaseData.Forename)),
       buttons: {
         showReturnToOasysButton: isOasysAccess,
-        showCreateGoalButton: isReadWriteAccess,
+        showCreateGoalButton: not(isReadOnlyAccess),
       },
     },
   },

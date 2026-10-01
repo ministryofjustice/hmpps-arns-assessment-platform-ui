@@ -7,11 +7,19 @@ export enum AuditEvent {
 
   // Plan Overview
   VIEW_PLAN_OVERVIEW = 'VIEW_PLAN_OVERVIEW',
+  /*
+   * Sent both when someone opens the print preview and when they download it as a PDF.
+   * A download carries `exportedAsPdf: true`, because Gotenberg builds the PDF by loading
+   * the preview page.
+   */
+  PRINT_ALL_GOALS = 'PRINT_ALL_GOALS',
 
   // Goal Management - Pre Agree
+  VIEW_SELECT_AREA_OF_NEED = 'VIEW_SELECT_AREA_OF_NEED',
   VIEW_CREATE_GOAL = 'VIEW_CREATE_GOAL',
   CREATE_GOAL = 'CREATE_GOAL',
   VIEW_CHANGE_GOAL = 'VIEW_CHANGE_GOAL',
+  VIEW_CHANGE_AREA_OF_NEED = 'VIEW_CHANGE_AREA_OF_NEED',
   EDIT_GOAL = 'EDIT_GOAL',
   VIEW_ADD_STEPS = 'VIEW_ADD_STEPS',
   ADD_STEPS = 'ADD_STEPS',
@@ -20,7 +28,9 @@ export enum AuditEvent {
   DELETE_GOAL = 'DELETE_GOAL',
 
   // Goal Management - Post Agree
+  VIEW_PLAN_AGREEMENT = 'VIEW_PLAN_AGREEMENT',
   EDIT_PLAN_AGREEMENT = 'EDIT_PLAN_AGREEMENT',
+  VIEW_PLAN_AGREEMENT_UPDATE = 'VIEW_PLAN_AGREEMENT_UPDATE',
   EDIT_PLAN_AGREEMENT_UPDATE = 'EDIT_PLAN_AGREEMENT_UPDATE',
   VIEW_UPDATE_GOAL_AND_STEPS = 'VIEW_UPDATE_GOAL_AND_STEPS',
   EDIT_STEP_PROGRESS = 'EDIT_STEP_PROGRESS',
@@ -34,10 +44,10 @@ export enum AuditEvent {
 
   // History & Info
   VIEW_ABOUT_PERSON = 'VIEW_ABOUT_PERSON',
+  VIEW_SUPERVISION_PACKAGE = 'VIEW_SUPERVISION_PACKAGE',
   VIEW_PLAN_HISTORY = 'VIEW_PLAN_HISTORY',
   VIEW_PREVIOUS_VERSIONS = 'VIEW_PREVIOUS_VERSIONS',
   VIEW_HISTORIC_PLAN = 'VIEW_HISTORIC_PLAN',
-  VIEW_HISTORIC_ASSESSMENT = 'VIEW_HISTORIC_ASSESSMENT', // TODO: wire up when /view-previous-version/:uuid route is built
 }
 
 export interface AuditMessage {

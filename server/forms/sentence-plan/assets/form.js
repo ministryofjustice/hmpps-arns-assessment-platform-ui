@@ -8,3 +8,4 @@
 import '../components/accessible-autocomplete/accessible-autocomplete.mjs'
 import '../components/copy-button/copy-button.mjs'
 import '../components/wrapping-select/wrapping-select.mjs'
+import '../components/print-sentence-plan/print-sentence-plan.mjs'

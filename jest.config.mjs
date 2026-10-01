@@ -13,7 +13,7 @@ const config = {
     ['jest-junit', { outputDirectory: 'test_results/jest/' }],
     ['./node_modules/jest-html-reporter', { outputPath: 'test_results/unit-test-reports.html' }],
   ],
-  moduleFileExtensions: ['web.js', 'js', 'json', 'node', 'ts'],
+  moduleFileExtensions: ['web.js', 'js', 'json', 'node', 'ts', 'tsx'],
 }
 
 export default config

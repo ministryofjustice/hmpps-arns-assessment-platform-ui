@@ -1,0 +1,16 @@
+/**
+ * Data Deletion Tool - Form-specific styles
+ *
+ * These styles are loaded only on pages using this form's custom template.
+ */
+@import 'govuk-frontend/dist/govuk/base';
+
+// Components
+@import 'styles/data-list';
+@import 'styles/navigation';
+
+pre {
+  background-color: #eeeeee;
+  padding: 20px;
+  font-size: 16px !important;
+}

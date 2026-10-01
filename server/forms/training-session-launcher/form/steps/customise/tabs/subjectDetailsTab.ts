@@ -2,6 +2,7 @@ import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKTextInput, GovUKSelectInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
+import { stubbedCrns } from '../../../../scenarios/stubbedCrns'
 
 /**
  * Subject details tab content
@@ -15,7 +16,7 @@ export const subjectDetailsTabContent = [
 
   HtmlBlock({
     content:
-      '<p class="govuk-body">Configure the subject details for this scenario. Check "Randomize" to generate a new value each time the scenario is loaded.</p>',
+      '<p class="govuk-body">Configure the subject details for this scenario. Check "Randomise" to generate a new value each time the scenario is loaded.</p>',
   }),
 
   HtmlBlock({
@@ -117,6 +118,18 @@ export const subjectDetailsTabContent = [
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.crn'),
     }),
+  }),
+
+  GovUKRadioInput({
+    code: 'stubbedCrn',
+    label: 'Stubbed CRN',
+    hint: 'Replaces the CRN above with one that Wiremock answers for in local, dev and test, so the About and supervision package pages show canned data instead of calling the real APIs.',
+    classes: 'govuk-radios--small',
+    defaultValue: Data('stubbedCrn'),
+    items: [
+      { value: '', text: 'None' },
+      ...stubbedCrns.map(({ crn, description }) => ({ value: crn, text: crn, hint: description })),
+    ],
   }),
 
   RandomizableField({

@@ -1,5 +1,7 @@
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import { HandoverContext } from '../../interfaces/handover-api/response'
+import { CaseDetails } from '../../interfaces/delius-api/caseDetails'
+import { SessionDetails } from '../../interfaces/sessionDetails'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -19,6 +21,8 @@ export declare module 'express-session' {
     csrfToken?: string
     telemetryId?: string
     handoverContext?: HandoverContext
+    caseDetails?: CaseDetails
+    sessionDetails?: SessionDetails
   }
 }
 

@@ -2,6 +2,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { mpopNunjucksSetup } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { arnsNunjucksSetup } from '@ministryofjustice/hmpps-arns-frontend-components-lib'
 import { formatDate, initialiseName, possessive } from './utils'
@@ -62,6 +63,7 @@ export default function nunjucksSetup(app?: express.Express) {
       'node_modules/@ministryofjustice/hmpps-forge/dist/moj-components/',
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
+      'node_modules/@ministryofjustice/hmpps-mpop-frontend-components-lib/dist/',
       'node_modules/@ministryofjustice/hmpps-arns-frontend-components-lib/dist/',
     ],
     {
@@ -69,6 +71,9 @@ export default function nunjucksSetup(app?: express.Express) {
       express: app,
     },
   )
+
+  // Filters required by the MPoP components library's templates
+  mpopNunjucksSetup(njkEnv)
 
   njkEnv.addFilter('possessive', possessive)
 

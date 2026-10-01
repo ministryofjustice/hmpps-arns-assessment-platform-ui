@@ -14,7 +14,7 @@ import {
 
 test.describe('Update goal and steps page', () => {
   test.describe('page content - ACTIVE goal', () => {
-    test('displays page heading, target date message and change goal details link correctly', async ({
+    test('displays page heading, goal context inset, target date message and update goal details link correctly', async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -44,10 +44,10 @@ test.describe('Update goal and steps page', () => {
       // ensure page title is correct; no validation on this page so no error title to check
       await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.updateGoalAndSteps))
 
-      // check heading elements
+      // check heading and goal context inset
       await expect(updatePage.pageHeading).toContainText('Update goal and steps')
-      const areaOfNeedCaption = await updatePage.getAreaOfNeedCaption()
-      expect(areaOfNeedCaption).toContain('Accommodation')
+      const insetText = await updatePage.getGoalContextInsetText()
+      expect(insetText).toContain('Area of need: accommodation')
       const goalTitle = await updatePage.getGoalTitleText()
       expect(goalTitle).toContain('Test Goal Title')
 
@@ -59,14 +59,14 @@ test.describe('Update goal and steps page', () => {
       // should NOT show future goal message
       await expect(updatePage.futureGoalMessage).toBeHidden()
 
-      // check change goal details link is visible
+      // check update goal details link is visible
       await expect(updatePage.changeGoalDetailsLink).toBeVisible()
 
       // Accessibility
       await checkAccessibility(page)
     })
 
-    test('displays related areas of need in page heading when goal has related areas', async ({
+    test('displays related areas of need in goal context inset when goal has related areas', async ({
       page,
       createSession,
       sentencePlanBuilder,
@@ -94,12 +94,11 @@ test.describe('Update goal and steps page', () => {
 
       const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
-      // check heading elements include related areas of need
-      const areaOfNeedCaption = await updatePage.getAreaOfNeedCaption()
-      expect(areaOfNeedCaption).toContain('Accommodation')
-      expect(areaOfNeedCaption).toContain('(and')
-      // related areas should be joined with "; " in lowercase
-      expect(areaOfNeedCaption).toContain('employment and education; finances')
+      // goal context inset shows area of need and related areas (lower case)
+      const insetText = await updatePage.getGoalContextInsetText()
+      expect(insetText).toContain('Area of need: accommodation')
+      // related areas shown on the "Also relates to" line, alphabetical, joined with "; "
+      expect(insetText).toContain('Also relates to: employment and education; finances')
     })
   })
 
@@ -182,8 +181,8 @@ test.describe('Update goal and steps page', () => {
       expect(await updatePage.getStepDescriptionByIndex(0)).toContain('First step description')
       expect(await updatePage.getStepDescriptionByIndex(1)).toContain('Second step description')
 
-      // check that add or change steps link is visible
-      await expect(updatePage.addOrChangeStepsLink).toBeVisible()
+      // check that add or update steps link is visible
+      await expect(updatePage.addOrUpdateStepsLink).toBeVisible()
     })
 
     test('displays no steps message when goal has no steps', async ({ page, createSession, sentencePlanBuilder }) => {

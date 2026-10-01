@@ -2,7 +2,14 @@ import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
-import { checkAccessibility, navigateToSentencePlan, sentencePlanV1UrlBuilders } from './sentencePlanUtils'
+import {
+  checkAccessibility,
+  navigateToSentencePlan,
+  sentencePlanV1UrlBuilders,
+  sentencePlanV1URLs,
+} from './sentencePlanUtils'
+
+const planOverviewPageAchievedGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`
 
 test.describe('Delete goal journey', () => {
   test.describe('redirect after deletion', () => {
@@ -18,11 +25,18 @@ test.describe('Delete goal journey', () => {
       await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
+      await expect(
+        page.getByText(/Delete this goal if it’s not needed\. It will not be saved to .+'s plan\./),
+      ).toBeVisible()
+      const updateGoalLink = page.getByRole('link', { name: 'update the goal' })
+      await expect(updateGoalLink).toBeVisible()
+      await expect(updateGoalLink).toHaveAttribute('href', 'change-goal')
+
       await checkAccessibility(page)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await expect(planOverviewPage.notificationBanner).toBeVisible()
       await expect(planOverviewPage.notificationBannerText).toContainText(/You deleted a goal from .+'s plan/i)
@@ -42,7 +56,7 @@ test.describe('Delete goal journey', () => {
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
     })
   })
 
@@ -87,7 +101,7 @@ test.describe('Delete goal journey', () => {
       await page.goto(sentencePlanV1UrlBuilders.goalConfirmDelete(goalUuid))
 
       await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=achieved/)
+      await expect(page).toHaveURL(planOverviewPageAchievedGoalsTabPath)
     })
   })
 })

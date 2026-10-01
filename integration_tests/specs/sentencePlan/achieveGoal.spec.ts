@@ -39,7 +39,7 @@ test.describe('Achieve goal journey', () => {
       await achievePage.clickConfirm()
 
       // Should redirect to plan overview with achieved tab selected
-      await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=achieved/)
     })
 
     test('can confirm goal as achieved without optional note', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -60,7 +60,7 @@ test.describe('Achieve goal journey', () => {
 
       await achievePage.clickConfirm()
 
-      await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=achieved/)
     })
 
     test('can cancel and return to update goal steps page', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -199,7 +199,7 @@ test.describe('Achieve goal journey', () => {
       await achievePage.clickConfirm()
 
       // Should be on achieved tab now
-      await expect(page).toHaveURL(/type=achieved/)
+      await expect(page).toHaveURL(/goalStatusTab=achieved/)
 
       // Verify the goal appears in the achieved goals list
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -255,7 +255,7 @@ test.describe('Achieve goal journey', () => {
       await achievePage.clickConfirm()
 
       // Navigate to current goals tab
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=current')
 
       // Verify only 1 goal remains in current goals
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)

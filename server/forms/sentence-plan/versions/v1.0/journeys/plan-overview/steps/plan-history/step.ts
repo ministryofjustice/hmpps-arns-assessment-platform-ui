@@ -1,7 +1,12 @@
-import { access, step } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, step, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { subtitleText, agreementHistory } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
-import { isOasysAccess, redirectIfNotPostAgreement, redirectToPrivacyUnlessAccepted } from '../../../../guards'
+import {
+  isOasysAccess,
+  isReadOnlyAccess,
+  redirectIfNotPostAgreement,
+  redirectToPrivacyUnlessAccepted,
+} from '../../../../guards'
 
 export const planHistoryStep = step({
   path: '/plan-history',
@@ -11,6 +16,7 @@ export const planHistoryStep = step({
     locals: {
       headerPageHeading: 'Plan history',
       buttons: {
+        showCreateGoalButton: not(isReadOnlyAccess),
         showReturnToOasysButton: isOasysAccess,
       },
     },
@@ -18,6 +24,9 @@ export const planHistoryStep = step({
   blocks: [subtitleText, agreementHistory],
   onAccess: [
     redirectToPrivacyUnlessAccepted(),
+    // Redirect to plan overview if plan is not yet agreed.
+    // The overview step defaults missing type to current.
+    redirectIfNotPostAgreement('overview'),
     access({
       effects: [
         SentencePlanEffects.loadPlanTimeline(),
@@ -25,8 +34,5 @@ export const planHistoryStep = step({
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_HISTORY),
       ],
     }),
-    // Redirect to plan overview if plan is not yet agreed.
-    // The overview step defaults missing type to current.
-    redirectIfNotPostAgreement('overview'),
   ],
 })

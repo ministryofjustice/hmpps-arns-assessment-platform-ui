@@ -12,9 +12,9 @@ import {
   sentencePlanV1UrlBuilders,
 } from '../sentencePlanUtils'
 
-const planOverviewPageCurrentGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`
-const planOverviewPageFutureGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?type=future`
-const planOverviewPageAchievedGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?type=achieved`
+const planOverviewPageCurrentGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`
+const planOverviewPageFutureGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=future`
+const planOverviewPageAchievedGoalsTabPath = `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`
 
 const nonCompletedStepStatuses = ['NOT_STARTED', 'IN_PROGRESS', 'CANNOT_BE_DONE_YET', 'NO_LONGER_NEEDED']
 

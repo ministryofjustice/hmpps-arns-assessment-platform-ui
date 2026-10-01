@@ -5,6 +5,8 @@ import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 import { snapshotFromGoal } from './goalSnapshot'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
+import { publishGoalsCompletedEvent } from '../domain-events/publishGoalsDomainEvent'
 
 /**
  * Mark a goal as removed
@@ -92,4 +94,8 @@ export const markGoalAsRemoved = (deps: SentencePlanEffectsDeps) => async (conte
   if (commands.length > 0) {
     await deps.api.executeCommands(...commands)
   }
+
+  trackBusinessEvent(context, 'REMOVE_GOAL_PAGE_SUBMITTED', { assessmentUuid, goalUuid: activeGoal.uuid })
+
+  await publishGoalsCompletedEvent(deps, context, activeGoal.uuid)
 }

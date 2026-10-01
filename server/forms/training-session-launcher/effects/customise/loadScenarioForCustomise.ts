@@ -11,6 +11,7 @@ import {
   resolvePreset,
   scenarioPresets,
 } from '../../scenarios'
+import { isStubbedCrn } from '../../scenarios/stubbedCrns'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
 
@@ -109,6 +110,7 @@ function populateForm(
   context.setData('scenario', values)
   context.setData('flags', flags)
   context.setData('originalScenarioName', presetName)
+  context.setData('stubbedCrn', isStubbedCrn(values.crn) ? values.crn : '')
 
   // Set per-field randomize flags for RandomizableField components
   for (const fieldKey of scenarioFieldKeys) {

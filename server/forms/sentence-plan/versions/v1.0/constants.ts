@@ -2,6 +2,10 @@ import { Data, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
 
 export const formVersion = 'v1.0'
+export const sentencePlanBasePath = `/sentence-plan/${formVersion}`
+export const sentencePlanOverviewPath = `${sentencePlanBasePath}/plan/overview`
+export const sentencePlanPrintPreviewPath = `${sentencePlanBasePath}/plan/print-preview`
+export const sentencePlanPrintPreviewPdfPath = `${sentencePlanPrintPreviewPath}/pdf`
 
 /**
  * Centralised data accessors for case data.
@@ -11,12 +15,8 @@ export const CaseData = {
   Forename: Data('caseData.name.forename'),
   ForenamePossessive: Data('caseData.name.forename').pipe(Transformer.String.Possessive()),
   Surname: Data('caseData.name.surname'),
+  Crn: Data('caseData.crn'),
 }
-
-/**
- * Canonical plan overview URL.
- */
-export const sentencePlanOverviewPath = '/sentence-plan/v1.0/plan/overview'
 
 /**
  * Actor enum values to human-readable labels.

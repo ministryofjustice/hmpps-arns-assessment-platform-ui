@@ -108,7 +108,7 @@ test.describe('View Historic Plan', () => {
       const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
 
       await historicPlanPage.clickFutureGoalsTab()
-      await expect(newPage).toHaveURL(/type=future/)
+      await expect(newPage).toHaveURL(/goalStatusTab=future/)
 
       await expect(historicPlanPage.noFutureGoalsMessage).toBeVisible()
       await expect(historicPlanPage.noFutureGoalsMessage).toContainText(/does not have any future goals/i)
@@ -299,7 +299,7 @@ test.describe('View Historic Plan', () => {
 
       const { newPage } = await navigateToHistoricPlan(page, handoverLink)
 
-      await expect(newPage).toHaveURL(/type=current/)
+      await expect(newPage).toHaveURL(/goalStatusTab=current/)
     })
 
     test('can switch to future goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -314,7 +314,7 @@ test.describe('View Historic Plan', () => {
 
       await historicPlanPage.clickFutureGoalsTab()
 
-      await expect(newPage).toHaveURL(/type=future/)
+      await expect(newPage).toHaveURL(/goalStatusTab=future/)
       const goalCount = await historicPlanPage.getGoalCount()
       expect(goalCount).toBe(1)
     })
@@ -330,10 +330,10 @@ test.describe('View Historic Plan', () => {
       const { historicPlanPage, newPage } = await navigateToHistoricPlan(page, handoverLink)
 
       await historicPlanPage.clickFutureGoalsTab()
-      await expect(newPage).toHaveURL(/type=future/)
+      await expect(newPage).toHaveURL(/goalStatusTab=future/)
 
       await historicPlanPage.clickCurrentGoalsTab()
-      await expect(newPage).toHaveURL(/type=current/)
+      await expect(newPage).toHaveURL(/goalStatusTab=current/)
 
       const goalCount = await historicPlanPage.getGoalCount()
       expect(goalCount).toBe(2)

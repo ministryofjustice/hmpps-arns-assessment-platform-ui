@@ -8,6 +8,7 @@ import {
 } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { getRequiredEffectContext } from '../goals/goalUtils'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
 /**
  * Updates the plan agreement status by adding a new agreement record to the PLAN_AGREEMENTS collection.
@@ -88,4 +89,6 @@ export const updatePlanAgreement = (deps: SentencePlanEffectsDeps) => async (con
     assessmentUuid,
     user,
   })
+
+  trackBusinessEvent(context, 'UPDATE_PLAN_AGREEMENT_PAGE_SUBMITTED', { assessmentUuid, status: agreementStatus })
 }

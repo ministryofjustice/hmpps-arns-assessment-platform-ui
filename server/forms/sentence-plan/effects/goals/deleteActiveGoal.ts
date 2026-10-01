@@ -1,6 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { getRequiredEffectContext } from './goalUtils'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
 /**
  * Delete the active goal
@@ -30,4 +31,6 @@ export const deleteActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     assessmentUuid,
     user,
   })
+
+  trackBusinessEvent(context, 'DELETE_GOAL_PAGE_SUBMITTED', { assessmentUuid, goalUuid: activeGoal.uuid })
 }
