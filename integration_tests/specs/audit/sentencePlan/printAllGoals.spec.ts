@@ -1,23 +1,20 @@
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import PrintPreviewPage from '../../../pages/sentencePlan/printPreviewPage'
-import { navigateToSentencePlan } from '../../sentencePlan/sentencePlanUtils'
+import {} from '../../sentencePlan/sentencePlanUtils'
 import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Print all goals', () => {
   test('accessing print preview from Print all goals sends an audit event', async ({
     page,
-    createSession,
-    sentencePlanBuilder,
     auditQueue,
+    openSentencePlan,
   }) => {
-    const { crn, sentencePlanId, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoals(1)),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     const [newPage] = await Promise.all([page.waitForEvent('popup'), planOverviewPage.printAllGoalsButton.click()])

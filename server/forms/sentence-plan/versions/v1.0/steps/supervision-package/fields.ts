@@ -1,16 +1,16 @@
-import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Data, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKWarningText } from '@ministryofjustice/hmpps-forge/govuk-components'
 import config from '../../../../../../config'
 import { SupervisionPackage } from '../../../../components'
 import { CaseData } from '../../constants'
-import { canDisplaySupervisionPackage, hasSupervisionPackageError, isMpopAccess } from '../../guards'
+import { canDisplaySupervisionPackage, hasSupervisionPackageError, isMpopAccess, isOasysAccess } from '../../guards'
 
 export const supervisionPackageSection = SupervisionPackage({
   visibleWhen: canDisplaySupervisionPackage,
   crn: CaseData.Crn,
   tierCalculation: Data('tierCalculation'),
   supervisionPackageDetails: Data('supervisionPackageDetails'),
-  oasysReviewHref: config.oasysReviewUrl,
+  oasysReviewHref: when(isOasysAccess).then(Data('sessionDetails.oasysRedirectUrl')).else(config.oasysReviewUrl),
   openInNewTab: isMpopAccess,
 })
 

@@ -13,7 +13,6 @@ import {
   GovUKButton,
   GovUKSelectInput,
   GovUKTextareaInput,
-  GovUKDetails,
   GovUKGridRow,
   GovUKHeading,
   GovUKBody,
@@ -76,9 +75,14 @@ const achieveByContent = when(Data('activeGoal.status').match(Condition.Equals('
     ),
   )
 
+const updateGoalDetailsLinkId = when(Data('activeGoal.status').match(Condition.Equals('FUTURE')))
+  .then('update-goal-and-steps-future-goal-details-link')
+  .else('update-goal-and-steps-active-goal-details-link')
+
 const updateGoalDetailsLink = Format(
-  '<p><a href="../../goal/%1/change-goal" class="govuk-link" data-ai-id="update-goal-details-link">Update goal details</a></p>',
+  '<p><a href="../../goal/%1/change-goal" class="govuk-link" data-ai-id="%2">Update goal details</a></p>',
   Data('activeGoal.uuid'),
+  updateGoalDetailsLinkId,
 )
 
 export const goalContextInsetText = GovUKInsetText({
@@ -98,7 +102,10 @@ export const reviewStepsHeading = GovUKHeading({
 
 export const addOrChangeStepsLink = GovUKBody({
   visibleWhen: hasSteps,
-  text: Format('<a href="../../goal/%1/add-steps" class="govuk-link">Add or update steps</a>', Data('activeGoal.uuid')),
+  text: Format(
+    '<a href="../../goal/%1/add-steps" class="govuk-link" data-ai-id="update-goal-and-steps-add-or-update-steps-link">Add or update steps</a>',
+    Data('activeGoal.uuid'),
+  ),
 })
 
 export const noStepsMessage = HtmlBlock({
@@ -107,7 +114,7 @@ export const noStepsMessage = HtmlBlock({
   content: [
     GovUKBody({
       text: Format(
-        'No steps added. <a href="../../goal/%1/add-steps" class="govuk-link">Add steps</a>',
+        'No steps added. <a href="../../goal/%1/add-steps" class="govuk-link" data-ai-id="update-goal-and-steps-add-steps-link">Add steps</a>',
         Data('activeGoal.uuid'),
       ),
     }),
@@ -189,51 +196,60 @@ export const progressNotesSection = GovUKGridRow({
   columns: [{ width: 'two-thirds', blocks: [progressNotesField] }],
 })
 
-export const viewAllNotesSection = GovUKDetails({
-  summaryText: 'View all notes',
-  content: [
-    CollectionBlock({
-      collection: Data('activeGoal.notes').each(
-        Iterator.Map(
-          TemplateWrapper({
-            template: `<label class="govuk-heading-s">{{createdAt}} by {{createdBy}}</label>
+export const viewAllNotesSection = TemplateWrapper({
+  template: `
+    <details class="govuk-details">
+      <summary class="govuk-details__summary" data-ai-id="update-goal-and-steps-view-all-notes-details">
+        <span class="govuk-details__summary-text">View all notes</span>
+      </summary>
+      <div class="govuk-details__text">{{slot:notes}}</div>
+    </details>
+  `,
+  slots: {
+    notes: [
+      CollectionBlock({
+        collection: Data('activeGoal.notes').each(
+          Iterator.Map(
+            TemplateWrapper({
+              template: `<label class="govuk-heading-s">{{createdAt}} by {{createdBy}}</label>
                        {{slot:typeLabel}}
                        <p class="goal-note">{{note}}</p>`,
-            values: {
-              createdAt: Item()
-                .path('createdAt')
-                .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-              createdBy: Item().path('createdBy'),
-              note: Item().path('note'),
-            },
-            slots: {
-              typeLabel: [
-                GovUKBody({
-                  visibleWhen: Item().path('type').match(Condition.Equals('READDED')),
-                  text: Format(
-                    'Goal added back into plan on %1.',
-                    Item()
-                      .path('createdAt')
-                      .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-                  ),
-                }),
-                GovUKBody({
-                  visibleWhen: Item().path('type').match(Condition.Equals('REMOVED')),
-                  text: Format(
-                    'Goal removed on %1.',
-                    Item()
-                      .path('createdAt')
-                      .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
-                  ),
-                }),
-              ],
-            },
-          }),
+              values: {
+                createdAt: Item()
+                  .path('createdAt')
+                  .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+                createdBy: Item().path('createdBy'),
+                note: Item().path('note'),
+              },
+              slots: {
+                typeLabel: [
+                  GovUKBody({
+                    visibleWhen: Item().path('type').match(Condition.Equals('READDED')),
+                    text: Format(
+                      'Goal added back into plan on %1.',
+                      Item()
+                        .path('createdAt')
+                        .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+                    ),
+                  }),
+                  GovUKBody({
+                    visibleWhen: Item().path('type').match(Condition.Equals('REMOVED')),
+                    text: Format(
+                      'Goal removed on %1.',
+                      Item()
+                        .path('createdAt')
+                        .pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+                    ),
+                  }),
+                ],
+              },
+            }),
+          ),
         ),
-      ),
-      fallback: [GovUKBody({ text: 'There are no notes on this goal yet.' })],
-    }),
-  ],
+        fallback: [GovUKBody({ text: 'There are no notes on this goal yet.' })],
+      }),
+    ],
+  },
 })
 
 const saveButton = GovUKButton({

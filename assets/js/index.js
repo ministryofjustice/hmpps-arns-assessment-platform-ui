@@ -1,7 +1,7 @@
 import * as govukFrontend from 'govuk-frontend'
 import * as mojFrontend from '@ministryofjustice/frontend'
 import * as arnsFrontend from '@ministryofjustice/hmpps-arns-frontend-components-lib/dist/js/all'
-import { initAccordionTelemetry } from './appInsights.mjs'
+import { initAccordionTelemetry, initDetailsTelemetry } from './appInsights.mjs'
 import { CollapsibleNav } from './collapsible-nav.mjs'
 import { SupportWidget } from './support-widget.mjs'
 import { initScrollRestore } from './scroll-restore.mjs'
@@ -23,6 +23,7 @@ govukFrontend.initAll()
 mojFrontend.initAll()
 arnsFrontend.initAll()
 initAccordionTelemetry()
+initDetailsTelemetry()
 initScrollRestore()
 initAutosizeTextareas()
 initBackToTop()

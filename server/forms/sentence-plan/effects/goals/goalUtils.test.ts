@@ -14,6 +14,8 @@ import {
   setActiveGoalData,
   deriveAreasOfNeedData,
   sanitizeDateValue,
+  hasGoalChanged,
+  GoalEdit,
 } from './goalUtils'
 
 const createMockContext = (
@@ -355,6 +357,81 @@ describe('goalUtils', () => {
 
       // Assert
       expect(result.related_areas_of_need).toEqual([])
+    })
+  })
+
+  describe('hasGoalChanged()', () => {
+    const unchangedEdit: GoalEdit = {
+      title: 'Test goal',
+      areaOfNeed: 'accommodation',
+      relatedAreasOfNeed: ['finances', 'drug-use'],
+      status: 'ACTIVE',
+      targetDate: '2025-06-01T12:00:00.000Z',
+    }
+
+    const savedGoal = createMockGoal({
+      targetDate: '2025-06-01T12:00:00.000Z',
+      relatedAreasOfNeed: ['drug-use', 'finances'],
+    })
+
+    it('should return false when the edit matches the saved goal', () => {
+      // Arrange / Act
+      const result = hasGoalChanged(savedGoal, unchangedEdit)
+
+      // Assert
+      expect(result).toBe(false)
+    })
+
+    it('should return false when the target date is recalculated to a different time on the same day', () => {
+      // Arrange
+      const edit = { ...unchangedEdit, targetDate: '2025-06-01T13:30:00.000Z' }
+
+      // Act
+      const result = hasGoalChanged(savedGoal, edit)
+
+      // Assert
+      expect(result).toBe(false)
+    })
+
+    it('should return false when a future goal has no target date saved or submitted', () => {
+      // Arrange
+      const futureGoal = createMockGoal({ status: 'FUTURE', targetDate: undefined, relatedAreasOfNeed: [] })
+      const edit: GoalEdit = { ...unchangedEdit, status: 'FUTURE', targetDate: null, relatedAreasOfNeed: [] }
+
+      // Act
+      const result = hasGoalChanged(futureGoal, edit)
+
+      // Assert
+      expect(result).toBe(false)
+    })
+
+    it.each([
+      ['title', { title: 'A different goal' }],
+      ['area of need', { areaOfNeed: 'finances' }],
+      ['related areas of need', { relatedAreasOfNeed: ['finances'] }],
+      ['status', { status: 'FUTURE' as const }],
+      ['target date day', { targetDate: '2025-06-02T12:00:00.000Z' }],
+      ['target date removed', { targetDate: null }],
+    ])('should return true when the %s changes', (_label, change) => {
+      // Arrange
+      const edit = { ...unchangedEdit, ...change }
+
+      // Act
+      const result = hasGoalChanged(savedGoal, edit)
+
+      // Assert
+      expect(result).toBe(true)
+    })
+
+    it('should return true when a target date is added to a goal without one', () => {
+      // Arrange
+      const goalWithoutDate = createMockGoal({ targetDate: undefined, relatedAreasOfNeed: ['drug-use', 'finances'] })
+
+      // Act
+      const result = hasGoalChanged(goalWithoutDate, unchangedEdit)
+
+      // Assert
+      expect(result).toBe(true)
     })
   })
 

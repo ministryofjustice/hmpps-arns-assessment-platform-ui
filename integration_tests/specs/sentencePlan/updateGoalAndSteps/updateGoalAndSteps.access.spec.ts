@@ -1,17 +1,16 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
-import { navigateToSentencePlan, postAgreementProcessStatuses, sentencePlanV1UrlBuilders } from '../sentencePlanUtils'
+import { postAgreementProcessStatuses, sentencePlanV1UrlBuilders } from '../sentencePlanUtils'
 
 test.describe('Update goal and steps page - access control', () => {
-  test('redirects to plan overview when plan is not agreed', async ({ page, createSession, sentencePlanBuilder }) => {
+  test('redirects to plan overview when plan is not agreed', async ({ page, openSentencePlan }) => {
     // create a plan with 'DRAFT' agreement status
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+    const { plan } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoals(1)),
+    })
     const goalUuid = plan.goals[0].uuid
-
-    await navigateToSentencePlan(page, handoverLink)
 
     // try to access update-goal-steps page directly
     await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
@@ -21,20 +20,13 @@ test.describe('Update goal and steps page - access control', () => {
   })
 
   for (const agreedPlanStatus of postAgreementProcessStatuses) {
-    test(`allows access when plan status is ${agreedPlanStatus}`, async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoals(1))
-        .withAgreementStatus(agreedPlanStatus)
-        .save()
+    test(`allows access when plan status is ${agreedPlanStatus}`, async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoals(1))
+            .withAgreementStatus(agreedPlanStatus),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
@@ -44,11 +36,10 @@ test.describe('Update goal and steps page - access control', () => {
     })
   }
 
-  test('redirects to plan overview when goal does not exist', async ({ page, createSession, sentencePlanBuilder }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
-
-    await navigateToSentencePlan(page, handoverLink)
+  test('redirects to plan overview when goal does not exist', async ({ page, openSentencePlan }) => {
+    await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoals(1)).withAgreementStatus('AGREED'),
+    })
 
     // try to access with a non-existent goal UUID
     const nonExistentUuid = '00000000-0000-0000-0000-000000000000'

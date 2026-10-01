@@ -9,7 +9,6 @@ import {
   redirect,
   Condition,
   Request,
-  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
@@ -144,10 +143,7 @@ export const redirectIfGoalNotFound = (goto: string) =>
  */
 export const allActiveGoalStepsCompleted = and(
   Data('activeGoal.steps').match(Condition.IsRequired()),
-  Data('activeGoal.steps')
-    .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('COMPLETED'))))
-    .pipe(Transformer.Array.Length())
-    .match(Condition.Equals(0)),
+  Data('activeGoal.steps').each(Iterator.Every(Item().path('status').match(Condition.Equals('COMPLETED')))),
 )
 
 /**

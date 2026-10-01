@@ -27,14 +27,13 @@ test.describe('Change area of need', () => {
   test.describe('Update goal page', () => {
     test('shows the area of need inset, change area link and add or update steps button', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal()),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -46,16 +45,12 @@ test.describe('Change area of need', () => {
       await expect(changeGoalPage.addOrUpdateStepsButton).toBeVisible()
     })
 
-    test('"Change area of need" link navigates to the change area of need page', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+    test('"Change area of need" link navigates to the change area of need page', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal()),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -64,16 +59,12 @@ test.describe('Change area of need', () => {
       await ChangeAreaOfNeedPage.verifyOnPage(page)
     })
 
-    test('"Add or update steps" button navigates to the add steps page', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+    test('"Add or update steps" button navigates to the add steps page', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal()),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -84,12 +75,12 @@ test.describe('Change area of need', () => {
   })
 
   test.describe('Change area of need page', () => {
-    test("pre-selects the goal's current area of need", async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+    test("pre-selects the goal's current area of need", async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal()),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
 
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
@@ -100,14 +91,13 @@ test.describe('Change area of need', () => {
 
     test('carries the chosen area back as a pending change and persists it on Save', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal()),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
 
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
@@ -129,16 +119,12 @@ test.describe('Change area of need', () => {
       expect(await reloaded.getAreaOfNeedInsetText()).toContain('Area of need: finances')
     })
 
-    test('does not persist the area change if the user leaves without saving', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(activeGoal()).save()
+    test('does not persist the area change if the user leaves without saving', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal()),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
 
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)
@@ -181,17 +167,13 @@ test.describe('Change area of need', () => {
 
     test("changing the area to one of the goal's related areas removes the overlap on save", async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(activeGoal({ relatedAreasOfNeed: ['finances'] }))
-        .save()
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(activeGoal({ relatedAreasOfNeed: ['finances'] })),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
 
       const changeAreaPage = await ChangeAreaOfNeedPage.verifyOnPage(page)

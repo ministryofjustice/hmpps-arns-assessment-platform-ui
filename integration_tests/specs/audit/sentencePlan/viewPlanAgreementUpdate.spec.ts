@@ -1,21 +1,17 @@
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateAgreePlanPage from '../../../pages/sentencePlan/updateAgreePlanPage'
-import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
 import { AuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Update Agreement Page', () => {
-  test('visiting update agreement page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('visiting update agreement page', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(currentGoalsWithCompletedSteps(1))
+          .withAgreementStatus('COULD_NOT_ANSWER'),
     })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(currentGoalsWithCompletedSteps(1))
-      .withAgreementStatus('COULD_NOT_ANSWER')
-      .save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1URLs.PLAN_UPDATE_AGREE)
     await UpdateAgreePlanPage.verifyOnPage(page)
 

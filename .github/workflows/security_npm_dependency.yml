@@ -4,11 +4,12 @@ on:
   schedule:
     - cron: '52 3 * * MON-FRI' # Every weekday at 03:52 UTC
 
-permissions:
-  contents: read
-
 jobs:
   security-npm-dependency-check:
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
     name: Project security npm dependency check
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/security_npm_dependency.yml@v2 # WORKFLOW_VERSION
     with:

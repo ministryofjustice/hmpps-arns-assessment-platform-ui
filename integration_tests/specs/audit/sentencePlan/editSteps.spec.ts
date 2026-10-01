@@ -9,17 +9,14 @@ import { AuditEvent, expectAuditEvent } from './helpers'
 test.describe('Add or Change Steps', () => {
   test('saving steps on an existing goal sends EDIT_STEPS audit event', async ({
     page,
-    createSession,
-    sentencePlanBuilder,
     auditQueue,
+    openSentencePlan,
   }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+    const { crn, plan } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoals(1)),
     })
-    const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
 
     const addStepsPage = await AddStepsPage.verifyOnPage(page)

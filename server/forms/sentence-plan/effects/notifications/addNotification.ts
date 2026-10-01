@@ -6,10 +6,16 @@ import { SentencePlanContext, PlanNotification } from '../types'
  * Notifications are stored in session.notifications array and
  * displayed on the target page via loadNotifications effect.
  *
+ * Skipped when `onlyWhen` resolves to false.
+ *
  * Normalizes the notification structure: if no title is provided,
  * the message is promoted to the title for consistent rendering.
  */
 export const addNotification = () => async (context: SentencePlanContext, notification: PlanNotification) => {
+  if (notification.onlyWhen === false) {
+    return
+  }
+
   const session = context.getSession()
 
   session.notifications = notification.clearOtherNotifications ? [] : session.notifications || []

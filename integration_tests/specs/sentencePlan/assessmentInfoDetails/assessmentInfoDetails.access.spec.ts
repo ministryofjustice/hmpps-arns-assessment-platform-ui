@@ -20,58 +20,40 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
       await expect(createGoalPage.assessmentInfoDetails).toBeVisible()
     })
 
-    test('shows assessment info details expander on change goal page', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { handoverLink, sentencePlanId } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        assessmentType: 'SAN_SP',
+    test('shows assessment info details expander on change goal page', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { assessmentType: 'SAN_SP' },
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Test Goal',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              targetDate: getDatePlusDaysAsISO(90),
+            },
+          ]),
       })
 
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Test Goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       await expect(changeGoalPage.assessmentInfoDetails).toBeVisible()
     })
 
-    test('shows assessment info details expander on add steps page', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { handoverLink, sentencePlanId } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        assessmentType: 'SAN_SP',
+    test('shows assessment info details expander on add steps page', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { assessmentType: 'SAN_SP' },
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Test Goal',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              targetDate: getDatePlusDaysAsISO(90),
+            },
+          ]),
       })
 
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Test Goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('link', { name: 'Add steps' }).click()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
@@ -93,50 +75,40 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
       await expect(createGoalPage.assessmentInfoDetails).not.toBeVisible()
     })
 
-    test('hides assessment info details on change goal page', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { handoverLink, sentencePlanId } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        assessmentType: 'SP',
+    test('hides assessment info details on change goal page', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { assessmentType: 'SP' },
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Test Goal',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              targetDate: getDatePlusDaysAsISO(90),
+            },
+          ]),
       })
 
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Test Goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
       await expect(changeGoalPage.assessmentInfoDetails).not.toBeVisible()
     })
 
-    test('hides assessment info details on add steps page', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { handoverLink, sentencePlanId } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        assessmentType: 'SP',
+    test('hides assessment info details on add steps page', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { assessmentType: 'SP' },
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Test Goal',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              targetDate: getDatePlusDaysAsISO(90),
+            },
+          ]),
       })
 
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Test Goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('link', { name: 'Add steps' }).click()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)

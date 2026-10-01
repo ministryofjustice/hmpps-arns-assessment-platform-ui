@@ -1,18 +1,15 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoals, mixedGoals, removedGoals } from '../../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
-import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
 import { AuditEvent, achievedGoals, expectAuditEvent } from './helpers'
 
 test.describe('View Plan Overview page', () => {
-  test('viewing current goals tab', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('viewing current goals tab', async ({ auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoals(1)),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-    await navigateToSentencePlan(page, handoverLink)
 
     // Landing from handover has no tab and redirects to current, so exactly one event must be sent
     const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_OVERVIEW)
@@ -20,13 +17,11 @@ test.describe('View Plan Overview page', () => {
     expect(event.details.tab).toBe('current')
   })
 
-  test('viewing future goals tab', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('viewing future goals tab', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(mixedGoals()),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(mixedGoals()).save()
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await planOverviewPage.clickFutureGoalsTab()
     await expect(page).toHaveURL(/goalStatusTab=future/)
@@ -37,13 +32,11 @@ test.describe('View Plan Overview page', () => {
     expectAuditEvent(event)
   })
 
-  test('viewing achieved goals tab', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('viewing achieved goals tab', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(achievedGoals()).withAgreementStatus('AGREED'),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(achievedGoals()).withAgreementStatus('AGREED').save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=achieved`)
     await PlanOverviewPage.verifyOnPage(page)
 
@@ -53,13 +46,11 @@ test.describe('View Plan Overview page', () => {
     expectAuditEvent(event)
   })
 
-  test('viewing removed goals tab', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('viewing removed goals tab', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(removedGoals(1)).withAgreementStatus('AGREED'),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(removedGoals(1)).withAgreementStatus('AGREED').save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=removed`)
     await PlanOverviewPage.verifyOnPage(page)
 
