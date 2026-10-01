@@ -12,6 +12,7 @@ APP_VERSION ?= local
 DEV_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml
 CI_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.test.yml
 PROD_COMPOSE_FILES = -f docker/docker-compose.base.yml
+MIGRATOR_COMPOSE_FILES = -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml -f docker/docker-compose.migrator.yml
 
 export APP_VERSION
 export COMPOSE_PROJECT_NAME=${PROJECT_NAME}
@@ -36,6 +37,11 @@ dev-up: ## Starts/restarts a development container. A remote debugger can be att
 	@make install-node-modules
 	docker compose down ${SERVICE_NAME}
 	docker compose ${DEV_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate
+
+migrator-dev-up: ## Starts/restarts a development container in a migrator stack. A remote debugger can be attached on port 9229.
+	@make install-node-modules
+	docker compose rm -sf ${SERVICE_NAME}
+	docker compose ${MIGRATOR_COMPOSE_FILES} up ${SERVICE_NAME} --wait --no-recreate --no-deps
 
 down: ## Stops and removes all containers in the project.
 	docker compose down
