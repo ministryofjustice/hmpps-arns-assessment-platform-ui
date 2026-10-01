@@ -50,5 +50,6 @@ export const getDisplayTextForItem = (
         Answer(fieldCode).match(Condition.Equals(item.value)),
       ),
     ),
+    attributes: { 'data-qa': `answer_${fieldCode}` },
     ...(options.size && { size: options.size }),
   })

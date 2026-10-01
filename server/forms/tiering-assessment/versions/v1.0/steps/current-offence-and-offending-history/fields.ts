@@ -34,6 +34,7 @@ import { Step } from '../../constants/page'
 export const currentOffenceHeadingQuestion = GovUKHeading({
   text: contentFor('current_offence'),
   size: 'm',
+  attributes: { 'data-qa': `heading_current_offence` },
 })
 
 export const currentOffenceInsetQuestion = GovUKInsetText({

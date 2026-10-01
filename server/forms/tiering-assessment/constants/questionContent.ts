@@ -257,7 +257,7 @@ export const textSummaryRow =
       key: { html: content.text },
       visibleWhen: placement.visibleWhen,
       value: {
-        blocks: [GovUKBody({ text: Answer(content.code) })],
+        blocks: [GovUKBody({ text: Answer(content.code), attributes: { 'data-qa': `answer_${content.code}` } })],
       },
       actions: createSummaryRowActions(placement.changeHref),
     })
@@ -269,7 +269,12 @@ export const dateSummaryRow =
       key: { html: content.text },
       visibleWhen: placement.visibleWhen,
       value: {
-        blocks: [GovUKBody({ text: SANGenerators.getFormatterDateFromIso(Answer(content.code)) })],
+        blocks: [
+          GovUKBody({
+            text: SANGenerators.getFormatterDateFromIso(Answer(content.code)),
+            attributes: { 'data-qa': `answer_${content.code}` },
+          }),
+        ],
       },
       actions: createSummaryRowActions(placement.changeHref),
     })
@@ -519,6 +524,7 @@ export const revealedAnswerBlocksOf = (content: OptionedQuestionContent): BlockD
               text: Answer(revealed.content.code),
               size: 's',
               visibleWhen: Answer(revealed.content.code).match(Condition.IsRequired()),
+              attributes: { 'data-qa': `answer_${content.code}` },
             }),
           ],
     ),
@@ -552,6 +558,7 @@ export const inlineItemisedAnswerBlocksOf = (content: OptionedQuestionContent): 
           GovUKBody({
             text: Format('%1 - %2', optionText, revOption.summaryText ?? revOption.text),
             visibleWhen: and(parentSelected, isOptionSelected(revealedContent, revOption.value)),
+            attributes: { 'data-qa': `answer_${content.code}` },
           }),
         )
 
@@ -560,6 +567,7 @@ export const inlineItemisedAnswerBlocksOf = (content: OptionedQuestionContent): 
           GovUKBody({
             text: optionText,
             visibleWhen: and(parentSelected, not(revealedAnswered)),
+            attributes: { 'data-qa': `answer_${content.code}` },
           }),
         ]
       }
@@ -568,6 +576,7 @@ export const inlineItemisedAnswerBlocksOf = (content: OptionedQuestionContent): 
         GovUKBody({
           text: Format('%1 - %2', optionText, answerTextOf(revealedContent)),
           visibleWhen: and(parentSelected, revealedAnswered),
+          attributes: { 'data-qa': `answer_${content.code}` },
         }),
         GovUKBody({
           text: optionText,
