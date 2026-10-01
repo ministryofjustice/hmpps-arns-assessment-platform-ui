@@ -1,4 +1,5 @@
-import { QuestionContent, SectionDefinition, SummaryRow } from '../../../../constants/questionContent'
+import { SummaryListRow } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { QuestionContent, SectionDefinition } from '../../../../constants/questionContent'
 import { Step } from '../../constants/page'
 import { StepDefinition } from '../../locales'
 import { accommodationFields } from '../accommodation/fields'
@@ -44,7 +45,7 @@ export const dynamicCheckYourAnswersSections: CheckYourAnswersSection[] = [
 
 export interface Answerable {
   content: QuestionContent
-  displayModes?: { summaryRow?: SummaryRow }
+  displayModes?: { summaryRow?: SummaryListRow }
 }
 
 const fieldsOf = (fields: SectionDefinition[keyof SectionDefinition] = {}): Answerable[] => Object.values(fields)

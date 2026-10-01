@@ -1,19 +1,17 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
-import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
 import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Change a Goal', () => {
-  test('changing goal in pre-agree plan', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('changing goal in pre-agree plan', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn, plan } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoals(1)),
     })
-    const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
 
     const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
@@ -26,18 +24,14 @@ test.describe('Change a Goal', () => {
     expect(event.details.planStatus).toBe('PRE_AGREE')
   })
 
-  test('changing goal in post-agree plan', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('changing goal in post-agree plan', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn, plan } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(activeGoalWithSteps())
+          .withAgreementStatus('AGREED'),
     })
-    const plan = await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(activeGoalWithSteps())
-      .withAgreementStatus('AGREED')
-      .save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalChange(goalUuid))
 
     const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)

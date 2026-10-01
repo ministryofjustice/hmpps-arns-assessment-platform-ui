@@ -18,8 +18,8 @@ import {
   GovUKCheckboxInput,
   GovUKDateInputFull,
   GovUKRadioInput,
-  GovUKSummaryList,
   GovUKTextInput,
+  SummaryListRow,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../i18n'
 import { SANGenerators } from '../generators'
@@ -169,8 +169,6 @@ export interface RevealedQuestion {
   }
 }
 
-export type SummaryRow = GovUKSummaryList['rows'][number]
-
 /** Placement of a field within its surrounding step, orthogonal to its content. */
 export interface FieldPlacement {
   dependentWhen?: PredicateExpr
@@ -252,7 +250,7 @@ export const createSummaryRowActions = (changeHref: ResolvableString) =>
 
 export const textSummaryRow =
   (placement: SummaryRowPlacement) =>
-  (content: QuestionContent): SummaryRow =>
+  (content: QuestionContent): SummaryListRow =>
     definedPropsOf({
       key: { html: content.text },
       visibleWhen: placement.visibleWhen,
@@ -264,7 +262,7 @@ export const textSummaryRow =
 
 export const dateSummaryRow =
   (placement: SummaryRowPlacement) =>
-  (content: QuestionContent): SummaryRow =>
+  (content: QuestionContent): SummaryListRow =>
     definedPropsOf({
       key: { html: content.text },
       visibleWhen: placement.visibleWhen,
@@ -743,7 +741,7 @@ export const questionTemplate = (definition: {
   displayModes: {
     field?(content: OptionedQuestionContent, parent: ParentOption): BlockDefinition
     collectionField?(content: TemplateProjectionContent): BlockDefinition
-    collectionSummaryRow?(content: TemplateProjectionContent): SummaryRow
+    collectionSummaryRow?(content: TemplateProjectionContent): SummaryListRow
   }
 }) => {
   const { content: template, displayModes } = definition
@@ -798,7 +796,7 @@ export const questionTemplate = (definition: {
 
       return collectionField(projectionContentOf(instanceParam))
     },
-    summaryRowOver: (instanceParam: ChainableExpr): SummaryRow => {
+    summaryRowOver: (instanceParam: ChainableExpr): SummaryListRow => {
       const { collectionSummaryRow } = displayModes
 
       if (!collectionSummaryRow) {
@@ -819,7 +817,7 @@ export interface SectionDefinition {
 
 export const questionsWithin = (content: QuestionContent): QuestionContent[] => withRevealedQuestions(content)
 
-export const answerRow = (content: QuestionContent): SummaryRow => ({
+export const answerRow = (content: QuestionContent): SummaryListRow => ({
   key: { html: content.text },
   visibleWhen: answeredWithin(content),
   value: { blocks: answerBlocksOf(content) },
@@ -854,7 +852,7 @@ export const itemisedSummaryRow =
     hideRevealedQuestions?: boolean
     inlineRevealedQuestions?: boolean
   }) =>
-  (content: OptionedQuestionContent): SummaryRow =>
+  (content: OptionedQuestionContent): SummaryListRow =>
     definedPropsOf({
       key: { text: content.text },
       visibleWhen: placement.visibleWhen,

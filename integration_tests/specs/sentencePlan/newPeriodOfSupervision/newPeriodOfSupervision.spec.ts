@@ -55,12 +55,10 @@ test.describe('New period of supervision', () => {
       await expect(planOverviewPage.noGoalsMessage).toBeVisible()
     })
 
-    test('Agree Plan button is visible in draft state', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(autoRemovedGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('Agree Plan button is visible in draft state', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(autoRemovedGoals(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -128,29 +126,22 @@ test.describe('New period of supervision', () => {
       await expect(planOverviewPage.removedGoalsTab).toContainText('2')
     })
 
-    test('Removed goals tab shows auto-removed goals with correct details', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          ...autoRemovedGoals(2),
-          {
-            title: 'New active goal',
-            areaOfNeed: 'finances',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('Removed goals tab shows auto-removed goals with correct details', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              ...autoRemovedGoals(2),
+              {
+                title: 'New active goal',
+                areaOfNeed: 'finances',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -169,25 +160,22 @@ test.describe('New period of supervision', () => {
       expect(secondGoalTitle).toContain('Auto-removed Goal 2')
     })
 
-    test('auto-removed goal card shows View details link', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          ...autoRemovedGoals(1),
-          {
-            title: 'Active goal',
-            areaOfNeed: 'finances',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('auto-removed goal card shows View details link', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              ...autoRemovedGoals(1),
+              {
+                title: 'Active goal',
+                areaOfNeed: 'finances',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 

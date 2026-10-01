@@ -38,10 +38,7 @@ export interface CollectionItemQueryResult extends QueryResult {
 }
 
 export type QueryResults =
-  | AssessmentVersionQueryResult
-  | TimelineQueryResult
-  | CollectionQueryResult
-  | CollectionItemQueryResult
+  AssessmentVersionQueryResult | TimelineQueryResult | CollectionQueryResult | CollectionItemQueryResult
 
 /**
  * Maps query types to their corresponding result types.

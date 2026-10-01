@@ -1,19 +1,17 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import UpdateAgreePlanPage from '../../../pages/sentencePlan/updateAgreePlanPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
-import { checkAccessibility, navigateToSentencePlan } from '../sentencePlanUtils'
+import { checkAccessibility } from '../sentencePlanUtils'
 
 test.describe('Update agree plan - Agreements', () => {
-  test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(currentGoalsWithCompletedSteps(1))
-      .withAgreementStatus('COULD_NOT_ANSWER')
-      .save()
-    await navigateToSentencePlan(page, handoverLink)
+  test.beforeEach(async ({ openSentencePlan }) => {
+    await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(currentGoalsWithCompletedSteps(1))
+          .withAgreementStatus('COULD_NOT_ANSWER'),
+    })
   })
 
   test('can update agreement with Yes and notes and redirects to plan overview', async ({ page }) => {
