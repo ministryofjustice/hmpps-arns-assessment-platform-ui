@@ -1,3 +1,4 @@
+import { SummaryListRow } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { QuestionContent, SectionDefinition } from '../../../../constants/questionContent'
 import { Step } from '../../constants/page'
 import { StepDefinition } from '../../locales'
@@ -17,7 +18,6 @@ import { personalRelationshipsFields } from '../personal-relationships-and-commu
 import { thinkingAttitudesBehavioursFields } from '../thinking-attitudes-and-behaviours/fields'
 import { previousConvictionsFields } from '../previous-convictions/fields'
 import { offenceAnalysisFields } from '../offence-analysis/fields'
-import { SummaryListRow } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 export interface CheckYourAnswersSection {
   step: StepDefinition

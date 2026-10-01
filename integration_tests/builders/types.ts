@@ -7,11 +7,7 @@ export { GoalStatus, StepStatus, AreaOfNeedSlug }
  * Plan agreement status
  */
 export type PlanAgreementStatus =
-  | 'AGREED'
-  | 'DO_NOT_AGREE'
-  | 'COULD_NOT_ANSWER'
-  | 'UPDATED_AGREED'
-  | 'UPDATED_DO_NOT_AGREE'
+  'AGREED' | 'DO_NOT_AGREE' | 'COULD_NOT_ANSWER' | 'UPDATED_AGREED' | 'UPDATED_DO_NOT_AGREE'
 
 /**
  * Plan agreement configuration for test setup

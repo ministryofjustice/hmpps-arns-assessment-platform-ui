@@ -12,13 +12,12 @@ import {
   ValidationExpr,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { BlockDefinition, ResolvableNumber, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import { BlockDefinition, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import {
   GovUKBody,
   GovUKCheckboxInput,
   GovUKDateInputFull,
   GovUKRadioInput,
-  GovUKSummaryList,
   GovUKTextInput,
   SummaryListRow,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
