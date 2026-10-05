@@ -31,6 +31,7 @@ export const Nav = {
   VIEW_INACTIVE_GOAL: 'view-inactive-goal',
   ABOUT: 'about',
   SUPERVISION_PACKAGE: 'supervision-package',
+  REORDER_STEPS: 'reorder-steps',
 } as const
 
 export type NavigationReferrer = (typeof Nav)[keyof typeof Nav]
@@ -64,4 +65,5 @@ export const NAV_KEY_PATTERNS: Record<NavigationReferrer, string> = {
   [Nav.VIEW_INACTIVE_GOAL]: '/view-inactive-goal',
   [Nav.ABOUT]: '/about-person',
   [Nav.SUPERVISION_PACKAGE]: '/supervision-package',
+  [Nav.REORDER_STEPS]: '/reorder-steps',
 }
