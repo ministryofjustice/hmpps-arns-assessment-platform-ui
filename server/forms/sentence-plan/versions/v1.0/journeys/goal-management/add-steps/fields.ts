@@ -1,29 +1,30 @@
 import {
+  Condition,
   Data,
   Format,
   Item,
-  Loop,
   Iterator,
+  Loop,
+  not,
   or,
   Self,
   validation,
   when,
-  Condition,
-  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import {
+  GovUKBody,
   GovUKButton,
+  GovUKButtonGroup,
+  GovUKGridRow,
+  GovUKHeading,
   GovUKSelectInput,
   GovUKTextareaInput,
-  GovUKHeading,
-  GovUKGridRow,
-  GovUKInsetText,
-  GovUKBody,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { AssessmentInfoDetails, ButtonAsLink, WrappingSelect } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
-import { canAccessSanContent } from '../../../guards'
+import { canAccessSanContent, isSingleStep } from '../../../guards'
+import { goalContextInsetText } from '../sharedFields'
 
 const stepActorLabelText = 'Who will do the step?'
 const stepDescriptionLabelText = 'What should they do to achieve the goal?'
@@ -47,44 +48,6 @@ export const pageHeading = GovUKHeading({
   )
     .then('Add steps')
     .else('Add or update steps'),
-})
-
-/**
- * Inset text block summarising the goal context
- *
- * Shows:
- * - Area of need (in bold)
- * - Also relates to (only when the goal is related to other areas)
- * - Goal text
- *
- * Area of need and "Also relates to" share a single paragraph (with a <br>)
- * so the lines are adjacent — only "Goal" sits in its own paragraph below.
- */
-const areaOfNeedText = Data('activeGoal.areaOfNeedLabel').pipe(
-  Transformer.String.ToLowerCase(),
-  Transformer.String.EscapeHtml(),
-)
-
-const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
-  Transformer.Array.Sort(),
-  Transformer.Array.Join(', '),
-  Transformer.String.ToLowerCase(),
-  Transformer.String.EscapeHtml(),
-)
-
-const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
-  .then(
-    Format('<p>Area of need: <strong>%1</strong><br>Also relates to: %2</p>', areaOfNeedText, relatedAreasOfNeedText),
-  )
-  .else(Format('<p>Area of need: <strong>%1</strong></p>', areaOfNeedText))
-
-const goalBlockContent = Format('<p>Goal: %1</p>', Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()))
-
-const isSingleStep = Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1))
-
-export const goalContextInsetText = GovUKInsetText({
-  classes: 'govuk-!-margin-top-2',
-  blocks: [HtmlBlock({ content: areaBlockContent }), HtmlBlock({ content: goalBlockContent })],
 })
 
 /**
@@ -256,6 +219,20 @@ export const addStepButton = GovUKButton({
   },
 })
 
+// Reorder steps button
+export const reorderStepButton = GovUKButton({
+  text: 'Reorder steps',
+  name: 'action',
+  value: 'reorderSteps',
+  classes: 'govuk-button--secondary',
+  attributes: {
+    'data-ai-id': 'add-steps-reorder-steps-button',
+  },
+  visibleWhen: not(isSingleStep),
+})
+
+const stepActionButtonsGroup = GovUKButtonGroup({ buttons: [addStepButton, reorderStepButton] })
+
 /**
  * "Save and continue" button
  */
@@ -281,8 +258,7 @@ export const pageLayout = TemplateWrapper({
         {{slot:goalContextInsetText}}
         {{slot:columnHeaders}}
         {{slot:stepRows}}
-        {{slot:buttonGroup}}
-        {{slot:addStepButton}}
+        {{slot:stepActionsButtonGroup}}
       </div>
       {{slot:saveAndContinueButton}}
   `,
@@ -294,6 +270,6 @@ export const pageLayout = TemplateWrapper({
     columnHeaders: [columnHeaders],
     stepRows: [stepRows],
     saveAndContinueButton: [saveAndContinueButton],
-    addStepButton: [addStepButton],
+    stepActionsButtonGroup: [stepActionButtonsGroup],
   },
 })

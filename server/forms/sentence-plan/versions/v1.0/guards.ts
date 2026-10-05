@@ -9,6 +9,7 @@ import {
   redirect,
   Condition,
   Request,
+  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
@@ -137,6 +138,16 @@ export const redirectIfGoalNotFound = (goto: string) =>
     next: [redirect({ goto })],
   })
 
+// Redirects users if goal has less than 2 steps
+// used for reorder page (nothing to reorder)
+export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
+  access({
+    when: Data('activeGoal.steps')
+      .each(Iterator.Count(Item().path('uuid').match(Condition.IsRequired())))
+      .match(Condition.Number.LessThan(2)),
+    next: [redirect({ goto })],
+  })
+
 /**
  * True when the active goal has at least one step and every step is COMPLETED.
  * Derived from the saved goal (not form answers), so it also holds on a direct page load.
@@ -145,6 +156,8 @@ export const allActiveGoalStepsCompleted = and(
   Data('activeGoal.steps').match(Condition.IsRequired()),
   Data('activeGoal.steps').each(Iterator.Every(Item().path('status').match(Condition.Equals('COMPLETED')))),
 )
+// True when active goal that is being edited (session) has a single step only
+export const isSingleStep = Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1))
 
 /**
  * Redirect users unless every step on the active goal is completed.
