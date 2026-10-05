@@ -142,8 +142,7 @@ export const redirectIfGoalNotFound = (goto: string) =>
 // used for reorder page (nothing to reorder)
 export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
   access({
-    when: Data('activeGoal.steps')
-      .each(Iterator.Count(Item().path('uuid').match(Condition.IsRequired())))
+    when: Data('activeGoal.steps').pipe(Transformer.Array.Length())
       .match(Condition.Number.LessThan(2)),
     next: [redirect({ goto })],
   })
