@@ -70,7 +70,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
       const section = await openSection(thinking, answers)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinkingBehaviours.path}`)
+      await page.goto(`${section}/${Step.thinking_behaviours.path}`)
 
       await questions.thinking_behaviours_attitudes_peer_pressure.option(option).check()
 
@@ -83,7 +83,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
       const section = await openSection(thinking, answers)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinkingBehaviours.path}`)
+      await page.goto(`${section}/${Step.thinking_behaviours.path}`)
 
       await questions.thinking_behaviours_attitudes_changes.option(option).check()
 
@@ -96,7 +96,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
       const section = await openSection(thinking, answers)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinkingBehavioursSummary.path}#practitioner-analysis`)
+      await page.goto(`${section}/${Step.thinking_behaviours_summary.path}#practitioner-analysis`)
 
       await questions.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors
         .option(answer)

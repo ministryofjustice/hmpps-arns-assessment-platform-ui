@@ -1,9 +1,17 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Step } from '../../constants/step'
 import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
@@ -28,15 +36,28 @@ export const personalRelationshipsStep = step({
       Step.personal_relationships,
     ),
   ],
+  validWhen: [
+    validation({
+      condition: Data(Step.personal_relationships.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.personal_relationships.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.personal_relationships.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.personal_relationships_community_summary.code,
+            IsUserSubmitted.false,
+          ),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.personal_relationships_and_community,

@@ -1,12 +1,21 @@
-import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
@@ -25,6 +34,12 @@ export const drugDetailsStep = step({
     }),
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_details),
   ],
+  validWhen: [
+    validation({
+      condition: Data(Step.drug_details.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   blocks: [
     usedInLastSixMonthsSection,
     sectionDivider,
@@ -34,14 +49,18 @@ export const drugDetailsStep = step({
     saveButton,
   ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.drug_details.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_details.code, IsUserSubmitted.true)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_details),
         ],
         next: [

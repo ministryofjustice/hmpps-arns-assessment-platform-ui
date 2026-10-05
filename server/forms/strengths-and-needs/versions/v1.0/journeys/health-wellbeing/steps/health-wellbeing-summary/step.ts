@@ -1,10 +1,18 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { healthWellbeingSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { summaryPageTitle } from '../../../../locales'
-import { Section, SectionComplete } from '../../../../constants/section'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const healthWellbeingSummaryStep = step({
@@ -14,11 +22,20 @@ export const healthWellbeingSummaryStep = step({
   onAccess: [
     auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.health_and_wellbeing, Step.health_wellbeing_summary),
   ],
+  validWhen: [
+    validation({
+      condition: Data(Step.health_wellbeing_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.health_wellbeing_summary.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),

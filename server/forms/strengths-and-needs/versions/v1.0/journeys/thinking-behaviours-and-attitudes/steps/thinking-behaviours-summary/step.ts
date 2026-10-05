@@ -1,28 +1,45 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const thinkingBehavioursSummaryStep = step({
-  path: `/${Step.thinkingBehavioursSummary.path}`,
+  path: `/${Step.thinking_behaviours_summary.path}`,
   title: summaryPageTitle(Section.thinking_behaviours_and_attitudes),
   blocks: [summaryTab],
   onAccess: [
     auditPageView(
       SanAuditEvent.VIEW_SECTION_SUMMARY,
       Section.thinking_behaviours_and_attitudes,
-      Step.thinkingBehavioursSummary,
+      Step.thinking_behaviours_summary,
     ),
   ],
+  validWhen: [
+    validation({
+      condition: Data(Step.thinking_behaviours_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.thinking_behaviours_summary.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_summary.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
@@ -30,10 +47,10 @@ export const thinkingBehavioursSummaryStep = step({
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
             Section.thinking_behaviours_and_attitudes,
-            Step.thinkingBehavioursSummary,
+            Step.thinking_behaviours_summary,
           ),
         ],
-        next: [redirect({ goto: `${Step.thinkingBehavioursAnalysis.path}#practitioner-analysis` })],
+        next: [redirect({ goto: `${Step.thinking_behaviours_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

@@ -1,10 +1,19 @@
-import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { summaryTab } from './fields'
 import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { summaryPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const drugUseSummaryStep = step({
@@ -16,12 +25,21 @@ export const drugUseSummaryStep = step({
     }),
     auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.drug_use, Step.drug_use_summary),
   ],
+  validWhen: [
+    validation({
+      condition: Data(Step.drug_use_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   blocks: [summaryTab],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.drug_use_summary.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.true)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),

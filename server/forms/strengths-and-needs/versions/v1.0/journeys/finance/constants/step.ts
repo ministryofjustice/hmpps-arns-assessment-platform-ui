@@ -3,11 +3,11 @@ export const Step = {
     code: 'finance',
     path: 'finance',
   },
-  financeSummary: {
+  finance_summary: {
     code: 'finance_summary',
     path: 'finance-summary',
   },
-  financeAnalysis: {
+  finance_analysis: {
     code: 'finance_analysis',
     path: 'finance-analysis',
   },

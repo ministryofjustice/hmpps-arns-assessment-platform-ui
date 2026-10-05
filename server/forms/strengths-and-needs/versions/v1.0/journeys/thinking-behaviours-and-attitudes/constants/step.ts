@@ -1,21 +1,21 @@
 export const Step = {
-  thinkingBehaviours: {
+  thinking_behaviours: {
     code: 'thinking_behaviours',
     path: 'thinking-behaviours',
   },
-  thinkingBehavioursRiskOfSexualHarm: {
+  thinking_behaviours_risk_of_sexual_harm: {
     code: 'thinking_behaviours_risk_of_sexual_harm',
     path: 'thinking-behaviours-risk-of-sexual-harm',
   },
-  thinkingBehavioursSexualHarm: {
+  thinking_behaviours_sexual_harm: {
     code: 'thinking_behaviours_sexual_harm',
     path: 'thinking-behaviours-sexual-harm',
   },
-  thinkingBehavioursSummary: {
+  thinking_behaviours_summary: {
     code: 'thinking_behaviours_summary',
     path: 'thinking-behaviours-summary',
   },
-  thinkingBehavioursAnalysis: {
+  thinking_behaviours_analysis: {
     code: 'thinking_behaviours_analysis',
     path: 'thinking-behaviours-analysis',
   },

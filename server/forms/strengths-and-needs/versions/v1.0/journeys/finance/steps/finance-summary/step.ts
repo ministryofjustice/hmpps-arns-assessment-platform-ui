@@ -1,29 +1,46 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const financeSummaryStep = step({
-  path: `/${Step.financeSummary.path}`,
+  path: `/${Step.finance_summary.path}`,
   title: summaryPageTitle(Section.finance),
   blocks: [summaryTab],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.finance, Step.financeSummary)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.finance, Step.finance_summary)],
+  validWhen: [
+    validation({
+      condition: Data(Step.finance_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.finance_summary.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.finance_summary.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.yes),
-          auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.financeSummary),
+          auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.finance_summary),
         ],
-        next: [redirect({ goto: `${Step.financeAnalysis.path}#practitioner-analysis` })],
+        next: [redirect({ goto: `${Step.finance_analysis.path}#practitioner-analysis` })],
       },
     }),
   ],

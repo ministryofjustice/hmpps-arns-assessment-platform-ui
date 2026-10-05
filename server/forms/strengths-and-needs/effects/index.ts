@@ -22,6 +22,7 @@ import { sendAuditEvent } from './audit/sendAuditEvent'
 import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
 import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
 import { generateInitialFormUrl } from './session/generateInitialFormUrl'
+import { setUserSubmitted } from './assessment/setUserSubmitted'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -44,6 +45,7 @@ export const StrengthsAndNeedsEffects = {
   loadItemFromCollection: sanEffects.register('loadItemFromCollection', loadItemFromCollection),
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  setUserSubmitted: sanEffects.register('setUserSubmitted', setUserSubmitted),
   extractModeAndVersionUuidFromUrl: sanEffects.register(
     'extractModeAndVersionUuidFromUrl',
     extractModeAndVersionUuidFromUrl,

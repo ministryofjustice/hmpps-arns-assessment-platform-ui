@@ -7,7 +7,8 @@ import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types
 import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 export const saveAndClearStaleAnswers =
-  (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
+  (deps: StrengthsAndNeedsEffectsDeps) =>
+  async (context: StrengthsAndNeedsContext, isAutosaved = false) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
@@ -40,6 +41,7 @@ export const saveAndClearStaleAnswers =
       added: wrapAll(delta.added),
       removed: delta.removed,
       hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      autosaved: isAutosaved,
     })
 
     const changedFields = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear])]

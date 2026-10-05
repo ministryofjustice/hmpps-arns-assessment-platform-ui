@@ -11,14 +11,14 @@ export const autosaveAction = 'autosave'
 /**
  * Persists the answers a practitioner has typed so far, with no validation or redirects.
  */
-export const autosaveSubmit = (stepCode: string) =>
+export const autoSaveAccommodationSubmit = (stepCode: string) =>
   submit({
     when: Post('action').match(Condition.Equals(autosaveAction)),
     guards: isEditMode,
     validate: false,
     onAlways: {
       effects: [
-        StrengthsAndNeedsEffects.saveCurrentStepAnswers(true),
+        StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
       ],
     },

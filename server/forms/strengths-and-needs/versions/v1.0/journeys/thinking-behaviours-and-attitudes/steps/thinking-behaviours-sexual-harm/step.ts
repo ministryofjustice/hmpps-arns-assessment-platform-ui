@@ -1,7 +1,15 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
@@ -12,7 +20,7 @@ import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const thinkingBehavioursSexualHarmStep = step({
-  path: `/${Step.thinkingBehavioursSexualHarm.path}`,
+  path: `/${Step.thinking_behaviours_sexual_harm.path}`,
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   view: {
     locals: {
@@ -21,7 +29,7 @@ export const thinkingBehavioursSexualHarmStep = step({
       backlink: createRoute([
         ...baseSanRoute,
         Section.thinking_behaviours_and_attitudes.path,
-        Step.thinkingBehavioursRiskOfSexualHarm.path,
+        Step.thinking_behaviours_risk_of_sexual_harm.path,
       ]),
     },
   },
@@ -35,27 +43,37 @@ export const thinkingBehavioursSexualHarmStep = step({
     auditPageView(
       SanAuditEvent.VIEW_QUESTION_PAGE,
       Section.thinking_behaviours_and_attitudes,
-      Step.thinkingBehavioursSexualHarm,
+      Step.thinking_behaviours_sexual_harm,
     ),
   ],
+  validWhen: [
+    validation({
+      condition: Data(Step.thinking_behaviours_sexual_harm.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.thinking_behaviours_sexual_harm.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_sexual_harm.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_summary.code, IsUserSubmitted.false),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,
-            Step.thinkingBehavioursSexualHarm,
+            Step.thinking_behaviours_sexual_harm,
           ),
         ],
         next: [
           redirect({
-            goto: Step.thinkingBehavioursSummary.path,
+            goto: Step.thinking_behaviours_summary.path,
           }),
         ],
       },

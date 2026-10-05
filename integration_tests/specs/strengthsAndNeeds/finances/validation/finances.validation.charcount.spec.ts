@@ -123,7 +123,7 @@ test.describe('Finances character counts', () => {
       const section = await openSection(finances, answers)
       const financesPage = new FinancesPage(page)
       const { questions } = financesPage
-      await page.goto(`${section}/${Step.financeSummary.path}#practitioner-analysis`)
+      await page.goto(`${section}/${Step.finance_summary.path}#practitioner-analysis`)
 
       await questions.finance_practitioner_analysis_strengths_or_protective_factors.option(answer).check()
       await questions.finance_practitioner_analysis_risk_of_serious_harm.option(answer).check()

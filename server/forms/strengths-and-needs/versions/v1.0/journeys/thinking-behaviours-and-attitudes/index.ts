@@ -27,7 +27,10 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
   onAccess: [
-    redirectToAnalysisIfReadOnly(Section.thinking_behaviours_and_attitudes.path, Step.thinkingBehavioursAnalysis.path),
+    redirectToAnalysisIfReadOnly(
+      Section.thinking_behaviours_and_attitudes.path,
+      Step.thinking_behaviours_analysis.path,
+    ),
   ],
   view: {
     locals: {

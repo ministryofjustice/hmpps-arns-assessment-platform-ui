@@ -1,15 +1,23 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Data,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
+import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { sectionPageTitle } from '../../../../locales'
 import { thinkingBehavioursAttitudesSection } from '../../section'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 
 export const thinkingBehavioursStep = step({
-  path: `/${Step.thinkingBehaviours.path}`,
+  path: `/${Step.thinking_behaviours.path}`,
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   reachability: { entryWhen: true },
   blocks: [
@@ -31,26 +39,40 @@ export const thinkingBehavioursStep = step({
     saveButton,
   ],
   onAccess: [
-    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.thinking_behaviours_and_attitudes, Step.thinkingBehaviours),
+    auditPageView(
+      SanAuditEvent.VIEW_QUESTION_PAGE,
+      Section.thinking_behaviours_and_attitudes,
+      Step.thinking_behaviours,
+    ),
+  ],
+  validWhen: [
+    validation({
+      condition: Data(Step.thinking_behaviours.code).match(Condition.Equals(IsUserSubmitted.true)),
+      message: 'This step is not user submitted',
+    }),
   ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.thinking_behaviours.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_summary.code, IsUserSubmitted.false),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,
-            Step.thinkingBehaviours,
+            Step.thinking_behaviours,
           ),
         ],
         next: [
           redirect({
-            goto: Step.thinkingBehavioursRiskOfSexualHarm.path,
+            goto: Step.thinking_behaviours_risk_of_sexual_harm.path,
           }),
         ],
       },
