@@ -48,6 +48,8 @@ const isEmployedOrSelfEmployed = or(
   Answer(Question.employment_status).match(Condition.Equals(Option.self_employed)),
 )
 
+const isNotRetired = Answer(Question.employment_status).not.match(Condition.Equals(Option.retired))
+
 const typeOfEmploymentRevealed = revealedQuestion({
   content: {
     code: Question.employment_type,
@@ -510,7 +512,7 @@ const educationExperience = question({
     validationMessage: contentFor('question.education_experience.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ dependentWhen: isNotRetired, visibleWhen: isNotRetired }),
     summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
   },
 })

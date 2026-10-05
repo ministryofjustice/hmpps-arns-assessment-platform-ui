@@ -162,6 +162,7 @@ export default {
     },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000/strengths-and-needs/v1.0', requiredInProduction),
+  sanLegacyUrl: get('SAN_LEGACY_URL', ''),
   sqs: {
     audit: auditConfig(),
   },
