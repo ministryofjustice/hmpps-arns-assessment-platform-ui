@@ -3,11 +3,9 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
-import {
-  Step
-} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation yes children', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -25,9 +23,7 @@ test.describe('Validation', () => {
           ],
         },
       ])
-      .withData([
-        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-      ])
+      .withData([{ key: Step.personal_relationships.code, value: IsUserSubmitted.true }])
       .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)

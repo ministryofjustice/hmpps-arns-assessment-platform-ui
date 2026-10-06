@@ -1,6 +1,8 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { thinking } from '../../sanUtils'
 import {
   changeLink,
@@ -11,10 +13,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import {
-  Step
-} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Thinking, behaviours and attitudes change links
@@ -109,7 +107,7 @@ const fullyAnswered: Scenario = {
     { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
     { key: Step.thinking_behaviours_sexual_harm.code, value: IsUserSubmitted.true },
     { key: Step.thinking_behaviours_summary.code, value: IsUserSubmitted.true },
-  ]
+  ],
 }
 
 const practitionerAnalysisChangeLinks = [

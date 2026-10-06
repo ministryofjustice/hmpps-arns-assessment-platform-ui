@@ -1,6 +1,8 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { health } from '../../sanUtils'
 import {
   changeLink,
@@ -11,8 +13,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Health and wellbeing change links
@@ -94,7 +94,7 @@ const fullyAnswered: Scenario = {
     { key: Step.health_wellbeing.code, value: IsUserSubmitted.true },
     { key: Step.physical_mental_health.code, value: IsUserSubmitted.true },
     { key: Step.health_wellbeing_summary.code, value: IsUserSubmitted.true },
-  ]
+  ],
 }
 
 const practitionerAnalysisChangeLinks = [

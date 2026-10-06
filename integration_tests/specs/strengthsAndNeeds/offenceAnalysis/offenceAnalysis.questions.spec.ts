@@ -3,10 +3,10 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Questions', () => {
   test('shows offence(s) committed', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -107,9 +107,7 @@ test.describe('Questions', () => {
           value: [Option.one_or_more_person],
         },
       ])
-      .withData([
-        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
-      ])
+      .withData([{ key: Step.offence_analysis.code, value: IsUserSubmitted.true }])
       .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
@@ -226,9 +224,7 @@ test.describe('Questions', () => {
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
       ])
-      .withData([
-        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
-      ])
+      .withData([{ key: Step.offence_analysis.code, value: IsUserSubmitted.true }])
       .save()
 
     await OffenceAnalysisPage.navigateTo(

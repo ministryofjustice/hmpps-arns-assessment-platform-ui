@@ -1,4 +1,4 @@
-  import { expect } from '@playwright/test'
+import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
 import { test, TargetService } from '../../../../support/fixtures'
 

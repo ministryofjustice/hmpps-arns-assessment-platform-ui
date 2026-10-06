@@ -1,6 +1,8 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { finances } from '../../sanUtils'
 import {
   changeLink,
@@ -11,8 +13,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Finances change links
@@ -64,7 +64,7 @@ const fullyAnswered: Scenario = {
   data: [
     { key: Step.finance.code, value: IsUserSubmitted.true },
     { key: Step.finance_summary.code, value: IsUserSubmitted.true },
-  ]
+  ],
 }
 
 const practitionerAnalysisChangeLinks = [
