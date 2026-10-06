@@ -107,8 +107,6 @@ export const navigateToStrengthsAndNeeds = async (
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
   // Wait for the redirect from the handover link to land on the expected page
-  console.log(`MGEO Got ${handoverLink} to ${expectedPath}`)
-  console.log(`MGEO expected ${expectedPath}`)
   await page.waitForURL(url => url.pathname.includes(expectedPath))
 }
 
