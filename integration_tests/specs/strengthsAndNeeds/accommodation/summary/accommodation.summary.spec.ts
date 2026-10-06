@@ -5,6 +5,8 @@ import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { test, TargetService } from '../../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../sanUtils'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Summary', () => {
   test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -21,7 +23,13 @@ test.describe('Summary', () => {
         { question: Question.suitable_housing, value: CommonOption.no },
         { question: Question.unsuitable_housing_concerns, value: [] },
         { question: Question.accommodation_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
+      ])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
@@ -77,7 +85,13 @@ test.describe('Summary', () => {
         { question: Question.suitable_housing, value: CommonOption.no },
         { question: Question.unsuitable_housing_concerns, value: [] },
         { question: Question.accommodation_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
+      ])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
@@ -111,6 +125,11 @@ test.describe('Summary', () => {
         },
         { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
+      ])
+      .withData([
+        { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
       ])
       .save()
 

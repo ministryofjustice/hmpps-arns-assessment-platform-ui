@@ -4,6 +4,8 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { test, TargetService } from '../../../../support/fixtures'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Summary', () => {
   test('shows a fully-answered summary including the multi-select reasons and impact questions', async ({
@@ -33,6 +35,11 @@ test.describe('Summary', () => {
         { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
+      ])
+      .withData([
+        { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
+        { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
+        { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 
@@ -134,6 +141,11 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
+      .withData([
+        { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
+        { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
+        { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
+      ])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
@@ -173,6 +185,11 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
         { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.no },
         { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_no_details, value: '' },
+      ])
+      .withData([
+        { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
+        { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
+        { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 

@@ -1,9 +1,11 @@
-import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
-import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
-import { expect } from '@playwright/test'
+import {Question} from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import {Option} from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import {expect} from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
-import { test, TargetService } from '../../../support/fixtures'
-import { buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles } from '../sanUtils'
+import {TargetService, test} from '../../../support/fixtures'
+import {buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles} from '../sanUtils'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Questions', () => {
   test('shows accommodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -37,7 +39,9 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
-      ]).save()
+      ])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Who is')
@@ -106,7 +110,9 @@ test.describe('Questions', () => {
         { question: Question.current_accommodation, value: Option.temporary },
         { question: Question.type_of_temporary_accommodation, value: Option.approved_premises },
         { question: Question.approved_premises_end_date, value: '2030-01-01' },
-      ]).save()
+      ])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Is the location')
@@ -125,7 +131,9 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.temporary }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -144,7 +152,9 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.current_accommodation, value: Option.no_accommodation },
         { question: Question.type_of_no_accommodation, value: Option.campsite },
-      ]).save()
+      ])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'have no accommodation')

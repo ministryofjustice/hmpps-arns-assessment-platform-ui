@@ -6,6 +6,7 @@ import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, alcohol } from '../../sanUtils'
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Some alcohol use fields have character limits. These tests exercise the page to reveal the character count fields,
@@ -42,10 +43,15 @@ const answers = [
   { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
   { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
+const data = [
+  { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
+  { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
+  { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
+]
 
 test.describe('Alcohol use character counts', () => {
   test('alcohol-use-details: past issues, reasons, impact and what has helped', async ({ page, openSection }) => {
-    const section = await openSection(alcohol, answers)
+    const section = await openSection(alcohol, answers, data)
     const alcoholUsePage = new AlcoholUsePage(page)
     const { questions } = alcoholUsePage
     await page.goto(`${section}/${Step.alcohol_use_details.path}`)
@@ -61,7 +67,7 @@ test.describe('Alcohol use character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of changeOptions) {
     test(`alcohol-use-details: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(alcohol, answers)
+      const section = await openSection(alcohol, answers, data)
       const alcoholUsePage = new AlcoholUsePage(page)
       const { questions } = alcoholUsePage
       await page.goto(`${section}/${Step.alcohol_use_details.path}`)
@@ -74,7 +80,7 @@ test.describe('Alcohol use character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`alcohol-use-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(alcohol, answers)
+      const section = await openSection(alcohol, answers, data)
       const alcoholUsePage = new AlcoholUsePage(page)
       const { questions } = alcoholUsePage
       await page.goto(`${section}/${Step.alcohol_use_summary.path}#practitioner-analysis`)
