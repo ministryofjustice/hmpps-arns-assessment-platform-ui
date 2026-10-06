@@ -155,8 +155,6 @@ export const allActiveGoalStepsCompleted = and(
   Data('activeGoal.steps').match(Condition.IsRequired()),
   Data('activeGoal.steps').each(Iterator.Every(Item().path('status').match(Condition.Equals('COMPLETED')))),
 )
-// True when active goal that is being edited (session) has a single step only
-export const isSingleStep = Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1))
 
 /**
  * Redirect users unless every step on the active goal is completed.

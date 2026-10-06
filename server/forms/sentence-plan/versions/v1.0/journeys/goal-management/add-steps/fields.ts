@@ -8,6 +8,7 @@ import {
   not,
   or,
   Self,
+  Transformer,
   validation,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -23,7 +24,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { AssessmentInfoDetails, ButtonAsLink, WrappingSelect } from '../../../../../components'
 import { actorLabelOptions, CaseData } from '../../../constants'
-import { canAccessSanContent, isSingleStep } from '../../../guards'
+import { canAccessSanContent } from '../../../guards'
 import { goalContextInsetText } from '../sharedFields'
 
 const stepActorLabelText = 'Who will do the step?'
@@ -91,6 +92,8 @@ export const columnHeaders = GovUKGridRow({
     },
   ],
 })
+
+const isSingleStep = Data('activeGoalStepsEdited').pipe(Transformer.Array.Length()).match(Condition.Equals(1))
 
 /**
  * Dynamic step rows - renders a row for each step in the collection
