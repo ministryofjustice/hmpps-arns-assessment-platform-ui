@@ -5,6 +5,10 @@ import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
+import {
+  Step
+} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Questions', () => {
   test('shows thinking behaviours', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -189,6 +193,10 @@ test.describe('Questions', () => {
         { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
         { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
       ])
+      .withData([
+        { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
+        { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
+      ])
       .save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(
@@ -248,6 +256,10 @@ test.describe('Questions', () => {
         { question: Question.thinking_behaviours_attitudes_peer_pressure_yes_details, value: '' },
         { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
         { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
+      ])
+      .withData([
+        { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
+        { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
       ])
       .save()
 
@@ -310,6 +322,10 @@ test.describe('Questions', () => {
         { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
         { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
         { question: Question.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
+      ])
+      .withData([
+        { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
+        { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
       ])
       .save()
 

@@ -2,10 +2,10 @@ import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { checkAccessibility, navigateToStrengthsAndNeeds } from '../../sanUtils'
 import { test, TargetService } from '../../../../support/fixtures'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Accessibility', () => {
   test('should be accessible', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -25,7 +25,8 @@ test.describe('Accessibility', () => {
       ])
       .withData([
         { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_details.code, value: IsUserSubmitted.true }
+        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
+        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 

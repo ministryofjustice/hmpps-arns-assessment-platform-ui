@@ -11,6 +11,8 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Finances change links
@@ -59,6 +61,10 @@ const fullyAnswered: Scenario = {
     changeLink('finance', 'finance_debt'),
     changeLink('finance', 'finance_changes'),
   ],
+  data: [
+    { key: Step.finance.code, value: IsUserSubmitted.true },
+    { key: Step.finance_summary.code, value: IsUserSubmitted.true },
+  ]
 }
 
 const practitionerAnalysisChangeLinks = [
@@ -71,7 +77,7 @@ test.describe('Finances change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(finances, fullyAnswered.answers)
+        const section = await openSection(finances, fullyAnswered.answers, fullyAnswered.data)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -85,7 +91,7 @@ test.describe('Finances change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(finances, fullyAnswered.answers)
+      const section = await openSection(finances, fullyAnswered.answers, fullyAnswered.data)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -99,7 +105,7 @@ test.describe('Finances change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(finances, fullyAnswered.answers)
+        const section = await openSection(finances, fullyAnswered.answers, fullyAnswered.data)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

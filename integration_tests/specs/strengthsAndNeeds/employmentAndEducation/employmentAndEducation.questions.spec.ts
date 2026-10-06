@@ -5,6 +5,8 @@ import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEdu
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Questions', () => {
   test('shows current employment status', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -46,7 +48,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.employed },
         { question: Question.employment_type, value: Option.full_time },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -207,7 +213,12 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.self_employed }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.employment_status, value: Option.self_employed }])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -225,7 +236,13 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.retired }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.employment_status, value: Option.retired }])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+        { key: Step.employed.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -238,7 +255,6 @@ test.describe('Questions', () => {
       - group "Does Test have any professional or vocational qualifications?"
       - group "Does Test have any skills that could help them in a job or to get a job?"
       - group "Does Test have difficulties with reading, writing or numeracy?"
-      - group "What is Test's experience of education?"
       - group "Does Test want to make changes to their employment and education?"
       - button "Save and continue"
     `)
@@ -257,7 +273,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.currently_unavailable_for_work },
         { question: Question.has_been_employed, value: CommonOption.yes },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -290,7 +310,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.currently_unavailable_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -342,7 +366,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.unemployed_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.yes },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -375,7 +403,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.unemployed_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -403,7 +435,14 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.unemployed_looking_for_work }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([
+        { question: Question.employment_status, value: Option.unemployed_looking_for_work }
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -427,7 +466,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.yes },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 
@@ -460,7 +503,11 @@ test.describe('Questions', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 

@@ -3,10 +3,10 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../sanUtils'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Summary read-only', () => {
   test('shows read-only summary page', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -29,7 +29,7 @@ test.describe('Summary read-only', () => {
       .withData([
         { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
         { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
+        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 
@@ -87,7 +87,7 @@ test.describe('Summary read-only', () => {
       .withData([
         { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
         { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
+        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 

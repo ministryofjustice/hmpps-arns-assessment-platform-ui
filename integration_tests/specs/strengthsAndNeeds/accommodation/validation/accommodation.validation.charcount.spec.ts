@@ -3,10 +3,10 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, accommodation } from '../../sanUtils'
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Some accommodation fields have character limits. These tests exercise the page to reveal the character count
@@ -39,7 +39,7 @@ const noAccommodation = [
 
 const data = [
   { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-  { key: Step.accommodation_details.code, value: IsUserSubmitted.true }
+  { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
 ]
 test.describe('Accommodation character counts', () => {
   test('accommodation-details: who they live with, and concerns about the area and the housing', async ({

@@ -5,6 +5,8 @@ import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
 import { test, TargetService } from '../../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../../sanUtils'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation physical health and mental health', async ({
@@ -55,7 +57,12 @@ test.describe('Validation', () => {
         { question: Question.health_wellbeing_physical_health_condition_yes_details, value: '' },
         { question: Question.health_wellbeing_mental_health_condition, value: Option.yes_ongoing_severe },
         { question: Question.health_wellbeing_mental_health_condition_yes_ongoing_severe_details, value: '' },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.health_wellbeing.code, value: IsUserSubmitted.true },
+        { key: Step.physical_mental_health.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
 

@@ -1,6 +1,8 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { accommodation } from '../../sanUtils'
 import {
   changeLink,
@@ -11,8 +13,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Accommodation change links
@@ -56,8 +56,8 @@ const settledAccommodation: Scenario = {
   data: [
     { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
     { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-    { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
-  ]
+    { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+  ],
 }
 
 const noAccommodation: Scenario = {
@@ -91,8 +91,8 @@ const noAccommodation: Scenario = {
   data: [
     { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
     { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-    { key: Step.accommodation_summary.code, value: IsUserSubmitted.true }
-  ]
+    { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+  ],
 }
 
 const practitionerAnalysisChangeLinks = [
@@ -105,7 +105,7 @@ test.describe('Accommodation change links', () => {
   test.describe('Questions', () => {
     test.describe('in settled accommodation', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, settledAccommodation.answers, settledAccommodation.data )
+        const section = await openSection(accommodation, settledAccommodation.answers, settledAccommodation.data)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,

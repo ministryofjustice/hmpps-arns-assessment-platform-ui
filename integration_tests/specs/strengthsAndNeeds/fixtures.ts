@@ -1,4 +1,4 @@
-import type {AnswerConfig, DataConfig} from '../../builders/types'
+import type { AnswerConfig, DataConfig } from '../../builders/types'
 import { test as base, TargetService } from '../../support/fixtures'
 import { navigateToStrengthsAndNeeds, sanFormPath, v1Path } from './sanUtils'
 
@@ -11,7 +11,9 @@ export type Data = DataConfig
  * `openSection(section, answers)` seeds the answers and opens the assessment,
  * returning the section's URL.
  */
-export const test = base.extend<{ openSection: (sectionPath: string, answers: Answer[], data?: Data[]) => Promise<string> }>({
+export const test = base.extend<{
+  openSection: (sectionPath: string, answers: Answer[], data?: Data[]) => Promise<string>
+}>({
   openSection: async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }, use) => {
     await use(async (sectionPath, answers, data) => {
       const { handoverLink, sanAssessmentId } = await createSession({

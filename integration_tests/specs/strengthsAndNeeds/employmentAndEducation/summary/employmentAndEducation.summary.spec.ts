@@ -1,6 +1,8 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -21,7 +23,13 @@ test.describe('Summary', () => {
         { question: Question.education_difficulties, value: [CommonOption.none] },
         { question: Question.education_experience, value: CommonOption.unknown },
         { question: Question.employment_education_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+        { key: Step.employed.code, value: IsUserSubmitted.true },
+        { key: Step.employment_education_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(
       page,
@@ -102,7 +110,13 @@ test.describe('Summary', () => {
         { question: Question.education_difficulties, value: [CommonOption.none] },
         { question: Question.education_experience, value: CommonOption.unknown },
         { question: Question.employment_education_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+        { key: Step.employed.code, value: IsUserSubmitted.true },
+        { key: Step.employment_education_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(
       page,
@@ -142,7 +156,13 @@ test.describe('Summary', () => {
         },
         { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+        { key: Step.employed.code, value: IsUserSubmitted.true },
+        { key: Step.employment_education_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(
       page,

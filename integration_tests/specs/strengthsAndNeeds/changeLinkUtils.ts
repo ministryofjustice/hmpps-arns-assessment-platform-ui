@@ -1,10 +1,10 @@
 import { expect, Page } from '@playwright/test'
-import {Answer, Data, test} from './fixtures'
+import { Answer, Data, test } from './fixtures'
 
 export type ChangeLink = { step: string; question: string }
 export const changeLink = (step: string, question: string): ChangeLink => ({ step, question })
 
-export type Scenario = { answers: Answer[]; summaryChangeLinks: ChangeLink[], data?: Data[] }
+export type Scenario = { answers: Answer[]; summaryChangeLinks: ChangeLink[]; data?: Data[] }
 
 const hrefOf = ({ step, question }: ChangeLink) => `${step}#${question}-question`
 

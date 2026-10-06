@@ -1,4 +1,6 @@
 import { expect } from '@playwright/test'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { test, TargetService } from '../../../../support/fixtures'
 
@@ -119,6 +121,13 @@ test.describe('Summary', () => {
           question: 'offence_analysis_victim_race',
           value: 'WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
         },
+      ])
+      .withData([
+        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
+        { key: Step.offence_analysis_involved_parties.code, value: IsUserSubmitted.true },
+        { key: Step.offence_analysis_victim_summary.code, value: IsUserSubmitted.true },
+        { key: Step.offence_analysis_impact.code, value: IsUserSubmitted.true },
+        { key: Step.offence_analysis_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 

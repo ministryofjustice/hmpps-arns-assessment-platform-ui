@@ -11,6 +11,10 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
+import {
+  Step
+} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 /**
  * Thinking, behaviours and attitudes change links
@@ -100,6 +104,12 @@ const fullyAnswered: Scenario = {
     changeLink('thinking-behaviours-sexual-harm', 'thinking_behaviours_attitudes_offence_related_sexual_interest'),
     changeLink('thinking-behaviours-sexual-harm', 'thinking_behaviours_attitudes_emotional_intimacy'),
   ],
+  data: [
+    { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
+    { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
+    { key: Step.thinking_behaviours_sexual_harm.code, value: IsUserSubmitted.true },
+    { key: Step.thinking_behaviours_summary.code, value: IsUserSubmitted.true },
+  ]
 }
 
 const practitionerAnalysisChangeLinks = [
@@ -115,7 +125,7 @@ test.describe('Thinking, behaviours and attitudes change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(thinking, fullyAnswered.answers)
+        const section = await openSection(thinking, fullyAnswered.answers, fullyAnswered.data)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -129,7 +139,7 @@ test.describe('Thinking, behaviours and attitudes change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(thinking, fullyAnswered.answers)
+      const section = await openSection(thinking, fullyAnswered.answers, fullyAnswered.data)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -143,7 +153,7 @@ test.describe('Thinking, behaviours and attitudes change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(thinking, fullyAnswered.answers)
+        const section = await openSection(thinking, fullyAnswered.answers, fullyAnswered.data)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

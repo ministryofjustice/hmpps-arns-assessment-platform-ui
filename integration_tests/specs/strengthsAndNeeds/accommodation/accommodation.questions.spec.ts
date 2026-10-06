@@ -1,11 +1,11 @@
-import {Question} from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
-import {Option} from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
-import {expect} from '@playwright/test'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
-import {TargetService, test} from '../../../support/fixtures'
-import {buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles} from '../sanUtils'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
+import { TargetService, test } from '../../../support/fixtures'
+import { buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles } from '../sanUtils'
 
 test.describe('Questions', () => {
   test('shows accommodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {

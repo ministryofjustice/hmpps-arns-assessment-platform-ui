@@ -2,10 +2,10 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../sanUtils'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation settled option', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -40,9 +40,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
-      .withData([
-        { key: Step.current_accommodation.code, value: IsUserSubmitted.true }
-      ])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -70,9 +68,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.no_accommodation }])
-      .withData([
-        { key: Step.current_accommodation.code, value: IsUserSubmitted.true }
-      ])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -102,9 +98,7 @@ test.describe('Validation', () => {
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ])
-      .withData([
-        { key: Step.current_accommodation.code, value: IsUserSubmitted.true }
-      ])
+      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')

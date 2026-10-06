@@ -3,9 +3,9 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Summary', () => {
   test('shows read-only summary', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {

@@ -4,6 +4,8 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { test, TargetService } from '../../../../support/fixtures'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation other options', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -135,7 +137,11 @@ test.describe('Validation', () => {
           question: Question.offence_analysis_who_was_the_victim,
           value: [Option.one_or_more_person],
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
 

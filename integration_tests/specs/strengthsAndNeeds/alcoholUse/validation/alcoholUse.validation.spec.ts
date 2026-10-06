@@ -2,9 +2,9 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/question'
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
-import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step";
-import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation on the alcohol use question', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -43,9 +43,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-      .withData([
-        { key: Step.alcohol_use.code, value: IsUserSubmitted.true }
-      ])
+      .withData([{ key: Step.alcohol_use.code, value: IsUserSubmitted.true }])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -125,9 +123,7 @@ test.describe('Validation', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId)
         .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-        .withData([
-          { key: Step.alcohol_use.code, value: IsUserSubmitted.true }
-        ])
+        .withData([{ key: Step.alcohol_use.code, value: IsUserSubmitted.true }])
         .save()
 
       await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -159,9 +155,7 @@ test.describe('Validation', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId)
         .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-        .withData([
-          { key: Step.alcohol_use.code, value: IsUserSubmitted.true }
-        ])
+        .withData([{ key: Step.alcohol_use.code, value: IsUserSubmitted.true }])
         .save()
 
       await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')

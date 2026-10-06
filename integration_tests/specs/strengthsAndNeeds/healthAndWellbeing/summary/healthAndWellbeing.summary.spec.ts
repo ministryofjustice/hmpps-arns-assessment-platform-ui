@@ -1,6 +1,8 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -27,7 +29,13 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
         { question: Question.health_wellbeing_positive_factors, value: [] },
         { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.health_wellbeing.code, value: IsUserSubmitted.true },
+        { key: Step.physical_mental_health.code, value: IsUserSubmitted.true },
+        { key: Step.health_wellbeing_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
@@ -128,7 +136,13 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
         { question: Question.health_wellbeing_positive_factors, value: [] },
         { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.health_wellbeing.code, value: IsUserSubmitted.true },
+        { key: Step.physical_mental_health.code, value: IsUserSubmitted.true },
+        { key: Step.health_wellbeing_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
@@ -166,7 +180,13 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.health_wellbeing.code, value: IsUserSubmitted.true },
+        { key: Step.physical_mental_health.code, value: IsUserSubmitted.true },
+        { key: Step.health_wellbeing_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(
       page,

@@ -4,6 +4,10 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
 import { test, TargetService } from '../../../../support/fixtures'
+import {
+  Step
+} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation yes children', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -20,7 +24,11 @@ test.describe('Validation', () => {
             Option.yes_children_visiting,
           ],
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -77,7 +85,12 @@ test.describe('Validation', () => {
           value: 'test',
         },
         { question: Question.personal_relationships_community_important_people, value: [CommonOption.other] },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
+        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
@@ -137,7 +150,12 @@ test.describe('Validation', () => {
           question: Question.personal_relationships_community_important_people_partner_intimate_relationship_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
+        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,

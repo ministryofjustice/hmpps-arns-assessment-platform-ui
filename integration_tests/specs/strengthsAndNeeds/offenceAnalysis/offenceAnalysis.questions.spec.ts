@@ -5,6 +5,8 @@ import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Questions', () => {
   test('shows offence(s) committed', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -104,7 +106,11 @@ test.describe('Questions', () => {
           question: Question.offence_analysis_who_was_the_victim,
           value: [Option.one_or_more_person],
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
 
@@ -219,7 +225,11 @@ test.describe('Questions', () => {
           question: Question.offence_analysis_who_was_the_victim_other_details,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await OffenceAnalysisPage.navigateTo(
       page,
@@ -312,6 +322,10 @@ test.describe('Questions', () => {
           question: 'offence_analysis_victim_race',
           value: 'WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
         },
+      ])
+      .withData([
+        { key: Step.offence_analysis.code, value: IsUserSubmitted.true },
+        { key: Step.offence_analysis_victim_summary.code, value: IsUserSubmitted.true },
       ])
       .save()
 

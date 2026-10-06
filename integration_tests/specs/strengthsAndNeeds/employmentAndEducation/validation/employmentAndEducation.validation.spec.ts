@@ -3,6 +3,8 @@ import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { test, TargetService } from '../../../../support/fixtures'
+import {Step} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Validation', () => {
   test('validation employed option', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -75,7 +77,14 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.unemployed_not_looking_for_work }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.employment_status, value: Option.unemployed_not_looking_for_work }])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+        { key: Step.employed.code, value: IsUserSubmitted.true },
+        { key: Step.employment_education_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -94,7 +103,13 @@ test.describe('Validation', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.employed },
         { question: Question.employment_type, value: Option.full_time },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.current_employment.code, value: IsUserSubmitted.true },
+        { key: Step.employed.code, value: IsUserSubmitted.true },
+        { key: Step.employment_education_summary.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 

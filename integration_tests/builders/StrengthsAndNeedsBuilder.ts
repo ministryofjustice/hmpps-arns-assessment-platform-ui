@@ -1,7 +1,7 @@
 import { AssessmentBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type {AnswerConfig, CreatedAssessment, DataConfig} from './types'
+import type { AnswerConfig, CreatedAssessment, DataConfig } from './types'
 
 /**
  * Factory for creating StrengthsAndNeedsBuilder instances with a bound client.
@@ -37,6 +37,7 @@ export class StrengthsAndNeedsBuilderInstance {
   private readonly assessmentBuilder: AssessmentBuilderInstance
 
   private readonly answers: AnswerConfig[] = []
+
   private readonly data: DataConfig[] = []
 
   constructor(client: TestAapApiClient, assessmentBuilder: AssessmentBuilderInstance) {

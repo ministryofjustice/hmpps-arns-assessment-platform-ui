@@ -4,6 +4,10 @@ import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
+import {
+  Step
+} from "@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step";
+import {IsUserSubmitted} from "@server/forms/strengths-and-needs/versions/v1.0/constants/section";
 
 test.describe('Questions', () => {
   test('shows any children', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -50,7 +54,12 @@ test.describe('Questions', () => {
           question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
           value: 'test',
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
+        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
@@ -106,7 +115,12 @@ test.describe('Questions', () => {
           question: Question.personal_relationships_community_important_people_partner_intimate_relationship_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withData([
+        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
+        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
