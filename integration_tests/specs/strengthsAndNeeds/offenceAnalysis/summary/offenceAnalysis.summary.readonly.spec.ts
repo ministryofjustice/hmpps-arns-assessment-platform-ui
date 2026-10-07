@@ -132,7 +132,7 @@ test.describe('Summary', () => {
       ])
       .save()
 
-    await OffenceAnalysisPage.navigateToView(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-analysis')
+    await OffenceAnalysisPage.navigateToView(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-summary')
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Summary')
 
     await expect(offenceAnalysisPage.summary).toMatchAriaSnapshot(`
