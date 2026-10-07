@@ -1,14 +1,15 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const drugUseHistoryStep = step({
   path: `/${Step.drug_use_history.path}`,
@@ -29,15 +30,25 @@ export const drugUseHistoryStep = step({
     saveButton,
   ],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use_history)],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.drug_use_history.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.drug_use_history.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_history.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_history),
         ],
         next: [redirect({ goto: Step.drug_use_summary.path })],

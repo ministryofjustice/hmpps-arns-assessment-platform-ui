@@ -3,6 +3,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -104,7 +105,9 @@ test.describe('Questions', () => {
           question: Question.offence_analysis_who_was_the_victim,
           value: [Option.one_or_more_person],
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.offence_analysis.code])
+      .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
 
@@ -219,7 +222,9 @@ test.describe('Questions', () => {
           question: Question.offence_analysis_who_was_the_victim_other_details,
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.offence_analysis.code])
+      .save()
 
     await OffenceAnalysisPage.navigateTo(
       page,
@@ -313,6 +318,7 @@ test.describe('Questions', () => {
           value: 'WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
         },
       ])
+      .withUserSubmittedSteps([Step.offence_analysis.code, Step.offence_analysis_victim_summary.code])
       .save()
 
     await OffenceAnalysisPage.navigateTo(

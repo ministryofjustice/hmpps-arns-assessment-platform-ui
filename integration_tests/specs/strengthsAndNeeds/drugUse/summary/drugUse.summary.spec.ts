@@ -1,4 +1,5 @@
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
@@ -15,7 +16,10 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
@@ -40,7 +44,10 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
@@ -61,7 +68,9 @@ test.describe('Summary', () => {
         { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },
         { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary#practitioner-analysis')
 

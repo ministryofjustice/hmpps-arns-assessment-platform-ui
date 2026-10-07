@@ -83,6 +83,13 @@ const answers = [
   },
 ]
 
+const userSubmittedSteps = [
+  Step.personal_relationships_children_information.code,
+  Step.personal_relationships.code,
+  Step.personal_relationships_community.code,
+  Step.personal_relationships_community_summary.code,
+]
+
 const relationshipsAndChildhood = [
   {
     name: 'positive',
@@ -118,7 +125,7 @@ test.describe('Personal relationships and community character counts', () => {
     page,
     openSection,
   }) => {
-    const section = await openSection(personal, answers)
+    const section = await openSection(personal, answers, userSubmittedSteps)
     const personalPage = new PersonalRelationshipsAndCommunityPage(page)
     const { questions } = personalPage
     await page.goto(`${section}/${Step.personal_relationships_children_information.path}`)
@@ -135,7 +142,7 @@ test.describe('Personal relationships and community character counts', () => {
   })
 
   test('personal-relationships: everyone important to them', async ({ page, openSection }) => {
-    const section = await openSection(personal, answers)
+    const section = await openSection(personal, answers, userSubmittedSteps)
     const personalPage = new PersonalRelationshipsAndCommunityPage(page)
     const { questions } = personalPage
     await page.goto(`${section}/${Step.personal_relationships.path}`)
@@ -157,7 +164,7 @@ test.describe('Personal relationships and community character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(personal, answers)
+      const section = await openSection(personal, answers, userSubmittedSteps)
       const personalPage = new PersonalRelationshipsAndCommunityPage(page)
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_community.path}`)
@@ -175,7 +182,7 @@ test.describe('Personal relationships and community character counts', () => {
 
   for (const option of changeOptions) {
     test(`personal-relationships-community: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(personal, answers)
+      const section = await openSection(personal, answers, userSubmittedSteps)
       const personalPage = new PersonalRelationshipsAndCommunityPage(page)
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_community.path}`)
@@ -188,7 +195,7 @@ test.describe('Personal relationships and community character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`personal-relationships-community-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(personal, answers)
+      const section = await openSection(personal, answers, userSubmittedSteps)
       const personalPage = new PersonalRelationshipsAndCommunityPage(page)
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_community_summary.path}#practitioner-analysis`)

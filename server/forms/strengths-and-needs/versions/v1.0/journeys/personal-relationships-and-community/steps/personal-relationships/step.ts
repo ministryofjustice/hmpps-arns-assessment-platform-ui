@@ -1,4 +1,4 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Step } from '../../constants/step'
 import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
@@ -10,6 +10,7 @@ import { personalRelationshipsCommunitySection } from '../../section'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const personalRelationshipsStep = step({
   path: `/${Step.personal_relationships.path}`,
@@ -28,15 +29,28 @@ export const personalRelationshipsStep = step({
       Step.personal_relationships,
     ),
   ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.personal_relationships.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.personal_relationships.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.personal_relationships.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.personal_relationships_community_summary.code,
+            IsUserSubmitted.false,
+          ),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.personal_relationships_and_community,

@@ -54,9 +54,11 @@ const answers = [
   },
 ]
 
+const userSubmittedSteps = [Step.current_employment.code, Step.employed.code, Step.employment_education_summary.code]
+
 test.describe('Employment and education character counts', () => {
   test('employed: other responsibilities, qualifications and transferable skills', async ({ page, openSection }) => {
-    const section = await openSection(employment, answers)
+    const section = await openSection(employment, answers, userSubmittedSteps)
     const employmentPage = new EmploymentAndEducationPage(page)
     const { questions } = employmentPage
     await page.goto(`${section}/${Step.employed.path}`)
@@ -72,7 +74,7 @@ test.describe('Employment and education character counts', () => {
   })
 
   test('employed: some transferable skills', async ({ page, openSection }) => {
-    const section = await openSection(employment, answers)
+    const section = await openSection(employment, answers, userSubmittedSteps)
     const employmentPage = new EmploymentAndEducationPage(page)
     const { questions } = employmentPage
     await page.goto(`${section}/${Step.employed.path}`)
@@ -85,7 +87,7 @@ test.describe('Employment and education character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of [Option.stable, Option.periods_of_instability, Option.unstable, CommonOption.unknown]) {
     test(`employed: employment history ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(employment, answers)
+      const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
       await page.goto(`${section}/${Step.employed.path}`)
@@ -104,7 +106,7 @@ test.describe('Employment and education character counts', () => {
     Option.negative,
   ]) {
     test(`employed: experience of employment and education ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(employment, answers)
+      const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
       await page.goto(`${section}/${Step.employed.path}`)
@@ -118,7 +120,7 @@ test.describe('Employment and education character counts', () => {
 
   for (const option of changeOptions) {
     test(`employed: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(employment, answers)
+      const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
       await page.goto(`${section}/${Step.employed.path}`)
@@ -131,7 +133,7 @@ test.describe('Employment and education character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`employment-education-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(employment, answers)
+      const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
       await page.goto(`${section}/${Step.employment_education_summary.path}#practitioner-analysis`)

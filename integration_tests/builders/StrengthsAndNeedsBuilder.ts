@@ -1,7 +1,11 @@
 import { AssessmentBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type { AnswerConfig, CreatedAssessment } from './types'
+import type { AnswerConfig, CreatedAssessment, DataConfig } from './types'
+import {
+  IsUserSubmitted,
+  isUserSubmittedCode,
+} from '../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Factory for creating StrengthsAndNeedsBuilder instances with a bound client.
@@ -38,6 +42,8 @@ export class StrengthsAndNeedsBuilderInstance {
 
   private readonly answers: AnswerConfig[] = []
 
+  private readonly data: DataConfig[] = []
+
   constructor(client: TestAapApiClient, assessmentBuilder: AssessmentBuilderInstance) {
     this.client = client
     this.assessmentBuilder = assessmentBuilder
@@ -48,6 +54,7 @@ export class StrengthsAndNeedsBuilderInstance {
    */
   async save(): Promise<CreatedAssessment> {
     this.buildAssessmentAnswers()
+    this.buildAssessmentData()
     const assessment = await this.assessmentBuilder.save()
     const result = this.mapToCreatedSan(assessment)
 
@@ -60,11 +67,35 @@ export class StrengthsAndNeedsBuilderInstance {
     })
   }
 
+  private buildAssessmentData(): void {
+    this.data.forEach(d => {
+      this.assessmentBuilder.withProperty(d.key, d.value)
+    })
+  }
+
   /**
    * Add multiple answers to assessment
    */
   withAnswers(answer: AnswerConfig[]): this {
     answer.forEach(a => this.answers.push(a))
+
+    return this
+  }
+
+  /**
+   * Add multiple data to assessment
+   */
+  withData(data: DataConfig[]): this {
+    data.forEach(a => this.data.push(a))
+
+    return this
+  }
+
+  /**
+   * Sets the provided step codes as user submitted
+   */
+  withUserSubmittedSteps(stepCodes: string[]): this {
+    this.withData(stepCodes.map(stepCode => ({ key: isUserSubmittedCode(stepCode), value: IsUserSubmitted.true })))
 
     return this
   }

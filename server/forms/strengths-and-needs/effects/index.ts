@@ -2,8 +2,6 @@ import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { deriveDrugCategories } from './assessment/deriveDrugCategories'
 import { loadAssessment } from './assessment/loadAssessment'
 import { loadPreviousVersions } from './assessment/loadPreviousVersions'
-import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
-import { autosaveCurrentStepAnswers } from './assessment/autosaveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { setPrivacyAccepted } from './session/setPrivacyAccepted'
@@ -22,6 +20,7 @@ import { sendAuditEvent } from './audit/sendAuditEvent'
 import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
 import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
 import { generateInitialFormUrl } from './session/generateInitialFormUrl'
+import { setUserSubmitted } from './assessment/setUserSubmitted'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -32,8 +31,6 @@ export const StrengthsAndNeedsEffects = {
   setDynamicBacklink: sanEffects.register('setDynamicBacklink', setDynamicBacklink),
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
   loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
-  saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
-  autosaveCurrentStepAnswers: sanEffects.register('autosaveCurrentStepAnswers', autosaveCurrentStepAnswers),
   saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
@@ -44,6 +41,7 @@ export const StrengthsAndNeedsEffects = {
   loadItemFromCollection: sanEffects.register('loadItemFromCollection', loadItemFromCollection),
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  setUserSubmitted: sanEffects.register('setUserSubmitted', setUserSubmitted),
   extractModeAndVersionUuidFromUrl: sanEffects.register(
     'extractModeAndVersionUuidFromUrl',
     extractModeAndVersionUuidFromUrl,

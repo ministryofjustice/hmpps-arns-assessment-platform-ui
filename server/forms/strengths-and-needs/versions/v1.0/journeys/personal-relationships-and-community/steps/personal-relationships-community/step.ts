@@ -1,4 +1,14 @@
-import { Answer, Condition, not, or, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  Condition,
+  not,
+  or,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
@@ -11,6 +21,7 @@ import { personalRelationshipsCommunitySection } from '../../section'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
@@ -43,15 +54,28 @@ export const personalRelationshipsCommunityStep = step({
       Step.personal_relationships_community,
     ),
   ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.personal_relationships_community.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.personal_relationships_community.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.personal_relationships_community.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.personal_relationships_community_summary.code,
+            IsUserSubmitted.false,
+          ),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.personal_relationships_and_community,

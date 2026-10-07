@@ -1,6 +1,7 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step'
 import { health } from '../../sanUtils'
 import {
   changeLink,
@@ -88,6 +89,11 @@ const fullyAnswered: Scenario = {
     changeLink('physical-mental-health', 'health_wellbeing_positive_factors'),
     changeLink('physical-mental-health', 'health_wellbeing_changes'),
   ],
+  userSubmittedSteps: [
+    Step.health_wellbeing.code,
+    Step.physical_mental_health.code,
+    Step.health_wellbeing_summary.code,
+  ],
 }
 
 const practitionerAnalysisChangeLinks = [
@@ -100,7 +106,7 @@ test.describe('Health and wellbeing change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(health, fullyAnswered.answers)
+        const section = await openSection(health, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -114,7 +120,7 @@ test.describe('Health and wellbeing change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(health, fullyAnswered.answers)
+      const section = await openSection(health, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -128,7 +134,7 @@ test.describe('Health and wellbeing change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(health, fullyAnswered.answers)
+        const section = await openSection(health, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

@@ -3,6 +3,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
@@ -135,7 +136,9 @@ test.describe('Validation', () => {
           question: Question.offence_analysis_who_was_the_victim,
           value: [Option.one_or_more_person],
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.offence_analysis.code])
+      .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')
 

@@ -1,5 +1,14 @@
-import { Answer, Condition, Post, redirect, step, submit, when } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import {
+  Answer,
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
@@ -9,6 +18,8 @@ import { Option } from '../../constants/option'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
+import { auditPageView } from '../../../../audit'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisInvolvedPartiesStep = step({
   path: `/${Step.offence_analysis_involved_parties.path}`,
@@ -27,15 +38,28 @@ export const offenceAnalysisInvolvedPartiesStep = step({
     offenceAnalysisSection.questions.offenceAnalysisWhoWasTheOffenceCommittedAgainst.displayModes.field,
     saveButton,
   ],
+  onAccess: [
+    auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_involved_parties),
+  ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.offence_analysis_involved_parties.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.offence_analysis_involved_parties.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_involved_parties.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
         ],
         next: [
           redirect({

@@ -3,6 +3,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
 import { forDrug, buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -35,7 +36,10 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.yes }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
+      .withUserSubmittedSteps([Step.drug_use.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
 
@@ -88,7 +92,9 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
+      .withUserSubmittedSteps([Step.drug_use.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
@@ -118,7 +124,9 @@ test.describe('Questions', () => {
         { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.benzodiazepines] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.benzodiazepines), value: Option.more_than_six },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
 
@@ -181,7 +189,9 @@ test.describe('Questions', () => {
         { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'test' },
         { question: Question.not_used_in_last_six_months_details, value: 'test' },
         { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code, Step.drug_details.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
 

@@ -1,5 +1,13 @@
-import { access, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import {
+  access,
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
 import { saveButton } from '../../../../constants/buttons'
@@ -7,7 +15,8 @@ import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section } from '../../../../constants/section'
-import { autosaveSubmit } from '../../../../autosave'
+import { auditPageView } from '../../../../audit'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
@@ -24,13 +33,19 @@ export const offenceAnalysisVictimStep = step({
     victimQuestions.victimEthnicity.displayModes.field,
     saveButton,
   ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.offence_analysis.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
     }),
+    auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_victim),
   ],
   onSubmission: [
-    autosaveSubmit,
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -2,6 +2,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -50,7 +51,9 @@ test.describe('Questions', () => {
           question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
           value: 'test',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code, Step.personal_relationships_children_information.code])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
@@ -106,7 +109,9 @@ test.describe('Questions', () => {
           question: Question.personal_relationships_community_important_people_partner_intimate_relationship_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code, Step.personal_relationships_children_information.code])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,

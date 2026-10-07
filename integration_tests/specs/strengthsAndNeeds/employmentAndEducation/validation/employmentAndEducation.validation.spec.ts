@@ -2,6 +2,7 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/step'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
@@ -75,7 +76,14 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.unemployed_not_looking_for_work }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.employment_status, value: Option.unemployed_not_looking_for_work }])
+      .withUserSubmittedSteps([
+        Step.current_employment.code,
+        Step.employed.code,
+        Step.employment_education_summary.code,
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -94,7 +102,13 @@ test.describe('Validation', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.employment_status, value: Option.employed },
         { question: Question.employment_type, value: Option.full_time },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.current_employment.code,
+        Step.employed.code,
+        Step.employment_education_summary.code,
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
 

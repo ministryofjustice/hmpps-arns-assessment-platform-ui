@@ -1,5 +1,6 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
@@ -27,7 +28,13 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
         { question: Question.health_wellbeing_positive_factors, value: [] },
         { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.health_wellbeing.code,
+        Step.physical_mental_health.code,
+        Step.health_wellbeing_summary.code,
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
@@ -128,7 +135,13 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_outlook, value: Option.not_optimistic },
         { question: Question.health_wellbeing_positive_factors, value: [] },
         { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.health_wellbeing.code,
+        Step.physical_mental_health.code,
+        Step.health_wellbeing_summary.code,
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-summary')
 
@@ -166,7 +179,13 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.health_wellbeing.code,
+        Step.physical_mental_health.code,
+        Step.health_wellbeing_summary.code,
+      ])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(
       page,

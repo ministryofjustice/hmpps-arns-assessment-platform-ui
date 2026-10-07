@@ -1,4 +1,4 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { employmentEducationSection } from '../../section'
 import { Section, SectionComplete } from '../../../../constants/section'
@@ -9,6 +9,7 @@ import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
@@ -32,15 +33,25 @@ export const employedEmploymentStep = step({
     saveButton,
   ],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employed)],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.employed.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.employed.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.employed.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employed),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],

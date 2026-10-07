@@ -3,6 +3,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
 import { expect } from '@playwright/test'
 import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step'
 import { test, TargetService } from '../../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../../sanUtils'
 
@@ -55,7 +56,9 @@ test.describe('Validation', () => {
         { question: Question.health_wellbeing_physical_health_condition_yes_details, value: '' },
         { question: Question.health_wellbeing_mental_health_condition, value: Option.yes_ongoing_severe },
         { question: Question.health_wellbeing_mental_health_condition_yes_ongoing_severe_details, value: '' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.health_wellbeing.code, Step.physical_mental_health.code])
+      .save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
 

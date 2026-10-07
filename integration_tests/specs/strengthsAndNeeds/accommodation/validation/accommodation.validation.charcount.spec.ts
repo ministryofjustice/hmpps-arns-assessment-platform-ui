@@ -36,12 +36,13 @@ const noAccommodation = [
   { question: Question.type_of_no_accommodation, value: Option.homeless },
 ]
 
+const userSubmittedSteps = [Step.current_accommodation.code, Step.accommodation_details.code]
 test.describe('Accommodation character counts', () => {
   test('accommodation-details: who they live with, and concerns about the area and the housing', async ({
     page,
     openSection,
   }) => {
-    const section = await openSection(accommodation, answers)
+    const section = await openSection(accommodation, answers, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
     await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -57,7 +58,7 @@ test.describe('Accommodation character counts', () => {
   })
 
   test('accommodation-details: housing is unsuitable', async ({ page, openSection }) => {
-    const section = await openSection(accommodation, answers)
+    const section = await openSection(accommodation, answers, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
     await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -71,7 +72,7 @@ test.describe('Accommodation character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of changeOptions) {
     test(`accommodation-details: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(accommodation, answers)
+      const section = await openSection(accommodation, answers, userSubmittedSteps)
       const accommodationPage = new AccommodationPage(page)
       const { questions } = accommodationPage
       await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -87,7 +88,7 @@ test.describe('Accommodation character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(accommodation, [...answers, ...noAccommodation])
+      const section = await openSection(accommodation, [...answers, ...noAccommodation], userSubmittedSteps)
       const accommodationPage = new AccommodationPage(page)
       const { questions } = accommodationPage
       await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -102,7 +103,7 @@ test.describe('Accommodation character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`accommodation-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(accommodation, answers)
+      const section = await openSection(accommodation, answers, userSubmittedSteps)
       const accommodationPage = new AccommodationPage(page)
       const { questions } = accommodationPage
       await page.goto(`${section}/${Step.accommodation_summary.path}#practitioner-analysis`)

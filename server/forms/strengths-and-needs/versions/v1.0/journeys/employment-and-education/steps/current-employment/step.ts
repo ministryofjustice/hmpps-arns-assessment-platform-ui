@@ -1,4 +1,4 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { employmentEducationSection } from '../../section'
 import { Section, SectionComplete } from '../../../../constants/section'
@@ -6,8 +6,9 @@ import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const currentEmploymentStep = step({
   path: `/${Step.current_employment.path}`,
@@ -22,15 +23,25 @@ export const currentEmploymentStep = step({
   onAccess: [
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
   ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.current_employment.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.current_employment.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.current_employment.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
         ],
         next: [

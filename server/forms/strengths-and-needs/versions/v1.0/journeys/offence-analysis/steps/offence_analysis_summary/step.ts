@@ -3,10 +3,10 @@ import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effec
 import { offenceAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { victimsCollection } from '../../constants/collections'
-import { isReadOnlyMode } from '../../../../guards';
-import { Section } from '../../../../constants/section';
-import { auditPageView } from '../../../../audit';
-import { summaryPageTitle } from '../../../../locales';
+import { isReadOnlyMode } from '../../../../guards'
+import { Section } from '../../../../constants/section'
+import { auditPageView } from '../../../../audit'
+import { summaryPageTitle } from '../../../../locales'
 
 export const offenceAnalysisSummaryStep = step({
   path: `/${Step.offence_analysis_summary.path}`,

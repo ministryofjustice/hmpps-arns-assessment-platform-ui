@@ -53,6 +53,8 @@ const answers = [
   { question: Question.health_wellbeing_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
 
+const userSubmittedSteps = [Step.health_wellbeing.code, Step.physical_mental_health.code]
+
 test.describe('Health and wellbeing character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of [Option.yes_ongoing_severe, Option.yes_ongoing, Option.yes_in_the_past]) {
@@ -60,7 +62,7 @@ test.describe('Health and wellbeing character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(health, answers)
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
       await page.goto(`${section}/${Step.health_wellbeing.path}`)
@@ -77,7 +79,7 @@ test.describe('Health and wellbeing character counts', () => {
     page,
     openSection,
   }) => {
-    const section = await openSection(health, answers)
+    const section = await openSection(health, answers, userSubmittedSteps)
     const healthPage = new HealthAndWellbeingPage(page)
     const { questions } = healthPage
     await page.goto(`${section}/${Step.physical_mental_health.path}`)
@@ -92,7 +94,7 @@ test.describe('Health and wellbeing character counts', () => {
 
   for (const option of [Option.yes_significant_difficulties, Option.yes_some_difficulties]) {
     test(`physical-mental-health: learning difficulties ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(health, answers)
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
       await page.goto(`${section}/${Step.physical_mental_health.path}`)
@@ -105,7 +107,7 @@ test.describe('Health and wellbeing character counts', () => {
 
   for (const option of changeOptions) {
     test(`physical-mental-health: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(health, answers)
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
       await page.goto(`${section}/${Step.physical_mental_health.path}`)
@@ -118,7 +120,7 @@ test.describe('Health and wellbeing character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`health-wellbeing-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(health, answers)
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
       await page.goto(`${section}/${Step.health_wellbeing_summary.path}#practitioner-analysis`)

@@ -1,5 +1,6 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEducationPage'
@@ -21,7 +22,13 @@ test.describe('Summary', () => {
         { question: Question.education_difficulties, value: [CommonOption.none] },
         { question: Question.education_experience, value: CommonOption.unknown },
         { question: Question.employment_education_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.current_employment.code,
+        Step.employed.code,
+        Step.employment_education_summary.code,
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(
       page,
@@ -102,7 +109,13 @@ test.describe('Summary', () => {
         { question: Question.education_difficulties, value: [CommonOption.none] },
         { question: Question.education_experience, value: CommonOption.unknown },
         { question: Question.employment_education_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.current_employment.code,
+        Step.employed.code,
+        Step.employment_education_summary.code,
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(
       page,
@@ -142,7 +155,13 @@ test.describe('Summary', () => {
         },
         { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.current_employment.code,
+        Step.employed.code,
+        Step.employment_education_summary.code,
+      ])
+      .save()
 
     await EmploymentAndEducationPage.navigateTo(
       page,

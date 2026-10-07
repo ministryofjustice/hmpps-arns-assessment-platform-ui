@@ -51,6 +51,14 @@ const answers = [
   { question: forDrug(Question.how_often_used_details, Option.cocaine), value: 'Some details' },
 ]
 
+const userSubmittedSteps = [
+  Step.add_drugs.code,
+  Step.drug_use.code,
+  Step.drug_use_history.code,
+  Step.drug_details.code,
+  Step.drug_use_summary.code,
+]
+
 const notUsedInTheLastSixMonths = [
   { question: forDrug(Question.drug_last_used_value, Option.cannabis), value: Option.more_than_six },
   { question: forDrug(Question.drug_last_used_value, Option.cocaine), value: Option.more_than_six },
@@ -58,7 +66,7 @@ const notUsedInTheLastSixMonths = [
 
 test.describe('Drug use character counts', () => {
   test('add-drugs: the name of another drug', async ({ page, openSection }) => {
-    const section = await openSection(drugUse, answers)
+    const section = await openSection(drugUse, answers, userSubmittedSteps)
     const drugUsePage = new DrugUsePage(page)
     const { questions } = drugUsePage
     await page.goto(`${section}/${Step.add_drugs.path}`)
@@ -82,7 +90,7 @@ test.describe('Drug use character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(drugUse, answers)
+      const section = await openSection(drugUse, answers, userSubmittedSteps)
       const drugUsePage = new DrugUsePage(page)
       const { questions } = drugUsePage
       await page.goto(`${section}/${Step.drug_details.path}`)
@@ -96,7 +104,7 @@ test.describe('Drug use character counts', () => {
   // reasons, impact, what has helped and what could help are always shown, so every state has them
   for (const option of changeOptions) {
     test(`drug-use-history: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(drugUse, answers)
+      const section = await openSection(drugUse, answers, userSubmittedSteps)
       const drugUsePage = new DrugUsePage(page)
       const { questions } = drugUsePage
       await page.goto(`${section}/${Step.drug_use_history.path}`)
@@ -109,7 +117,7 @@ test.describe('Drug use character counts', () => {
 
   test('drug-use-history: when no drugs were used in the last 6 months', async ({ page, openSection }) => {
     // what could help them not use drugs in future replaces what has helped them stop or reduce
-    const section = await openSection(drugUse, [...answers, ...notUsedInTheLastSixMonths])
+    const section = await openSection(drugUse, [...answers, ...notUsedInTheLastSixMonths], userSubmittedSteps)
     const drugUsePage = new DrugUsePage(page)
     await page.goto(`${section}/${Step.drug_use_history.path}`)
     await expectTheLimitsOnThePage(drugUsePage)
@@ -117,7 +125,7 @@ test.describe('Drug use character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`drug-use-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(drugUse, answers)
+      const section = await openSection(drugUse, answers, userSubmittedSteps)
       const drugUsePage = new DrugUsePage(page)
       const { questions } = drugUsePage
       await page.goto(`${section}/${Step.drug_use_summary.path}#practitioner-analysis`)

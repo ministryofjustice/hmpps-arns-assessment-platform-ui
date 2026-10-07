@@ -2,6 +2,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
 import { test, TargetService } from '../../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../sanUtils'
 
@@ -36,7 +37,10 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.temporary }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -61,7 +65,10 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.current_accommodation, value: Option.no_accommodation }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.current_accommodation, value: Option.no_accommodation }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -89,7 +96,9 @@ test.describe('Validation', () => {
       .extend(sanAssessmentId).withAnswers([
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Who is')

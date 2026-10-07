@@ -1,4 +1,4 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { healthWellbeingSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
@@ -7,8 +7,9 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const physicalMentalHealthStep = step({
   path: `/${Step.physical_mental_health.path}`,
@@ -37,15 +38,25 @@ export const physicalMentalHealthStep = step({
   onAccess: [
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
   ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.physical_mental_health.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.physical_mental_health.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.physical_mental_health.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
         ],
         next: [

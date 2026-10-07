@@ -1,6 +1,6 @@
 import { ConditionRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
-import { escape, unescape } from './transformers/html-encoder';
+import { unescape } from './transformers/html-encoder'
 
 export const sanConditions = new ConditionRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -15,6 +15,6 @@ export const StrengthsAndNeedsConditions = {
     'HasMaxLength',
     () =>
       (value: string, maxLength: number): boolean =>
-        unescape(value).length <= maxLength
-  )
+        unescape(value).length <= maxLength,
+  ),
 }

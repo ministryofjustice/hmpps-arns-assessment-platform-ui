@@ -1,4 +1,4 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
@@ -7,8 +7,9 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,
@@ -29,15 +30,25 @@ export const accommodationDetailsStep = step({
     saveButton,
   ],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.accommodation_details)],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.accommodation_details.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.accommodation_details.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_details.code)],
+      },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.accommodation_details),
         ],
         next: [redirect({ goto: Step.accommodation_summary.path })],

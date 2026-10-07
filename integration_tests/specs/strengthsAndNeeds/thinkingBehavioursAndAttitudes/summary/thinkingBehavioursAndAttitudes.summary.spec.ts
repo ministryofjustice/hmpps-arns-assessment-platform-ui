@@ -1,5 +1,6 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
@@ -40,6 +41,12 @@ test.describe('Summary', () => {
           question: Question.thinking_behaviours_attitudes_offence_related_sexual_interest,
           value: Option.yes_offence_related_sexual_interest,
         },
+      ])
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours.code,
+        Step.thinking_behaviours_risk_of_sexual_harm.code,
+        Step.thinking_behaviours_sexual_harm.code,
+        Step.thinking_behaviours_summary.code,
       ])
       .save()
 
@@ -208,6 +215,12 @@ test.describe('Summary', () => {
           value: Option.yes_offence_related_sexual_interest,
         },
       ])
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours.code,
+        Step.thinking_behaviours_risk_of_sexual_harm.code,
+        Step.thinking_behaviours_sexual_harm.code,
+        Step.thinking_behaviours_summary.code,
+      ])
       .save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(
@@ -274,7 +287,14 @@ test.describe('Summary', () => {
           question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_no_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours.code,
+        Step.thinking_behaviours_risk_of_sexual_harm.code,
+        Step.thinking_behaviours_sexual_harm.code,
+        Step.thinking_behaviours_summary.code,
+      ])
+      .save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(
       page,

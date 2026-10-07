@@ -2,6 +2,7 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/question'
 import { expect } from '@playwright/test'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step'
 import { alcohol } from '../../sanUtils'
 import {
   changeLink,
@@ -71,6 +72,7 @@ const fullyAnswered: Scenario = {
     changeLink('alcohol-use-details', 'alcohol_stopped_or_reduced'),
     changeLink('alcohol-use-details', 'alcohol_use_changes'),
   ],
+  userSubmittedSteps: [Step.alcohol_use.code, Step.alcohol_use_details.code, Step.alcohol_use_summary.code],
 }
 
 const practitionerAnalysisChangeLinks = [
@@ -87,7 +89,7 @@ test.describe('Alcohol use change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(alcohol, fullyAnswered.answers)
+        const section = await openSection(alcohol, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -101,7 +103,7 @@ test.describe('Alcohol use change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(alcohol, fullyAnswered.answers)
+      const section = await openSection(alcohol, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -115,7 +117,7 @@ test.describe('Alcohol use change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(alcohol, fullyAnswered.answers)
+        const section = await openSection(alcohol, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
@@ -131,7 +133,7 @@ test.describe('Alcohol use change links', () => {
 
   test.describe('Practitioner analysis tab', () => {
     test('a link into the tab survives switching tabs and going Back and Forward', async ({ page, openSection }) => {
-      const section = await openSection(alcohol, fullyAnswered.answers)
+      const section = await openSection(alcohol, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
       const firstInput = page.locator(`#${question}-question input`).first()
 
       await page.goto(`${section}/${analysisPage}`)
@@ -165,7 +167,7 @@ test.describe('Alcohol use change links', () => {
 
   test.describe('Read only mode', () => {
     test('no change links are shown', async ({ page, openSection }) => {
-      const section = await openSection(alcohol, fullyAnswered.answers)
+      const section = await openSection(alcohol, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await page.goto(`${section.replace('/edit/', '/view/')}/${analysisPage}`)
 

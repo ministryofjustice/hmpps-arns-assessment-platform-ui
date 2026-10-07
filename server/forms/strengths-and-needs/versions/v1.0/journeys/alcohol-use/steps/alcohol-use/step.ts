@@ -1,4 +1,12 @@
-import { Answer, Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
@@ -7,8 +15,9 @@ import { Question } from '../../constants/question'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { CommonOption } from '../../../../constants/commonOption'
 import { sectionPageTitle } from '../../../../locales'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const alcoholUseStep = step({
   path: `/${Step.alcohol_use.path}`,
@@ -21,15 +30,25 @@ export const alcoholUseStep = step({
   },
   blocks: [alcoholUseSection.questions.alcoholUse.displayModes.field, saveButton],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use)],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.alcohol_use.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.alcohol_use.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use),
         ],
         next: [

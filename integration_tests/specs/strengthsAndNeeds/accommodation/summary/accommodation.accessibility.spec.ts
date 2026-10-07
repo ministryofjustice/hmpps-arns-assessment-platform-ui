@@ -2,6 +2,7 @@ import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
 import { checkAccessibility, navigateToStrengthsAndNeeds } from '../../sanUtils'
 import { test, TargetService } from '../../../../support/fixtures'
 
@@ -20,7 +21,13 @@ test.describe('Accessibility', () => {
         { question: Question.suitable_housing, value: CommonOption.no },
         { question: Question.unsuitable_housing_concerns, value: [] },
         { question: Question.accommodation_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.current_accommodation.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
+      ])
+      .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')

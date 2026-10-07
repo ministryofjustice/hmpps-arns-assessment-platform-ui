@@ -39,13 +39,21 @@ const answers = [
   { question: Question.offence_analysis_risk_yes_details, value: 'Some details' },
 ]
 
+const userSubmittedSteps = [
+  Step.offence_analysis.code,
+  Step.offence_analysis_involved_parties.code,
+  Step.offence_analysis_victim_summary.code,
+  Step.offence_analysis_impact.code,
+  Step.offence_analysis_summary.code,
+]
+
 test.describe('Offence analysis character counts', () => {
   // the description of the offence and why it happened are always shown on this page
   test('offence-analysis: elements of the offence, motivations and who the victim was', async ({
     page,
     openSection,
   }) => {
-    const section = await openSection(offence, answers)
+    const section = await openSection(offence, answers, userSubmittedSteps)
     const offenceAnalysisPage = new OffenceAnalysisPage(page)
     const { questions } = offenceAnalysisPage
     await page.goto(`${section}/${Step.offence_analysis.path}`)
@@ -58,7 +66,7 @@ test.describe('Offence analysis character counts', () => {
   })
 
   test('offence-analysis: the weapon used', async ({ page, openSection }) => {
-    const section = await openSection(offence, answers)
+    const section = await openSection(offence, answers, userSubmittedSteps)
     const offenceAnalysisPage = new OffenceAnalysisPage(page)
     const { questions } = offenceAnalysisPage
     await page.goto(`${section}/${Step.offence_analysis.path}`)
@@ -77,7 +85,7 @@ test.describe('Offence analysis character counts', () => {
   })
 
   test('offence-analysis-victim/create: how they know the victim', async ({ page, openSection }) => {
-    const section = await openSection(offence, answers)
+    const section = await openSection(offence, answers, userSubmittedSteps)
     const offenceAnalysisPage = new OffenceAnalysisPage(page)
     const { questions } = offenceAnalysisPage
     await page.goto(`${section}/${Step.offence_analysis_victim.path}`)
@@ -96,7 +104,7 @@ test.describe('Offence analysis character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(offence, answers)
+      const section = await openSection(offence, answers, userSubmittedSteps)
       const offenceAnalysisPage = new OffenceAnalysisPage(page)
       const { questions } = offenceAnalysisPage
       await page.goto(`${section}/${Step.offence_analysis_impact.path}`)
@@ -119,7 +127,7 @@ test.describe('Offence analysis character counts', () => {
     page,
     openSection,
   }) => {
-    const section = await openSection(offence, answers)
+    const section = await openSection(offence, answers, userSubmittedSteps)
     const offenceAnalysisPage = new OffenceAnalysisPage(page)
     const { questions } = offenceAnalysisPage
     await page.goto(`${section}/${Step.offence_analysis_impact.path}`)

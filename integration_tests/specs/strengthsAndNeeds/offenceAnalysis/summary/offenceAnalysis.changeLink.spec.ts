@@ -1,6 +1,7 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
 import { offence } from '../../sanUtils'
 import {
   changeLink,
@@ -64,13 +65,20 @@ const fullyAnswered: Scenario = {
     changeLink('offence-analysis-impact', 'offence_analysis_patterns_of_offending'),
     changeLink('offence-analysis-impact', 'offence_analysis_risk'),
   ],
+  userSubmittedSteps: [
+    Step.offence_analysis.code,
+    Step.offence_analysis_involved_parties.code,
+    Step.offence_analysis_victim_summary.code,
+    Step.offence_analysis_impact.code,
+    Step.offence_analysis_summary.code,
+  ],
 }
 
 test.describe('Offence analysis change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(offence, fullyAnswered.answers)
+        const section = await openSection(offence, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -85,7 +93,7 @@ test.describe('Offence analysis change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary page lists every change link', async ({ page, openSection }) => {
-        const section = await openSection(offence, fullyAnswered.answers)
+        const section = await openSection(offence, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
       })

@@ -4,7 +4,7 @@ import { Collection } from '../../constants/collection'
 
 export const updateItemFromCollection =
   (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, collection: Collection, itemIndex: string | any) => {
+  async (context: StrengthsAndNeedsContext, collection: Collection, itemIndex: string | any, isAutosaved = false) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
@@ -38,6 +38,7 @@ export const updateItemFromCollection =
       removed: [],
       assessmentUuid,
       user,
+      autosaved: isAutosaved,
     })
 
   }
