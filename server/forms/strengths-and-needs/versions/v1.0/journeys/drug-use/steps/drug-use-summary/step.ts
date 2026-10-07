@@ -1,7 +1,6 @@
 import {
   access,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -11,10 +10,11 @@ import {
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { summaryTab } from './fields'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const drugUseSummaryStep = step({
   path: `/${Step.drug_use_summary.path}`,
@@ -27,7 +27,7 @@ export const drugUseSummaryStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.drug_use_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.drug_use_summary.code),
       message: 'This step is not user submitted',
     }),
   ],

@@ -4,7 +4,6 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../sanUtils'
 
@@ -24,10 +23,10 @@ test.describe('Summary', () => {
         { question: Question.unsuitable_housing_concerns, value: [] },
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
-      .withData([
-        { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.current_accommodation.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
       ])
       .save()
 
@@ -86,10 +85,10 @@ test.describe('Summary', () => {
         { question: Question.unsuitable_housing_concerns, value: [] },
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
-      .withData([
-        { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.current_accommodation.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
       ])
       .save()
 
@@ -126,10 +125,10 @@ test.describe('Summary', () => {
         { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
-      .withData([
-        { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-        { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.current_accommodation.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
       ])
       .save()
 

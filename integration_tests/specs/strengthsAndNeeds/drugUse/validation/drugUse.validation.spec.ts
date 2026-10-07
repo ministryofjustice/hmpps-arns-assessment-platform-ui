@@ -4,7 +4,6 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { forDrug } from '../../sanUtils'
 import { test, TargetService } from '../../../../support/fixtures'
 
@@ -33,10 +32,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.add_drugs.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
@@ -65,11 +61,7 @@ test.describe('Validation', () => {
         { question: Question.not_used_in_last_six_months_details, value: 'test' },
         { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
       ])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.add_drugs.code, value: IsUserSubmitted.true },
-        { key: Step.drug_details.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code, Step.drug_details.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')

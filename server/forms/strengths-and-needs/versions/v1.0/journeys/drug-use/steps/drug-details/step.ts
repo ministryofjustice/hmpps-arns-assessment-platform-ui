@@ -1,7 +1,6 @@
 import {
   access,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -12,13 +11,14 @@ import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const drugDetailsStep = step({
   path: `/${Step.drug_details.path}`,
@@ -36,7 +36,7 @@ export const drugDetailsStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.drug_details.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.drug_details.code),
       message: 'This step is not user submitted',
     }),
   ],

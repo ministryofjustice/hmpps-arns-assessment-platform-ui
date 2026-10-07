@@ -1,21 +1,14 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { markAsCompleteButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisImpactStep = step({
   path: `/${Step.offence_analysis_impact.path}`,
@@ -43,7 +36,7 @@ export const offenceAnalysisImpactStep = step({
   onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_impact)],
   validWhen: [
     validation({
-      condition: Data(Step.offence_analysis_impact.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.offence_analysis_impact.code),
       message: 'This step is not user submitted',
     }),
   ],

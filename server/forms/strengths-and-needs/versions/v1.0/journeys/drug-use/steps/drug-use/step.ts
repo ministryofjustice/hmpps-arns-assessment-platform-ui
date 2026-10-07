@@ -2,7 +2,6 @@ import {
   and,
   Answer,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -14,12 +13,13 @@ import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
@@ -34,7 +34,7 @@ export const drugUseStep = step({
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use)],
   validWhen: [
     validation({
-      condition: Data(Step.drug_use.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.drug_use.code),
       message: 'This step is not user submitted',
     }),
   ],

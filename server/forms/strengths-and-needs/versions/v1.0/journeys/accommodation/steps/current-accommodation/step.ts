@@ -1,21 +1,14 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autoSaveAccommodationSubmit } from '../../../../autosaveAccommodation'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const currentAccommodationStep = step({
   path: `/${Step.current_accommodation.path}`,
@@ -30,7 +23,7 @@ export const currentAccommodationStep = step({
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.current_accommodation)],
   validWhen: [
     validation({
-      condition: Data(Step.current_accommodation.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.current_accommodation.code),
       message: 'This step is not user submitted',
     }),
   ],

@@ -2,7 +2,6 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expect } from '@playwright/test'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -23,10 +22,7 @@ test.describe('Summary', () => {
         { question: Question.finance_debt, value: [CommonOption.no] },
         { question: Question.finance_changes, value: CommonOption.not_present },
       ])
-      .withData([
-        { key: Step.finance.code, value: IsUserSubmitted.true },
-        { key: Step.finance_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
       .save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
@@ -90,10 +86,7 @@ test.describe('Summary', () => {
         { question: Question.finance_debt, value: [CommonOption.no] },
         { question: Question.finance_changes, value: CommonOption.not_present },
       ])
-      .withData([
-        { key: Step.finance.code, value: IsUserSubmitted.true },
-        { key: Step.finance_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
       .save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
@@ -122,10 +115,7 @@ test.describe('Summary', () => {
         { question: Question.finance_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.finance_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
-      .withData([
-        { key: Step.finance.code, value: IsUserSubmitted.true },
-        { key: Step.finance_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
       .save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary#practitioner-analysis')

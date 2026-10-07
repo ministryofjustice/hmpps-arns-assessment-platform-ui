@@ -3,11 +3,6 @@ export enum SectionComplete {
   no = 'NO',
 }
 
-export enum IsUserSubmitted {
-  true = 'TRUE',
-  false = 'FALSE',
-}
-
 export const Section = {
   accommodation: {
     code: 'accommodation',

@@ -1,15 +1,7 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { employmentEducationSection } from '../../section'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { baseSanRoute } from '../../../../constants/path'
@@ -17,6 +9,7 @@ import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const employedEmploymentStep = step({
   path: `/${Step.employed.path}`,
@@ -42,7 +35,7 @@ export const employedEmploymentStep = step({
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employed)],
   validWhen: [
     validation({
-      condition: Data(Step.employed.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.employed.code),
       message: 'This step is not user submitted',
     }),
   ],

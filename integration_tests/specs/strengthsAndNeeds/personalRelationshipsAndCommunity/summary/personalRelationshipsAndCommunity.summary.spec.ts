@@ -2,7 +2,6 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -56,11 +55,11 @@ test.describe('Summary', () => {
           value: '',
         },
       ])
-      .withData([
-        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_community.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_community_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.personal_relationships_children_information.code,
+        Step.personal_relationships.code,
+        Step.personal_relationships_community.code,
+        Step.personal_relationships_community_summary.code,
       ])
       .save()
 
@@ -187,11 +186,11 @@ test.describe('Summary', () => {
           value: '',
         },
       ])
-      .withData([
-        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_community.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_community_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.personal_relationships_children_information.code,
+        Step.personal_relationships.code,
+        Step.personal_relationships_community.code,
+        Step.personal_relationships_community_summary.code,
       ])
       .save()
 
@@ -277,11 +276,11 @@ test.describe('Summary', () => {
           value: '',
         },
       ])
-      .withData([
-        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_community.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_community_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.personal_relationships_children_information.code,
+        Step.personal_relationships.code,
+        Step.personal_relationships_community.code,
+        Step.personal_relationships_community_summary.code,
       ])
       .save()
 

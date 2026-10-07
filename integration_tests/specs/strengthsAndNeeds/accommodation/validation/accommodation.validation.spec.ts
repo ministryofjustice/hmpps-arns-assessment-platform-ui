@@ -3,7 +3,6 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../sanUtils'
 
@@ -40,7 +39,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -68,7 +67,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.no_accommodation }])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -98,7 +97,7 @@ test.describe('Validation', () => {
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')

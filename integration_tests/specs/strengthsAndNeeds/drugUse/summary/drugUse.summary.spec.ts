@@ -1,7 +1,6 @@
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -19,10 +18,7 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.drug_use_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
@@ -50,10 +46,7 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.drug_use_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
@@ -76,10 +69,7 @@ test.describe('Summary', () => {
         { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.drug_use_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary#practitioner-analysis')

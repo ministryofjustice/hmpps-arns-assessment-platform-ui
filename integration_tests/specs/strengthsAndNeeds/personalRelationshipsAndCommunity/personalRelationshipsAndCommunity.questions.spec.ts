@@ -3,7 +3,6 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -53,10 +52,7 @@ test.describe('Questions', () => {
           value: 'test',
         },
       ])
-      .withData([
-        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code, Step.personal_relationships_children_information.code])
       .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
@@ -114,10 +110,7 @@ test.describe('Questions', () => {
           value: '',
         },
       ])
-      .withData([
-        { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-        { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code, Step.personal_relationships_children_information.code])
       .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(

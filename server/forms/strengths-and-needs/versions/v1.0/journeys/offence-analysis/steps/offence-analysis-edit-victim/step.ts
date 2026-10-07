@@ -1,7 +1,6 @@
 import {
   access,
   Condition,
-  Data,
   Params,
   Post,
   redirect,
@@ -17,9 +16,10 @@ import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { IsUserSubmitted, Section } from '../../../../constants/section'
+import { Section } from '../../../../constants/section'
 import { auditPageView } from '../../../../audit'
 import { autoSaveVictimEditSubmit } from '../../../../autoVictimEdit'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisEditVictimStep = step({
   path: `/${Step.offence_analysis_victim_edit.templatePath}`,
@@ -57,7 +57,7 @@ export const offenceAnalysisEditVictimStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.offence_analysis.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.offence_analysis.code),
       message: 'This step is not user submitted',
     }),
   ],

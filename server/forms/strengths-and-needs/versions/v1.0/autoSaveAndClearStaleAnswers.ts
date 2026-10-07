@@ -1,7 +1,8 @@
 import { Condition, Post, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { isEditMode } from './guards'
-import { IsUserSubmitted } from './constants/section'
+
+import { IsUserSubmitted } from './constants/userSubmitted';
 
 /**
  * The `action` value posted by the client side autosave script is 'autosave'.

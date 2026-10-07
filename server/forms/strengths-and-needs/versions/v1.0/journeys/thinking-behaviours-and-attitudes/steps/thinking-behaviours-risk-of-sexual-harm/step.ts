@@ -1,7 +1,6 @@
 import {
   Answer,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -11,7 +10,7 @@ import {
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { contentFor } from '../../locales'
 import { commonContentFor, sectionPageTitle } from '../../../../locales'
@@ -21,6 +20,7 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const thinkingBehavioursRiskOfSexualHarmStep = step({
   path: `/${Step.thinking_behaviours_risk_of_sexual_harm.path}`,
@@ -47,7 +47,7 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.thinking_behaviours_risk_of_sexual_harm.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.thinking_behaviours_risk_of_sexual_harm.code),
       message: 'This step is not user submitted',
     }),
   ],

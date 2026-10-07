@@ -2,7 +2,6 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
 import { test, TargetService } from '../../../../support/fixtures'
@@ -43,11 +42,11 @@ test.describe('Summary', () => {
           value: Option.yes_offence_related_sexual_interest,
         },
       ])
-      .withData([
-        { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_sexual_harm.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours.code,
+        Step.thinking_behaviours_risk_of_sexual_harm.code,
+        Step.thinking_behaviours_sexual_harm.code,
+        Step.thinking_behaviours_summary.code,
       ])
       .save()
 
@@ -216,11 +215,11 @@ test.describe('Summary', () => {
           value: Option.yes_offence_related_sexual_interest,
         },
       ])
-      .withData([
-        { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_sexual_harm.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours.code,
+        Step.thinking_behaviours_risk_of_sexual_harm.code,
+        Step.thinking_behaviours_sexual_harm.code,
+        Step.thinking_behaviours_summary.code,
       ])
       .save()
 
@@ -289,11 +288,11 @@ test.describe('Summary', () => {
           value: '',
         },
       ])
-      .withData([
-        { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_sexual_harm.code, value: IsUserSubmitted.true },
-        { key: Step.thinking_behaviours_summary.code, value: IsUserSubmitted.true },
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours.code,
+        Step.thinking_behaviours_risk_of_sexual_harm.code,
+        Step.thinking_behaviours_sexual_harm.code,
+        Step.thinking_behaviours_summary.code,
       ])
       .save()
 

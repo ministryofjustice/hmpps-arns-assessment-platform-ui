@@ -1,19 +1,12 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { summaryTab } from './fields'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { Step } from '../../constants/step'
 import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
@@ -28,7 +21,7 @@ export const employmentEducationSummaryStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.employment_education_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.employment_education_summary.code),
       message: 'This step is not user submitted',
     }),
   ],

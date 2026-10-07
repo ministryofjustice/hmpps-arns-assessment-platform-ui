@@ -4,7 +4,6 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../support/fixtures'
 import { forDrug, buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -39,7 +38,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
-      .withData([{ key: Step.drug_use.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.drug_use.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
@@ -94,7 +93,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withData([{ key: Step.drug_use.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.drug_use.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
@@ -126,10 +125,7 @@ test.describe('Questions', () => {
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.benzodiazepines), value: Option.more_than_six },
       ])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.add_drugs.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
@@ -194,11 +190,7 @@ test.describe('Questions', () => {
         { question: Question.not_used_in_last_six_months_details, value: 'test' },
         { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
       ])
-      .withData([
-        { key: Step.drug_use.code, value: IsUserSubmitted.true },
-        { key: Step.add_drugs.code, value: IsUserSubmitted.true },
-        { key: Step.drug_details.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code, Step.drug_details.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')

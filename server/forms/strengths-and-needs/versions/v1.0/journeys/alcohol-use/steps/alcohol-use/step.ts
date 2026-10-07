@@ -2,7 +2,6 @@ import {
   and,
   Answer,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -14,11 +13,12 @@ import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { CommonOption } from '../../../../constants/commonOption'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const alcoholUseStep = step({
   path: `/${Step.alcohol_use.path}`,
@@ -33,7 +33,7 @@ export const alcoholUseStep = step({
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use)],
   validWhen: [
     validation({
-      condition: Data(Step.alcohol_use.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.alcohol_use.code),
       message: 'This step is not user submitted',
     }),
   ],

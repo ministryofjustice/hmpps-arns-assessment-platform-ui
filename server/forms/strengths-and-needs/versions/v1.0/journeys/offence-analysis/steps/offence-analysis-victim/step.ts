@@ -1,7 +1,6 @@
 import {
   access,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -15,8 +14,9 @@ import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { IsUserSubmitted, Section } from '../../../../constants/section'
+import { Section } from '../../../../constants/section'
 import { auditPageView } from '../../../../audit'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisVictimStep = step({
   path: `/${Step.offence_analysis_victim.path}`,
@@ -35,7 +35,7 @@ export const offenceAnalysisVictimStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.offence_analysis.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.offence_analysis.code),
       message: 'This step is not user submitted',
     }),
   ],

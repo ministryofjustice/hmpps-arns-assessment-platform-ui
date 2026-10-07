@@ -3,10 +3,10 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, finances } from '../../sanUtils'
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
 
 /**
  * Some finances fields have character limits. These tests exercise the page to reveal the character count fields,

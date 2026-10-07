@@ -4,7 +4,6 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { expect } from '@playwright/test'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
@@ -138,7 +137,7 @@ test.describe('Validation', () => {
           value: [Option.one_or_more_person],
         },
       ])
-      .withData([{ key: Step.offence_analysis.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.offence_analysis.code])
       .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-victim/create')

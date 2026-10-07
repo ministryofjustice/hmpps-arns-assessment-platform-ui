@@ -1,23 +1,16 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { Step } from '../../constants/step'
 import { sectionPageTitle } from '../../../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
 import { sectionTitleClass } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const personalRelationshipsStep = step({
   path: `/${Step.personal_relationships.path}`,
@@ -38,7 +31,7 @@ export const personalRelationshipsStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.personal_relationships.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.personal_relationships.code),
       message: 'This step is not user submitted',
     }),
   ],

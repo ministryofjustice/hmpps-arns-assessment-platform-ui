@@ -13,13 +13,14 @@ import {
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
 import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisStep = step({
   path: `/${Step.offence_analysis.path}`,
@@ -41,7 +42,7 @@ export const offenceAnalysisStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.offence_analysis.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.offence_analysis.code),
       message: 'This step is not user submitted',
     }),
   ],

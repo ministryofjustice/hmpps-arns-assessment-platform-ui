@@ -19,11 +19,12 @@ import { contentFor } from '../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { IsUserSubmitted, Section } from '../../../../constants/section'
+import { Section } from '../../../../constants/section'
 import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 const addAnotherButton = GovUKButton({
   text: 'Add another victim',
@@ -58,7 +59,7 @@ export const offenceAnalysisVictimSummaryStep = step({
       message: contentFor('validation.add_one_or_more_victims'),
     }),
     validation({
-      condition: Data(Step.offence_analysis_victim_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.offence_analysis_victim_summary.code),
       message: 'This step is not user submitted',
     }),
   ],

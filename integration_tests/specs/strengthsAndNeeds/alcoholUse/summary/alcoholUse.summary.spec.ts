@@ -4,7 +4,6 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { expect } from '@playwright/test'
 import AlcoholUsePage from 'pages/strengthsAndNeeds/alcoholUsePage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/alcohol-use/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
@@ -36,11 +35,7 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
-      .withData([
-        { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
-        { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
-        { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.alcohol_use.code, Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
@@ -141,11 +136,7 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
-      .withData([
-        { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
-        { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
-        { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.alcohol_use.code, Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
@@ -186,11 +177,7 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.no },
         { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_no_details, value: '' },
       ])
-      .withData([
-        { key: Step.alcohol_use.code, value: IsUserSubmitted.true },
-        { key: Step.alcohol_use_details.code, value: IsUserSubmitted.true },
-        { key: Step.alcohol_use_summary.code, value: IsUserSubmitted.true },
-      ])
+      .withUserSubmittedSteps([Step.alcohol_use.code, Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
       .save()
 
     await AlcoholUsePage.navigateTo(

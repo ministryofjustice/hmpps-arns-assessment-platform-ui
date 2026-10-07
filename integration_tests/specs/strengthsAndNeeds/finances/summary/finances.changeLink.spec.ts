@@ -2,7 +2,6 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { finances } from '../../sanUtils'
 import {
   changeLink,
@@ -13,6 +12,7 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
 
 /**
  * Finances change links

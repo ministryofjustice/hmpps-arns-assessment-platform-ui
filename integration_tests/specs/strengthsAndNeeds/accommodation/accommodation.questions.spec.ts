@@ -3,7 +3,6 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
-import { IsUserSubmitted } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { TargetService, test } from '../../../support/fixtures'
 import { buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles } from '../sanUtils'
 
@@ -40,7 +39,7 @@ test.describe('Questions', () => {
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
@@ -111,7 +110,7 @@ test.describe('Questions', () => {
         { question: Question.type_of_temporary_accommodation, value: Option.approved_premises },
         { question: Question.approved_premises_end_date, value: '2030-01-01' },
       ])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')
@@ -133,7 +132,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }]).save()
+      .withUserSubmittedSteps([Step.current_accommodation.code]).save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What type of accommodation')
@@ -153,7 +152,7 @@ test.describe('Questions', () => {
         { question: Question.current_accommodation, value: Option.no_accommodation },
         { question: Question.type_of_no_accommodation, value: Option.campsite },
       ])
-      .withData([{ key: Step.current_accommodation.code, value: IsUserSubmitted.true }])
+      .withUserSubmittedSteps([Step.current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')

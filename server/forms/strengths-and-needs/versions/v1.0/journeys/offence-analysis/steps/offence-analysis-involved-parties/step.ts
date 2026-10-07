@@ -1,7 +1,6 @@
 import {
   Answer,
   Condition,
-  Data,
   Post,
   redirect,
   step,
@@ -12,7 +11,7 @@ import {
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { offenceAnalysisSection } from '../../section'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
@@ -20,6 +19,7 @@ import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisInvolvedPartiesStep = step({
   path: `/${Step.offence_analysis_involved_parties.path}`,
@@ -43,7 +43,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.offence_analysis_involved_parties.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.offence_analysis_involved_parties.code),
       message: 'This step is not user submitted',
     }),
   ],

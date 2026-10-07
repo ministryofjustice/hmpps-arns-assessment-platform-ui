@@ -1,7 +1,6 @@
 import {
   Answer,
   Condition,
-  Data,
   not,
   or,
   Post,
@@ -17,11 +16,12 @@ import { sectionPageTitle } from '../../../../locales'
 import { baseSanRoute } from '../../../../constants/path'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const personalRelationshipsCommunityStep = step({
   path: `/${Step.personal_relationships_community.path}`,
@@ -56,7 +56,7 @@ export const personalRelationshipsCommunityStep = step({
   ],
   validWhen: [
     validation({
-      condition: Data(Step.personal_relationships_community.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.personal_relationships_community.code),
       message: 'This step is not user submitted',
     }),
   ],

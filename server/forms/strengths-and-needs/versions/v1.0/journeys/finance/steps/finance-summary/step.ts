@@ -1,19 +1,12 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Step } from '../../constants/step'
-import { IsUserSubmitted, Section, SectionComplete } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const financeSummaryStep = step({
   path: `/${Step.finance_summary.path}`,
@@ -22,7 +15,7 @@ export const financeSummaryStep = step({
   onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.finance, Step.finance_summary)],
   validWhen: [
     validation({
-      condition: Data(Step.finance_summary.code).match(Condition.Equals(IsUserSubmitted.true)),
+      condition: isUserSubmittedCondition(Step.finance_summary.code),
       message: 'This step is not user submitted',
     }),
   ],
