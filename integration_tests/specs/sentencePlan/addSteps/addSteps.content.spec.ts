@@ -254,4 +254,37 @@ test.describe('Add or update steps page', () => {
       await expect(addStepsPage.goalContextInset).toContainText('Goal: Current Goal 1')
     })
   })
+
+  test.describe('reorder steps button', () => {
+    test('should display reorder steps button when goal has more than one step and hide it after removing a step', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal With Two Steps',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [
+                  { actor: 'probation_practitioner', description: 'First step', status: 'NOT_STARTED' },
+                  { actor: 'person_on_probation', description: 'Second step', status: 'NOT_STARTED' },
+                ],
+              },
+            ]),
+      })
+      const goalUuid = plan.goals[0].uuid
+      await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+
+      await expect(addStepsPage.reorderStepsButton).toBeVisible()
+
+      await addStepsPage.clickRemoveStep(1)
+
+      await expect(addStepsPage.reorderStepsButton).toBeHidden()
+    })
+  })
 })

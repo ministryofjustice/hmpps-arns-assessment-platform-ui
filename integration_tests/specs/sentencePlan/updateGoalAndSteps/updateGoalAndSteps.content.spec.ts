@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import { test } from '../../../support/fixtures'
+import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals, futureGoals } from '../../../builders/sentencePlanFactories'
 import {
@@ -164,8 +165,47 @@ test.describe('Update goal and steps page', () => {
       expect(await updatePage.getStepDescriptionByIndex(0)).toContain('First step description')
       expect(await updatePage.getStepDescriptionByIndex(1)).toContain('Second step description')
 
-      // check that add or update steps link is visible
-      await expect(updatePage.addOrUpdateStepsLink).toBeVisible()
+      // check that add or update steps button is visible
+      await expect(updatePage.addOrUpdateStepsButton).toBeVisible()
+    })
+
+    test('should display reorder steps button when goal has more than one step and hide it after removing a step', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal With Two Steps',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [
+                  { actor: 'probation_practitioner', description: 'First step', status: 'NOT_STARTED' },
+                  { actor: 'person_on_probation', description: 'Second step', status: 'NOT_STARTED' },
+                ],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
+      const goalUuid = plan.goals[0].uuid
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
+      const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      await expect(updatePage.reorderStepsButton).toBeVisible()
+
+      // go to add or update steps and remove a step
+      await updatePage.clickAddOrChangeSteps()
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.clickRemoveStep(1)
+      await addStepsPage.clickSaveAndContinue()
+
+      // should redirect back to update goal and steps
+      const updatedPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      await expect(updatedPage.reorderStepsButton).toBeHidden()
     })
 
     test('displays no steps message when goal has no steps', async ({ page, openSentencePlan }) => {
@@ -192,8 +232,8 @@ test.describe('Update goal and steps page', () => {
       expect(await updatePage.hasNoStepsMessage()).toBe(true)
       expect(await updatePage.hasStepsTable()).toBe(false)
 
-      // Should have add steps link
-      await expect(updatePage.addStepsLink).toBeVisible()
+      // Should have add steps button
+      await expect(updatePage.addStepsButton).toBeVisible()
     })
   })
 
