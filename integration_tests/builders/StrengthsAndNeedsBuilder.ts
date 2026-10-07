@@ -4,8 +4,8 @@ import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
 import type { AnswerConfig, CreatedAssessment, DataConfig } from './types'
 import {
   IsUserSubmitted,
-  isUserSubmittedCode
-} from '../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
+  isUserSubmittedCode,
+} from '../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Factory for creating StrengthsAndNeedsBuilder instances with a bound client.
@@ -95,9 +95,7 @@ export class StrengthsAndNeedsBuilderInstance {
    * Sets the provided step codes as user submitted
    */
   withUserSubmittedSteps(stepCodes: string[]): this {
-    this.withData(
-      stepCodes.map(stepCode => ({ key: isUserSubmittedCode(stepCode), value: IsUserSubmitted.true}))
-    )
+    this.withData(stepCodes.map(stepCode => ({ key: isUserSubmittedCode(stepCode), value: IsUserSubmitted.true })))
 
     return this
   }

@@ -7,7 +7,7 @@ import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, drugUse, forDrug } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some drug use fields have character limits. These tests exercise the page to reveal the character count fields,

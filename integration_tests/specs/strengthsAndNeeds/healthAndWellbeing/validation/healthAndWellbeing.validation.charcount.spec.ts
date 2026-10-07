@@ -6,7 +6,7 @@ import HealthAndWellbeingPage from 'pages/strengthsAndNeeds/healthAndWellbeingPa
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, health } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some health and wellbeing fields have character limits. These tests exercise the page to reveal the character

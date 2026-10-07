@@ -6,7 +6,7 @@ import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinking
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, thinking } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some thinking, behaviours and attitudes fields have character limits. These tests exercise the page to reveal the

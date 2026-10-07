@@ -7,4 +7,5 @@ export enum IsUserSubmitted {
 
 export const isUserSubmittedCode = (stepCode: string) => `is_user_submitted_${stepCode}`
 
-export const isUserSubmittedCondition = (stepCode: string) => Data(isUserSubmittedCode(stepCode)).match(Condition.Equals(IsUserSubmitted.true))
+export const isUserSubmittedCondition = (stepCode: string) =>
+  Data(isUserSubmittedCode(stepCode)).match(Condition.Equals(IsUserSubmitted.true))

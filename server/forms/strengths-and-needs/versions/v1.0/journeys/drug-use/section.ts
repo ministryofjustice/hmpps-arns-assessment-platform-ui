@@ -54,8 +54,8 @@ import {
   yesNo,
 } from '../../constants/questionContent'
 import { isEditMode } from '../../guards'
-import { StrengthsAndNeedsTransformers } from '../../../../transformers';
-import { StrengthsAndNeedsConditions } from '../../../../conditions';
+import { StrengthsAndNeedsTransformers } from '../../../../transformers'
+import { StrengthsAndNeedsConditions } from '../../../../conditions'
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())

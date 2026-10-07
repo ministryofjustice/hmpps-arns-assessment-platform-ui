@@ -71,7 +71,9 @@ export const offenceAnalysisEditVictimStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code, 'FALSE')],
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code, IsUserSubmitted.false),
+        ],
       },
       onValid: {
         effects: [

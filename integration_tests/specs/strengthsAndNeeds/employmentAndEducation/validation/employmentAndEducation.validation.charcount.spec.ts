@@ -6,7 +6,7 @@ import EmploymentAndEducationPage from 'pages/strengthsAndNeeds/employmentAndEdu
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, employment } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some employment and education fields have character limits. These tests exercise the page to reveal the character

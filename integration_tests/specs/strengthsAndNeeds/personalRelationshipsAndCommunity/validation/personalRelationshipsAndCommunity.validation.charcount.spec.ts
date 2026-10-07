@@ -6,7 +6,7 @@ import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/perso
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, personal } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
+import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some personal relationships and community fields have character limits. These tests exercise the page to reveal

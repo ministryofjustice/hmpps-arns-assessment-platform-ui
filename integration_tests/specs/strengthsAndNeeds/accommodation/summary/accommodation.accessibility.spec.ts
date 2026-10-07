@@ -5,7 +5,6 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
 import { checkAccessibility, navigateToStrengthsAndNeeds } from '../../sanUtils'
 import { test, TargetService } from '../../../../support/fixtures'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted';
 
 test.describe('Accessibility', () => {
   test('should be accessible', async ({ page, createSession, strengthsAndNeedsBuilder }) => {

@@ -1,12 +1,4 @@
-import {
-  Condition,
-  Data,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { accommodationSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
@@ -17,7 +9,7 @@ import { sectionPageTitle } from '../../../../locales'
 import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted';
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const accommodationDetailsStep = step({
   path: `/${Step.accommodation_details.path}`,

@@ -29,8 +29,8 @@ import { Step } from './constants/step'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { victimsCollection } from './constants/collections'
-import { StrengthsAndNeedsTransformers } from '../../../../transformers';
-import { StrengthsAndNeedsConditions } from '../../../../conditions';
+import { StrengthsAndNeedsTransformers } from '../../../../transformers'
+import { StrengthsAndNeedsConditions } from '../../../../conditions'
 
 // --- Index Offence Description ---
 
@@ -303,7 +303,9 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
 
 // --- Impact: Leader of current index offence group ---
 
-const othersInvolved = Answer(Question.offence_analysis_how_many_involved).not.match(Condition.Equals(CommonOption.none))
+const othersInvolved = Answer(Question.offence_analysis_how_many_involved).not.match(
+  Condition.Equals(CommonOption.none),
+)
 
 const offenceAnalysisLeader = question({
   content: {
