@@ -1,4 +1,4 @@
-import { Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Self, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKCharacterCount, GovUKSelectInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import {
   checkboxField,
@@ -29,6 +29,8 @@ import { Step } from './constants/step'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { victimsCollection } from './constants/collections'
+import { StrengthsAndNeedsTransformers } from '../../../../transformers';
+import { StrengthsAndNeedsConditions } from '../../../../conditions';
 
 // --- Index Offence Description ---
 
@@ -226,10 +228,12 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
             message: commonContentFor('validation.enter_details'),
           }),
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+            condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
             message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
+        parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
   },
 })
@@ -299,6 +303,8 @@ const offenceAnalysisWhoWasTheOffenceCommittedAgainst = question({
 
 // --- Impact: Leader of current index offence group ---
 
+const othersInvolved = Answer(Question.offence_analysis_how_many_involved).not.match(Condition.Equals(CommonOption.none))
+
 const offenceAnalysisLeader = question({
   content: {
     code: Question.offence_analysis_leader,
@@ -321,7 +327,7 @@ const offenceAnalysisLeader = question({
               dependentWhen: parent.selectedWhen,
               validWhen: [
                 validation({
-                  condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c4000)),
+                  condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000)),
                   message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
                 }),
                 validation({
@@ -329,6 +335,8 @@ const offenceAnalysisLeader = question({
                   message: commonContentFor('validation.enter_details'),
                 }),
               ],
+              parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+              formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
             }),
         },
       }),
@@ -348,10 +356,12 @@ const offenceAnalysisLeader = question({
               dependentWhen: parent.selectedWhen,
               validWhen: [
                 validation({
-                  condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c4000)),
+                  condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000)),
                   message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
                 }),
               ],
+              parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+              formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
             }),
         },
       }),
@@ -359,7 +369,7 @@ const offenceAnalysisLeader = question({
     validationMessage: contentFor('question.offence_analysis_leader.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ dependentWhen: othersInvolved, visibleWhen: othersInvolved }),
     summaryRow: itemisedSummaryRow({ changeHref: Step.offence_analysis_impact.path }),
   },
 })
@@ -601,7 +611,7 @@ const offenceAnalysisRiskDetailsField = (content: QuestionContent, parent: Paren
     dependentWhen: parent.selectedWhen,
     validWhen: [
       validation({
-        condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c4000)),
+        condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000)),
         message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
       }),
       validation({
@@ -609,6 +619,8 @@ const offenceAnalysisRiskDetailsField = (content: QuestionContent, parent: Paren
         message: commonContentFor('validation.enter_details'),
       }),
     ],
+    parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+    formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
   })
 
 const offenceAnalysisRisk = question({

@@ -8,7 +8,6 @@ export const english = {
     [Step.offence_analysis.code]: 'Offence analysis',
     [Step.offence_analysis_summary.code]: 'Offence analysis summary',
     [Step.offence_analysis_victim.code]: 'Offence analysis victim',
-    [Step.offence_analysis_analysis.code]: 'Offence analysis',
   },
   question: {
     [Question.offence_analysis_description_of_offence]: {

@@ -2,6 +2,7 @@ import { TransformerRegistry } from '@ministryofjustice/hmpps-forge/core/authori
 import { DateTime } from 'luxon'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import { Language, Locales } from './i18n'
+import { escape, unescape } from './transformers/html-encoder';
 
 const DEFAULT_LANGUAGE = 'en-gb'
 
@@ -108,4 +109,10 @@ export const StrengthsAndNeedsTransformers = {
 
     return value ? statusMappings[value] : value
   }),
+
+  EncodeHtmlEntities: sanTransformers.register('EncodeHtmlEntities', () => (value: unknown) =>
+    typeof value === 'string' ? escape(value) : value),
+
+  DecodeHtmlEntities: sanTransformers.register('DecodeHtmlEntities', () => (value: unknown) =>
+    typeof value === 'string' ? unescape(value) : value),
 }
