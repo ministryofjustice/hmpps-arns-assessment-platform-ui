@@ -5,6 +5,7 @@
 {% set isPrivateBetaUser = data.assessment.flags and 'SAN_BETA' in data.assessment.flags %}
 {% set showSmartSurveyForPrivateBeta = data.featureFlags.smartSurveyInPrivateBetaEnabled and isPrivateBetaUser %}
 {% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
+{% set userFeedbackUrl = feedbackFormUrl if isPrivateBetaUser else nationalRolloutFeedbackUrl %}
 
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
@@ -77,13 +78,17 @@
 {% block content %}
   {% set sidebarIndex = twoColumnLayout.sidebarBlockIndex if twoColumnLayout else -1 %}
 
-  {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% if not hidePhaseBanner %}
+    {% include "sentence-plan/views/partials/phase-banner.njk" %}
+  {% endif %}
   {% include "sentence-plan/views/partials/plan-header.njk" %}
 
   <div class="govuk-grid-row" data-qa-assessment-uuid="{{ data.assessmentUuid }}">
     <div class="govuk-grid-column-full">
+      {% include "sentence-plan/views/partials/print-no-js-message.njk" %}
+
       {% if backlink %}
-        <a href="{{ backlink }}" class="govuk-back-link"{% if backlinkAiId %} data-ai-id="{{ backlinkAiId }}"{% endif %}>Back</a>
+        <a href="{{ backlink }}" class="govuk-back-link" data-ai-id="back-link">Back</a>
       {% endif %}
 
       <form id="main-form" method="post" novalidate data-qa="main-form">
@@ -141,7 +146,7 @@
     {% set reportProblemHtml %}
       <p class="govuk-body">
         Copy this information and paste it into the
-        <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+        <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" data-ai-id="service-now-form-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
       </p>
       <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
       <div class="app-report-problem__info">

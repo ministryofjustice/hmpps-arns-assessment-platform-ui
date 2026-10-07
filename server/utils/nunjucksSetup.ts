@@ -2,6 +2,7 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import fs from 'fs'
+import { mpopNunjucksSetup } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
@@ -16,6 +17,7 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.environmentName = config.environmentName
     app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
     app.locals.feedbackFormUrl = config.feedbackFormUrl
+    app.locals.nationalRolloutFeedbackUrl = config.nationalRolloutFeedbackUrl
     app.locals.serviceNowFormUrl = config.serviceNowFormUrl
     app.locals.oasysUrl = config.oasysUrl
     app.locals.mpopUrl = config.mpopUrl
@@ -60,12 +62,16 @@ export default function nunjucksSetup(app?: express.Express) {
       'node_modules/@ministryofjustice/hmpps-forge/dist/moj-components/',
       'node_modules/govuk-frontend/dist/',
       'node_modules/@ministryofjustice/frontend/',
+      'node_modules/@ministryofjustice/hmpps-mpop-frontend-components-lib/dist/',
     ],
     {
       autoescape: true,
       express: app,
     },
   )
+
+  // Filters required by the MPoP components library's templates
+  mpopNunjucksSetup(njkEnv)
 
   njkEnv.addFilter('possessive', possessive)
 
@@ -120,6 +126,9 @@ export default function nunjucksSetup(app?: express.Express) {
     errors.map(error => ({
       text: error.message,
       href: (error.details?.href as string | undefined) ?? (error.blockCode ? `#${error.blockCode}` : ''),
+      attributes: {
+        'data-ai-id': `error-summary-link-${error.blockCode ?? 'submission_error'}`,
+      },
     })),
   )
 

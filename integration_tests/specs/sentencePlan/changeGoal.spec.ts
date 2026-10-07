@@ -1,8 +1,9 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
+import { test } from '../../support/fixtures'
 import ChangeGoalPage from '../../pages/sentencePlan/changeGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
+import SelectAreaOfNeedPage from '../../pages/sentencePlan/selectAreaOfNeedPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'
 import UpdateGoalAndStepsPage from '../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals, futureGoals } from '../../builders/sentencePlanFactories'
@@ -11,20 +12,18 @@ import {
   buildPageTitle,
   getDatePlusDaysAsISO,
   getDatePlusMonthsAsString,
-  navigateToSentencePlan,
   sentencePlanPageTitles,
 } from './sentencePlanUtils'
 
 test.describe('Change goal journey', () => {
   test.describe('current goal workflow', () => {
-    test('can access change goal page directly', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can access change goal page directly', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       // ensure page title is correct
       await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.changeGoal))
@@ -33,14 +32,17 @@ test.describe('Change goal journey', () => {
       expect(changeGoalPage).toBeTruthy()
     })
 
-    test('form is pre-populated with existing goal data', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+    test('form is pre-populated with existing goal data', async ({
+      page,
 
-      await navigateToSentencePlan(page, handoverLink)
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -55,17 +57,15 @@ test.describe('Change goal journey', () => {
 
     test('can update goal title and verify change on plan overview', async ({
       page,
-      createSession,
       makeAxeBuilder,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -82,7 +82,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Check user is redirected to plan overview with current goals
-      await expect(page).toHaveURL(/plan\/overview.*type=current/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=current/)
 
       // Verify success alert is shown on plan overview
       await expect(page.locator('.moj-alert--success')).toContainText(/You changed a goal in .* plan/i)
@@ -93,18 +93,13 @@ test.describe('Change goal journey', () => {
       expect(updatedGoalTitle).toContain('Updated test goal title')
     })
 
-    test('can change goal from current to future and verify on plan overview', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can change goal from current to future and verify on plan overview', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -113,7 +108,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Check user is redirected to the future goals tab
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify the goal now appears in future goals
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -124,22 +119,17 @@ test.describe('Change goal journey', () => {
       expect(goalTitle).toContain('Current Goal 1')
     })
 
-    test('changing goal from current to future clears target date', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('changing goal from current to future clears target date', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Verify the current goal shows target date
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(true)
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -148,21 +138,20 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Verify redirected to future goals tab
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       // Verify the goal card does NOT show "Aim to achieve this by" text
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       expect(await planOverviewPage.goalCardHasTargetDateText(0)).toBe(false)
     })
 
-    test('can change target date option', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can change target date option', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -174,14 +163,13 @@ test.describe('Change goal journey', () => {
       await expect(page).toHaveURL(/plan\/overview/)
     })
 
-    test('can set custom target date', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can set custom target date', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -198,14 +186,13 @@ test.describe('Change goal journey', () => {
       await expect(page).toHaveURL(/plan\/overview/)
     })
 
-    test('can add related areas of need', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can add related areas of need', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -221,17 +208,12 @@ test.describe('Change goal journey', () => {
       await expect(page).toHaveURL(/plan\/overview/)
     })
 
-    test('related areas of need checkboxes are displayed in alphabetical order', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
+    test('related areas of need checkboxes are displayed in alphabetical order', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
-      await navigateToSentencePlan(page, handoverLink)
-
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -253,16 +235,15 @@ test.describe('Change goal journey', () => {
 
     test('redirects to current goals tab when saving an active goal', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await navigateToSentencePlan(page, handoverLink)
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -272,19 +253,18 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Verify we're redirected to current goals tab
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
     })
   })
 
   test.describe('validation', () => {
-    test('shows error when goal title is empty', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows error when goal title is empty', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -302,16 +282,15 @@ test.describe('Change goal journey', () => {
 
     test('shows error when related areas not selected but yes chosen', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await navigateToSentencePlan(page, handoverLink)
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -327,14 +306,13 @@ test.describe('Change goal journey', () => {
       expect(hasError).toBe(true)
     })
 
-    test('shows target date options for active goal', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows target date options for active goal', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       // Navigate to change goal
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -344,22 +322,54 @@ test.describe('Change goal journey', () => {
       // Check target date options are visible for active goal
       await expect(changeGoalPage.targetDate3Months).toBeVisible()
     })
+
+    test('shows errors when set another date is selected but left empty/has invalid date format/date is in the past or beyond 5 years', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
+
+      // Navigate to change goal
+      await page.getByRole('link', { name: 'Update goal' }).click()
+
+      const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
+
+      // Select custom date option
+      await changeGoalPage.selectTargetDateOption('custom')
+      await changeGoalPage.saveGoal()
+
+      const fieldError = page.locator('#custom_target_date-error')
+      await expect(fieldError).toContainText('Select a date')
+
+      await changeGoalPage.setCustomTargetDate('not-a-date')
+      await changeGoalPage.saveGoal()
+      await expect(fieldError).toContainText('Enter a date in the correct format, for example 31/3/2028')
+
+      await changeGoalPage.setCustomTargetDate('01/01/2020')
+      await changeGoalPage.saveGoal()
+      await expect(fieldError).toContainText('The date must be today or in the future')
+
+      await changeGoalPage.setCustomTargetDate('01/01/3099')
+      await changeGoalPage.saveGoal()
+      await expect(fieldError).toContainText('The date must be within the next 5 years')
+    })
   })
 
   test.describe('future goal workflow', () => {
     test('can change future goal to current goal and verify on plan overview', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
 
-      await navigateToSentencePlan(page, handoverLink)
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(futureGoals(1)),
+      })
 
       // Navigate to future goals tab and click change goal
       await page.getByRole('link', { name: 'Future goals' }).click()
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -373,7 +383,7 @@ test.describe('Change goal journey', () => {
       await changeGoalPage.saveGoal()
 
       // Check we're redirected to current goals tab
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Verify the goal now appears in current goals
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -384,15 +394,14 @@ test.describe('Change goal journey', () => {
       expect(goalTitle).toContain('Future Goal 1')
     })
 
-    test('future goal does not show target date options', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('future goal does not show target date options', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(futureGoals(1)),
+      })
 
       // Navigate to future goals tab and click change goal
       await page.getByRole('link', { name: 'Future goals' }).click()
-      await page.getByRole('link', { name: 'Change goal' }).click()
+      await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
 
@@ -403,14 +412,18 @@ test.describe('Change goal journey', () => {
 
   test.describe('navigation', () => {
     test.describe('access to change goal page through create a goal journey (agreed plan state)', () => {
-      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withAgreementStatus('AGREED').save()
-        await navigateToSentencePlan(page, handoverLink)
+      test.beforeEach(async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withAgreementStatus('AGREED'),
+        })
 
         // click create goal on plan overview
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickCreateGoal()
+
+        // select an area of need to reach the create goal page
+        const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+        await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
 
         // on create goal page:
         // tick 1 related area of need
@@ -464,22 +477,20 @@ test.describe('Change goal journey', () => {
     })
 
     test.describe('access to change goal page through update goal and steps journey (agreed plan state/active goal with no steps)', () => {
-      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder
-          .extend(sentencePlanId)
-          .withGoals([
-            {
-              title: 'Active Goal Without Steps',
-              areaOfNeed: 'accommodation',
-              status: 'ACTIVE',
-              targetDate: getDatePlusDaysAsISO(90),
-            },
-          ])
-          .withAgreementStatus('AGREED')
-          .save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test.beforeEach(async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder =>
+            builder
+              .withGoals([
+                {
+                  title: 'Active Goal Without Steps',
+                  areaOfNeed: 'accommodation',
+                  status: 'ACTIVE',
+                  targetDate: getDatePlusDaysAsISO(90),
+                },
+              ])
+              .withAgreementStatus('AGREED'),
+        })
 
         // click update on that goal on plan overview
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -516,21 +527,19 @@ test.describe('Change goal journey', () => {
     })
 
     test.describe('access to change goal page through update goal and steps journey (agreed plan state/future goal with no steps)', () => {
-      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder
-          .extend(sentencePlanId)
-          .withGoals([
-            {
-              title: 'Future Goal Without Steps',
-              areaOfNeed: 'finances',
-              status: 'FUTURE',
-            },
-          ])
-          .withAgreementStatus('AGREED')
-          .save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test.beforeEach(async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder =>
+            builder
+              .withGoals([
+                {
+                  title: 'Future Goal Without Steps',
+                  areaOfNeed: 'finances',
+                  status: 'FUTURE',
+                },
+              ])
+              .withAgreementStatus('AGREED'),
+        })
 
         // go to future goals tab and click update on that goal
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -572,23 +581,21 @@ test.describe('Change goal journey', () => {
     })
 
     test.describe('access to change goal page through update goal and steps journey (agreed plan state/active goal with steps)', () => {
-      test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder
-          .extend(sentencePlanId)
-          .withGoals([
-            {
-              title: 'Active Goal With Steps',
-              areaOfNeed: 'accommodation',
-              status: 'ACTIVE',
-              targetDate: getDatePlusDaysAsISO(90),
-              steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
-            },
-          ])
-          .withAgreementStatus('AGREED')
-          .save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test.beforeEach(async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder =>
+            builder
+              .withGoals([
+                {
+                  title: 'Active Goal With Steps',
+                  areaOfNeed: 'accommodation',
+                  status: 'ACTIVE',
+                  targetDate: getDatePlusDaysAsISO(90),
+                  steps: [{ actor: 'probation_practitioner', description: 'Test step', status: 'NOT_STARTED' }],
+                },
+              ])
+              .withAgreementStatus('AGREED'),
+        })
 
         // click update on that goal on plan overview
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -637,17 +644,17 @@ test.describe('Change goal journey', () => {
     test.describe('access to change goal page through create a goal journey (draft plan state)', () => {
       test('back button from add steps navigates to change goal, saving goal redirects back to add steps', async ({
         page,
-        createSession,
-        sentencePlanBuilder,
+        openSentencePlan,
       }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+        await openSentencePlan()
 
         // click create goal on plan overview
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickCreateGoal()
+
+        // select an area of need to reach the create goal page
+        const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+        await selectAreaOfNeedPage.selectAreaAndContinue('accommodation')
 
         // on create goal page:
         // tick 1 related area of need

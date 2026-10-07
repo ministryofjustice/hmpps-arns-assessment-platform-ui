@@ -25,6 +25,7 @@ services:
       NODE_ENV: development
       NODE_CLUSTER_ENABLED: false
       ENVIRONMENT_NAME: dev
+      FORGE_DEVTOOLS_ENABLED: true
       HMPPS_AUTH_URL: http://wiremock:8080/auth
       HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
       HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
@@ -35,7 +36,6 @@ services:
       TOKEN_VERIFICATION_ENABLED: true
       DELIUS_API_URL: http://wiremock:8080/delius
       INGRESS_URL: http://localhost:3000
-      FEATURE_FLAG_URL: https://feature-toggles-dev.hmpps.service.justice.gov.uk
       OASYS_URL: http://localhost:3000/training-session-launcher/sessions
       MPOP_URL: http://localhost:3000/sign-in
       SAN_URL: http://localhost:3000

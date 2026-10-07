@@ -1,5 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { SentencePlanContext } from '../types'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 
 /**
@@ -59,4 +60,10 @@ export const initializeSessionFromAccess = () => (context: SentencePlanContext) 
   }
 
   context.setData('sessionDetails', session.sessionDetails)
+
+  // Record that a user accessed the plan, tagged with their id, so we can count
+  // distinct users of Sentence Plan. Only recorded when attributable to a user.
+  if (session.principal?.identifier) {
+    trackBusinessEvent(context, 'SENTENCE_PLAN_ACCESSED')
+  }
 }

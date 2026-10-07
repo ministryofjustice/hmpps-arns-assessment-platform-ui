@@ -5,7 +5,7 @@ import {
   getMotivationText,
   hasAnyData,
   buildParams,
-  AssessmentInfoDetailsBlock,
+  AssessmentInfoDetails,
 } from '../forms/sentence-plan/components/assessment-info-details/assessmentInfoDetails'
 
 /**
@@ -159,14 +159,14 @@ describe('Assessment Info Details Component', () => {
     function createBlock(
       assessmentData: AssessmentArea | null,
       status = 'success',
-    ): EvaluatedBlock<AssessmentInfoDetailsBlock> {
+    ): EvaluatedBlock<AssessmentInfoDetails> {
       return {
         variant: 'assessmentInfoDetails',
         personName: 'John',
         areaName: 'Accommodation',
         assessmentData,
         status,
-      } as EvaluatedBlock<AssessmentInfoDetailsBlock>
+      } as EvaluatedBlock<AssessmentInfoDetails>
     }
 
     describe('details for YES and NO responses', () => {

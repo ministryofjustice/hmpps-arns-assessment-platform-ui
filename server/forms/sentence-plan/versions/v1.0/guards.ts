@@ -1,5 +1,17 @@
-import { access, and, Data, not, redirect, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  access,
+  and,
+  Data,
+  Item,
+  Iterator,
+  not,
+  or,
+  redirect,
+  Condition,
+  Request,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
+import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
 import { sentencePlanOverviewPath } from './constants'
 
 /**
@@ -16,20 +28,67 @@ export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.E
 
 export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
 
-export const isReadWriteAccess = Data('sessionDetails.planAccessMode').not.match(Condition.Equals('READ_ONLY'))
+export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
+
+export const isSupervisionPackageEnabled = Data('featureFlags.supervisionPackageEnabled').match(Condition.Equals(true))
+
+/**
+ * MPoP renders the supervision package component for the phases in its template's
+ * showPhaseColumn: INIT (Early Engagement), STD (Standard Supervision), FTHRD (Final
+ * Third), IOM (IOM Tier A Alignment), OPD (In OPD Treatment) and SPNS (in-flight —an OASys
+ *  review is under way but not finished). It also renders for an in-flight case with no
+ * phase set yet (currentPhase null — the "Start an OASys review" prompt).
+ */
+const isRenderableSupervisionPhase = Data('supervisionPackageDetails.currentPhase.phase.code').match(
+  Condition.Array.IsIn(['INIT', 'STD', 'FTHRD', 'IOM', 'OPD', 'SPNS']),
+)
+
+const isAwaitingOasysReview = and(
+  Data('supervisionPackageDetails').match(Condition.IsRequired()),
+  Data('supervisionPackageDetails.currentPhase').not.match(Condition.IsRequired()),
+)
+
+export const isSupervisionPackageDisplayable = or(isRenderableSupervisionPhase, isAwaitingOasysReview)
+
+/**
+ * True when the feature is enabled AND the case is in a phase MPoP renders the component for.
+ * Drives whether the component itself is rendered on the page.
+ */
+export const canDisplaySupervisionPackage = and(isSupervisionPackageEnabled, isSupervisionPackageDisplayable)
+
+/**
+ * True when loading the supervision package failed (500/503). Drives showing an error message
+ * rather than hiding the tab.
+ */
+export const hasSupervisionPackageError = Data('supervisionPackageError').match(Condition.Equals(true))
+
+/**
+ * True when the tab should be reachable: the component can be displayed, OR there was an error
+ * (so the user can see the error message). A missing package or non-renderable phase is neither,
+ * so the tab hides.
+ */
+export const canAccessSupervisionPackage = and(
+  isSupervisionPackageEnabled,
+  or(isSupervisionPackageDisplayable, hasSupervisionPackageError),
+)
+
+export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
+
+/**
+ * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
+ *
+ * This only picks which label the audit event gets, never whether one is sent. A faked header
+ * can mislabel an event but cannot remove it.
+ */
+export const isPdfRenderRequest = Request.Headers(GOTENBERG_RENDER_HEADER).match(
+  Condition.Equals(GOTENBERG_RENDER_HEADER_VALUE),
+)
 
 export const hasPostAgreementStatus = Data('latestAgreementStatus').match(
   Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
 )
 
-export const lacksPostAgreementStatus = Data('latestAgreementStatus').not.match(
-  Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-)
-
 export const hasCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
-
-export const lacksCouldNotAnswerStatus = Data('latestAgreementStatus').not.match(Condition.Equals('COULD_NOT_ANSWER'))
-export const isCouldNotAnswerStatus = Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))
 
 /**
  * Redirect users with READ_ONLY access to plan overview.
@@ -41,11 +100,26 @@ export const redirectToOverviewIfReadOnly = () =>
   })
 
 /**
+ * Redirect users to plan overview when print and share is disabled.
+ */
+export const redirectToOverviewUnlessPrintAndShareEnabled = () =>
+  access({
+    when: not(isPrintAndShareEnabled),
+    next: [redirect({ goto: sentencePlanOverviewPath })],
+  })
+
+export const redirectToOverviewUnlessSupervisionPackageAccessible = () =>
+  access({
+    when: not(canAccessSupervisionPackage),
+    next: [redirect({ goto: sentencePlanOverviewPath })],
+  })
+
+/**
  * Redirect users unless plan status is in post-agreement states.
  */
 export const redirectIfNotPostAgreement = (goto: string) =>
   access({
-    when: lacksPostAgreementStatus,
+    when: not(hasPostAgreementStatus),
     next: [redirect({ goto })],
   })
 
@@ -64,11 +138,30 @@ export const redirectIfGoalNotFound = (goto: string) =>
   })
 
 /**
+ * True when the active goal has at least one step and every step is COMPLETED.
+ * Derived from the saved goal (not form answers), so it also holds on a direct page load.
+ */
+export const allActiveGoalStepsCompleted = and(
+  Data('activeGoal.steps').match(Condition.IsRequired()),
+  Data('activeGoal.steps').each(Iterator.Every(Item().path('status').match(Condition.Equals('COMPLETED')))),
+)
+
+/**
+ * Redirect users unless every step on the active goal is completed.
+ * Stops the confirm-if-achieved page being reached directly before a goal is ready to be achieved.
+ */
+export const redirectUnlessAllStepsCompleted = (goto: string) =>
+  access({
+    when: not(allActiveGoalStepsCompleted),
+    next: [redirect({ goto })],
+  })
+
+/**
  * Redirect users unless latest status is COULD_NOT_ANSWER.
  */
 export const redirectUnlessCouldNotAnswer = (goto: string) =>
   access({
-    when: lacksCouldNotAnswerStatus,
+    when: not(hasCouldNotAnswerStatus),
     next: [redirect({ goto })],
   })
 
@@ -83,15 +176,18 @@ export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.
 export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Equals('HMPPS_AUTH'))
 
 /**
- * True when the user can access SAN-specific content.
- * Requires both a SAN_SP assessment AND non-MPoP access, because MPoP users
- * cannot reach the SAN data APIs needed to populate this content.
+ * True when the case has a CRN. Required because the ARNS needs endpoints are keyed by it, and
+ * some OASys handovers arrive without one.
  */
-export const canAccessSanContent = and(isSanSpAssessment, not(isMpopAccess))
+export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 
 /**
- * Redirect users unless they can access SAN content.
- * Blocks both non-SAN_SP assessments and MPoP users.
+ * True when the user can access SAN-specific content.
+ */
+export const canAccessSanContent = and(isSanSpAssessment, hasCrn, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
+
+/**
+ * Redirect users who cannot access SAN content (see canAccessSanContent).
  */
 export const redirectUnlessSanSp = (goto: string) =>
   access({
@@ -121,6 +217,6 @@ export const redirectIfMergedMpopPlan = () =>
  */
 export const redirectToPrivacyUnlessAccepted = () =>
   access({
-    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), isReadWriteAccess),
+    when: and(Data('privacyAccepted').not.match(Condition.Equals(true)), not(isReadOnlyAccess)),
     next: [redirect({ goto: '/sentence-plan/privacy' })],
   })

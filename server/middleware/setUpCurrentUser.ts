@@ -45,6 +45,18 @@ export default function setUpCurrentUser() {
         displayName: convertToTitleCase(name),
       }
 
+      req.state = {
+        ...req.state,
+        user: {
+          id: res.locals.user.username,
+          name: name ?? res.locals.user.username,
+          displayName: convertToTitleCase(name),
+          authSource: res.locals.user.authSource,
+          token: res.locals.user.token,
+          userRoles,
+        },
+      }
+
       return next()
     } catch (error) {
       logger.error(error, `Failed to populate user details for: ${res.locals.user && res.locals.user.username}`)

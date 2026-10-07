@@ -1,31 +1,23 @@
-import type nunjucks from 'nunjucks'
-import { block as blockBuilder } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {
-  BasicBlockProps,
-  BlockDefinition,
-  ResolvableArray,
-  ResolvableString,
-  EvaluatedBlock,
-} from '@ministryofjustice/hmpps-forge/core/components'
-import { buildNunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
+import { BlockDefinition, ResolvableArray, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { DisplayNeed } from '../../types'
 
 /**
- * Props for the CriminogenicNeedsList component.
+ * CriminogenicNeedsList component for displaying criminogenic needs.
+ *
+ * @example
+ * ```typescript
+ * CriminogenicNeedsList({
+ *   needs: Item().path('displayNeeds'),
+ * })
+ * ```
  */
-export interface CriminogenicNeedsListProps extends BasicBlockProps {
+export interface CriminogenicNeedsList extends BlockDefinition {
   /** Array of display-friendly needs to render */
   needs: ResolvableArray<DisplayNeed>
 
   /** Additional CSS classes */
   classes?: ResolvableString
-}
-
-/**
- * CriminogenicNeedsList component interface.
- */
-export interface CriminogenicNeedsList extends BlockDefinition, CriminogenicNeedsListProps {
-  variant: 'criminogenicNeedsList'
 }
 
 /**
@@ -77,14 +69,10 @@ function transformNeedForTemplate(need: DisplayNeed): TemplateNeed {
   }
 }
 
-/**
- * Renders the CriminogenicNeedsList component
- */
-export const criminogenicNeedsList = buildNunjucksComponent<CriminogenicNeedsList>(
-  'criminogenicNeedsList',
-  (block: EvaluatedBlock<CriminogenicNeedsList>, nunjucksEnv: nunjucks.Environment) => {
-    const needs = (block.needs as DisplayNeed[]) ?? []
-    const classes = ['criminogenic-needs-list', block.classes].filter(Boolean).join(' ')
+export const CriminogenicNeedsList = nunjucksComponent<CriminogenicNeedsList>('criminogenicNeedsList', {
+  render: (props, nunjucksEnv) => {
+    const needs = (props.needs as DisplayNeed[]) ?? []
+    const classes = ['criminogenic-needs-list', props.classes].filter(Boolean).join(' ')
 
     const templateNeeds = needs.map(transformNeedForTemplate)
 
@@ -95,18 +83,4 @@ export const criminogenicNeedsList = buildNunjucksComponent<CriminogenicNeedsLis
       },
     })
   },
-)
-
-/**
- * Creates a CriminogenicNeedsList block for displaying criminogenic needs.
- *
- * @example
- * ```typescript
- * CriminogenicNeedsList({
- *   needs: Item().path('displayNeeds'),
- * })
- * ```
- */
-export function CriminogenicNeedsList(props: CriminogenicNeedsListProps): CriminogenicNeedsList {
-  return blockBuilder<CriminogenicNeedsList>({ ...props, variant: 'criminogenicNeedsList' })
-}
+})

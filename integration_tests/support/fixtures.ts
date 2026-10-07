@@ -12,13 +12,19 @@ import { TestCoordinatorApiClient } from './apis/TestCoordinatorApiClient'
 import { AssessmentBuilder } from '../builders/AssessmentBuilder'
 import type { AssessmentBuilderFactory } from '../builders/AssessmentBuilder'
 import { SentencePlanBuilder } from '../builders/SentencePlanBuilder'
-import type { SentencePlanBuilderFactory } from '../builders/SentencePlanBuilder'
+import type {
+  CreatedSentencePlan,
+  SentencePlanBuilderFactory,
+  SentencePlanBuilderInstance,
+} from '../builders/SentencePlanBuilder'
 import { CoordinatorBuilder } from '../builders/CoordinatorBuilder'
 import type { CoordinatorBuilderFactory } from '../builders/CoordinatorBuilder'
 import { HandoverBuilder } from '../builders/HandoverBuilder'
 import type { HandoverBuilderFactory } from '../builders/HandoverBuilder'
 import { AuditQueueClient } from './AuditQueueClient'
 import { captureContainerLogs } from './DockerLogCapture'
+import arnsApi, { criminogenicNeedsToArnsDetails } from '../mockApis/arnsApi'
+import { navigateToSentencePlan } from '../specs/sentencePlan/sentencePlanUtils'
 
 /**
  * Default criminogenic needs data for E2E tests.
@@ -29,53 +35,44 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
   accommodation: {
     accLinkedToHarm: 'YES',
     accLinkedToReoffending: 'YES',
-    accStrengths: 'YES',
     accOtherWeightedScore: '6',
   },
   educationTrainingEmployability: {
     eteLinkedToHarm: 'YES',
     eteLinkedToReoffending: 'YES',
-    eteStrengths: 'YES',
     eteOtherWeightedScore: '4',
   },
   finance: {
     financeLinkedToHarm: 'YES',
     financeLinkedToReoffending: 'YES',
-    financeStrengths: 'YES',
   },
   drugMisuse: {
     drugLinkedToHarm: 'YES',
     drugLinkedToReoffending: 'YES',
-    drugStrengths: 'YES',
     drugOtherWeightedScore: '6',
   },
   alcoholMisuse: {
     alcoholLinkedToHarm: 'YES',
     alcoholLinkedToReoffending: 'YES',
-    alcoholStrengths: 'YES',
     alcoholOtherWeightedScore: '4',
   },
   healthAndWellbeing: {
     emoLinkedToHarm: 'YES',
     emoLinkedToReoffending: 'YES',
-    emoStrengths: 'YES',
   },
   personalRelationshipsAndCommunity: {
     relLinkedToHarm: 'YES',
     relLinkedToReoffending: 'YES',
-    relStrengths: 'YES',
     relOtherWeightedScore: '6',
   },
   thinkingBehaviourAndAttitudes: {
     thinkLinkedToHarm: 'YES',
     thinkLinkedToReoffending: 'YES',
-    thinkStrengths: 'YES',
     thinkOtherWeightedScore: '8',
   },
   lifestyleAndAssociates: {
     lifestyleLinkedToHarm: 'YES',
     lifestyleLinkedToReoffending: 'YES',
-    lifestyleStrengths: 'YES',
     lifestyleOtherWeightedScore: '4',
   },
 }
@@ -83,11 +80,13 @@ const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
 export enum TargetService {
   SENTENCE_PLAN = 'sentence-plan',
   STRENGTHS_AND_NEEDS = 'strengths-and-needs',
+  TIERING_ASSESSMENT = 'tiering-assessment',
 }
 
 const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
   [TargetService.SENTENCE_PLAN]: 'sentence-plan',
   [TargetService.STRENGTHS_AND_NEEDS]: 'strengths-and-needs-assessment',
+  [TargetService.TIERING_ASSESSMENT]: 'tiering-assessment',
 }
 
 export interface CreateSessionOptions {
@@ -95,6 +94,11 @@ export interface CreateSessionOptions {
   planAccessMode?: AccessMode
   assessmentType?: AssessmentType
   pnc?: string
+  /**
+   * Defaults to a randomly generated CRN. Set it to target a specific wiremock
+   * scenario, such as docker/wiremock/mappings/supervision-package-api.
+   */
+  crn?: string
   /**
    * Criminogenic needs data from OASys (via handover).
    * Provides linked indicators (YES/NO) and scores for assessment areas.
@@ -107,6 +111,11 @@ export interface CreateSessionOptions {
    * When set, indicates the user is accessing a previous version of the plan.
    */
   planVersion?: number
+  /**
+   * Send the handover with no subject CRN (~10% of real OASys handovers).
+   * The About page and assessment-info expanders are hidden for these users.
+   */
+  noCrn?: boolean
 }
 
 export interface SessionFixture {
@@ -118,6 +127,16 @@ export interface SessionFixture {
   sentencePlanVersion: number
   sanAssessmentId: string
   sanAssessmentVersion: number
+}
+
+export interface OpenSentencePlanOptions {
+  session?: Omit<CreateSessionOptions, 'targetService'>
+  /** Adds goals, agreement status etc. to the plan before it is saved. */
+  plan?: (builder: SentencePlanBuilderInstance) => SentencePlanBuilderInstance
+}
+
+export interface OpenedSentencePlan extends SessionFixture {
+  plan: CreatedSentencePlan
 }
 
 /**
@@ -142,6 +161,11 @@ type TestApiFixtures = {
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
+  /**
+   * Creates a sentence plan session, saves the plan, then opens the plan overview via the handover link.
+   * Replaces the createSession, sentencePlanBuilder and navigateToSentencePlan steps most specs repeat.
+   */
+  openSentencePlan: (options?: OpenSentencePlanOptions) => Promise<OpenedSentencePlan>
   auditQueue: AuditQueueClient
   makeAxeBuilder: () => AxeBuilder
 }
@@ -254,9 +278,17 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         builder.withAssessmentType(options.assessmentType)
       }
 
+      if (options.crn) {
+        builder.withCrn(options.crn)
+      }
+
       const association = await builder.save()
 
       const sessionBuilder = handoverBuilder.forAssociation(association)
+
+      if (options.noCrn) {
+        sessionBuilder.withoutCrn()
+      }
 
       if (options.pnc) {
         sessionBuilder.withSubjectPNC(options.pnc)
@@ -270,8 +302,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       // - If explicitly null, don't set any data (for testing missing data scenarios)
       // - If provided, use the provided data
       // - Otherwise use defaults so tests work without explicit setup
-      if (options.criminogenicNeedsData !== null) {
-        const criminogenicNeeds = options.criminogenicNeedsData ?? defaultCriminogenicNeedsData
+      const criminogenicNeeds =
+        options.criminogenicNeedsData === null ? null : (options.criminogenicNeedsData ?? defaultCriminogenicNeedsData)
+
+      if (criminogenicNeeds) {
         sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
       }
 
@@ -280,6 +314,9 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
       }
 
       const session = await sessionBuilder.save()
+
+      // OASys users' needs come from the ARNS integration endpoint, so stub it from the same test data.
+      await arnsApi.stubGetCriminogenicNeedsDetails(session.crn, criminogenicNeedsToArnsDetails(criminogenicNeeds))
 
       const clientId = TARGET_SERVICE_CLIENT_IDS[options.targetService]
       const url = new URL(session.handoverLink)
@@ -293,6 +330,21 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
     await use(createSessionFn)
   },
+
+  openSentencePlan: async ({ page, createSession, sentencePlanBuilder }, use) => {
+    const openSentencePlanFn = async (options: OpenSentencePlanOptions = {}): Promise<OpenedSentencePlan> => {
+      const session = await createSession({ ...options.session, targetService: TargetService.SENTENCE_PLAN })
+      const builder = sentencePlanBuilder.extend(session.sentencePlanId)
+      const plan = await (options.plan?.(builder) ?? builder).save()
+
+      await navigateToSentencePlan(page, session.handoverLink)
+
+      return { ...session, plan }
+    }
+
+    await use(openSentencePlanFn)
+  },
+
   auditQueue: async ({ apis }, use) => {
     const client = AuditQueueClient.getInstance({
       queueUrl: apis.localstack.queueUrl,
@@ -319,7 +371,7 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         return
       }
 
-      const { logs } = await captureContainerLogs('ui', { since: startedAt })
+      const { logs } = await captureContainerLogs('aap-ui', { since: startedAt })
       const logsPath = testInfo.outputPath('ui-container-logs.txt')
 
       await fs.writeFile(logsPath, logs, 'utf-8')

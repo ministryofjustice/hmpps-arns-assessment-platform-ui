@@ -4,43 +4,38 @@ import { test } from '../../../support/fixtures'
 import AboutPage from '../../../pages/sentencePlan/aboutPage'
 import { navigateToAboutPage } from '../sentencePlanUtils'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
+import arnsApi, { criminogenicNeedsToArnsDetails } from '../../../mockApis/arnsApi'
 import { createAssessmentData } from '../../../builders/AssessmentDataFactories'
 
 const defaultCriminogenicNeedsData: CriminogenicNeedsData = {
   accommodation: {
     accLinkedToHarm: 'YES',
     accLinkedToReoffending: 'YES',
-    accStrengths: 'NO',
     accOtherWeightedScore: '4',
   },
   educationTrainingEmployability: {
     eteLinkedToHarm: 'NO',
     eteLinkedToReoffending: 'YES',
-    eteStrengths: 'NO',
     eteOtherWeightedScore: '2',
   },
   drugMisuse: {
     drugLinkedToHarm: 'YES',
     drugLinkedToReoffending: 'YES',
-    drugStrengths: 'NO',
     drugOtherWeightedScore: '3',
   },
   alcoholMisuse: {
     alcoholLinkedToHarm: 'YES',
     alcoholLinkedToReoffending: 'NO',
-    alcoholStrengths: 'NO',
     alcoholOtherWeightedScore: '3',
   },
   personalRelationshipsAndCommunity: {
     relLinkedToHarm: 'NO',
     relLinkedToReoffending: 'NO',
-    relStrengths: 'YES',
     relOtherWeightedScore: '0',
   },
   thinkingBehaviourAndAttitudes: {
     thinkLinkedToHarm: 'YES',
     thinkLinkedToReoffending: 'YES',
-    thinkStrengths: 'NO',
     thinkOtherWeightedScore: '4',
   },
 }
@@ -65,6 +60,10 @@ test.describe('About Page: error states', () => {
         .withCriminogenicNeeds(defaultCriminogenicNeedsData)
         .save()
 
+      await arnsApi.stubGetCriminogenicNeedsDetails(
+        'NOTFOUND',
+        criminogenicNeedsToArnsDetails(defaultCriminogenicNeedsData),
+      )
       await sentencePlanBuilder.extend(association.sentencePlanId).save()
       await coordinatorApi.stubGetEntityAssessment(association.sentencePlanId, {
         sanAssessmentData: createAssessmentData('complete'),

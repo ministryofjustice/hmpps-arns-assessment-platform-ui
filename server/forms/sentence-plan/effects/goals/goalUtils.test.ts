@@ -13,6 +13,9 @@ import {
   resolveActiveGoalFromRequest,
   setActiveGoalData,
   deriveAreasOfNeedData,
+  sanitizeDateValue,
+  hasGoalChanged,
+  GoalEdit,
 } from './goalUtils'
 
 const createMockContext = (
@@ -357,6 +360,81 @@ describe('goalUtils', () => {
     })
   })
 
+  describe('hasGoalChanged()', () => {
+    const unchangedEdit: GoalEdit = {
+      title: 'Test goal',
+      areaOfNeed: 'accommodation',
+      relatedAreasOfNeed: ['finances', 'drug-use'],
+      status: 'ACTIVE',
+      targetDate: '2025-06-01T12:00:00.000Z',
+    }
+
+    const savedGoal = createMockGoal({
+      targetDate: '2025-06-01T12:00:00.000Z',
+      relatedAreasOfNeed: ['drug-use', 'finances'],
+    })
+
+    it('should return false when the edit matches the saved goal', () => {
+      // Arrange / Act
+      const result = hasGoalChanged(savedGoal, unchangedEdit)
+
+      // Assert
+      expect(result).toBe(false)
+    })
+
+    it('should return false when the target date is recalculated to a different time on the same day', () => {
+      // Arrange
+      const edit = { ...unchangedEdit, targetDate: '2025-06-01T13:30:00.000Z' }
+
+      // Act
+      const result = hasGoalChanged(savedGoal, edit)
+
+      // Assert
+      expect(result).toBe(false)
+    })
+
+    it('should return false when a future goal has no target date saved or submitted', () => {
+      // Arrange
+      const futureGoal = createMockGoal({ status: 'FUTURE', targetDate: undefined, relatedAreasOfNeed: [] })
+      const edit: GoalEdit = { ...unchangedEdit, status: 'FUTURE', targetDate: null, relatedAreasOfNeed: [] }
+
+      // Act
+      const result = hasGoalChanged(futureGoal, edit)
+
+      // Assert
+      expect(result).toBe(false)
+    })
+
+    it.each([
+      ['title', { title: 'A different goal' }],
+      ['area of need', { areaOfNeed: 'finances' }],
+      ['related areas of need', { relatedAreasOfNeed: ['finances'] }],
+      ['status', { status: 'FUTURE' as const }],
+      ['target date day', { targetDate: '2025-06-02T12:00:00.000Z' }],
+      ['target date removed', { targetDate: null }],
+    ])('should return true when the %s changes', (_label, change) => {
+      // Arrange
+      const edit = { ...unchangedEdit, ...change }
+
+      // Act
+      const result = hasGoalChanged(savedGoal, edit)
+
+      // Assert
+      expect(result).toBe(true)
+    })
+
+    it('should return true when a target date is added to a goal without one', () => {
+      // Arrange
+      const goalWithoutDate = createMockGoal({ targetDate: undefined, relatedAreasOfNeed: ['drug-use', 'finances'] })
+
+      // Act
+      const result = hasGoalChanged(goalWithoutDate, unchangedEdit)
+
+      // Assert
+      expect(result).toBe(true)
+    })
+  })
+
   describe('getRequiredEffectContext()', () => {
     it('should return user and assessmentUuid when both are present', () => {
       // Arrange
@@ -655,6 +733,44 @@ describe('goalUtils', () => {
 
     it('should map date_in_12_months to 12', () => {
       expect(MONTHS_BY_OPTION.date_in_12_months).toBe(12)
+    })
+  })
+
+  describe('sanitizeDateValue()', () => {
+    it('should return a valid ISO date string unchanged', () => {
+      expect(sanitizeDateValue('2025-06-15T00:00:00.000Z')).toBe('2025-06-15T00:00:00.000Z')
+    })
+
+    it('should return undefined for the literal string "null"', () => {
+      expect(sanitizeDateValue('null')).toBeUndefined()
+    })
+
+    it('should return undefined for null', () => {
+      expect(sanitizeDateValue(null)).toBeUndefined()
+    })
+
+    it('should return undefined for the literal string "undefined"', () => {
+      expect(sanitizeDateValue('undefined')).toBeUndefined()
+    })
+
+    it('should return undefined for an empty string', () => {
+      expect(sanitizeDateValue('')).toBeUndefined()
+    })
+
+    it('should return undefined when value is undefined', () => {
+      expect(sanitizeDateValue(undefined)).toBeUndefined()
+    })
+
+    it('should return undefined for an unparseable date string', () => {
+      expect(sanitizeDateValue('not-a-date')).toBeUndefined()
+    })
+
+    it('should return a valid short date string unchanged', () => {
+      expect(sanitizeDateValue('2025-06-15')).toBe('2025-06-15')
+    })
+
+    it('should return undefined for non-ISO short date string', () => {
+      expect(sanitizeDateValue('15-06-2025')).toBeUndefined()
     })
   })
 })

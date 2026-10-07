@@ -10,6 +10,7 @@ import {
   SentencePlanContext,
 } from '../types'
 import { GoalSnapshotData } from '../goals/goalSnapshot'
+import { sanitizeDateValue } from '../goals/goalUtils'
 
 const resolveAreaLabel = (slug: string | undefined, areasOfNeed: AreaOfNeed[]): string | undefined => {
   if (!slug) {
@@ -55,7 +56,7 @@ const buildGoalContext = (
   if (snapshot) {
     return {
       goalStatus: snapshot.status,
-      targetDate: snapshot.targetDate,
+      targetDate: sanitizeDateValue(snapshot.targetDate),
       statusDate: snapshot.statusDate,
       areaOfNeedLabel: resolveAreaLabel(snapshot.areaOfNeed, areasOfNeed),
       relatedAreasOfNeedLabels: snapshot.relatedAreasOfNeed
@@ -75,7 +76,7 @@ const buildGoalContext = (
 
   return {
     goalStatus: currentGoal.status as GoalStatus,
-    targetDate: currentGoal.targetDate,
+    targetDate: sanitizeDateValue(currentGoal.targetDate),
     statusDate: currentGoal.statusDate,
     areaOfNeedLabel: currentGoal.areaOfNeedLabel,
     relatedAreasOfNeedLabels: currentGoal.relatedAreasOfNeedLabels,

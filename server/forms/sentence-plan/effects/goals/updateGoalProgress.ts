@@ -5,6 +5,7 @@ import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, getPractitionerName } from './goalUtils'
 import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
 import { snapshotFromGoal } from './goalSnapshot'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
 /**
  * Update goal progress - update step statuses and add progress note
@@ -29,7 +30,7 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
 
   const practitionerName = getPractitionerName(context, user)
   const progressNotes = context.getAnswer('progress_notes')
-  const hasProgressNotes = progressNotes && typeof progressNotes === 'string' && progressNotes.trim().length > 0
+  const hasProgressNotes = typeof progressNotes === 'string' && progressNotes.trim().length > 0
 
   const steps: DerivedStep[] = activeGoal.steps ?? []
   const commands: Commands[] = []
@@ -121,6 +122,14 @@ export const updateGoalProgress = (deps: SentencePlanEffectsDeps) => async (cont
   // Execute all commands in a single batch
   if (commands.length > 0) {
     await deps.api.executeCommands(...commands)
+  }
+
+  if (hasStepStatusChanges || hasProgressNotes) {
+    trackBusinessEvent(context, 'UPDATE_STEP_PROGRESS_PAGE_SUBMITTED', {
+      assessmentUuid,
+      goalUuid: activeGoal.uuid,
+      hasProgressNotes,
+    })
   }
 
   // Check if all steps are now COMPLETED (using the new statuses from form submission)

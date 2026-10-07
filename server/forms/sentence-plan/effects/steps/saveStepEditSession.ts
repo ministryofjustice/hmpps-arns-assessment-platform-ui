@@ -1,8 +1,9 @@
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { SentencePlanContext, SentencePlanEffectsDeps, StepAnswers, StepChangesStorage, StepProperties } from '../types'
+import { SentencePlanContext, SentencePlanEffectsDeps, StepChangesStorage, StepProperties } from '../types'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getPractitionerName, getRequiredEffectContext } from '../goals/goalUtils'
 import { snapshotFromGoal } from '../goals/goalSnapshot'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
 /**
  * Save the step edit session to the API
@@ -25,6 +26,7 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   const getFormValues = (index: number) => ({
     actor: context.getAnswer(`step_actor_${index}`),
     description: context.getAnswer(`step_description_${index}`),
+    status: context.getAnswer(`step_status_${index}`),
   })
 
   // Get original step values for change detection
@@ -48,7 +50,9 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
     const current = getFormValues(index)
     const original = stepsOriginal.find(s => s.id === id)
 
-    return current.actor !== original?.actor || current.description !== original?.description
+    return current.actor !== original?.actor ||
+      current.description !== original?.description ||
+      current.status !== original?.status
   })
 
   const hasStepChanges = newSteps.length > 0 || modifiedSteps.length > 0 || toDelete.length > 0
@@ -87,6 +91,7 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   // 2. UPDATE commands
   modifiedSteps.forEach(({ id, index }) => {
     const values = getFormValues(index)
+    const original = stepsOriginal.find(s => s.id === id)
 
     commands.push({
       type: 'UpdateCollectionItemAnswersCommand',
@@ -94,12 +99,27 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
       added: wrapAll({
         actor: values.actor,
         description: values.description,
+        status: values.status,
       }),
       removed: [],
       timeline: { type: 'STEP_UPDATED', data: {} },
       assessmentUuid,
       user,
     })
+
+    // Refresh status_date when the status itself changed
+    if (values.status !== original?.status) {
+      commands.push({
+        type: 'UpdateCollectionItemPropertiesCommand',
+        collectionItemUuid: id,
+        added: wrapAll({
+          status_date: new Date().toISOString(),
+        }),
+        removed: [],
+        assessmentUuid,
+        user,
+      })
+    }
   })
 
   // 3. CREATE commands
@@ -110,8 +130,8 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
       status_date: new Date().toISOString(),
     }
 
-    const answers: StepAnswers = {
-      status: 'NOT_STARTED',
+    const answers = {
+      status: values.status,
       actor: values.actor,
       description: values.description,
     }
@@ -131,18 +151,12 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   // `isInitialStepAdd: true` so plan-history folds it into GOAL_CREATED rather
   // than rendering a separate "Goal updated" entry.
   if (hasStepChanges && activeGoal?.uuid) {
-    // Existing steps keep their status (status edits live in updateGoalProgress);
-    // new steps default to NOT_STARTED.
-    const stepStatusByUuid = new Map<string, string>()
-    for (const original of activeGoal.steps ?? []) {
-      stepStatusByUuid.set(original.uuid, original.status)
-    }
     const postEditSteps = steps.map((step, index) => {
       const values = getFormValues(index)
       return {
         actor: values.actor,
         description: values.description,
-        status: stepStatusByUuid.get(step.id) ?? 'NOT_STARTED',
+        status: values.status,
       }
     })
 
@@ -184,8 +198,22 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
     await deps.api.executeCommands(...commands)
   }
 
+  if (hasStepChanges) {
+    trackBusinessEvent(context, isCreatingGoal ? 'ADD_STEPS_PAGE_SUBMITTED' : 'EDIT_STEPS_PAGE_SUBMITTED', {
+      assessmentUuid,
+      goalUuid: activeGoalUuid,
+    })
+  }
+
   // Clear session state for this goal after successful save
   if (activeGoalUuid && storage[activeGoalUuid]) {
     delete storage[activeGoalUuid]
   }
+
+  // Flag whether every remaining step is now COMPLETED, so the add-steps page can
+  // prompt the confirm-if-achieved page (read by Data('allStepsCompleted')).
+  const allStepsCompleted =
+    steps.length > 0 && steps.every((_step, index) => getFormValues(index).status === 'COMPLETED')
+
+  context.setData('allStepsCompleted', allStepsCompleted)
 }

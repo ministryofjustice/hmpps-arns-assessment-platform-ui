@@ -38,8 +38,8 @@ export default defineConfig<PlaywrightExtendedConfig>({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: process.env.CI ? 1 : 0,
+  /* Retry flaky tests once (locally too, so a single flake doesn't fail the whole run). */
+  retries: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   workers: process.env.CI ? 3 : 4,
   reporter: [

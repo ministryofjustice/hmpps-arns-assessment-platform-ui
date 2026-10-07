@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
-import { navigateToSentencePlan, navigateToPrivacyScreen } from './sentencePlanUtils'
+import { navigateToPrivacyScreen } from './sentencePlanUtils'
 
 test.describe('Feedback and Report a Problem', () => {
   test.describe('Phase Banner', () => {
@@ -8,14 +8,10 @@ test.describe('Feedback and Report a Problem', () => {
     // AC2: Feedback link opens in a new tab
     test('shows phase banner with Beta tag, feedback link and report a problem link', async ({
       page,
-      createSession,
       makeAxeBuilder,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+      await openSentencePlan()
 
       const phaseBanner = page.getByTestId('phase-banner')
       await expect(phaseBanner).toBeVisible()
@@ -29,6 +25,7 @@ test.describe('Feedback and Report a Problem', () => {
       // AC2: Feedback link opens in a new tab
       const feedbackLink = phaseBanner.getByRole('link', { name: /give feedback/i })
       await expect(feedbackLink).toBeVisible()
+      await expect(feedbackLink).toHaveAttribute('href', 'private-beta-feedback-url')
       await expect(feedbackLink).toHaveAttribute('target', '_blank')
       await expect(feedbackLink).toHaveClass(/govuk-link--no-visited-state/)
 
@@ -56,15 +53,8 @@ test.describe('Feedback and Report a Problem', () => {
 
   test.describe('Report a Problem Expander', () => {
     // AC3: Collapsed expander at the bottom of every SP page with wording "Report a problem"
-    test('shows collapsed report a problem expander at bottom of page', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows collapsed report a problem expander at bottom of page', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
       const details = page.locator('#report-a-problem details')
       await expect(details).toBeVisible()
@@ -77,16 +67,10 @@ test.describe('Feedback and Report a Problem', () => {
     //       CRN, Request ID, Assessment ID, OASys PK, and a Copy button
     test('expander shows ServiceNow link and support details when opened', async ({
       page,
-      createSession,
       makeAxeBuilder,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink, crn } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-      })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+      const { crn } = await openSentencePlan()
 
       await page.getByTestId('report-a-problem').locator('summary').click()
 
@@ -144,15 +128,8 @@ test.describe('Feedback and Report a Problem', () => {
   test.describe('Report a Problem Link Behaviour', () => {
     // AC7: Clicking "report a problem" in the phase banner scrolls to and opens the expander,
     //       and the expander can be collapsed again by clicking the summary
-    test('clicking report a problem in phase banner opens the expander', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('clicking report a problem in phase banner opens the expander', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
       // Verify expander is closed
       const details = page.locator('#report-a-problem details')
@@ -174,13 +151,9 @@ test.describe('Feedback and Report a Problem', () => {
 
     test('clicking report a problem in phase banner moves focus to the expander summary', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+      await openSentencePlan()
 
       // Click the report a problem link in the phase banner
       await page

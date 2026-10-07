@@ -12,7 +12,7 @@ import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKAccordion, GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardHistory } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
-import { isCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
+import { hasCouldNotAnswerStatus, isReadOnlyAccess } from '../../../../guards'
 
 const GOAL_EVENT_TYPES = ['goal_created', 'goal_achieved', 'goal_removed', 'goal_readded', 'goal_updated']
 const INACTIVE_GOAL_STATUSES = ['ACHIEVED', 'REMOVED']
@@ -26,10 +26,10 @@ const agreementHeadingHtml = Format(
   '<strong>%1</strong> on %2 by %3%4',
   match(Item().path('status'))
     .branch(Condition.Array.IsIn(['UPDATED_AGREED', 'UPDATED_DO_NOT_AGREE']), 'Agreement updated')
-    .branch(Condition.Equals('AGREED'), 'Plan agreed')
+    .case('AGREED', 'Plan agreed')
     .otherwise('Plan created'),
   Item().path('date').pipe(Transformer.String.FormatDate()),
-  when(Item().path('createdBy').match(Condition.IsRequired())).then(Item().path('createdBy')).else('Unknown'),
+  Item().path('createdBy').nullish('Unknown'),
   when(
     Item().path('status').match(Condition.Array.IsIn(['AGREED', 'UPDATED_AGREED'])),
   )
@@ -89,13 +89,20 @@ const agreementContentHtml = Format(
     .else(''),
 
   // update agreement link for COULD_NOT_ANSWER events (hidden in read-only):
-  when(isCouldNotAnswerStatus)
+  when(hasCouldNotAnswerStatus)
     .then(
       when(isReadOnlyAccess)
         .then('')
         .else(
           Format(
-            `<p class="govuk-body"><a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-qa="plan-history-update-agreement-link">Update %1 agreement</a></p>`,
+            `<p class="govuk-body">
+                <a href="update-agree-plan"
+                   class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print"
+                   data-qa="plan-history-update-agreement-link"
+                   data-ai-id="plan-history-update-agreement-link">
+                     Update %1 agreement
+                </a>
+            </p>`,
             CaseData.ForenamePossessive,
           ),
         ),
@@ -111,9 +118,7 @@ const goalHeading = (action: string, actorField: string) =>
     '<strong>%1</strong> on %2 by %3',
     action,
     Item().path('date').pipe(Transformer.String.FormatDate()),
-    when(Item().path(actorField).match(Condition.IsRequired()))
-      .then(Item().path(actorField).pipe(Transformer.String.EscapeHtml()))
-      .else('Unknown'),
+    Item().path(actorField).nullish('Unknown').pipe(Transformer.String.EscapeHtml()),
   )
 
 // Factory: builds a goal-event summary with the goal title (bold) followed by an optional notes/reason paragraph.
@@ -166,6 +171,7 @@ const goalSummaryCardForHistory = GoalSummaryCardHistory({
       href: when(Item().path('currentGoalStatus').match(Condition.Array.IsIn(INACTIVE_GOAL_STATUSES)))
         .then(Format('../goal/%1/view-inactive-goal', Item().path('goalUuid')))
         .else(Format('../goal/%1/update-goal-steps', Item().path('goalUuid'))),
+      dataAiId: 'plan-history-summary-card-view-goal-link',
       hidden: when(isReadOnlyAccess),
     },
   ],
@@ -183,20 +189,20 @@ export const agreementHistory = GovUKAccordion({
     Iterator.Map({
       heading: {
         html: match(Item().path('type'))
-          .branch(Condition.Equals('goal_achieved'), goalAchievedHeadingHtml)
-          .branch(Condition.Equals('goal_created'), goalAddedHeadingHtml)
-          .branch(Condition.Equals('goal_removed'), goalRemovedHeadingHtml)
-          .branch(Condition.Equals('goal_readded'), goalReaddedHeadingHtml)
-          .branch(Condition.Equals('goal_updated'), goalUpdatedHeadingHtml)
+          .case('goal_achieved', goalAchievedHeadingHtml)
+          .case('goal_created', goalAddedHeadingHtml)
+          .case('goal_removed', goalRemovedHeadingHtml)
+          .case('goal_readded', goalReaddedHeadingHtml)
+          .case('goal_updated', goalUpdatedHeadingHtml)
           .otherwise(agreementHeadingHtml),
       },
       summary: {
         html: match(Item().path('type'))
-          .branch(Condition.Equals('goal_achieved'), goalAchievedSummaryHtml)
-          .branch(Condition.Equals('goal_created'), goalAddedSummaryHtml)
-          .branch(Condition.Equals('goal_removed'), goalRemovedSummaryHtml)
-          .branch(Condition.Equals('goal_readded'), goalReaddedSummaryHtml)
-          .branch(Condition.Equals('goal_updated'), goalUpdatedSummaryHtml)
+          .case('goal_achieved', goalAchievedSummaryHtml)
+          .case('goal_created', goalAddedSummaryHtml)
+          .case('goal_removed', goalRemovedSummaryHtml)
+          .case('goal_readded', goalReaddedSummaryHtml)
+          .case('goal_updated', goalUpdatedSummaryHtml)
           .otherwise(agreementSummaryHtml),
       },
       content: {

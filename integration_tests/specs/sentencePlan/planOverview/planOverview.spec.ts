@@ -17,11 +17,8 @@ import {
 
 test.describe('Plan Overview Page', () => {
   test.describe('Empty State', () => {
-    test('shows empty message when no current goals exist', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows empty message when no current goals exist', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -32,29 +29,16 @@ test.describe('Plan Overview Page', () => {
       await expect(planOverviewPage.noGoalsMessage).toContainText(/does not have any goals to work on now/i)
     })
 
-    test('shows create goal link in empty state', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows create goal link in empty state', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.createGoalLink).toBeVisible()
     })
 
-    test('shows single line wording without about page link for SP users', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        assessmentType: 'SP',
-      })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows single line wording without about page link for SP users', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({ session: { assessmentType: 'SP' } })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -64,16 +48,13 @@ test.describe('Plan Overview Page', () => {
       await expect(page.getByRole('link', { name: /view information from.*assessment/i })).not.toBeVisible()
     })
 
-    test('shows empty message when no future goals exist', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows empty message when no future goals exist', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       await expect(planOverviewPage.noFutureGoalsMessage).toBeVisible()
       await expect(planOverviewPage.noFutureGoalsMessage).toContainText(/does not have any future goals/i)
@@ -81,15 +62,10 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Goal Display', () => {
-    test('displays current goals in Goals to work on now section', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('displays current goals in Goals to work on now section', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(2)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -103,11 +79,10 @@ test.describe('Plan Overview Page', () => {
       expect(secondGoalTitle).toContain('Current Goal 2')
     })
 
-    test('displays future goals in Future goals section', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(2)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('displays future goals in Future goals section', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(futureGoals(2)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -120,11 +95,10 @@ test.describe('Plan Overview Page', () => {
       expect(firstGoalTitle).toContain('Future Goal 1')
     })
 
-    test('shows correct goal count in tab labels', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(mixedGoals()).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows correct goal count in tab labels', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(mixedGoals()),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -132,21 +106,18 @@ test.describe('Plan Overview Page', () => {
       await expect(planOverviewPage.futureGoalsTab).toContainText('1')
     })
 
-    test('goal card shows title and area of need', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Find stable housing',
-            status: 'ACTIVE',
-            areaOfNeed: 'accommodation',
-            targetDate: '2025-06-01',
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('goal card shows title and area of need', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Find stable housing',
+              status: 'ACTIVE',
+              areaOfNeed: 'accommodation',
+              targetDate: '2025-06-01',
+            },
+          ]),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -157,15 +128,10 @@ test.describe('Plan Overview Page', () => {
       await expect(areaOfNeed).toContainText(/accommodation/i)
     })
 
-    test('goal card shows No steps added when goal has no steps', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('goal card shows No steps added when goal has no steps', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -173,25 +139,22 @@ test.describe('Plan Overview Page', () => {
       await expect(goalCard).toContainText(/no steps added/i)
     })
 
-    test('goal card shows steps when steps exist', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Goal with steps',
-            status: 'ACTIVE',
-            areaOfNeed: 'accommodation',
-            targetDate: '2025-06-01',
-            steps: [
-              { actor: 'probation_practitioner', description: 'Contact housing services' },
-              { actor: 'person_on_probation', description: 'Attend housing appointment' },
-            ],
-          },
-        ])
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('goal card shows steps when steps exist', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Goal with steps',
+              status: 'ACTIVE',
+              areaOfNeed: 'accommodation',
+              targetDate: '2025-06-01',
+              steps: [
+                { actor: 'probation_practitioner', description: 'Contact housing services' },
+                { actor: 'person_on_probation', description: 'Attend housing appointment' },
+              ],
+            },
+          ]),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -202,56 +165,50 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Tab Navigation', () => {
-    test('defaults to current goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
+    test('defaults to current goals tab', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
-      await navigateToSentencePlan(page, handoverLink)
-
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
     })
 
-    test('can switch to future goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(mixedGoals()).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can switch to future goals tab', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(mixedGoals()),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
 
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(1)
     })
 
-    test('can switch back to current goals tab', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(mixedGoals()).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('can switch back to current goals tab', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(mixedGoals()),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       await planOverviewPage.clickCurrentGoalsTab()
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       const goalCount = await planOverviewPage.getGoalCount()
       expect(goalCount).toBe(2)
     })
 
-    test('respects type=future query param on page load', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(mixedGoals()).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('respects goalStatusTab=future query param on page load', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(mixedGoals()),
+      })
 
       // Navigate directly to future goals tab
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=future')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=future')
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       const goalCount = await planOverviewPage.getGoalCount()
@@ -263,59 +220,95 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Goal Actions', () => {
-    test('shows Change goal link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
-
-      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-
-      const hasChangeLink = await planOverviewPage.goalCardHasChangeLink(0)
-      expect(hasChangeLink).toBe(true)
-    })
-
-    test('shows Add or change steps link on goal cards only when goal has at least one step (draft plan)', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows Update goal link on goal cards', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
-      expect(hasAddStepsLink).toBe(true)
+      const hasUpdateGoalLink = await planOverviewPage.goalCardHasUpdateGoalLink(0)
+      expect(hasUpdateGoalLink).toBe(true)
     })
 
-    test(`doesn't show Add or change steps link on goal cards for a goal with no steps (draft plan)`, async ({
+    test('shows Add or update steps link on goal cards only when goal has at least one step (draft plan)', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
-      const hasAddStepsLink = await planOverviewPage.goalCardHasAddStepsLink(0)
-      expect(hasAddStepsLink).toBe(false)
+      const hasAddUpdateStepsLink = await planOverviewPage.goalCardHasAddUpdateStepsLink(0)
+      expect(hasAddUpdateStepsLink).toBe(true)
     })
 
-    test('gives Add steps links a unique accessible name for each goal', async ({
+    test(`doesn't show Add or update steps link on goal cards for a goal with no steps (draft plan)`, async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
-      await navigateToSentencePlan(page, handoverLink)
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      const hasAddUpdateStepsLink = await planOverviewPage.goalCardHasAddUpdateStepsLink(0)
+      expect(hasAddUpdateStepsLink).toBe(false)
+    })
+
+    test('shows only View details for achieved goal cards in pre-agreed plans', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoals([
+            {
+              title: 'Achieved Goal 1',
+              areaOfNeed: 'accommodation',
+              status: 'ACHIEVED',
+              targetDate: '2025-06-01',
+              steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+            },
+          ]),
+      })
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      await planOverviewPage.clickAchievedGoalsTab()
+
+      expect(await planOverviewPage.goalCardHasViewDetailsLink(0)).toBe(true)
+      expect(await planOverviewPage.goalCardHasDeleteLink(0)).toBe(false)
+      expect(await planOverviewPage.goalCardHasUpdateLink(0)).toBe(false)
+      expect(await planOverviewPage.goalCardHasAddUpdateStepsLink(0)).toBe(false)
+    })
+
+    test('shows only View details for achieved goal cards in agreed plans', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withAgreementStatus('AGREED')
+            .withGoals([
+              {
+                title: 'Achieved Goal 1',
+                areaOfNeed: 'accommodation',
+                status: 'ACHIEVED',
+                targetDate: '2025-06-01',
+                steps: [{ actor: 'probation_practitioner', description: 'Completed step', status: 'COMPLETED' }],
+              },
+            ]),
+      })
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+      await planOverviewPage.clickAchievedGoalsTab()
+
+      expect(await planOverviewPage.goalCardHasViewDetailsLink(0)).toBe(true)
+      expect(await planOverviewPage.goalCardHasDeleteLink(0)).toBe(false)
+      expect(await planOverviewPage.goalCardHasUpdateLink(0)).toBe(false)
+    })
+
+    test('gives Add steps links a unique accessible name for each goal', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(2)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       const firstGoalCard = await planOverviewPage.getGoalCardByIndex(0)
@@ -325,11 +318,10 @@ test.describe('Plan Overview Page', () => {
       await expect(secondGoalCard.getByRole('link', { name: /^Add steps \(Current Goal 2\)$/i })).toBeVisible()
     })
 
-    test('shows Delete link on goal cards', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('shows Delete link on goal cards', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -337,21 +329,19 @@ test.describe('Plan Overview Page', () => {
       expect(hasDeleteLink).toBe(true)
     })
 
-    test('clicking Add or change steps navigates to add steps page and back returns to plan overview', async ({
+    test('clicking Add or update steps navigates to add steps page and back returns to plan overview', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
-      // Click "Add or change steps" on the first goal
-      await planOverviewPage.clickAddOrChangeSteps(0)
+      // Click "Add or update steps" on the first goal
+      await planOverviewPage.clickAddOrUpdateSteps(0)
 
       // Verify we're on the add steps page
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
@@ -362,17 +352,16 @@ test.describe('Plan Overview Page', () => {
 
       // Verify we're back on plan overview with correct tab
       await PlanOverviewPage.verifyOnPage(page)
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
     })
   })
 
   test.describe('Goal Reordering', () => {
     test.describe('Button Visibility', () => {
-      test('single goal shows no move buttons', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('single goal shows no move buttons', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withGoals(currentGoals(1)),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -383,11 +372,10 @@ test.describe('Plan Overview Page', () => {
         expect(hasMoveDown).toBe(false)
       })
 
-      test('first goal only shows Move down button', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('first goal only shows Move down button', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withGoals(currentGoals(2)),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -398,11 +386,10 @@ test.describe('Plan Overview Page', () => {
         expect(hasMoveDown).toBe(true)
       })
 
-      test('last goal only shows Move up button', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('last goal only shows Move up button', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withGoals(currentGoals(2)),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -413,11 +400,10 @@ test.describe('Plan Overview Page', () => {
         expect(hasMoveDown).toBe(false)
       })
 
-      test('middle goal shows both move buttons', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(3)).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('middle goal shows both move buttons', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withGoals(currentGoals(3)),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -428,15 +414,10 @@ test.describe('Plan Overview Page', () => {
         expect(hasMoveDown).toBe(true)
       })
 
-      test('move buttons include the goal title in their accessible name', async ({
-        page,
-        createSession,
-        sentencePlanBuilder,
-      }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(2)).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('move buttons include the goal title in their accessible name', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withGoals(currentGoals(2)),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         const firstGoalCard = await planOverviewPage.getGoalCardByIndex(0)
@@ -452,18 +433,15 @@ test.describe('Plan Overview Page', () => {
     })
 
     test.describe('Reordering Functionality', () => {
-      test('clicking Move down swaps goal with the one below', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder
-          .extend(sentencePlanId)
-          .withGoals([
-            { title: 'Goal A', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-            { title: 'Goal B', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-            { title: 'Goal C', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-          ])
-          .save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('clicking Move down swaps goal with the one below', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder =>
+            builder.withGoals([
+              { title: 'Goal A', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+              { title: 'Goal B', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+              { title: 'Goal C', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+            ]),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -484,18 +462,15 @@ test.describe('Plan Overview Page', () => {
         expect(titlesAfter[2]).toContain('Goal C')
       })
 
-      test('clicking Move up swaps goal with the one above', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder
-          .extend(sentencePlanId)
-          .withGoals([
-            { title: 'Goal A', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-            { title: 'Goal B', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-            { title: 'Goal C', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-          ])
-          .save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('clicking Move up swaps goal with the one above', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder =>
+            builder.withGoals([
+              { title: 'Goal A', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+              { title: 'Goal B', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+              { title: 'Goal C', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+            ]),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -510,21 +485,20 @@ test.describe('Plan Overview Page', () => {
         expect(titlesAfter[2]).toContain('Goal B')
       })
 
-      test('reordering stays on correct tab', async ({ page, createSession, sentencePlanBuilder }) => {
-        const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-        await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(2)).save()
-
-        await navigateToSentencePlan(page, handoverLink)
+      test('reordering stays on correct tab', async ({ page, openSentencePlan }) => {
+        await openSentencePlan({
+          plan: builder => builder.withGoals(futureGoals(2)),
+        })
 
         const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
         await planOverviewPage.clickFutureGoalsTab()
-        await expect(page).toHaveURL(/type=future/)
+        await expect(page).toHaveURL(/goalStatusTab=future/)
 
         // Move first future goal down
         await planOverviewPage.clickMoveGoalDown(0)
 
         // Should stay on future tab
-        await expect(page).toHaveURL(/type=future/)
+        await expect(page).toHaveURL(/goalStatusTab=future/)
       })
 
       test('goals only reorder within their status group', async ({ page, createSession, sentencePlanBuilder }) => {
@@ -557,11 +531,11 @@ test.describe('Plan Overview Page', () => {
   })
 
   test.describe('Accessibility', () => {
-    test('should be accessible', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(3)).save()
+    test('should be accessible', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(3)),
+      })
 
-      await navigateToSentencePlan(page, handoverLink)
       await checkAccessibility(page)
     })
   })

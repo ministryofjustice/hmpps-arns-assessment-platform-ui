@@ -44,6 +44,9 @@ function createMockContext(options: MockContextOptions = {}) {
     getState: jest.fn((key: string) => (key === 'user' ? user : undefined)),
     getData: jest.fn((key: string) => data[key]),
     getAnswer: jest.fn((key: string) => answers[key]),
+    setData: jest.fn((key: string, value: unknown) => {
+      data[key] = value
+    }),
   } as unknown as SentencePlanContext
 }
 
@@ -72,6 +75,7 @@ function createStep(overrides: Partial<StepSession>): StepSession {
     id: 'step-1',
     actor: 'probation_practitioner',
     description: 'Contact housing services',
+    status: 'NOT_STARTED',
     ...overrides,
   }
 }
@@ -105,6 +109,7 @@ describe('saveStepEditSession', () => {
       answers: {
         step_actor_0: 'person_on_probation',
         step_description_0: 'Contact the housing officer',
+        step_status_0: 'NOT_STARTED',
       },
     })
 
@@ -143,6 +148,7 @@ describe('saveStepEditSession', () => {
       answers: {
         step_actor_0: 'probation_practitioner',
         step_description_0: 'Book an appointment',
+        step_status_0: 'NOT_STARTED',
       },
     })
 
@@ -176,6 +182,7 @@ describe('saveStepEditSession', () => {
       answers: {
         step_actor_0: 'probation_practitioner',
         step_description_0: 'Contact housing services',
+        step_status_0: 'NOT_STARTED',
       },
     })
 
@@ -207,6 +214,7 @@ describe('saveStepEditSession', () => {
       answers: {
         step_actor_0: unchangedStep.actor,
         step_description_0: unchangedStep.description,
+        step_status_0: unchangedStep.status,
       },
     })
 
@@ -216,6 +224,116 @@ describe('saveStepEditSession', () => {
     expect(commands).not.toContainEqual(
       expect.objectContaining({
         timeline: expect.objectContaining({ type: 'GOAL_UPDATED' }),
+      }),
+    )
+  })
+
+  it('should send the form status when creating a new step', async () => {
+    const deps = createDeps()
+    const newStep = createStep({ id: 'step-new', actor: '', description: '', status: '' })
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [newStep],
+          toCreate: [newStep.id],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      answers: {
+        step_actor_0: 'probation_practitioner',
+        step_description_0: 'Book an appointment',
+        step_status_0: 'IN_PROGRESS',
+      },
+    })
+
+    await saveStepEditSession(deps)(context)
+
+    const commands = getExecutedCommands(deps)
+    expect(commands).toContainEqual(
+      expect.objectContaining({
+        type: 'AddCollectionItemCommand',
+        answers: expect.objectContaining({
+          status: expect.objectContaining({ value: 'IN_PROGRESS' }),
+        }),
+      }),
+    )
+  })
+
+  it('should refresh status_date when the status of an existing step changes', async () => {
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [createStep({ id: 'step-1' })],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: {
+        activeGoalStepsOriginal: [createStep({ id: 'step-1', status: 'NOT_STARTED' })],
+      },
+      answers: {
+        step_actor_0: 'probation_practitioner',
+        step_description_0: 'Contact housing services',
+        step_status_0: 'COMPLETED',
+      },
+    })
+
+    await saveStepEditSession(deps)(context)
+
+    const commands = getExecutedCommands(deps)
+    expect(commands).toContainEqual(
+      expect.objectContaining({
+        type: 'UpdateCollectionItemAnswersCommand',
+        collectionItemUuid: 'step-1',
+        added: expect.objectContaining({
+          status: expect.objectContaining({ value: 'COMPLETED' }),
+        }),
+      }),
+    )
+    expect(commands).toContainEqual(
+      expect.objectContaining({
+        type: 'UpdateCollectionItemPropertiesCommand',
+        collectionItemUuid: 'step-1',
+        added: expect.objectContaining({
+          status_date: expect.anything(),
+        }),
+      }),
+    )
+  })
+
+  it('should not refresh status_date when only actor or description changes', async () => {
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [createStep({ id: 'step-1' })],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: {
+        activeGoalStepsOriginal: [createStep({ id: 'step-1', status: 'NOT_STARTED' })],
+      },
+      answers: {
+        step_actor_0: 'person_on_probation',
+        step_description_0: 'Contact housing services',
+        step_status_0: 'NOT_STARTED',
+      },
+    })
+
+    await saveStepEditSession(deps)(context)
+
+    const commands = getExecutedCommands(deps)
+    expect(commands).not.toContainEqual(
+      expect.objectContaining({
+        type: 'UpdateCollectionItemPropertiesCommand',
+        collectionItemUuid: 'step-1',
+        added: expect.objectContaining({ status_date: expect.anything() }),
       }),
     )
   })
@@ -240,6 +358,7 @@ describe('saveStepEditSession', () => {
       answers: {
         step_actor_0: 'probation_practitioner',
         step_description_0: 'Book an appointment',
+        step_status_0: 'NOT_STARTED',
       },
     })
 
@@ -253,6 +372,123 @@ describe('saveStepEditSession', () => {
         timeline: expect.objectContaining({
           type: 'GOAL_UPDATED',
           data: expect.objectContaining({ isInitialStepAdd: true }),
+        }),
+      }),
+    )
+  })
+
+  it('should set allStepsCompleted to true when every step is marked completed', async () => {
+    // Arrange
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: {
+        activeGoalStepsOriginal: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+      },
+      answers: {
+        step_status_0: 'COMPLETED',
+        step_status_1: 'COMPLETED',
+      },
+    })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('allStepsCompleted', true)
+  })
+
+  it('should set allStepsCompleted to false when at least one step is not completed', async () => {
+    // Arrange
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: {
+        activeGoalStepsOriginal: [createStep({ id: 'step-1' }), createStep({ id: 'step-2' })],
+      },
+      answers: {
+        step_status_0: 'COMPLETED',
+        step_status_1: 'IN_PROGRESS',
+      },
+    })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('allStepsCompleted', false)
+  })
+
+  it('should set allStepsCompleted to false when the goal has no steps', async () => {
+    // Arrange
+    const deps = createDeps()
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({ steps: [] }),
+      },
+    }
+    const context = createMockContext({ session })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('allStepsCompleted', false)
+  })
+
+  it('should snapshot the submitted step status when saving steps for a newly-created goal', async () => {
+    // Plan-history folds this snapshot's steps into the "Goal created" entry,
+    // so a step created as IN_PROGRESS must not be snapshotted as NOT_STARTED.
+    // Arrange
+    const deps = createDeps()
+    const newStep = createStep({ id: 'step-new', actor: '', description: '', status: '' })
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [newStep],
+          toCreate: [newStep.id],
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      data: { navigationReferrer: 'add-goal' },
+      answers: {
+        step_actor_0: 'probation_practitioner',
+        step_description_0: 'Book an appointment',
+        step_status_0: 'IN_PROGRESS',
+      },
+    })
+
+    // Act
+    await saveStepEditSession(deps)(context)
+
+    // Assert
+    const commands = getExecutedCommands(deps)
+    expect(commands).toContainEqual(
+      expect.objectContaining({
+        timeline: expect.objectContaining({
+          type: 'GOAL_UPDATED',
+          data: expect.objectContaining({
+            isInitialStepAdd: true,
+            goalSnapshot: expect.objectContaining({
+              steps: [{ actor: 'probation_practitioner', description: 'Book an appointment', status: 'IN_PROGRESS' }],
+            }),
+          }),
         }),
       }),
     )

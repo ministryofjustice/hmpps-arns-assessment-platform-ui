@@ -15,6 +15,8 @@ const createMockContext = (dataStore: Record<string, unknown> = {}): SentencePla
 
 const createTimelineItem = (overrides: Partial<TimelineItem> = {}): TimelineItem => ({
   uuid: 'timeline-uuid-1',
+  position: 0,
+  assessment: 'assessment-uuid-1',
   event: 'CUSTOM',
   timestamp: '2024-06-15T10:00:00Z',
   data: {},
@@ -1001,7 +1003,7 @@ describe('derivePlanHistoryEntries', () => {
               statusDate: '2024-08-01T00:01:00.000Z',
               areaOfNeed: 'accommodation',
               relatedAreasOfNeed: [],
-              steps: [{ actor: 'person_on_probation', description: 'Find a flat', status: 'NOT_STARTED' }],
+              steps: [{ actor: 'person_on_probation', description: 'Find a flat', status: 'IN_PROGRESS' }],
             },
           },
         }),
@@ -1023,7 +1025,7 @@ describe('derivePlanHistoryEntries', () => {
       expect(entries[0]).toEqual(
         expect.objectContaining({
           type: 'goal_created',
-          steps: [{ actor: 'Joan', description: 'Find a flat', status: 'NOT_STARTED' }],
+          steps: [{ actor: 'Joan', description: 'Find a flat', status: 'IN_PROGRESS' }],
         }),
       )
     })

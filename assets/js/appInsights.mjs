@@ -3,7 +3,9 @@ import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalyt
 
 const connectionString = document.querySelector('meta[name="ai-connection-string"]')?.content
 
-if (connectionString) {
+function createAppInsights() {
+  if (!connectionString) return null
+
   const clickAnalyticsPlugin = new ClickAnalyticsPlugin()
 
   const clickAnalyticsConfig = {
@@ -16,7 +18,7 @@ if (connectionString) {
     },
   }
 
-  const appInsights = new ApplicationInsights({
+  const instance = new ApplicationInsights({
     config: {
       connectionString,
       disableXhr: true,
@@ -30,12 +32,13 @@ if (connectionString) {
     },
   })
 
-  appInsights.loadAppInsights()
+  instance.loadAppInsights()
 
-  appInsights.addTelemetryInitializer(envelope => {
+  instance.addTelemetryInitializer(envelope => {
     const assessmentUuid = document.querySelector('[data-qa-assessment-uuid]')?.getAttribute('data-qa-assessment-uuid')
     const requestId = document.querySelector('meta[name="ai-request-id"]')?.content
     const telemetryId = document.querySelector('meta[name="ai-telemetry-id"]')?.content
+    const serviceName = document.querySelector('meta[name="ai-target-service"]')?.content
     const entryPoint = document.querySelector('meta[name="ai-entry-point"]')?.content
     const userContext = document.querySelector('meta[name="ai-user-context"]')?.content
     const userType = document.querySelector('meta[name="ai-user-type"]')?.content
@@ -58,9 +61,11 @@ if (connectionString) {
 
     envelope.data = {
       ...envelope.data,
+      uri: envelope.data?.uri || window.location.href,
       assessmentUuid: assessmentUuid || undefined,
       requestId: requestId || undefined,
       telemetryId: telemetryId || undefined,
+      serviceName: serviceName || undefined,
       entryPoint: entryPoint || undefined,
       userContext: userContext || undefined,
       userType: userType || undefined,
@@ -81,13 +86,107 @@ if (connectionString) {
     }
   })
 
-  appInsights.startTrackPage()
+  instance.startTrackPage()
 
   // stop the page visit timer and flush telemetry before the page unloads:
   // in an MPA, the JS context is destroyed on navigation, so without this
   // the last page of a session would never have its visit duration recorded
   window.addEventListener('pagehide', () => {
-    appInsights.stopTrackPage()
-    appInsights.flush()
+    instance.stopTrackPage()
+    instance.flush()
+  })
+
+  return instance
+}
+
+export const appInsights = createAppInsights()
+
+const accordionNames = {
+  'high-scoring-areas-accordion': 'High scoring areas',
+  'low-scoring-areas-accordion': 'Low scoring areas',
+  'incomplete-areas-accordion': 'Incomplete areas',
+  'other-areas-accordion': 'Areas without a need score',
+  'plan-history-accordion': 'Plan history',
+}
+
+const accordionConfigs = [
+  // About page
+  {
+    selector: '.about-page-accordion .govuk-accordion',
+    showAllId: 'san-info-accordion',
+    sectionId: 'san-info-area-of-need-accordion',
+  },
+  // Plan History page
+  {
+    selector: '#plan-history-accordion',
+    showAllId: 'plan-history-accordion-show-all',
+    sectionId: 'plan-history-accordion-content',
+  },
+]
+
+function initialiseAccordion(accordion, config) {
+  const accordionId = accordion.id
+  const accordionName = accordionNames[accordionId] || accordionId
+
+  const showAllButton = accordion.querySelector('.govuk-accordion__show-all')
+
+  if (showAllButton) {
+    showAllButton.setAttribute('data-ai-id', config.showAllId)
+    showAllButton.setAttribute('data-ai-accordionname', accordionName)
+    showAllButton.setAttribute('data-ai-controltype', 'AccordionHeader')
+    showAllButton.setAttribute('data-ai-action', 'Expand all')
+
+    showAllButton.addEventListener('click', () => {
+      const isExpanded = showAllButton.getAttribute('aria-expanded') === 'true'
+
+      showAllButton.setAttribute('data-ai-action', isExpanded ? 'Expand all' : 'Collapse all')
+    })
+  }
+
+  accordion.querySelectorAll('.govuk-accordion__section')
+    .forEach((section, index) => {
+      const showSectionbutton = section.querySelector('.govuk-accordion__section-button')
+
+      if (!showSectionbutton) return
+
+      const itemName = showSectionbutton
+        .querySelector('.govuk-accordion__section-heading-text-focus')
+        ?.textContent?.trim()
+
+      showSectionbutton.setAttribute('data-ai-id', config.sectionId)
+      showSectionbutton.setAttribute('data-ai-accordionname', accordionName)
+      if (itemName) showSectionbutton.setAttribute('data-ai-itemname', itemName)
+      showSectionbutton.setAttribute('data-ai-index', String(index + 1))
+      showSectionbutton.setAttribute('data-ai-controltype', 'Item')
+      showSectionbutton.setAttribute('data-ai-action', 'Expand')
+
+      showSectionbutton.addEventListener('click', () => {
+        const isExpanded = showSectionbutton.getAttribute('aria-expanded') === 'true'
+
+        showSectionbutton.setAttribute('data-ai-action', isExpanded ? 'Expand' : 'Collapse')
+      })
+    })
+}
+
+export function initAccordionTelemetry() {
+  if (!connectionString) return
+
+  accordionConfigs.forEach(config => {
+    document.querySelectorAll(config.selector)
+      .forEach(accordion => {
+        initialiseAccordion(accordion, config)
+      })
+  })
+}
+
+export const initDetailsTelemetry = () => {
+  if (!connectionString) return
+
+  document.querySelectorAll('details[data-ai-id]').forEach(details => {
+    const summary = details.querySelector('summary')
+
+    if (summary) {
+      summary.setAttribute('data-ai-id', details.getAttribute('data-ai-id'))
+    }
   })
 }

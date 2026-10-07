@@ -45,8 +45,10 @@ export interface Collection {
 
 export interface TimelineItem {
   uuid: string
+  position: number
   event: string
   timestamp: string
+  assessment: string
   data: Record<string, any>
   customType?: string
   customData?: Record<string, any>
@@ -54,4 +56,11 @@ export interface TimelineItem {
     id: string
     name: string
   }
+}
+
+export interface EventDTO {
+  uuid: string
+  createdAt: string
+  position: number
+  data: Record<string, any>
 }

@@ -18,16 +18,20 @@ import { MOJAlert, MOJSubNavigation } from '@ministryofjustice/hmpps-forge/moj-c
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { GoalSummaryCardDraft, GoalSummaryCardAgreed } from '../../../../../../components'
 import { CaseData } from '../../../../constants'
-import { POST_AGREEMENT_PROCESS_STATUSES } from '../../../../../../effects'
-import { canAccessSanContent, hasPostAgreementStatus } from '../../../../guards'
-
-const isReadOnly = Data('sessionDetails.planAccessMode').match(Condition.Equals('READ_ONLY'))
+import {
+  canAccessSanContent,
+  hasCouldNotAnswerStatus,
+  hasPostAgreementStatus,
+  isReadOnlyAccess,
+} from '../../../../guards'
 
 const isMissingStepsOnAgreePlan = and(
   Post('action').match(Condition.Equals('agree-plan')),
   Item().path('status').match(Condition.Equals('ACTIVE')),
   Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
 )
+
+const isAchievedGoal = Item().path('status').match(Condition.Equals('ACHIEVED'))
 
 /**
  * Builds move buttons for goal cards.
@@ -38,8 +42,8 @@ const isMissingStepsOnAgreePlan = and(
  */
 function buildMoveButtonProps() {
   return {
-    showMoveUp: when(not(or(isReadOnly, Item().path('isFirstInStatus').match(Condition.Equals(true))))),
-    showMoveDown: when(not(or(isReadOnly, Item().path('isLastInStatus').match(Condition.Equals(true))))),
+    showMoveUp: when(not(or(isReadOnlyAccess, Item().path('isFirstInStatus').match(Condition.Equals(true))))),
+    showMoveDown: when(not(or(isReadOnlyAccess, Item().path('isLastInStatus').match(Condition.Equals(true))))),
     moveUpHref: Format('overview?goalUuid=%1&direction=up&status=%2', Item().path('uuid'), Item().path('status')),
     moveDownHref: Format('overview?goalUuid=%1&direction=down&status=%2', Item().path('uuid'), Item().path('status')),
   }
@@ -47,31 +51,23 @@ function buildMoveButtonProps() {
 
 // Calculate goal counts for sub-navigation tabs
 // Achieved and removed tabs are conditionally shown only when count > 0
-const activeGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-  .pipe(Transformer.Array.Length())
+const activeGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('ACTIVE'))))
 
-const futureGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
-  .pipe(Transformer.Array.Length())
+const futureGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('FUTURE'))))
 
-const achievedGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACHIEVED'))))
-  .pipe(Transformer.Array.Length())
+const achievedGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('ACHIEVED'))))
 
-const removedGoalsCount = Data('goals')
-  .each(Iterator.Filter(Item().path('status').match(Condition.Equals('REMOVED'))))
-  .pipe(Transformer.Array.Length())
+const removedGoalsCount = Data('goals').each(Iterator.Count(Item().path('status').match(Condition.Equals('REMOVED'))))
 
 export const planLastUpdatedMessage = GovUKBody({
   visibleWhen: not(
     or(
       Data('isUpdatedAfterAgreement').not.match(Condition.Equals(true)),
-      and(Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER')), not(isReadOnly)),
+      and(hasCouldNotAnswerStatus, not(isReadOnlyAccess)),
     ),
   ),
   text: Format(
-    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
     Data('lastUpdatedDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
     Data('lastUpdatedByName'),
   ),
@@ -85,7 +81,7 @@ export const planAgreedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    '%1 agreed to their plan on %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
     CaseData.Forename,
     Data('latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
@@ -99,15 +95,15 @@ export const planCreatedMessage = GovUKBody({
     ),
   ),
   text: Format(
-    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print">View plan history</a>',
+    'Plan created on %1. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
     Data('latestAgreementDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
   ),
 })
 
 export const updateAgreementMessage = GovUKBody({
-  visibleWhen: and(not(isReadOnly), Data('latestAgreementStatus').match(Condition.Equals('COULD_NOT_ANSWER'))),
+  visibleWhen: and(not(isReadOnlyAccess), hasCouldNotAnswerStatus),
   text: Format(
-    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
+    '<a href="update-agree-plan" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-overview-update-plan-agreement">Update %1\'s agreement</a> when you\'ve shared the plan with them.',
     CaseData.Forename,
   ),
 })
@@ -121,27 +117,27 @@ export const subNavigation = MOJSubNavigation({
   items: [
     {
       text: Format('Goals to work on now (%1)', activeGoalsCount),
-      href: 'overview?type=current',
-      active: when(Query('type').match(Condition.Equals('current'))),
+      href: 'overview?goalStatusTab=current',
+      active: when(Query('goalStatusTab').match(Condition.Equals('current'))),
       attributes: { 'data-ai-id': 'plan-overview-current-goals-tab' },
     },
     {
       text: Format('Future goals (%1)', futureGoalsCount),
-      href: 'overview?type=future',
-      active: when(Query('type').match(Condition.Equals('future'))),
+      href: 'overview?goalStatusTab=future',
+      active: when(Query('goalStatusTab').match(Condition.Equals('future'))),
       attributes: { 'data-ai-id': 'plan-overview-future-goals-tab' },
     },
     {
       text: Format('Achieved goals (%1)', achievedGoalsCount),
-      href: 'overview?type=achieved',
-      active: when(Query('type').match(Condition.Equals('achieved'))),
+      href: 'overview?goalStatusTab=achieved',
+      active: when(Query('goalStatusTab').match(Condition.Equals('achieved'))),
       visibleWhen: hasAchievedGoals,
       attributes: { 'data-ai-id': 'plan-overview-achieved-goals-tab' },
     },
     {
       text: Format('Removed goals (%1)', removedGoalsCount),
-      href: 'overview?type=removed',
-      active: when(Query('type').match(Condition.Equals('removed'))),
+      href: 'overview?goalStatusTab=removed',
+      active: when(Query('goalStatusTab').match(Condition.Equals('removed'))),
       visibleWhen: showRemovedGoalsTab,
       attributes: { 'data-ai-id': 'plan-overview-removed-goals-tab' },
     },
@@ -166,7 +162,7 @@ export const notificationBanners = CollectionBlock({
 
 /**
  * Goals section - renders goal summary cards for each goal in the plan
- * Filters goals based on query param: ?type=current shows ACTIVE, ?type=future shows FUTURE
+ * Filters goals based on query param: ?goalStatusTab=current shows ACTIVE, ?goalStatusTab=future shows FUTURE
  * Wrapped in an ordered list for numbered display
  */
 export const goalsSection = TemplateWrapper({
@@ -180,19 +176,19 @@ export const goalsSection = TemplateWrapper({
             Iterator.Filter(
               or(
                 and(
-                  Query('type').match(Condition.Equals('current')),
+                  Query('goalStatusTab').match(Condition.Equals('current')),
                   Item().path('status').match(Condition.Equals('ACTIVE')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('future')),
+                  Query('goalStatusTab').match(Condition.Equals('future')),
                   Item().path('status').match(Condition.Equals('FUTURE')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('achieved')),
+                  Query('goalStatusTab').match(Condition.Equals('achieved')),
                   Item().path('status').match(Condition.Equals('ACHIEVED')),
                 ),
                 and(
-                  Query('type').match(Condition.Equals('removed')),
+                  Query('goalStatusTab').match(Condition.Equals('removed')),
                   Item().path('status').match(Condition.Equals('REMOVED')),
                 ),
               ),
@@ -206,9 +202,7 @@ export const goalsSection = TemplateWrapper({
                   card: [
                     TemplateWrapper({
                       // Before any agreement status exists, render the draft card variant.
-                      visibleWhen: Data('latestAgreementStatus').not.match(
-                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-                      ),
+                      visibleWhen: not(hasPostAgreementStatus),
                       template: '{{slot:draftCard}}',
                       slots: {
                         draftCard: [
@@ -246,20 +240,33 @@ export const goalsSection = TemplateWrapper({
                               ),
                             actions: [
                               {
-                                text: 'Change goal',
-                                href: Format('../goal/%1/change-goal', Item().path('uuid')),
+                                text: when(isAchievedGoal)
+                                  .then('View details')
+                                  .else('Update goal'),
+                                href: when(isAchievedGoal)
+                                  .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
+                                  .else(Format('../goal/%1/change-goal', Item().path('uuid'))),
+                                dataAiId: when(isAchievedGoal)
+                                  .then('goal-summary-card-view-inactive-goal-link')
+                                  .else('goal-summary-card-update-draft-goal-link'),
                               },
                               {
-                                text: 'Add or change steps',
+                                text: 'Add or update steps',
                                 href: Format('../goal/%1/add-steps', Item().path('uuid')),
-                                hidden: Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+                                dataAiId: 'goal-summary-card-add-or-update-goal-steps-link',
+                                hidden: or(
+                                  isAchievedGoal,
+                                  Item().path('steps').pipe(Transformer.Array.Length()).match(Condition.Equals(0)),
+                                ),
                               },
                               {
                                 text: 'Delete',
                                 href: Format('../goal/%1/confirm-delete-goal', Item().path('uuid')),
+                                dataAiId: 'goal-summary-card-delete-goal-link',
+                                hidden: isAchievedGoal,
                               },
                             ],
-                            isReadOnly: when(isReadOnly),
+                            isReadOnly: when(isReadOnlyAccess),
                             index: Loop.Index0(),
                             ...buildMoveButtonProps(),
                           }),
@@ -268,9 +275,7 @@ export const goalsSection = TemplateWrapper({
                     }),
                     TemplateWrapper({
                       // Once an agreement status exists (including "could not answer"), use the agreed variant.
-                      visibleWhen: Data('latestAgreementStatus').match(
-                        Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),
-                      ),
+                      visibleWhen: hasPostAgreementStatus,
                       template: '{{slot:agreedCard}}',
                       slots: {
                         agreedCard: [
@@ -322,9 +327,16 @@ export const goalsSection = TemplateWrapper({
                                 )
                                   .then(Format('../goal/%1/view-inactive-goal', Item().path('uuid')))
                                   .else(Format('../goal/%1/update-goal-steps', Item().path('uuid'))),
+                                dataAiId: when(
+                                  Item()
+                                    .path('status')
+                                    .match(Condition.Array.IsIn(['ACHIEVED', 'REMOVED'])),
+                                )
+                                  .then('goal-summary-card-view-inactive-goal-link')
+                                  .else('goal-summary-card-update-goal-link'),
                               },
                             ],
-                            isReadOnly: when(isReadOnly),
+                            isReadOnly: when(isReadOnlyAccess),
                             index: Loop.Index0(),
                             ...buildMoveButtonProps(),
                           }),
@@ -342,16 +354,16 @@ export const goalsSection = TemplateWrapper({
 })
 
 const hideBlankPlanOverviewContent = or(
-  Query('type').match(Condition.Equals('future')),
-  Query('type').match(Condition.Equals('achieved')),
-  Query('type').match(Condition.Equals('removed')),
+  Query('goalStatusTab').match(Condition.Equals('future')),
+  Query('goalStatusTab').match(Condition.Equals('achieved')),
+  Query('goalStatusTab').match(Condition.Equals('removed')),
   Data('goals')
     .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
     .match(Condition.IsRequired()),
 )
 
 export const blankPlanOverviewContentReadOnly = HtmlBlock({
-  visibleWhen: not(or(not(isReadOnly), hideBlankPlanOverviewContent)),
+  visibleWhen: not(or(not(isReadOnlyAccess), hideBlankPlanOverviewContent)),
   content: Format(
     `<div id="blank-plan-content">
       <p class="govuk-body">%1 does not have any goals to work on now.</p>
@@ -361,7 +373,7 @@ export const blankPlanOverviewContentReadOnly = HtmlBlock({
 })
 
 export const blankPlanOverviewContent = HtmlBlock({
-  visibleWhen: not(or(isReadOnly, hideBlankPlanOverviewContent)),
+  visibleWhen: not(or(isReadOnlyAccess, hideBlankPlanOverviewContent)),
   content: Format(
     '<div id="blank-plan-content" class="%1">%2%3</div>',
     when(Post('action').match(Condition.Equals('agree-plan')))
@@ -377,7 +389,7 @@ export const blankPlanOverviewContent = HtmlBlock({
         Format(
           `<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can either:</p>
       <ul class="govuk-list govuk-list--bullet govuk-!-display-none-print">
-        <li><a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a></li>
+        <li><a href="../goal/new/select-area-of-need" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-overview-create-goal-link">create a goal with %1</a></li>
         <li><a href="../about-person" class="govuk-link govuk-link--no-visited-state" data-ai-id="about-page-blank-plan-link">view information from %1's assessment</a></li>
       </ul>`,
           CaseData.Forename,
@@ -385,7 +397,7 @@ export const blankPlanOverviewContent = HtmlBlock({
       )
       .else(
         Format(
-          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/add-goal/accommodation" class="govuk-link govuk-link--no-visited-state">create a goal with %1</a>.</p>',
+          '<p class="govuk-body govuk-!-display-none-print">%1 does not have any goals to work on now. You can <a href="../goal/new/select-area-of-need" class="govuk-link govuk-link--no-visited-state" data-ai-id="plan-overview-create-goal-link">create a goal with %1</a>.</p>',
           CaseData.Forename,
         ),
       ),
@@ -395,7 +407,7 @@ export const blankPlanOverviewContent = HtmlBlock({
 export const futureGoalsContent = GovUKBody({
   visibleWhen: not(
     or(
-      Query('type').not.match(Condition.Equals('future')),
+      Query('goalStatusTab').not.match(Condition.Equals('future')),
       Data('goals')
         .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
         .match(Condition.IsRequired()),

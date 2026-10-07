@@ -9,7 +9,6 @@ import {
   checkAccessibility,
   getDatePlusDaysAsISO,
   handlePrivacyScreenIfPresent,
-  navigateToSentencePlan,
   sentencePlanV1URLs,
 } from '../sentencePlanUtils'
 
@@ -104,28 +103,28 @@ test.describe('Plan History - Updated Goals', () => {
 
   test('shows goal updated entry after changing step status from Not Started to In Progress', async ({
     page,
-    createSession,
-    sentencePlanBuilder,
+    openSentencePlan,
   }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Find stable accommodation',
-        areaOfNeed: 'accommodation',
-        status: 'ACTIVE',
-        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'NOT_STARTED' }],
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
+    await openSentencePlan({
+      plan: builder =>
+        builder
+          .withGoal({
+            title: 'Find stable accommodation',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            steps: [
+              { actor: 'probation_practitioner', description: 'Contact housing services', status: 'NOT_STARTED' },
+            ],
+          })
+          .withPlanAgreements([
+            {
+              status: 'AGREED',
+              createdBy: 'Test Practitioner',
+              dateOffset: -86400000,
+            },
+          ]),
+    })
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     await planOverviewPage.clickUpdateGoal(0)
@@ -134,7 +133,7 @@ test.describe('Plan History - Updated Goals', () => {
     await updatePage.setStepStatusByIndex(0, 'IN_PROGRESS')
     await updatePage.clickSaveGoalAndSteps()
 
-    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
 
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -146,28 +145,26 @@ test.describe('Plan History - Updated Goals', () => {
 
   test('shows goal updated entry with notes after changing step status and adding a progress note', async ({
     page,
-    createSession,
-    sentencePlanBuilder,
+    openSentencePlan,
   }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Reduce alcohol use',
-        areaOfNeed: 'alcohol-use',
-        status: 'ACTIVE',
-        steps: [{ actor: 'probation_practitioner', description: 'Attend support group', status: 'NOT_STARTED' }],
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
+    await openSentencePlan({
+      plan: builder =>
+        builder
+          .withGoal({
+            title: 'Reduce alcohol use',
+            areaOfNeed: 'alcohol-use',
+            status: 'ACTIVE',
+            steps: [{ actor: 'probation_practitioner', description: 'Attend support group', status: 'NOT_STARTED' }],
+          })
+          .withPlanAgreements([
+            {
+              status: 'AGREED',
+              createdBy: 'Test Practitioner',
+              dateOffset: -86400000,
+            },
+          ]),
+    })
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     await planOverviewPage.clickUpdateGoal(0)
@@ -177,7 +174,7 @@ test.describe('Plan History - Updated Goals', () => {
     await updatePage.enterProgressNotes('Good progress being made with support group attendance.')
     await updatePage.clickSaveGoalAndSteps()
 
-    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+    await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
 
     await page.getByRole('link', { name: /View plan history/i }).click()
     const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
@@ -189,26 +186,27 @@ test.describe('Plan History - Updated Goals', () => {
     ).toBeVisible()
   })
 
-  test('shows goal updated entry after changing step details', async ({ page, createSession, sentencePlanBuilder }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Find stable accommodation',
-        areaOfNeed: 'accommodation',
-        status: 'ACTIVE',
-        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'NOT_STARTED' }],
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
+  test('shows goal updated entry after changing step details', async ({ page, openSentencePlan }) => {
+    await openSentencePlan({
+      plan: builder =>
+        builder
+          .withGoal({
+            title: 'Find stable accommodation',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            steps: [
+              { actor: 'probation_practitioner', description: 'Contact housing services', status: 'NOT_STARTED' },
+            ],
+          })
+          .withPlanAgreements([
+            {
+              status: 'AGREED',
+              createdBy: 'Test Practitioner',
+              dateOffset: -86400000,
+            },
+          ]),
+    })
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     await planOverviewPage.clickUpdateGoal(0)
@@ -229,29 +227,27 @@ test.describe('Plan History - Updated Goals', () => {
 
   test('shows goal updated entry after changing goal title via Change goal page', async ({
     page,
-    createSession,
-    sentencePlanBuilder,
+    openSentencePlan,
   }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Find stable accommodation',
-        areaOfNeed: 'accommodation',
-        status: 'ACTIVE',
-        targetDate: getDatePlusDaysAsISO(90),
-        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
+    await openSentencePlan({
+      plan: builder =>
+        builder
+          .withGoal({
+            title: 'Find stable accommodation',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+          })
+          .withPlanAgreements([
+            {
+              status: 'AGREED',
+              createdBy: 'Test Practitioner',
+              dateOffset: -86400000,
+            },
+          ]),
+    })
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     await planOverviewPage.clickUpdateGoal(0)
@@ -272,29 +268,27 @@ test.describe('Plan History - Updated Goals', () => {
 
   test('shows goal updated entry after changing an active goal to a future goal via Change goal page', async ({
     page,
-    createSession,
-    sentencePlanBuilder,
+    openSentencePlan,
   }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoal({
-        title: 'Find stable accommodation',
-        areaOfNeed: 'accommodation',
-        status: 'ACTIVE',
-        targetDate: getDatePlusDaysAsISO(90),
-        steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
-      })
-      .withPlanAgreements([
-        {
-          status: 'AGREED',
-          createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
-        },
-      ])
-      .save()
+    await openSentencePlan({
+      plan: builder =>
+        builder
+          .withGoal({
+            title: 'Find stable accommodation',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+          })
+          .withPlanAgreements([
+            {
+              status: 'AGREED',
+              createdBy: 'Test Practitioner',
+              dateOffset: -86400000,
+            },
+          ]),
+    })
 
-    await navigateToSentencePlan(page, handoverLink)
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
     await planOverviewPage.clickUpdateGoal(0)

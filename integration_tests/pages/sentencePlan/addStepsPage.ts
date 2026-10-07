@@ -11,6 +11,8 @@ export default class AddStepsPage extends AbstractPage {
 
   readonly backLink: Locator
 
+  readonly goalContextInset: Locator
+
   private assessmentInfo: AssessmentInfoHelper
 
   private constructor(page: Page) {
@@ -19,6 +21,7 @@ export default class AddStepsPage extends AbstractPage {
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
     this.backLink = page.locator('.govuk-back-link')
+    this.goalContextInset = page.locator('.govuk-inset-text').filter({ hasText: 'Area of need' })
     this.assessmentInfo = new AssessmentInfoHelper(page)
   }
 
@@ -32,28 +35,36 @@ export default class AddStepsPage extends AbstractPage {
 
   static async verifyOnPage(page: Page): Promise<AddStepsPage> {
     const addStepsPage = new AddStepsPage(page)
-    await expect(addStepsPage.pageHeading).toContainText(/Add or change steps/i)
+    await expect(addStepsPage.pageHeading).toContainText(/Add( or update)? steps/i)
     return addStepsPage
   }
 
   async getStepActorSelect(index: number): Promise<Locator> {
-    return this.page.locator(`#step_actor_${index}`)
+    return this.page.locator(`#step_actor_${index}-native`)
   }
 
   async getStepDescriptionInput(index: number): Promise<Locator> {
     return this.page.locator(`#step_description_${index}`)
   }
 
+  async getStepStatusSelect(index: number): Promise<Locator> {
+    return this.page.locator(`#step_status_${index}-native`)
+  }
+
   async getRemoveStepButton(index: number): Promise<Locator> {
     return this.page.locator(`button[name="action"][value="remove_${index}"]`)
   }
 
-  async enterStep(index: number, actor: string, description: string): Promise<void> {
+  async enterStep(index: number, actor: string, description: string, status: string = 'NOT_STARTED'): Promise<void> {
     const actorSelect = await this.getStepActorSelect(index)
     const descriptionInput = await this.getStepDescriptionInput(index)
+    const statusSelect = await this.getStepStatusSelect(index)
 
-    await actorSelect.selectOption(actor)
+    // WrappingSelect hides the native <select> visually (id suffixed with -native).
+    // Use force: true so Playwright can interact with the clipped element.
+    await actorSelect.selectOption(actor, { force: true })
     await descriptionInput.fill(description)
+    await statusSelect.selectOption(status, { force: true })
   }
 
   async clickAddStep(): Promise<void> {

@@ -13,7 +13,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         drugMisuse: {
           drugLinkedToHarm: 'NO',
           drugLinkedToReoffending: 'YES',
-          drugStrengths: 'NO',
           drugOtherWeightedScore: '6',
         },
       },
@@ -24,6 +23,7 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
       drug_use_practitioner_analysis_risk_of_reoffending_yes_details: {
         value: 'Cannabis use linked to peer group.',
       },
+      drug_use_practitioner_analysis_strengths_or_protective_factors: { value: 'NO' },
       drug_use_changes: { value: 'NEEDS_HELP_TO_MAKE_CHANGES' },
     }
 
@@ -66,7 +66,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         accommodation: {
           accLinkedToHarm: 'NULL',
           accLinkedToReoffending: 'NULL',
-          accStrengths: 'NULL',
           // No score
         },
       },
@@ -165,13 +164,13 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
         finance: {
           // Harm missing (NULL) - will show in missing items
           financeLinkedToReoffending: 'NO',
-          financeStrengths: 'YES',
         },
       },
     })
 
     const incompleteFinanceData: SanAssessmentData = {
       finance_section_complete: { value: 'NO' },
+      finance_practitioner_analysis_strengths_or_protective_factors: { value: 'YES' },
       finance_practitioner_analysis_strengths_or_protective_factors_yes_details: {
         value: 'Has managed finances responsibly.',
       },
@@ -218,7 +217,6 @@ test.describe('Assessment Info Details - Incomplete Section', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: null,
-            accStrengths: null,
             accOtherWeightedScore: '4',
           },
         },

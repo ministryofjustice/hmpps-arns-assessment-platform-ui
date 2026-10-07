@@ -34,11 +34,12 @@ export interface NavigationEffectsConfig {
  *   clearKey: Nav.HOME,
  * })
  *
- * export const { effects: MyEffects, ... } = defineEffectsWithDeps<MyDeps>()({
- *   trackNavigation,
- *   insertNavigationReferrer,
+ * const myEffectRegistry = new EffectRegistry<MyDeps>()
+ * export const MyEffects = {
+ *   trackNavigation: myEffectRegistry.register('trackNavigation', trackNavigation),
+ *   insertNavigationReferrer: myEffectRegistry.register('insertNavigationReferrer', insertNavigationReferrer),
  *   ...
- * })
+ * }
  *
  * // In the journey's onAccess:
  * MyEffects.trackNavigation(NAV_KEY_PATTERNS)

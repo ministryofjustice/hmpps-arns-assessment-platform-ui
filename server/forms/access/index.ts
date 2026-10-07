@@ -1,5 +1,5 @@
 import { createForgePackage, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { AccessEffectImplementations } from './effects'
+import { accessEffectRegistry } from './effects'
 import { AccessEffectsDeps } from './effects/types'
 import { oasysAccessStep } from './steps/oasys-access/step'
 import { crnAccessStep } from './steps/crn-access/step'
@@ -44,5 +44,5 @@ const accessJourney = journey({
  */
 export default createForgePackage<AccessEffectsDeps>({
   journey: accessJourney,
-  functions: AccessEffectImplementations,
+  functions: accessEffectRegistry,
 })

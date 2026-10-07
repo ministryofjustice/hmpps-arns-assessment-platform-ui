@@ -1,5 +1,22 @@
 import { initialiseTelemetry, flushTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
-import logger from '../../logger'
+import { requestContext } from './requestContext'
+
+// wrap telemetry.trackEvent so every server-side custom event automatically
+// includes serviceName from the current request context (AsyncLocalStorage).
+// covers the customEvents table in appInsights
+const originalTrackEvent = telemetry.trackEvent.bind(telemetry)
+telemetry.trackEvent = (name: string, attributes?: Record<string, string | number | boolean>) => {
+  const context = requestContext.getStore()
+
+  const serviceName = context?.getServiceName()
+  const uri = context?.getRequestUrl()
+
+  originalTrackEvent(name, {
+    ...attributes,
+    ...(serviceName ? { serviceName } : {}),
+    ...(uri ? { uri } : {}),
+  })
+}
 
 initialiseTelemetry({
   serviceName: 'hmpps-arns-assessment-platform-ui',
@@ -9,13 +26,19 @@ initialiseTelemetry({
 })
   .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/info', '/assets/*', '/favicon.ico']))
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
+  .addModifier(span => {
+    const serviceName = requestContext.getStore()?.getServiceName()
+
+    if (serviceName) {
+      span.setAttribute('serviceName', serviceName)
+    }
+  })
   .startRecording()
 
-const shutdown = async (signal: string) => {
-  logger.info(`${signal} received, shutting down...`)
+const shutdown = async () => {
   await flushTelemetry()
   process.exit(0)
 }
 
-process.on('SIGTERM', () => shutdown('SIGTERM'))
-process.on('SIGINT', () => shutdown('SIGINT'))
+process.on('SIGTERM', () => shutdown())
+process.on('SIGINT', () => shutdown())

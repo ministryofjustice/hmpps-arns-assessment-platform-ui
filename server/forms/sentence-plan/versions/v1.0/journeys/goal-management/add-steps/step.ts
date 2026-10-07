@@ -1,6 +1,7 @@
 import {
   access,
   and,
+  or,
   Data,
   Format,
   match,
@@ -29,24 +30,30 @@ import { redirectIfGoalNotFound } from '../../../guards'
  */
 export const addStepsStep = step({
   path: '/add-steps',
-  title: 'Add or change steps',
+  title: 'Add steps',
   reachability: { entryWhen: true },
   view: {
     locals: {
+      dynamicTitle: when(
+        or(
+          Data('navigationReferrer').match(Condition.Equals('add-goal')),
+          Data('activeGoal.steps').not.match(Condition.IsRequired()),
+        ),
+      )
+        .then('Add steps')
+        .else('Add or update steps'),
+
       // Backlink logic (priority order):
       // 1. If navigationReferrer='add-goal', navigate to change-goal and persist goal information
       // 2. If navigationReferrer='update-goal-steps', navigate back to update-goal-steps page
       // 3. Default: navigate back to plan overview on correct tab based on goal status (current/future)
       backlink: match(Data('navigationReferrer'))
-        .branch(Condition.Equals('add-goal'), Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
-        .branch(
-          Condition.Equals('update-goal-steps'),
-          Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),
-        )
+        .case('add-goal', Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+        .case('update-goal-steps', Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
         .otherwise(
           when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
-            .then('../../plan/overview?type=current')
-            .else('../../plan/overview?type=future'),
+            .then('../../plan/overview?goalStatusTab=current')
+            .else('../../plan/overview?goalStatusTab=future'),
         ),
     },
   },
@@ -105,11 +112,16 @@ export const addStepsStep = step({
           }),
         ],
         next: [
+          // A new goal whose steps are all completed on creation also gets the achievement prompt
+          redirect({
+            when: Data('allStepsCompleted').match(Condition.Equals(true)),
+            goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')),
+          }),
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),
@@ -121,15 +133,20 @@ export const addStepsStep = step({
       onValid: {
         effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
         next: [
+          // Prompt to confirm achievement once every step is marked completed, on any agreement status
+          redirect({
+            when: Data('allStepsCompleted').match(Condition.Equals(true)),
+            goto: Format('../../goal/%1/confirm-if-achieved', Data('activeGoal.uuid')),
+          }),
           redirect({
             when: Data('navigationReferrer').match(Condition.Equals('update-goal-steps')),
             goto: Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),
           }),
           redirect({
             when: Data('activeGoal.status').match(Condition.Equals('FUTURE')),
-            goto: '../../plan/overview?type=future',
+            goto: '../../plan/overview?goalStatusTab=future',
           }),
-          redirect({ goto: '../../plan/overview?type=current' }),
+          redirect({ goto: '../../plan/overview?goalStatusTab=current' }),
         ],
       },
     }),

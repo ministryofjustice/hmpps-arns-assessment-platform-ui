@@ -1,12 +1,15 @@
-import { accessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
-import { assessmentInfoDetails } from './assessment-info-details/assessmentInfoDetails'
-import { buttonAsLink } from './button-as-link/buttonAsLink'
+import { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
+import { AssessmentInfoDetails } from './assessment-info-details/assessmentInfoDetails'
+import { ButtonAsLink } from './button-as-link/buttonAsLink'
 import {
-  goalSummaryCardAgreed,
-  goalSummaryCardDraft,
-  goalSummaryCardHistory,
+  GoalSummaryCardAgreed,
+  GoalSummaryCardDraft,
+  GoalSummaryCardHistory,
 } from './goal-summary-card/goalSummaryCard'
-import { previousVersions } from './previous-versions/previousVersions'
+import { PreviousVersions } from './previous-versions/previousVersions'
+import { PrintGoalSummaryCard } from './print-goal-summary-card/printGoalSummaryCard'
+import { WrappingSelect } from './wrapping-select/wrappingSelect'
+import { SupervisionPackage } from './supervision-package/supervisionPackage'
 
 export { AccessibleAutocomplete } from './accessible-autocomplete/accessibleAutocomplete'
 export { AssessmentInfoDetails } from './assessment-info-details/assessmentInfoDetails'
@@ -16,13 +19,19 @@ export {
   GoalSummaryCardDraft,
   GoalSummaryCardHistory,
 } from './goal-summary-card/goalSummaryCard'
+export { WrappingSelect } from './wrapping-select/wrappingSelect'
+export { PrintGoalSummaryCard } from './print-goal-summary-card/printGoalSummaryCard'
+export { SupervisionPackage } from './supervision-package/supervisionPackage'
 
 export const sentencePlanComponents = [
-  accessibleAutocomplete,
-  assessmentInfoDetails,
-  buttonAsLink,
-  goalSummaryCardDraft,
-  goalSummaryCardAgreed,
-  goalSummaryCardHistory,
-  previousVersions,
+  AccessibleAutocomplete,
+  AssessmentInfoDetails,
+  ButtonAsLink,
+  GoalSummaryCardDraft,
+  GoalSummaryCardAgreed,
+  GoalSummaryCardHistory,
+  PrintGoalSummaryCard,
+  PreviousVersions,
+  SupervisionPackage,
+  WrappingSelect,
 ]

@@ -1,0 +1,9 @@
+{%- from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner -%}
+
+{% set downtimeBannerHtml %}
+  <p> The tiering service information will be unavailable via MPOP and NDelius between 9am and 11am on Sunday 4th Oct. </p>
+{% endset %}
+
+  {{ govukNotificationBanner({
+    html: downtimeBannerHtml
+  }) }}

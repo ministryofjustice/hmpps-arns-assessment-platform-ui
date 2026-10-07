@@ -75,7 +75,7 @@ test.describe('Merged plan warning page', () => {
       await navigateViaMpop(page, crn)
       await MergedPlanWarningPage.verifyOnPage(page)
 
-      await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+      await page.goto(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
 
       await expect(page).toHaveURL(/\/sentence-plan\/merged-plan-warning/)
       await MergedPlanWarningPage.verifyOnPage(page)

@@ -17,14 +17,12 @@ test.describe('Assessment Info Details - Warnings', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: 'YES',
-            accStrengths: 'YES',
             accOtherWeightedScore: '6',
           },
           // Employment has no data - all NULL
           educationTrainingEmployability: {
             eteLinkedToHarm: 'NULL',
             eteLinkedToReoffending: 'NULL',
-            eteStrengths: 'NULL',
             // No score
           },
         },
@@ -94,13 +92,11 @@ test.describe('Assessment Info Details - Warnings', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: 'YES',
-            accStrengths: 'NO',
             accOtherWeightedScore: '4',
           },
           drugMisuse: {
             drugLinkedToHarm: 'NULL',
             drugLinkedToReoffending: 'NULL',
-            drugStrengths: 'NULL',
           },
         },
       })
@@ -148,7 +144,6 @@ test.describe('Assessment Info Details - Warnings', () => {
           accommodation: {
             accLinkedToHarm: 'YES',
             accLinkedToReoffending: 'YES',
-            accStrengths: 'NO',
             accOtherWeightedScore: '4',
           },
         },

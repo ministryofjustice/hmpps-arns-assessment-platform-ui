@@ -24,6 +24,7 @@ export const setActiveGoalContext = () => async (context: SentencePlanContext) =
       id: step.uuid,
       actor: step.actor,
       description: step.description,
+      status: step.status,
     }))
 
     context.setData('activeGoalStepsOriginal', stepsOriginal)

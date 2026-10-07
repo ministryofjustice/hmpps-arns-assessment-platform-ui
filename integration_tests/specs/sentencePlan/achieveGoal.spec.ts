@@ -1,28 +1,19 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
+import { test } from '../../support/fixtures'
 import ConfirmAchievedGoalPage from '../../pages/sentencePlan/confirmAchievedGoalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
-import {
-  buildPageTitle,
-  checkAccessibility,
-  getDatePlusDaysAsISO,
-  navigateToSentencePlan,
-  sentencePlanPageTitles,
-} from './sentencePlanUtils'
+import { buildPageTitle, checkAccessibility, getDatePlusDaysAsISO, sentencePlanPageTitles } from './sentencePlanUtils'
 
 test.describe('Achieve goal journey', () => {
   test.describe('confirm goal as achieved', () => {
-    test('can confirm goal as achieved with optional note', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoalsWithCompletedSteps(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('can confirm goal as achieved with optional note', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoalsWithCompletedSteps(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -39,19 +30,16 @@ test.describe('Achieve goal journey', () => {
       await achievePage.clickConfirm()
 
       // Should redirect to plan overview with achieved tab selected
-      await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=achieved/)
     })
 
-    test('can confirm goal as achieved without optional note', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoalsWithCompletedSteps(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('can confirm goal as achieved without optional note', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoalsWithCompletedSteps(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -60,19 +48,16 @@ test.describe('Achieve goal journey', () => {
 
       await achievePage.clickConfirm()
 
-      await expect(page).toHaveURL(/plan\/overview.*type=achieved/)
+      await expect(page).toHaveURL(/plan\/overview.*goalStatusTab=achieved/)
     })
 
-    test('can cancel and return to update goal steps page', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoalsWithCompletedSteps(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('can cancel and return to update goal steps page', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoalsWithCompletedSteps(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -88,20 +73,13 @@ test.describe('Achieve goal journey', () => {
   })
 
   test.describe('page content', () => {
-    test('displays page title and page heading with person name', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoalsWithCompletedSteps(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('displays page title and page heading with person name', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoalsWithCompletedSteps(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -116,24 +94,24 @@ test.describe('Achieve goal journey', () => {
       expect(headerText).toContain('has achieved this goal')
     })
 
-    test('displays goal summary card with goal details', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Find stable housing',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
+    test('displays goal summary card with goal details', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Find stable housing',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [
+                  { actor: 'probation_practitioner', description: 'Contact housing services', status: 'COMPLETED' },
+                ],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -147,16 +125,13 @@ test.describe('Achieve goal journey', () => {
       expect(goalTitle).toContain('Find stable housing')
     })
 
-    test('how helped field is optional and starts empty', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoalsWithCompletedSteps(1))
-        .withAgreementStatus('AGREED')
-        .save()
+    test('how helped field is optional and starts empty', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder.withGoals(currentGoalsWithCompletedSteps(1))
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -170,28 +145,22 @@ test.describe('Achieve goal journey', () => {
   })
 
   test.describe('achieved goals tab', () => {
-    test('achieved goal appears in achieved goals tab after confirmation', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Achieve Test Goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Complete task', status: 'COMPLETED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
+    test('achieved goal appears in achieved goals tab after confirmation', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Achieve Test Goal',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Complete task', status: 'COMPLETED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
       const goalUuid = plan.goals[0].uuid
-
-      await navigateToSentencePlan(page, handoverLink)
 
       // Navigate to confirm-achieved-goal page and confirm
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
@@ -199,7 +168,7 @@ test.describe('Achieve goal journey', () => {
       await achievePage.clickConfirm()
 
       // Should be on achieved tab now
-      await expect(page).toHaveURL(/type=achieved/)
+      await expect(page).toHaveURL(/goalStatusTab=achieved/)
 
       // Verify the goal appears in the achieved goals list
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -214,34 +183,28 @@ test.describe('Achieve goal journey', () => {
       expect(goalTitle).toContain('Achieve Test Goal')
     })
 
-    test('achieved goal no longer appears in current goals tab', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Goal To Achieve',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
-          },
-          {
-            title: 'Goal To Keep',
-            areaOfNeed: 'finances',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('achieved goal no longer appears in current goals tab', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal To Achieve',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'COMPLETED' }],
+              },
+              {
+                title: 'Goal To Keep',
+                areaOfNeed: 'finances',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Step 1', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
 
       // Verify we start with 2 current goals
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -255,7 +218,7 @@ test.describe('Achieve goal journey', () => {
       await achievePage.clickConfirm()
 
       // Navigate to current goals tab
-      await page.goto('/sentence-plan/v1.0/plan/overview?type=current')
+      await page.goto('/sentence-plan/v1.0/plan/overview?goalStatusTab=current')
 
       // Verify only 1 goal remains in current goals
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
@@ -269,16 +232,12 @@ test.describe('Achieve goal journey', () => {
   })
 
   test.describe('access control', () => {
-    test('redirects to plan overview when plan is not agreed (draft)', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      const plan = await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
+    test('redirects to plan overview when plan is not agreed (draft)', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
+      })
       const goalUuid = plan.goals[0].uuid
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(`/sentence-plan/v1.0/goal/${goalUuid}/confirm-achieved-goal`)
 
       // Should redirect to plan overview since achieved is only for agreed plans

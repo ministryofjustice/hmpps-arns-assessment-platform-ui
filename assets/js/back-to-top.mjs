@@ -17,7 +17,17 @@ export function initBackToTop() {
   }
 
   const update = () => {
-    const isScrollable = document.documentElement.scrollHeight > window.innerHeight
+    // Measure only the main page content, stopping at the "Report a problem"
+    // section (and the footer below it). This way the link is not shown when the
+    // page only needs to scroll because of those sections at the bottom.
+    const boundary =
+      document.querySelector('.app-report-problem') ?? document.querySelector('footer[role="contentinfo"]')
+
+    const contentHeight = boundary
+      ? boundary.getBoundingClientRect().top + window.scrollY
+      : document.documentElement.scrollHeight
+
+    const isScrollable = contentHeight > window.innerHeight
 
     links.forEach(link => {
       link.hidden = !isScrollable
@@ -41,9 +51,16 @@ export function initBackToTop() {
   window.addEventListener('resize', update)
 
   // Content height can change after load (fonts, images, expanding sections),
-  // so re-check whenever the body resizes.
+  // so re-check whenever the body resizes. update() toggles `hidden`, which
+  // resizes the body, so we defer to the next frame to avoid the observer
+  // re-firing in the same frame (a benign "ResizeObserver loop" error).
   if ('ResizeObserver' in window) {
-    new ResizeObserver(update).observe(document.body)
+    let frame
+
+    new ResizeObserver(() => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(update)
+    }).observe(document.body)
   }
 }
 

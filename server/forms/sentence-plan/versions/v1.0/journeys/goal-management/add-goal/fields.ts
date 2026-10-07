@@ -1,47 +1,34 @@
 import {
   Data,
   Format,
-  Item,
-  Iterator,
   Params,
+  Query,
   Self,
   validation,
+  when,
   Condition,
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKButton,
+  GovUKBody,
   GovUKTextInput,
   GovUKHeading,
   GovUKButtonGroup,
+  GovUKInsetText,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { MOJSideNavigation } from '@ministryofjustice/hmpps-forge/moj-components'
 import { CaseData } from '../../../constants'
 import { canAccessSanContent } from '../../../guards'
 import { isRelatedToOtherAreas, canStartNow } from '../sharedFields'
 import { AccessibleAutocomplete, AssessmentInfoDetails } from '../../../../../components'
 
-const sideNavigation = MOJSideNavigation({
-  attributes: { 'data-qa': 'area-of-need-nav' },
-  items: Data('areasOfNeed').each(
-    Iterator.Map({
-      text: Item().path('text'),
-      href: Item().path('slug'),
-      active: Item()
-        .path('slug')
-        .match(Condition.Equals(Params('areaOfNeed'))),
-    }),
-  ),
-})
-
 const pageHeading = GovUKHeading({
-  text: Format('Create a goal with %1', CaseData.Forename),
-  caption: Data('currentAreaOfNeed').path('text').pipe(Transformer.String.EscapeHtml()),
+  text: Format('What goal does %1 aim to achieve?', CaseData.Forename),
 })
 
 const assessmentInfoDetails = AssessmentInfoDetails({
   personName: CaseData.Forename,
-  areaName: Data('currentAreaOfNeed').path('text'),
+  areaName: Data('currentAreaOfNeed.text'),
   assessmentData: Data('currentAreaAssessment'),
   status: Data('currentAreaAssessmentStatus'),
   fullWidth: true,
@@ -49,25 +36,62 @@ const assessmentInfoDetails = AssessmentInfoDetails({
 })
 
 const goalTitle = AccessibleAutocomplete({
-  data: Data('currentAreaOfNeed').path('goals'),
+  data: Data('currentAreaOfNeed.goals'),
+  classes: 'govuk-!-width-two-thirds',
   field: GovUKTextInput({
     code: 'goal_title',
     label: {
-      text: Format('What goal should %1 try to achieve?', CaseData.Forename),
+      text: 'Search goals or enter your own',
       classes: 'govuk-label--m',
     },
-    hint: 'Search for a suggested goal or enter your own. Add one goal at a time.',
+    hint: 'Start typing keywords to view suggested goals or enter your own.',
     validWhen: [
       validation({
         condition: Self().match(Condition.IsRequired()),
-        message: 'Select or enter what goal they should try to achieve',
+        message: 'Select or enter a goal',
       }),
     ],
   }),
 })
 
+/*
+ * The page's back link. Goes to area selection with the current area pre-selected
+ * and the plan tab kept, so the user doesn't lose their place.
+ */
+export const backLinkHref = when(Query('goalStatusTab').match(Condition.IsRequired()))
+  .then(Format('../select-area-of-need?area=%1&goalStatusTab=%2', Params('areaOfNeed'), Query('goalStatusTab')))
+  .else(Format('../select-area-of-need?area=%1', Params('areaOfNeed')))
+
+/*
+ * The "Change area of need" link. Same as the back link, but change=true tells the area
+ * selection page to send the user back here afterwards instead of to the plan overview.
+ */
+const changeAreaOfNeedHref = when(Query('goalStatusTab').match(Condition.IsRequired()))
+  .then(
+    Format('../select-area-of-need?area=%1&goalStatusTab=%2&change=true', Params('areaOfNeed'), Query('goalStatusTab')),
+  )
+  .else(Format('../select-area-of-need?area=%1&change=true', Params('areaOfNeed')))
+
+const areaOfNeedInset = GovUKInsetText({
+  blocks: [
+    GovUKBody({
+      text: Format(
+        'Area of need: <strong>%1</strong>',
+        Data('currentAreaOfNeed.text').pipe(Transformer.String.ToLowerCase(), Transformer.String.EscapeHtml()),
+      ),
+    }),
+    GovUKBody({
+      classes: 'govuk-!-margin-bottom-0',
+      text: Format(
+        '<a class="govuk-link govuk-link--no-visited-state" href="%1" data-ai-id="create-goal-change-area-of-need-link">Change area of need</a>',
+        changeAreaOfNeedHref,
+      ),
+    }),
+  ],
+})
+
 const addStepsButton = GovUKButton({
-  text: 'Add Steps',
+  text: 'Add steps',
   name: 'action',
   value: 'addSteps',
   preventDoubleClick: true,
@@ -92,12 +116,11 @@ const buttonGroup = GovUKButtonGroup({
   classes: 'govuk-!-margin-top-4',
 })
 
-export const sideNav = sideNavigation
-
 export const contentBlocks = [
   pageHeading,
   assessmentInfoDetails,
   goalTitle,
+  areaOfNeedInset,
   isRelatedToOtherAreas,
   canStartNow,
   buttonGroup,

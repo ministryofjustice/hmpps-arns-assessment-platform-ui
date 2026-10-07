@@ -7,7 +7,7 @@ import { ScenarioFieldKey, ScenarioValues, ResolvedScenario } from './scenarios'
 /**
  * Target applications for training sessions
  */
-export type TargetApplication = 'strengths-and-needs' | 'sentence-plan'
+export type TargetApplication = 'strengths-and-needs' | 'sentence-plan' | 'tiering-assessment'
 
 /**
  * Display-friendly need data derived from API format
@@ -131,6 +131,8 @@ export interface Session {
   sanAssessmentVersion?: number
   sentencePlanId?: string
   sentencePlanVersion?: number
+  tieringAssessmentId?: string
+  tieringAssessmentVersion?: number
 }
 
 /**

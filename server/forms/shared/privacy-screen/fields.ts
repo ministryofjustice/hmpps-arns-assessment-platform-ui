@@ -18,11 +18,11 @@ const createPrivacyContent = (personForename: ResolvableString) =>
 const privacyCheckbox = field<GovUKCheckboxInput>({
   variant: 'govukCheckboxInput',
   code: 'confirm_privacy',
-  multiple: true,
   items: [
     {
       value: 'confirmed',
       text: "I confirm I'll do this before starting an appointment",
+      attributes: { 'data-ai-id': 'privacy-page-confirm-privacy-checkbox' },
     },
   ],
   validWhen: [
@@ -38,6 +38,7 @@ const confirmButton = block<GovUKButton>({
   text: 'Confirm',
   name: 'action',
   value: 'confirm',
+  attributes: { 'data-ai-id': 'privacy-page-confirm-button' },
   preventDoubleClick: true,
 })
 

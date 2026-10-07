@@ -27,27 +27,20 @@ test.describe('READ_ONLY Access Mode', () => {
   })
 
   test.describe('Header Buttons', () => {
-    test('hides Create Goal button', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
-      })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
+    test('hides Create Goal button', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({ session: { planAccessMode: 'READ_ONLY' } })
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.createGoalButton).not.toBeVisible()
     })
 
-    test('hides Agree Plan button', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('hides Agree Plan button', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder => builder.withGoals(currentGoals(1)),
       })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).save()
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.agreePlanButton).not.toBeVisible()
@@ -55,28 +48,24 @@ test.describe('READ_ONLY Access Mode', () => {
   })
 
   test.describe('Sub-navigation', () => {
-    test('tab navigation still works in READ_ONLY mode', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('tab navigation still works in READ_ONLY mode', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder =>
+          builder.withGoals([
+            { title: 'Current Goal', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
+            { title: 'Future Goal', status: 'FUTURE', areaOfNeed: 'finances' },
+          ]),
       })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          { title: 'Current Goal', status: 'ACTIVE', areaOfNeed: 'accommodation', targetDate: '2025-06-01' },
-          { title: 'Future Goal', status: 'FUTURE', areaOfNeed: 'finances' },
-        ])
-        .save()
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       // Should be on current tab by default
-      await expect(page).toHaveURL(/type=current/)
+      await expect(page).toHaveURL(/goalStatusTab=current/)
 
       // Switch to future tab
       await planOverviewPage.clickFutureGoalsTab()
-      await expect(page).toHaveURL(/type=future/)
+      await expect(page).toHaveURL(/goalStatusTab=future/)
 
       const goalTitle = await planOverviewPage.getGoalCardTitle(0)
       expect(goalTitle).toContain('Future Goal')
@@ -100,18 +89,12 @@ test.describe('READ_ONLY Access Mode', () => {
       await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toBeVisible()
     })
 
-    test('hides Create goal button on About page in READ_ONLY mode', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('hides Create goal button on About page in READ_ONLY mode', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder => builder.withGoals(currentGoals(1)).withAgreementStatus('AGREED'),
       })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1URLs.ABOUT_PERSON)
 
       await expect(page).toHaveURL(sentencePlanV1URLs.ABOUT_PERSON)
@@ -120,23 +103,13 @@ test.describe('READ_ONLY Access Mode', () => {
   })
 
   test.describe('Direct URL access', () => {
-    test('redirects to plan overview when visiting edit routes directly', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('redirects to plan overview when visiting edit routes directly', async ({ page, openSentencePlan }) => {
+      const { plan: sentencePlan } = await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder =>
+          builder.withGoals(currentGoals(2))
+            .withAgreementStatus('AGREED'),
       })
-
-      const sentencePlan = await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals(currentGoals(2))
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
 
       const restrictedUrls = [
         sentencePlanV1UrlBuilders.goalChange(sentencePlan.goals[0].uuid),
@@ -149,18 +122,15 @@ test.describe('READ_ONLY Access Mode', () => {
       await restrictedUrls.reduce(async (previousNavigation, url) => {
         await previousNavigation
         await page.goto(url)
-        await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?type=current`)
+        await expect(page).toHaveURL(`${sentencePlanV1URLs.PLAN_OVERVIEW}?goalStatusTab=current`)
       }, Promise.resolve())
     })
 
-    test('allows visiting non-edit routes directly', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('allows visiting non-edit routes directly', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder => builder.withGoals(currentGoals(1)).withAgreementStatus('AGREED'),
       })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoals(1)).withAgreementStatus('AGREED').save()
-
-      await navigateToSentencePlan(page, handoverLink)
 
       await page.goto(sentencePlanV1URLs.ABOUT_PERSON)
       await expect(page).toHaveURL(sentencePlanV1URLs.ABOUT_PERSON)
@@ -174,57 +144,49 @@ test.describe('READ_ONLY Access Mode', () => {
   })
 
   test.describe('Plan history entries', () => {
-    test('hides view goal links', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('hides view goal links', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Find stable accommodation',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
+              },
+              {
+                title: 'Another goal',
+                areaOfNeed: 'accommodation',
+                status: 'ACHIEVED',
+              },
+              {
+                title: 'Another goal',
+                areaOfNeed: 'drug-use',
+                status: 'FUTURE',
+              },
+              {
+                title: 'Another goal',
+                areaOfNeed: 'drug-use',
+                status: 'REMOVED',
+              },
+            ])
+            .withAgreementStatus('AGREED'),
       })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          {
-            title: 'Find stable accommodation',
-            areaOfNeed: 'accommodation',
-            status: 'ACTIVE',
-            steps: [{ actor: 'probation_practitioner', description: 'Contact housing services' }],
-          },
-          {
-            title: 'Another goal',
-            areaOfNeed: 'accommodation',
-            status: 'ACHIEVED',
-          },
-          {
-            title: 'Another goal',
-            areaOfNeed: 'drug-use',
-            status: 'FUTURE',
-          },
-          {
-            title: 'Another goal',
-            areaOfNeed: 'drug-use',
-            status: 'REMOVED',
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await planHistoryPage.clickShowAllSectionsButton()
 
       await expect(page.getByTestId('main-form').getByRole('link', { name: 'View goal' })).toHaveCount(0)
     })
-    test('hides update agreement link', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-        planAccessMode: 'READ_ONLY',
+    test('hides update agreement link', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        session: { planAccessMode: 'READ_ONLY' },
+        plan: builder => builder.withAgreementStatus('COULD_NOT_ANSWER'),
       })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withAgreementStatus('COULD_NOT_ANSWER')
-        .save()
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
       const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
       await planHistoryPage.clickShowAllSectionsButton()

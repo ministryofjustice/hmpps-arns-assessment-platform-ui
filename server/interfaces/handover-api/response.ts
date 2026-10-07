@@ -1,4 +1,4 @@
-import { HandoverPrincipalDetails, HandoverSubjectDetails, CriminogenicNeedsData } from './shared'
+import { HandoverPrincipalDetails, HandoverSubjectDetails } from './shared'
 import { HandoverAssessmentContext, HandoverSentencePlanContext } from './request'
 
 export interface CreateHandoverLinkResponse {
@@ -12,5 +12,4 @@ export interface HandoverContext {
   subject: HandoverSubjectDetails
   assessmentContext?: HandoverAssessmentContext
   sentencePlanContext?: HandoverSentencePlanContext
-  criminogenicNeedsData?: CriminogenicNeedsData
 }

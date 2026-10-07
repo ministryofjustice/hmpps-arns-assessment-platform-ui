@@ -1,9 +1,17 @@
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
+import { Resolvable } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
-import { AssessmentPlatformApiClient, CoordinatorApiClient, DeliusApiClient } from '../../../data'
+import {
+  AssessmentPlatformApiClient,
+  CoordinatorApiClient,
+  DeliusApiClient,
+  MPoPComponents,
+  ArnsApiClient,
+} from '../../../data'
 import AuditService from '../../../services/auditService'
+import DomainEventsService from '../../../services/domainEventsService'
 import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { SessionDetails } from '../../../interfaces/sessionDetails'
 import { PractitionerDetails } from '../../../interfaces/practitionerDetails'
@@ -35,7 +43,7 @@ export interface AccessDetails {
 }
 
 export type GoalStatus = 'ACTIVE' | 'FUTURE' | 'REMOVED' | 'ACHIEVED'
-export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED'
+export type StepStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANNOT_BE_DONE_YET' | 'NO_LONGER_NEEDED'
 
 // Plan agreement statuses - DRAFT is the initial status before any agreement action
 export type AgreementStatus =
@@ -224,6 +232,22 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
   notes?: string
 }
 
+/**
+ * Response and payload types for the MPoP components client, derived from the
+ * client methods because the library does not export its data types directly —
+ * deriving keeps them in sync with the installed version.
+ *
+ * The frontend-context call bundles the phase, appointment allowance and next
+ * appointment in one response, so a single derived type covers the whole
+ * supervision package. The method can return null (no package yet), so unwrap it.
+ */
+export type SupervisionPackageDetails = NonNullable<
+  Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
+>
+
+export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
+export type TierCalculation = TierDetailsResponse['calculation']
+
 export type AreaOfNeed = (typeof areasOfNeed)[number]
 
 export type { AreaOfNeedSlug }
@@ -288,6 +312,8 @@ export interface PlanNotification {
   message: unknown
   target: string
   clearOtherNotifications?: boolean
+  // When false the notification is not added — for banners that depend on an earlier effect's outcome
+  onlyWhen?: Resolvable<boolean>
 }
 
 /**
@@ -297,6 +323,7 @@ export interface StepSession {
   id: string
   actor: string
   description: string
+  status: string
 }
 
 /**
@@ -335,6 +362,8 @@ export interface SentencePlanData extends Record<string, unknown> {
   activeGoalUuid: string
   activeGoalStepsOriginal: StepSession[]
   activeGoalStepsEdited: StepSession[]
+  // Set by updateActiveGoal — false when the submitted edit matched the saved goal
+  activeGoalChanged: boolean
 
   // Plan Agreements
   planAgreements: DerivedPlanAgreement[]
@@ -383,6 +412,13 @@ export interface SentencePlanData extends Record<string, unknown> {
   // Privacy screen state copied from the Express session
   privacyAccepted?: boolean
 
+  // Supervision package page (from MPoP components client)
+  supervisionPackageDetails: SupervisionPackageDetails | undefined
+  // True when loading the supervision package failed (500/503) — drives the error message.
+  // Unset otherwise; a missing package or non-renderable phase hides the tab via the phase check.
+  supervisionPackageError: boolean | undefined
+  tierCalculation: TierCalculation | undefined
+
   // all assessment areas grouped by scoring category (for about page; from coordinator API)
   allAssessmentAreas: AssessmentArea[]
   highScoringAreas: AssessmentArea[]
@@ -402,6 +438,7 @@ export interface SentencePlanData extends Record<string, unknown> {
 export interface SentencePlanAnswers extends Record<string, unknown> {
   // Goal form fields
   goal_title: string
+  area_of_need: string
   related_areas_of_need: string[]
   can_start_now: string
   target_date_option: string
@@ -410,6 +447,7 @@ export interface SentencePlanAnswers extends Record<string, unknown> {
   // Dynamic step fields are accessed via index signature
   [key: `step_actor_${number}`]: string
   [key: `step_description_${number}`]: string
+  [key: `step_status_${number}`]: string
 }
 
 /**
@@ -426,6 +464,11 @@ export interface SentencePlanSession {
   sessionDetails?: SessionDetails
   practitionerDetails?: PractitionerDetails
   caseDetails?: CaseDetails
+  principal?: {
+    identifier: string
+    username: string
+    displayName: string
+  }
 }
 
 /**
@@ -462,7 +505,10 @@ export type SentencePlanContext = EffectFunctionContext<
 export interface SentencePlanEffectsDeps {
   api: AssessmentPlatformApiClient
   coordinatorApi: CoordinatorApiClient
+  arnsApi: ArnsApiClient
   deliusApi: DeliusApiClient
+  mpopComponents: MPoPComponents
   auditService: AuditService
   featureFlagService: FeatureFlagService
+  domainEventsService: DomainEventsService
 }

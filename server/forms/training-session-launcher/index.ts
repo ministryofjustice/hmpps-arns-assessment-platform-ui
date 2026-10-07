@@ -1,8 +1,8 @@
 import { createForgePackage } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { trainingSessionLauncherJourney } from './form'
-import { trainingSessionLauncherEffectImplementations } from './effects'
+import { trainingSessionLauncherEffectRegistry } from './effects'
 import { trainingSessionLauncherComponents } from './components'
-import { TrainingSessionLauncherTransformerImplementations } from './transformers'
+import { trainingSessionLauncherTransformerRegistry } from './transformers'
 import { TrainingSessionLauncherEffectsDeps } from './effects/types'
 import config from '../../config'
 
@@ -16,8 +16,5 @@ export default createForgePackage<TrainingSessionLauncherEffectsDeps>({
   enabled: config.forms.trainingSessionLauncher.enabled ?? false,
   journey: trainingSessionLauncherJourney,
   components: trainingSessionLauncherComponents,
-  functions: {
-    ...trainingSessionLauncherEffectImplementations,
-    ...TrainingSessionLauncherTransformerImplementations,
-  },
+  functions: [trainingSessionLauncherEffectRegistry, trainingSessionLauncherTransformerRegistry],
 })

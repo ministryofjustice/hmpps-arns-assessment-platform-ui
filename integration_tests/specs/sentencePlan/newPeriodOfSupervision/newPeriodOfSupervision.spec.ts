@@ -55,12 +55,10 @@ test.describe('New period of supervision', () => {
       await expect(planOverviewPage.noGoalsMessage).toBeVisible()
     })
 
-    test('Agree Plan button is visible in draft state', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(autoRemovedGoals(1)).save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('Agree Plan button is visible in draft state', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(autoRemovedGoals(1)),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
@@ -79,6 +77,23 @@ test.describe('New period of supervision', () => {
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.removedGoalsTab).not.toBeVisible()
+    })
+
+    test('Print all goals button is NOT displayed in draft state', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+
+      // Auto-removed goals only reappear once the plan is agreed, so there is nothing to print yet
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(autoRemovedGoals(3)).save()
+
+      await navigateToSentencePlan(page, handoverLink)
+
+      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+
+      await expect(planOverviewPage.printAllGoalsButton).toHaveCount(0)
     })
   })
 
@@ -111,35 +126,28 @@ test.describe('New period of supervision', () => {
       await expect(planOverviewPage.removedGoalsTab).toContainText('2')
     })
 
-    test('Removed goals tab shows auto-removed goals with correct details', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          ...autoRemovedGoals(2),
-          {
-            title: 'New active goal',
-            areaOfNeed: 'finances',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('Removed goals tab shows auto-removed goals with correct details', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              ...autoRemovedGoals(2),
+              {
+                title: 'New active goal',
+                areaOfNeed: 'finances',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       // Navigate to removed goals tab
       await planOverviewPage.removedGoalsTab.click()
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Verify auto-removed goals are displayed
       const goalCount = await planOverviewPage.getGoalCount()
@@ -152,30 +160,27 @@ test.describe('New period of supervision', () => {
       expect(secondGoalTitle).toContain('Auto-removed Goal 2')
     })
 
-    test('auto-removed goal card shows View details link', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([
-          ...autoRemovedGoals(1),
-          {
-            title: 'Active goal',
-            areaOfNeed: 'finances',
-            status: 'ACTIVE',
-            targetDate: getDatePlusDaysAsISO(90),
-            steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
-          },
-        ])
-        .withAgreementStatus('AGREED')
-        .save()
-
-      await navigateToSentencePlan(page, handoverLink)
+    test('auto-removed goal card shows View details link', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              ...autoRemovedGoals(1),
+              {
+                title: 'Active goal',
+                areaOfNeed: 'finances',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
 
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await planOverviewPage.removedGoalsTab.click()
-      await expect(page).toHaveURL(/type=removed/)
+      await expect(page).toHaveURL(/goalStatusTab=removed/)
 
       // Removed goals should show "View details" not "Update"
       const hasViewDetails = await planOverviewPage.goalCardHasViewDetailsLink(0)

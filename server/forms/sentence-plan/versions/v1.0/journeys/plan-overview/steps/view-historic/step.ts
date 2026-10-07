@@ -34,7 +34,7 @@ export const viewHistoricStep = step({
       hideFooter: true,
       disableHeaderLink: true,
       headerPageHeading: Format(`%1's plan`, CaseData.Forename),
-      currentTab: Query('type'),
+      currentTab: Query('goalStatusTab'),
       buttons: {
         showReturnToOasysButton: and(isOasysAccess, Data('navigationReferrer').not.match(Condition.IsRequired())),
         showCreateGoalButton: false,
@@ -67,14 +67,19 @@ export const viewHistoricStep = step({
         SentencePlanEffects.loadPlanTimeline(),
         SentencePlanEffects.loadHistoricPlan(),
         SentencePlanEffects.derivePlanLastUpdatedForHistoric(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
-          planVersionTimestamp: Params('timestamp'),
-        }),
       ],
       next: [
         redirect({
-          when: Query('type').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
-          goto: Format('view-historic/%1?type=current', Params('timestamp')),
+          when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
+          goto: Format('view-historic/%1?goalStatusTab=current', Params('timestamp')),
+        }),
+      ],
+    }),
+    // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
+    access({
+      effects: [
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
+          planVersionTimestamp: Params('timestamp'),
         }),
       ],
     }),

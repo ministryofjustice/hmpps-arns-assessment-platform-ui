@@ -11,6 +11,7 @@ import {
   StepAnswers,
   StepProperties,
 } from '../types'
+import { sanitizeDateValue } from './goalUtils'
 
 /**
  * Resolves an actor value to its human-readable label.
@@ -141,7 +142,7 @@ export const deriveGoalsWithSteps = (data: DataToDeriveFrom): DerivedGoals => {
       uuid: item.uuid,
       title: answers.title,
       status: properties.status,
-      targetDate: answers.target_date,
+      targetDate: sanitizeDateValue(answers.target_date),
       statusDate: properties.status_date,
       areaOfNeed: answers.area_of_need,
       areaOfNeedLabel: resolveAreaOfNeedLabel(answers.area_of_need, data.areasOfNeed),

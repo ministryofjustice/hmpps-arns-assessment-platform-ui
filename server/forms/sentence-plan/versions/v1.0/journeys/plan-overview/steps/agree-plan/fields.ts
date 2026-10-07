@@ -37,14 +37,24 @@ export const planAgreementQuestion = GovUKRadioInput({
   },
   hint: Format('%1 must answer this question, or you must record why %1 could not.', CaseData.Forename),
   items: [
-    { value: 'yes', text: 'Yes, I agree' },
-    { value: 'no', text: 'No, I do not agree', block: detailsForNoField },
+    {
+      value: 'yes',
+      text: 'Yes, I agree',
+      attributes: { 'data-ai-id': 'plan-overview-agree-plan-radio-yes' },
+    },
+    {
+      value: 'no',
+      text: 'No, I do not agree',
+      attributes: { 'data-ai-id': 'plan-overview-agree-plan-radio-no' },
+      block: detailsForNoField,
+    },
     { divider: 'or' },
     {
       value: 'could_not_answer',
       text: Format('%1 could not answer this question', CaseData.Forename),
       hint: Format('Share this plan with %1 next time you see them.', CaseData.Forename),
       block: detailsForCouldNotAnswerField,
+      attributes: { 'data-ai-id': 'plan-overview-agree-plan-radio-could-not-answer' },
     },
   ],
   validWhen: [

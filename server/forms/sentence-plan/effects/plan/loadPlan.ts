@@ -5,6 +5,20 @@ import { AssessmentIdentifiers } from '../../../../interfaces/aap-api/identifier
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 
 /**
+ * Soft-deleting an OASys assessment marks its Coordinator association as deleted. A CRN lookup goes straight to the
+ * AAP API and would otherwise still find it, so check the plan has at least one live association remaining.
+ */
+const ensurePlanHasLiveOasysAssociation = async (deps: SentencePlanEffectsDeps, planUuid: string) => {
+  await deps.coordinatorApi.getVersionsByEntityId(planUuid).catch(error => {
+    if (error?.responseStatus === 404) {
+      throw new NotFound('Sentence plan not found')
+    }
+
+    throw error
+  })
+}
+
+/**
  * Load a sentence plan using the identifier from session details.
  *
  * Supports both UUID identifiers (OASys flow) and external identifiers (MPOP flow).
@@ -29,6 +43,10 @@ export const loadPlan = (deps: SentencePlanEffectsDeps) => async (context: Sente
     throw new NotFound('Sentence plan not found')
   }
 
+  if (sessionDetails.planIdentifier.type === 'EXTERNAL') {
+    await ensurePlanHasLiveOasysAssociation(deps, assessment.assessmentUuid)
+  }
+
   context.setData('assessment', assessment)
   context.setData('assessmentUuid', assessment.assessmentUuid)
   context.setData('sessionDetails', sessionDetails)
@@ -38,7 +56,11 @@ export const loadPlan = (deps: SentencePlanEffectsDeps) => async (context: Sente
   }
 }
 
-export const assessmentVersionQuery = async (deps: SentencePlanEffectsDeps, user: User, planIdentifier: AssessmentIdentifiers): Promise<AssessmentVersionQueryResult> => {
+export const assessmentVersionQuery = async (
+  deps: SentencePlanEffectsDeps,
+  user: User,
+  planIdentifier: AssessmentIdentifiers,
+): Promise<AssessmentVersionQueryResult> => {
   return await deps.api.executeQuery({
     type: 'AssessmentVersionQuery',
     user,

@@ -1,4 +1,5 @@
 import { InternalServerError } from 'http-errors'
+import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
@@ -9,8 +10,11 @@ import {
   determineGoalStatus,
   buildGoalProperties,
   buildGoalAnswers,
+  hasGoalChanged,
 } from './goalUtils'
 import { snapshotFromGoal } from './goalSnapshot'
+import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
+import { areasOfNeed } from '../../versions/v1.0/constants'
 
 /**
  * Update an existing goal
@@ -20,6 +24,9 @@ import { snapshotFromGoal } from './goalSnapshot'
  *
  * If the goal is changed to a future goal (can_start_now = 'no'),
  * the target_date is cleared to prevent stale data being displayed.
+ *
+ * If nothing has changed, nothing is saved (so no GOAL_UPDATED timeline entry).
+ * Sets Data('activeGoalChanged') so the step only shows the "goal changed" banner after a real change.
  *
  * Form fields used:
  * - goal_title: Goal title
@@ -40,17 +47,41 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   // Get form answers
   const goalTitle = context.getAnswer('goal_title')
   const isRelatedToOtherAreas = context.getAnswer('is_related_to_other_areas')
-  const relatedAreas = isRelatedToOtherAreas === 'yes' ? (context.getAnswer('related_areas_of_need') ?? []) : []
   const canStartNow = context.getAnswer('can_start_now')
   const targetDateOption = context.getAnswer('target_date_option')
   const customDate = context.getAnswer('custom_target_date')
+
+  // The area of need can be changed on the "Change area of need" page, which carries the
+  // chosen area back as a query param (?area=). It is only persisted here, on save. Only
+  // accept a real area-of-need slug, so a tampered/invalid query (e.g. ?area=banana) can't
+  // store a bad value — fall back to the goal's saved area.
+  const pendingAreaOfNeed = context.getQueryParam('area') as string | undefined
+  const areaOfNeed =
+    pendingAreaOfNeed && areasOfNeed.some(area => area.slug === pendingAreaOfNeed)
+      ? pendingAreaOfNeed
+      : activeGoal.areaOfNeed
+
+  // A goal can't relate to its own primary area, so drop any overlap with the chosen area.
+  const relatedAreas = (
+    isRelatedToOtherAreas === 'yes' ? (context.getAnswer('related_areas_of_need') ?? []) : []
+  ).filter(area => area !== areaOfNeed)
 
   // Calculate target date and status
   const targetDate = calculateTargetDate(canStartNow, targetDateOption, customDate)
   const status = determineGoalStatus(canStartNow)
 
+  const goalChanged = hasGoalChanged(activeGoal, {
+    title: goalTitle,
+    areaOfNeed,
+    relatedAreasOfNeed: relatedAreas,
+    status,
+    targetDate,
+  })
+
+  context.setData('activeGoalChanged', goalChanged)
+
   const properties = buildGoalProperties(status)
-  const answers = buildGoalAnswers(goalTitle, activeGoal.areaOfNeed, relatedAreas, targetDate)
+  const answers = buildGoalAnswers(goalTitle, areaOfNeed, relatedAreas, targetDate)
 
   // If changing to a future goal, clear the target_date
   const answersToRemove = targetDate ? [] : ['target_date']
@@ -61,6 +92,7 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     statusDate: properties.status_date,
     targetDate: targetDate ?? undefined,
     relatedAreasOfNeed: relatedAreas,
+    areaOfNeed,
   })
 
   // Batch both updates in a single API call for atomicity
@@ -92,5 +124,24 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     },
   ]
 
-  await deps.api.executeCommands(...commands)
+  if (goalChanged) {
+    await deps.api.executeCommands(...commands)
+  }
+
+  const selectedArea = areasOfNeed.find(area => area.slug === activeGoal.areaOfNeed)
+  const goalMatch = matchSuggestedGoal(goalTitle as string, selectedArea?.goals ?? [])
+
+  trackBusinessEvent(context, 'UPDATE_GOAL_PAGE_SUBMITTED', {
+    assessmentUuid,
+    goalUuid: activeGoal.uuid,
+    goalStatus: status,
+    areaOfNeed: activeGoal.areaOfNeed,
+    goalTitleHash: hashGoalText(goalTitle as string),
+    suggestedGoalMatch: goalMatch.matchRating ?? 'no match',
+    suggestedGoalMatchPercentage: String(goalMatch.matchPercentage),
+    suggestedGoalTitle:
+      goalMatch.matchRating === 'exact' || goalMatch.matchRating === 'high'
+        ? (goalMatch.suggestedGoalTitle ?? '')
+        : 'N/A',
+  })
 }
