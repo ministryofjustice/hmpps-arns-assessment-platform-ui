@@ -12,7 +12,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Employment and education change links
@@ -81,11 +80,7 @@ const fullyAnswered: Scenario = {
     changeLink('employed', 'education_experience'),
     changeLink('employed', 'employment_education_changes'),
   ],
-  data: [
-    { key: Step.current_employment.code, value: IsUserSubmitted.true },
-    { key: Step.employed.code, value: IsUserSubmitted.true },
-    { key: Step.employment_education_summary.code, value: IsUserSubmitted.true },
-  ],
+  userSubmittedSteps: [Step.current_employment.code, Step.employed.code, Step.employment_education_summary.code],
 }
 
 const practitionerAnalysisChangeLinks = [
@@ -101,7 +96,7 @@ test.describe('Employment and education change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.data)
+        const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -115,7 +110,7 @@ test.describe('Employment and education change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.data)
+      const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -129,7 +124,7 @@ test.describe('Employment and education change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.data)
+        const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

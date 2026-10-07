@@ -12,7 +12,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Drug use change links
@@ -87,12 +86,12 @@ const usedInTheLastSixMonths: Scenario = {
     changeLink('drug-use-history', 'drugs_anything_helped_stop_or_reduce_use'),
     changeLink('drug-use-history', 'drug_use_changes'),
   ],
-  data: [
-    { key: Step.add_drugs.code, value: IsUserSubmitted.true },
-    { key: Step.drug_use.code, value: IsUserSubmitted.true },
-    { key: Step.drug_use_history.code, value: IsUserSubmitted.true },
-    { key: Step.drug_details.code, value: IsUserSubmitted.true },
-    { key: Step.drug_use_summary.code, value: IsUserSubmitted.true },
+  userSubmittedSteps: [
+    Step.add_drugs.code,
+    Step.drug_use.code,
+    Step.drug_use_history.code,
+    Step.drug_details.code,
+    Step.drug_use_summary.code,
   ],
 }
 
@@ -137,12 +136,12 @@ const usedMoreThanSixMonthsAgo: Scenario = {
     changeLink('drug-use-history', 'drugs_what_could_help_not_use_drugs_in_future'),
     changeLink('drug-use-history', 'drug_use_changes'),
   ],
-  data: [
-    { key: Step.add_drugs.code, value: IsUserSubmitted.true },
-    { key: Step.drug_use.code, value: IsUserSubmitted.true },
-    { key: Step.drug_use_history.code, value: IsUserSubmitted.true },
-    { key: Step.drug_details.code, value: IsUserSubmitted.true },
-    { key: Step.drug_use_summary.code, value: IsUserSubmitted.true },
+  userSubmittedSteps: [
+    Step.add_drugs.code,
+    Step.drug_use.code,
+    Step.drug_use_history.code,
+    Step.drug_details.code,
+    Step.drug_use_summary.code,
   ],
 }
 
@@ -157,7 +156,11 @@ test.describe('Drug use change links', () => {
   test.describe('Questions', () => {
     test.describe('having used drugs in the last 6 months', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedInTheLastSixMonths.answers, usedInTheLastSixMonths.data)
+        const section = await openSection(
+          drugUse,
+          usedInTheLastSixMonths.answers,
+          usedInTheLastSixMonths.userSubmittedSteps,
+        )
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -170,7 +173,11 @@ test.describe('Drug use change links', () => {
 
     test.describe('having only used drugs more than 6 months ago', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedMoreThanSixMonthsAgo.answers, usedMoreThanSixMonthsAgo.data)
+        const section = await openSection(
+          drugUse,
+          usedMoreThanSixMonthsAgo.answers,
+          usedMoreThanSixMonthsAgo.userSubmittedSteps,
+        )
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -184,7 +191,11 @@ test.describe('Drug use change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(drugUse, usedInTheLastSixMonths.answers, usedInTheLastSixMonths.data)
+      const section = await openSection(
+        drugUse,
+        usedInTheLastSixMonths.answers,
+        usedInTheLastSixMonths.userSubmittedSteps,
+      )
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -198,7 +209,11 @@ test.describe('Drug use change links', () => {
   test.describe('Summary', () => {
     test.describe('having used drugs in the last 6 months', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedInTheLastSixMonths.answers, usedInTheLastSixMonths.data)
+        const section = await openSection(
+          drugUse,
+          usedInTheLastSixMonths.answers,
+          usedInTheLastSixMonths.userSubmittedSteps,
+        )
 
         await expectChangeLinksListed(
           page,
@@ -223,7 +238,11 @@ test.describe('Drug use change links', () => {
 
     test.describe('having only used drugs more than 6 months ago', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedMoreThanSixMonthsAgo.answers, usedMoreThanSixMonthsAgo.data)
+        const section = await openSection(
+          drugUse,
+          usedMoreThanSixMonthsAgo.answers,
+          usedMoreThanSixMonthsAgo.userSubmittedSteps,
+        )
 
         await expectChangeLinksListed(
           page,

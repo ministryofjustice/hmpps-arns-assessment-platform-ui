@@ -12,14 +12,18 @@ export type Data = DataConfig
  * returning the section's URL.
  */
 export const test = base.extend<{
-  openSection: (sectionPath: string, answers: Answer[], data?: Data[]) => Promise<string>
+  openSection: (sectionPath: string, answers: Answer[], userSubmittedSteps?: string[]) => Promise<string>
 }>({
   openSection: async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }, use) => {
-    await use(async (sectionPath, answers, data) => {
+    await use(async (sectionPath, answers, userSubmittedSteps) => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
-      await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(answers).withData(data).save()
+      await strengthsAndNeedsBuilder
+        .extend(sanAssessmentId)
+        .withAnswers(answers)
+        .withUserSubmittedSteps(userSubmittedSteps)
+        .save()
       await navigateToStrengthsAndNeeds(page, handoverLink, sanFormPath)
 
       return `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${sectionPath}`

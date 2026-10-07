@@ -12,7 +12,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Personal relationships and community change links
@@ -114,11 +113,11 @@ const fullyAnswered: Scenario = {
     changeLink('personal-relationships-community', 'personal_relationships_community_belonging'),
     changeLink('personal-relationships-community', 'personal_relationships_community_changes'),
   ],
-  data: [
-    { key: Step.personal_relationships_children_information.code, value: IsUserSubmitted.true },
-    { key: Step.personal_relationships.code, value: IsUserSubmitted.true },
-    { key: Step.personal_relationships_community.code, value: IsUserSubmitted.true },
-    { key: Step.personal_relationships_community_summary.code, value: IsUserSubmitted.true },
+  userSubmittedSteps: [
+    Step.personal_relationships_children_information.code,
+    Step.personal_relationships.code,
+    Step.personal_relationships_community.code,
+    Step.personal_relationships_community_summary.code,
   ],
 }
 
@@ -141,7 +140,7 @@ test.describe('Personal relationships and community change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(personal, fullyAnswered.answers, fullyAnswered.data)
+        const section = await openSection(personal, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -155,7 +154,7 @@ test.describe('Personal relationships and community change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(personal, fullyAnswered.answers, fullyAnswered.data)
+      const section = await openSection(personal, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -169,7 +168,7 @@ test.describe('Personal relationships and community change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(personal, fullyAnswered.answers, fullyAnswered.data)
+        const section = await openSection(personal, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

@@ -6,7 +6,6 @@ import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinking
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, thinking } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some thinking, behaviours and attitudes fields have character limits. These tests exercise the page to reveal the
@@ -64,18 +63,18 @@ const answers = [
   },
 ]
 
-const data = [
-  { key: Step.thinking_behaviours.code, value: IsUserSubmitted.true },
-  { key: Step.thinking_behaviours_risk_of_sexual_harm.code, value: IsUserSubmitted.true },
-  { key: Step.thinking_behaviours_sexual_harm.code, value: IsUserSubmitted.true },
-  { key: Step.thinking_behaviours_summary.code, value: IsUserSubmitted.true },
+const userSubmittedSteps = [
+  Step.thinking_behaviours.code,
+  Step.thinking_behaviours_risk_of_sexual_harm.code,
+  Step.thinking_behaviours_sexual_harm.code,
+  Step.thinking_behaviours_summary.code,
 ]
 
 test.describe('Thinking, behaviours and attitudes character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of [CommonOption.yes, Option.some, CommonOption.no]) {
     test(`thinking-behaviours: peer pressure ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(thinking, answers, data)
+      const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
       await page.goto(`${section}/${Step.thinking_behaviours.path}`)
@@ -88,7 +87,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
 
   for (const option of changeOptions) {
     test(`thinking-behaviours: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(thinking, answers, data)
+      const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
       await page.goto(`${section}/${Step.thinking_behaviours.path}`)
@@ -101,7 +100,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`thinking-behaviours-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(thinking, answers, data)
+      const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
       await page.goto(`${section}/${Step.thinking_behaviours_summary.path}#practitioner-analysis`)

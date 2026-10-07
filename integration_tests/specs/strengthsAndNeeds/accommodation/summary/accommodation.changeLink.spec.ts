@@ -12,7 +12,6 @@ import {
   summaryTab,
 } from '../../changeLinkUtils'
 import { test } from '../../fixtures'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Accommodation change links
@@ -53,10 +52,10 @@ const settledAccommodation: Scenario = {
     changeLink('accommodation-details', 'suitable_housing'),
     changeLink('accommodation-details', 'accommodation_changes'),
   ],
-  data: [
-    { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-    { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-    { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+  userSubmittedSteps: [
+    Step.current_accommodation.code,
+    Step.accommodation_details.code,
+    Step.accommodation_summary.code,
   ],
 }
 
@@ -88,10 +87,10 @@ const noAccommodation: Scenario = {
     changeLink('accommodation-details', 'suitable_housing_planned'),
     changeLink('accommodation-details', 'accommodation_changes'),
   ],
-  data: [
-    { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-    { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-    { key: Step.accommodation_summary.code, value: IsUserSubmitted.true },
+  userSubmittedSteps: [
+    Step.current_accommodation.code,
+    Step.accommodation_details.code,
+    Step.accommodation_summary.code,
   ],
 }
 
@@ -105,7 +104,11 @@ test.describe('Accommodation change links', () => {
   test.describe('Questions', () => {
     test.describe('in settled accommodation', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, settledAccommodation.answers, settledAccommodation.data)
+        const section = await openSection(
+          accommodation,
+          settledAccommodation.answers,
+          settledAccommodation.userSubmittedSteps,
+        )
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -118,7 +121,7 @@ test.describe('Accommodation change links', () => {
 
     test.describe('with no accommodation', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, noAccommodation.answers, noAccommodation.data)
+        const section = await openSection(accommodation, noAccommodation.answers, noAccommodation.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -132,7 +135,11 @@ test.describe('Accommodation change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(accommodation, settledAccommodation.answers, settledAccommodation.data)
+      const section = await openSection(
+        accommodation,
+        settledAccommodation.answers,
+        settledAccommodation.userSubmittedSteps,
+      )
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -146,7 +153,11 @@ test.describe('Accommodation change links', () => {
   test.describe('Summary', () => {
     test.describe('in settled accommodation', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, settledAccommodation.answers, settledAccommodation.data)
+        const section = await openSection(
+          accommodation,
+          settledAccommodation.answers,
+          settledAccommodation.userSubmittedSteps,
+        )
 
         await expectChangeLinksListed(
           page,
@@ -171,7 +182,7 @@ test.describe('Accommodation change links', () => {
 
     test.describe('with no accommodation', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, noAccommodation.answers, noAccommodation.data)
+        const section = await openSection(accommodation, noAccommodation.answers, noAccommodation.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, noAccommodation.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(

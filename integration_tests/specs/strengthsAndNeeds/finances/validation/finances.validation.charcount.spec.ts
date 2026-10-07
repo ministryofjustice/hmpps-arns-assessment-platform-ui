@@ -6,7 +6,6 @@ import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, finances } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some finances fields have character limits. These tests exercise the page to reveal the character count fields,
@@ -39,13 +38,10 @@ const answers = [
   { question: Question.finance_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
 
-const data = [
-  { key: Step.finance.code, value: IsUserSubmitted.true },
-  { key: Step.finance_summary.code, value: IsUserSubmitted.true },
-]
+const userSubmittedSteps = [Step.finance.code, Step.finance_summary.code]
 test.describe('Finances character counts', () => {
   test('finance: income and gambling details', async ({ page, openSection }) => {
-    const section = await openSection(finances, answers, data)
+    const section = await openSection(finances, answers, userSubmittedSteps)
     const financesPage = new FinancesPage(page)
     const { questions } = financesPage
     await page.goto(`${section}/${Step.finance.path}`)
@@ -58,7 +54,7 @@ test.describe('Finances character counts', () => {
   })
 
   test('finance: no money, and gambling unknown', async ({ page, openSection }) => {
-    const section = await openSection(finances, answers, data)
+    const section = await openSection(finances, answers, userSubmittedSteps)
     const financesPage = new FinancesPage(page)
     const { questions } = financesPage
     await page.goto(`${section}/${Step.finance.path}`)
@@ -70,7 +66,7 @@ test.describe('Finances character counts', () => {
   })
 
   test('finance: debt, their own and someone else’s', async ({ page, openSection }) => {
-    const section = await openSection(finances, answers, data)
+    const section = await openSection(finances, answers, userSubmittedSteps)
     const financesPage = new FinancesPage(page)
     const { questions } = financesPage
     await page.goto(`${section}/${Step.finance.path}`)
@@ -86,7 +82,7 @@ test.describe('Finances character counts', () => {
   })
 
   test('finance: debt unknown', async ({ page, openSection }) => {
-    const section = await openSection(finances, answers, data)
+    const section = await openSection(finances, answers, userSubmittedSteps)
     const financesPage = new FinancesPage(page)
     const { questions } = financesPage
     await page.goto(`${section}/${Step.finance.path}`)
@@ -99,7 +95,7 @@ test.describe('Finances character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of [Option.good, Option.fairly_good, Option.fairly_bad, Option.bad]) {
     test(`finance: money management ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(finances, answers, data)
+      const section = await openSection(finances, answers, userSubmittedSteps)
       const financesPage = new FinancesPage(page)
       const { questions } = financesPage
       await page.goto(`${section}/${Step.finance.path}`)
@@ -112,7 +108,7 @@ test.describe('Finances character counts', () => {
 
   for (const option of changeOptions) {
     test(`finance: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(finances, answers, data)
+      const section = await openSection(finances, answers, userSubmittedSteps)
       const financesPage = new FinancesPage(page)
       const { questions } = financesPage
       await page.goto(`${section}/${Step.finance.path}`)
@@ -125,7 +121,7 @@ test.describe('Finances character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`finance-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(finances, answers, data)
+      const section = await openSection(finances, answers, userSubmittedSteps)
       const financesPage = new FinancesPage(page)
       const { questions } = financesPage
       await page.goto(`${section}/${Step.finance_summary.path}#practitioner-analysis`)

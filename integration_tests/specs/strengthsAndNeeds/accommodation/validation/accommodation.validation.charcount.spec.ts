@@ -6,7 +6,6 @@ import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, accommodation } from '../../sanUtils'
-import { IsUserSubmitted } from '../../../../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
 
 /**
  * Some accommodation fields have character limits. These tests exercise the page to reveal the character count
@@ -37,16 +36,13 @@ const noAccommodation = [
   { question: Question.type_of_no_accommodation, value: Option.homeless },
 ]
 
-const data = [
-  { key: Step.current_accommodation.code, value: IsUserSubmitted.true },
-  { key: Step.accommodation_details.code, value: IsUserSubmitted.true },
-]
+const userSubmittedSteps = [Step.current_accommodation.code, Step.accommodation_details.code]
 test.describe('Accommodation character counts', () => {
   test('accommodation-details: who they live with, and concerns about the area and the housing', async ({
     page,
     openSection,
   }) => {
-    const section = await openSection(accommodation, answers, data)
+    const section = await openSection(accommodation, answers, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
     await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -62,7 +58,7 @@ test.describe('Accommodation character counts', () => {
   })
 
   test('accommodation-details: housing is unsuitable', async ({ page, openSection }) => {
-    const section = await openSection(accommodation, answers, data)
+    const section = await openSection(accommodation, answers, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
     await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -76,7 +72,7 @@ test.describe('Accommodation character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of changeOptions) {
     test(`accommodation-details: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(accommodation, answers, data)
+      const section = await openSection(accommodation, answers, userSubmittedSteps)
       const accommodationPage = new AccommodationPage(page)
       const { questions } = accommodationPage
       await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -92,7 +88,7 @@ test.describe('Accommodation character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(accommodation, [...answers, ...noAccommodation], data)
+      const section = await openSection(accommodation, [...answers, ...noAccommodation], userSubmittedSteps)
       const accommodationPage = new AccommodationPage(page)
       const { questions } = accommodationPage
       await page.goto(`${section}/${Step.accommodation_details.path}`)
@@ -107,7 +103,7 @@ test.describe('Accommodation character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`accommodation-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(accommodation, answers, data)
+      const section = await openSection(accommodation, answers, userSubmittedSteps)
       const accommodationPage = new AccommodationPage(page)
       const { questions } = accommodationPage
       await page.goto(`${section}/${Step.accommodation_summary.path}#practitioner-analysis`)
