@@ -13,12 +13,12 @@ import {
   pageHeading,
   reviewStepsHeading,
   reviewStepsTable,
-  addOrChangeStepsLink,
   noStepsMessage,
   progressNotesSection,
   viewAllNotesSection,
   actionButtons,
   goalContextInsetText,
+  stepActionButtonsGroup,
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
@@ -43,7 +43,7 @@ export const updateGoalAndStepsStep = step({
     goalContextInsetText,
     reviewStepsHeading,
     reviewStepsTable,
-    addOrChangeStepsLink,
+    stepActionButtonsGroup,
     noStepsMessage,
     progressNotesSection,
     viewAllNotesSection,
@@ -63,6 +63,20 @@ export const updateGoalAndStepsStep = step({
   ],
 
   onSubmission: [
+    submit({
+      when: Post('action').match(Condition.Equals('reorderSteps')),
+      validate: false,
+      onAlways: {
+        effects: [
+          SentencePlanEffects.updateGoalProgress(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
+            goalStatus: Data('activeGoal.status'),
+            action: 'reorderSteps',
+          }),
+        ],
+        next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,
