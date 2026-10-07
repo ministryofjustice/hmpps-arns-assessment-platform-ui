@@ -3,18 +3,21 @@ import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effec
 import { offenceAnalysisSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { victimsCollection } from '../../constants/collections'
-import { auditPageView } from '../../../../audit'
+import { isReadOnlyMode } from '../../../../guards'
 import { Section } from '../../../../constants/section'
+import { auditPageView } from '../../../../audit'
+import { summaryPageTitle } from '../../../../locales'
 
 export const offenceAnalysisSummaryStep = step({
   path: `/${Step.offence_analysis_summary.path}`,
-  title: 'Offence analysis summary',
+  title: summaryPageTitle(Section.offence_analysis),
   blocks: [offenceAnalysisSummaryTab],
+  reachability: { entryWhen: isReadOnlyMode },
   onAccess: [
+    auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_summary),
     access({
       effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
     }),
-    auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_summary),
   ],
   onSubmission: [
     submit({
