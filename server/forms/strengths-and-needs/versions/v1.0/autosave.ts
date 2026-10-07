@@ -19,7 +19,7 @@ export const autosaveSubmit = (stepCode: string) =>
     validate: false,
     onAlways: {
       effects: [
-        StrengthsAndNeedsEffects.saveCurrentStepAnswers(true),
+        StrengthsAndNeedsEffects.saveAndClearStaleAnswers(true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
       ],
     },

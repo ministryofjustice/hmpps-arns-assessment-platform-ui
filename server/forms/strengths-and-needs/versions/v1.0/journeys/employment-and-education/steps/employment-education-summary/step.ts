@@ -6,7 +6,7 @@ import { Step } from '../../constants/step'
 import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const employmentEducationSummaryStep = step({
   path: `/${Step.employment_education_summary.path}`,
@@ -35,9 +35,9 @@ export const employmentEducationSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.yes),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.true),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
             Section.employment_and_education,

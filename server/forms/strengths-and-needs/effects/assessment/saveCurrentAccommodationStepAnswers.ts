@@ -26,6 +26,7 @@ export const sanitizeDateValue = (value: string | undefined): string | undefined
   return value
 }
 
+// TODO: replace this with saveAndClearStaleAnswers
 export const saveCurrentAccommodationStepAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) =>
   async (context: StrengthsAndNeedsContext, isAutosaved = false) => {
@@ -67,12 +68,13 @@ export const saveCurrentAccommodationStepAnswers =
       assessmentUuid,
       user,
       added: wrapAll(delta.added),
-      removed: delta.removed,
+      removed: isAutosaved ? [] : delta.removed,
       hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 
-    const changedFields = buildChangedAnswerCodes(histories)
+    const fieldsToChange = buildChangedAnswerCodes(histories)
+    const changedFields = isAutosaved ? fieldsToChange.filter(field => !delta.removed.includes(field)) : fieldsToChange
 
     if (changedFields.length) {
       /* Field codes only, answers do not belong in the audit log. */

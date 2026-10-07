@@ -2,8 +2,6 @@ import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { deriveDrugCategories } from './assessment/deriveDrugCategories'
 import { loadAssessment } from './assessment/loadAssessment'
 import { loadPreviousVersions } from './assessment/loadPreviousVersions'
-import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
-import { autosaveCurrentStepAnswers } from './assessment/autosaveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { setPrivacyAccepted } from './session/setPrivacyAccepted'
@@ -33,8 +31,6 @@ export const StrengthsAndNeedsEffects = {
   setDynamicBacklink: sanEffects.register('setDynamicBacklink', setDynamicBacklink),
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
   loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
-  saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
-  autosaveCurrentStepAnswers: sanEffects.register('autosaveCurrentStepAnswers', autosaveCurrentStepAnswers),
   saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),

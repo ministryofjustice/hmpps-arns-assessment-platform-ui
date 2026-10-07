@@ -34,11 +34,11 @@ export const addDrugsStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: { groups: ['default', 'drugs'] },
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.add_drugs.code, IsUserSubmitted.true)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.add_drugs.code)],
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.add_drugs),

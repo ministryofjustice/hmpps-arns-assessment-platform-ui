@@ -35,7 +35,7 @@ export const thinkingBehavioursSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.yes),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,

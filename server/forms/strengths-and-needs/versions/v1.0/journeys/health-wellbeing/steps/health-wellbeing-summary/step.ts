@@ -31,7 +31,7 @@ export const healthWellbeingSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.yes),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,

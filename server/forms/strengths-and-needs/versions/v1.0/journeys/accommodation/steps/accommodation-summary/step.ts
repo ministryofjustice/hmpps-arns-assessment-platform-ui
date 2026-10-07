@@ -6,7 +6,7 @@ import { summaryTab } from './fields'
 import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const accommodationSummaryStep = step({
   path: `/${Step.accommodation_summary.path}`,
@@ -25,11 +25,11 @@ export const accommodationSummaryStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.true)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code)],
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.accommodation, Step.accommodation_summary),
         ],

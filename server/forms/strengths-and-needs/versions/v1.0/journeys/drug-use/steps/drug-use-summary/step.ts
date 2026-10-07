@@ -14,7 +14,7 @@ import { Section, SectionComplete } from '../../../../constants/section'
 import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const drugUseSummaryStep = step({
   path: `/${Step.drug_use_summary.path}`,
@@ -38,11 +38,11 @@ export const drugUseSummaryStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.true)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code)],
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.drug_use, Step.drug_use_summary),
         ],

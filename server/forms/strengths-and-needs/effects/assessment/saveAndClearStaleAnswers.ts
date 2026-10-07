@@ -39,12 +39,13 @@ export const saveAndClearStaleAnswers =
       assessmentUuid,
       user,
       added: wrapAll(delta.added),
-      removed: delta.removed,
+      removed: isAutosaved ? [] : delta.removed,
       hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 
-    const changedFields = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear])]
+    const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear])]
+    const changedFields = isAutosaved ? fieldsToChange.filter(field => !delta.removed.includes(field)) : fieldsToChange
 
     if (changedFields.length) {
       /* Field codes only, answers do not belong in the audit log. */

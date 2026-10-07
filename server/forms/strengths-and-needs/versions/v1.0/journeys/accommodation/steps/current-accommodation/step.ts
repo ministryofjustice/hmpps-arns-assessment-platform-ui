@@ -33,7 +33,7 @@ export const currentAccommodationStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.current_accommodation.code, IsUserSubmitted.true)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.current_accommodation.code)],
       },
       onValid: {
         effects: [

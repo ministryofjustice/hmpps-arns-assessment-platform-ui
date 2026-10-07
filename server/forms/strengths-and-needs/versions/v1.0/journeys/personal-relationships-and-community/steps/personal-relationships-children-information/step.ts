@@ -43,7 +43,7 @@ export const personalRelationshipsChildrenInformationStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(
             Step.personal_relationships_community_summary.code,

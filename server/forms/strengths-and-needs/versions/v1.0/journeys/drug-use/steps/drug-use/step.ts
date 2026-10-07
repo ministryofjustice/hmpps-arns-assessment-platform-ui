@@ -1,5 +1,4 @@
 import {
-  and,
   Answer,
   Condition,
   Post,
@@ -19,7 +18,7 @@ import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
 import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const drugUseStep = step({
   path: `/${Step.drug_use.path}`,
@@ -41,34 +40,6 @@ export const drugUseStep = step({
   onSubmission: [
     autosaveSubmit(Step.drug_use.code),
     submit({
-      when: and(
-        Answer(Question.drug_use).match(Condition.Equals(CommonOption.no)),
-        Post('action').match(Condition.Equals('save')),
-      ),
-      validate: true,
-      onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use.code)],
-      },
-      onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.true),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use),
-        ],
-        next: [
-          redirect({
-            when: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
-            goto: Step.add_drugs.path,
-          }),
-          redirect({
-            when: Answer(Question.drug_use).match(Condition.Equals(CommonOption.no)),
-            goto: Step.drug_use_summary.path,
-          }),
-        ],
-      },
-    }),
-    submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
@@ -76,7 +47,7 @@ export const drugUseStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use),

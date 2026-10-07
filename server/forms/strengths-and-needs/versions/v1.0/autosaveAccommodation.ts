@@ -3,11 +3,7 @@ import { StrengthsAndNeedsEffects } from '../../effects'
 import { isEditMode } from './guards'
 
 import { IsUserSubmitted } from './constants/userSubmitted'
-
-/**
- * The `action` value posted by the client side autosave script is 'autosave'.
- */
-export const autosaveAction = 'autosave'
+import { autosaveAction } from './autosave'
 
 /**
  * Persists the answers a practitioner has typed so far, with no validation or redirects.

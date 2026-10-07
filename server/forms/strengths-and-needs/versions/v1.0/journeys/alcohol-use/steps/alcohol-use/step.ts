@@ -1,5 +1,4 @@
 import {
-  and,
   Answer,
   Condition,
   Post,
@@ -18,7 +17,7 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const alcoholUseStep = step({
   path: `/${Step.alcohol_use.path}`,
@@ -40,42 +39,14 @@ export const alcoholUseStep = step({
   onSubmission: [
     autosaveSubmit(Step.alcohol_use.code),
     submit({
-      when: and(
-        Answer(Question.alcohol_use).match(Condition.Equals(CommonOption.no)),
-        Post('action').match(Condition.Equals('save')),
-      ),
+      when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use.code, IsUserSubmitted.true)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use),
-        ],
-        next: [
-          redirect({
-            when: Answer(Question.alcohol_use).match(Condition.Equals(CommonOption.no)),
-            goto: Step.alcohol_use_summary.path,
-          }),
-          redirect({
-            when: Answer(Question.alcohol_use).not.match(Condition.Equals(CommonOption.no)),
-            goto: Step.alcohol_use_details.path,
-          }),
-        ],
-      },
-    }),
-    submit({
-      when: Post('action').match(Condition.Equals('save')),
-      validate: true,
-      onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use.code, IsUserSubmitted.true)],
-      },
-      onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use),

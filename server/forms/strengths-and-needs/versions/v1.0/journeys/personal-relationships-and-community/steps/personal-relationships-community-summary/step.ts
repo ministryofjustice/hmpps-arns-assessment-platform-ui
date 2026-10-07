@@ -35,7 +35,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
             Section.personal_relationships_and_community,
             SectionComplete.yes,
