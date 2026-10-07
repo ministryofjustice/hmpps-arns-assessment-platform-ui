@@ -1,10 +1,12 @@
 import { SentencePlanContext, StepChangesStorage } from '../types'
 
-// - manages the step reorder session on the reorder-steps page
-// - runs in onAccess so it handles every GET/POST request
-// --- moveUp_/moveDown_: ensures stepChanges exists, updates the reorderedStepsDraft and rebuilds activeGoal.steps for display
-// --- saveAndContinue: draft preserved for saveReorderedSteps in onSubmission
-// --- on anything else (GET/cancel etc): discards any stale draft
+/*
+- manages the step reorder session on the reorder-steps page
+- runs in onAccess so it handles every GET/POST request
+--- moveUp_/moveDown_: ensures stepChanges exists, updates the reorderedStepsDraft and rebuilds activeGoal.steps for display
+--- saveAndContinue: draft preserved for saveReorderedSteps in onSubmission
+--- on anything else (GET/cancel etc): discards any stale draft
+ */
 export const reorderStepsInSession = () => async (context: SentencePlanContext) => {
   const session = context.getSession()
   const activeGoalUuid = context.getData('activeGoalUuid')

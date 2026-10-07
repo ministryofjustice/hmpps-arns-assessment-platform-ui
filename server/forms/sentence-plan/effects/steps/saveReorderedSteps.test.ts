@@ -88,7 +88,7 @@ describe('saveReorderedSteps', () => {
       expect(deps.api.executeCommands).not.toHaveBeenCalled()
     })
 
-    it('should return early when no reorderedSTeps draft exists', async () => {
+    it('should return early when no reorderedSteps draft exists', async () => {
       const deps = createDeps()
       const session: SentencePlanSession = {
         stepChanges: {

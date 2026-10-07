@@ -119,7 +119,7 @@ export const addStepsStep = step({
       when: Post('action').match(Condition.Equals('reorderSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveStepEditSession()],
+        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
         next: [redirect({ goto: 'reorder-steps' })],
       },
     }),

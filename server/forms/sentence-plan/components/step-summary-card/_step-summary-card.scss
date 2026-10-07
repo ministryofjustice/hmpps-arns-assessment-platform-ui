@@ -1,16 +1,61 @@
-.reorder-steps-headers {
-  display: grid;
-  grid-template-columns: 2fr 5fr 1.5fr;
-  align-items: start;
-  padding-left: govuk-spacing(8);
-}
+.reorder-steps-table {
+  $card-border: 1px solid govuk-functional-colour(border);
+  $cell-padding: govuk-spacing(4);
+  $counter-gap: govuk-spacing(1);
 
-.reorder-steps-card__header {
-  display: grid;
-  grid-template-columns: 2fr 5fr 1.5fr;
-  column-gap: govuk-spacing(3);
-  align-items: start;
-  padding: govuk-spacing(5) govuk-spacing(3) govuk-spacing(3) govuk-spacing(4);
-  background-color: govuk-functional-colour(template-background);
-  border-bottom: 1px solid govuk-functional-colour(border);
+  .govuk-table__head .govuk-table__header {
+    border-bottom: none;
+    padding-bottom: govuk-spacing(3);
+    padding-left: $cell-padding;
+  }
+
+  &__counter-header {
+    width: 2%;
+    padding-right: $counter-gap;
+  }
+
+  &__actor-header {
+    width: 24%;
+  }
+
+  &__steps-header {
+    width: 55%;
+  }
+
+  &__counter {
+    font-weight: bold;
+    border: none;
+    padding-top: $cell-padding;
+    padding-right: $counter-gap;
+  }
+
+  &__data-row {
+    .govuk-table__cell:not(.reorder-steps-table__counter) {
+      border-top: $card-border;
+      background-color: govuk-functional-colour(template-background);
+      padding: $cell-padding;
+    }
+
+    .govuk-table__cell:nth-child(2) {
+      border-left: $card-border;
+    }
+
+    .govuk-table__cell:last-child {
+      border-right: $card-border;
+    }
+  }
+
+  &__actions-row {
+    .govuk-table__cell {
+      border: $card-border;
+      padding: govuk-spacing(3);
+    }
+  }
+
+  &__spacer {
+    td {
+      height: govuk-spacing(6);
+      border: none;
+    }
+  }
 }

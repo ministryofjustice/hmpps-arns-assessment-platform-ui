@@ -13,7 +13,7 @@ export default class ReorderStepsPage extends AbstractPage {
 
   readonly goalContextInset: Locator
 
-  readonly stepCards: Locator
+  readonly stepRows: Locator
 
   readonly columnHeaders: Locator
 
@@ -24,8 +24,8 @@ export default class ReorderStepsPage extends AbstractPage {
     this.cancelButton = page.getByRole('button', { name: /cancel/i })
     this.backLink = page.locator('.govuk-back-link')
     this.goalContextInset = page.locator('.govuk-inset-text').filter({ hasText: 'Area of need' })
-    this.stepCards = page.locator('.govuk-summary-card.goal-summary-card')
-    this.columnHeaders = page.locator('.reorder-steps-headers')
+    this.stepRows = page.locator('.reorder-steps-table__data-row')
+    this.columnHeaders = page.locator('.reorder-steps-table .govuk-table__head')
   }
 
   static async verifyOnPage(page: Page): Promise<ReorderStepsPage> {
@@ -36,14 +36,14 @@ export default class ReorderStepsPage extends AbstractPage {
   }
 
   async getStepCount(): Promise<number> {
-    return this.stepCards.count()
+    return this.stepRows.count()
   }
 
   async getStepDescription(index: number): Promise<string> {
-    const card = this.stepCards.nth(index)
-    const description = card.locator('.reorder-steps-card__header span.govuk-body').nth(1)
+    const row = this.stepRows.nth(index)
+    const descriptionCell = row.locator('.govuk-table__cell').nth(2)
 
-    return (await description.textContent())?.trim() ?? ''
+    return (await descriptionCell.textContent())?.trim() ?? ''
   }
 
   async getAllStepDescriptions(): Promise<string[]> {
