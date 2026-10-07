@@ -108,6 +108,7 @@ const createVersionTable = (caption: ResolvableString, sessionKey: 'countersigne
     classes: versionTableClasses,
     head: tableHeadColumns,
     rows: Session(sessionKey).each(Iterator.Map(tableRows)),
+    attributes: { 'data-qa': 'previous-versions-table' },
   })
 
 export const countersignedVersionTable = createVersionTable(
