@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test'
 import { test } from '../../../support/fixtures'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
+import ReorderStepsPage from '../../../pages/sentencePlan/reorderStepsPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals, futureGoals } from '../../../builders/sentencePlanFactories'
 import {
@@ -206,6 +207,41 @@ test.describe('Update goal and steps page', () => {
       const updatedPage = await UpdateGoalAndStepsPage.verifyOnPage(page)
 
       await expect(updatedPage.reorderStepsButton).toBeHidden()
+    })
+
+    test('should save step status changes when clicking reorder steps', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal With Two Steps',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [
+                  { actor: 'probation_practitioner', description: 'First step', status: 'NOT_STARTED' },
+                  { actor: 'person_on_probation', description: 'Second step', status: 'NOT_STARTED' },
+                ],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
+      const goalUuid = plan.goals[0].uuid
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
+      const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      // change both step statuses
+      await updatePage.setStepStatusByIndex(0, 'IN_PROGRESS')
+      await updatePage.setStepStatusByIndex(1, 'COMPLETED')
+
+      // click reorder steps (which should save changes)
+      await updatePage.clickReorderSteps()
+      const reorderPage = await ReorderStepsPage.verifyOnPage(page)
+
+      // verify statuses are preserved on reorder page
+      expect(await reorderPage.getStepStatus(0)).toBe('In progress')
+      expect(await reorderPage.getStepStatus(1)).toBe('Completed')
     })
 
     test('displays no steps message when goal has no steps', async ({ page, openSentencePlan }) => {

@@ -3,6 +3,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import CreateGoalPage from '../../../pages/sentencePlan/createGoalPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
+import ReorderStepsPage from '../../../pages/sentencePlan/reorderStepsPage'
 import SelectAreaOfNeedPage from '../../../pages/sentencePlan/selectAreaOfNeedPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import { currentGoals, futureGoals } from '../../../builders/sentencePlanFactories'
@@ -256,10 +257,7 @@ test.describe('Add or update steps page', () => {
   })
 
   test.describe('reorder steps button', () => {
-    test('should display reorder steps button when goal has more than one step and hide it after removing a step', async ({
-      page,
-      openSentencePlan,
-    }) => {
+    test.beforeEach(async ({ page, openSentencePlan }) => {
       const { plan } = await openSentencePlan({
         plan: builder =>
           builder
@@ -278,13 +276,31 @@ test.describe('Add or update steps page', () => {
       })
       const goalUuid = plan.goals[0].uuid
       await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
+    })
+    test('should display reorder steps button when goal has more than one step and hide it after removing a step', async ({
+      page,
+    }) => {
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
-
       await expect(addStepsPage.reorderStepsButton).toBeVisible()
 
       await addStepsPage.clickRemoveStep(1)
-
       await expect(addStepsPage.reorderStepsButton).toBeHidden()
+    })
+
+    test('should show newly added step on reorder page', async ({ page }) => {
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+
+      // add a 3rd step
+      await addStepsPage.clickAddStep()
+      await addStepsPage.enterStep(2, 'probation_practitioner', 'Third step')
+
+      // click reorder steps
+      await addStepsPage.clickReorderSteps()
+      const reorderPage = await ReorderStepsPage.verifyOnPage(page)
+
+      // verify all 3 steps are shown
+      expect(await reorderPage.getStepCount()).toBe(3)
+      expect(await reorderPage.getStepDescription(2)).toBe('Third step')
     })
   })
 })
