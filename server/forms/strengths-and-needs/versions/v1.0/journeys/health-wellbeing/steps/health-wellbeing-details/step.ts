@@ -11,7 +11,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const physicalMentalHealthStep = step({
+export const healthWellbeingDetailsStep = step({
   path: `/${Step.health_wellbeing_details.path}`,
   title: sectionPageTitle(Section.health_and_wellbeing),
   view: {

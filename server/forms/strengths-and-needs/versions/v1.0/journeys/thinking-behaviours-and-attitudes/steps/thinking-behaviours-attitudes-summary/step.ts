@@ -8,7 +8,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
-export const thinkingBehavioursSummaryStep = step({
+export const thinkingBehavioursAttitudesSummaryStep = step({
   path: `/${Step.thinking_behaviours_attitudes_summary.path}`,
   title: summaryPageTitle(Section.thinking_behaviours_and_attitudes),
   blocks: [summaryTab],

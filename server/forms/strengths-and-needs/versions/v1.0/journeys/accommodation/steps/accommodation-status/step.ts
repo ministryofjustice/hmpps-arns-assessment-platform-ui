@@ -10,7 +10,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autoSaveAccommodationSubmit } from '../../../../autosaveAccommodation'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const currentAccommodationStep = step({
+export const accommodationStatusStep = step({
   path: `/${Step.accommodation_status.path}`,
   title: sectionPageTitle(Section.accommodation),
   reachability: { entryWhen: true },

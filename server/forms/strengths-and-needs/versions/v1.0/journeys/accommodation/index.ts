@@ -1,5 +1,5 @@
 import { access, and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { currentAccommodationStep } from './steps/current-accommodation/step'
+import { accommodationStatusStep } from './steps/accommodation-status/step'
 import { accommodationSummaryStep } from './steps/accommodation-summary/step'
 import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
 import { Section } from '../../constants/section'
@@ -32,5 +32,5 @@ export const accommodationJourney = journey({
       sectionStatusTag: sectionStatusTag(Section.accommodation),
     },
   },
-  steps: [currentAccommodationStep, accommodationDetailsStep, accommodationSummaryStep, accommodationAnalysisStep],
+  steps: [accommodationStatusStep, accommodationDetailsStep, accommodationSummaryStep, accommodationAnalysisStep],
 })

@@ -1,11 +1,11 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { thinkingBehavioursStep } from './steps/thinking-behaviours/step'
-import { thinkingBehavioursSexualHarmStep } from './steps/thinking-behaviours-sexual-harm/step'
-import { thinkingBehavioursSummaryStep } from './steps/thinking-behaviours-summary/step'
-import { thinkingBehavioursAnalysisStep } from './steps/thinking-behaviours-analysis/step'
+import { thinkingBehavioursAttitudesStep } from './steps/thinking-behaviours-attitudes/step'
+import { thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep } from './steps/thinking-behaviours-attitudes-risk-of-sexual-harm-details/step'
+import { thinkingBehavioursAttitudesSummaryStep } from './steps/thinking-behaviours-attitudes-summary/step'
+import { thinkingBehavioursAttitudesAnalysisStep } from './steps/thinking-behaviours-attitudes-analysis/step'
 import { Section } from '../../constants/section'
 import { sectionPageTitle, sectionStatusTag } from '../../locales'
-import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behaviours-risk-of-sexual-harm/step'
+import { thinkingBehavioursAttitudesRiskOfSexualHarmStep } from './steps/thinking-behaviours-attitudes-risk-of-sexual-harm/step'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
 
@@ -36,10 +36,10 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
     },
   },
   steps: [
-    thinkingBehavioursStep,
-    thinkingBehavioursRiskOfSexualHarmStep,
-    thinkingBehavioursSexualHarmStep,
-    thinkingBehavioursSummaryStep,
-    thinkingBehavioursAnalysisStep,
+    thinkingBehavioursAttitudesStep,
+    thinkingBehavioursAttitudesRiskOfSexualHarmStep,
+    thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep,
+    thinkingBehavioursAttitudesSummaryStep,
+    thinkingBehavioursAttitudesAnalysisStep,
   ],
 })

@@ -6,7 +6,7 @@ import { Section } from '../../../../constants/section'
 import { SanAuditEvent, auditPageView } from '../../../../audit'
 import { isReadOnlyMode } from '../../../../guards'
 
-export const thinkingBehavioursAnalysisStep = step({
+export const thinkingBehavioursAttitudesAnalysisStep = step({
   path: `/${Step.thinking_behaviours_attitudes_analysis.path}`,
   title: analysisPageTitle(Section.thinking_behaviours_and_attitudes),
   blocks: [thinkingBehavioursAnalysisSummaryTab],

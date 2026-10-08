@@ -11,7 +11,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const employedEmploymentStep = step({
+export const employmentEducationDetailsStep = step({
   path: `/${Step.employment_education_details.path}`,
   title: sectionPageTitle(Section.employment_and_education),
   view: {

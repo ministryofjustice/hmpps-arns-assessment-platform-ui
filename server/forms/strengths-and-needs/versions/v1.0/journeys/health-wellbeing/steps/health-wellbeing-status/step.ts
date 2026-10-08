@@ -9,7 +9,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const healthWellbeingStep = step({
+export const healthWellbeingStatusStep = step({
   path: `/${Step.health_wellbeing_status.path}`,
   title: sectionPageTitle(Section.health_and_wellbeing),
   reachability: { entryWhen: true },

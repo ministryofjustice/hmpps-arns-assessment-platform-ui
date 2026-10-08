@@ -11,7 +11,7 @@ import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const addDrugsStep = step({
+export const drugUseTypesStep = step({
   path: `/${Step.drug_use_types.path}`,
   title: sectionPageTitle(Section.drug_use),
   view: {

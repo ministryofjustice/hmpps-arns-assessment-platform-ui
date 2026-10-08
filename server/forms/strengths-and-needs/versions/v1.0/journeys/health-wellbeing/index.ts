@@ -1,6 +1,6 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { healthWellbeingStep } from './steps/health-wellbeing/step'
-import { physicalMentalHealthStep } from './steps/physical-mental-health/step'
+import { healthWellbeingStatusStep } from './steps/health-wellbeing-status/step'
+import { healthWellbeingDetailsStep } from './steps/health-wellbeing-details/step'
 import { healthWellbeingSummaryStep } from './steps/health-wellbeing-summary/step'
 import { healthWellbeingAnalysisStep } from './steps/health-wellbeing-analysis/step'
 import { Section } from '../../constants/section'
@@ -26,5 +26,10 @@ export const healthWellbeingJourney = journey({
       sectionStatusTag: sectionStatusTag(Section.health_and_wellbeing),
     },
   },
-  steps: [healthWellbeingStep, physicalMentalHealthStep, healthWellbeingSummaryStep, healthWellbeingAnalysisStep],
+  steps: [
+    healthWellbeingStatusStep,
+    healthWellbeingDetailsStep,
+    healthWellbeingSummaryStep,
+    healthWellbeingAnalysisStep,
+  ],
 })

@@ -19,7 +19,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
-export const alcoholUseStep = step({
+export const alcoholUseStatusStep = step({
   path: `/${Step.alcohol_use_status.path}`,
   title: sectionPageTitle(Section.alcohol_use),
   reachability: { entryWhen: true },

@@ -1,7 +1,7 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { drugUseStep } from './steps/drug-use/step'
-import { addDrugsStep } from './steps/add-drugs/step'
-import { drugDetailsStep } from './steps/drug-details/step'
+import { drugUseStatusStep } from './steps/drug-use-status/step'
+import { drugUseTypesStep } from './steps/drug-use-types/step'
+import { drugUseDetailsStep } from './steps/drug-use-details/step'
 import { drugUseHistoryStep } from './steps/drug-use-history/step'
 import { drugUseSummaryStep } from './steps/drug-use-summary/step'
 import { drugUseAnalysisStep } from './steps/drug-use-analysis/step'
@@ -30,5 +30,12 @@ export const drugUseJourney = journey({
       sectionStatusTag: sectionStatusTag(Section.drug_use),
     },
   },
-  steps: [drugUseStep, addDrugsStep, drugDetailsStep, drugUseHistoryStep, drugUseSummaryStep, drugUseAnalysisStep],
+  steps: [
+    drugUseStatusStep,
+    drugUseTypesStep,
+    drugUseDetailsStep,
+    drugUseHistoryStep,
+    drugUseSummaryStep,
+    drugUseAnalysisStep,
+  ],
 })

@@ -9,7 +9,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const thinkingBehavioursStep = step({
+export const thinkingBehavioursAttitudesStep = step({
   path: `/${Step.thinking_behaviours_attitudes.path}`,
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   reachability: { entryWhen: true },
