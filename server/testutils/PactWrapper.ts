@@ -1,6 +1,7 @@
 import { PactV3, MatchersV3 } from '@pact-foundation/pact'
+import { AssessmentVersionQueryResult } from '../interfaces/aap-api/queryResult'
 
-const { string, like } = MatchersV3
+const { eachLike, like, timestamp, uuid } = MatchersV3
 
 export class PactWrapper {
   public provider: PactV3
@@ -22,19 +23,25 @@ export class PactWrapper {
     return this
   }
 
-  withResult<T>(status: number, result: T): PactWrapper {
-    const pactResult: any = result
-    pactResult.aggregateUuid = like('bd12ef70-5c20-4a01-8394-d71f8026a69b')
-    pactResult.createdAt = like('2025-01-01T00:00:00Z')
-    pactResult.updatedAt = like('2025-01-01T00:00:00Z')
-    pactResult.collaborators = [
-      {
-        id: string('FOO_USER'),
-        name: string('Foo User'),
-      },
-    ]
+  withAssessmentVersionQueryResult(status: number, result: AssessmentVersionQueryResult): PactWrapper {
+    const pactResult = {
+      type: like(result.type),
+      assessmentType: like(result.assessmentType),
+      formVersion: like(result.formVersion),
+      answers: like(result.answers),
+      properties: like(result.properties),
+      identifiers: like(result.identifiers),
+      flags: eachLike(result.flags),
+      assessmentUuid: uuid('0cb5ffb3-2572-423d-97cd-4a05b681e6c0'),
+      aggregateUuid: uuid('bd12ef70-5c20-4a01-8394-d71f8026a69b'),
+      createdAt: timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", '2025-01-01T00:00:00.000Z'),
+      updatedAt: timestamp("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", '2025-01-01T00:00:00.000Z'),
+      collaborators: eachLike(result.collaborators),
+      collections: eachLike(result.collections),
+    }
+
     const queriesResponse: any = {
-      queries: [{ request: this.queryResponse, result: pactResult }],
+      queries: [{ request: like(this.queryResponse), result: pactResult }],
     }
     this.provider.willRespondWith({
       status,

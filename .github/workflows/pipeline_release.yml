@@ -79,22 +79,24 @@ jobs:
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
     secrets: inherit
     with:
       environment: 'dev'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true
 
   deploy_test:
     name: Deploy to the test environment
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
     secrets: inherit
     with:
       environment: 'test'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true
 
   deploy_preprod:
     name: Deploy to the pre-production environment
@@ -102,11 +104,12 @@ jobs:
       - build_docker
       - deploy_dev
       - deploy_test
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
     secrets: inherit
     with:
       environment: 'preprod'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true
 
   deploy_prod:
     name: Deploy to the production environment
@@ -114,8 +117,9 @@ jobs:
     needs:
       - build_docker
       - deploy_preprod
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
     secrets: inherit
     with:
       environment: 'prod'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true

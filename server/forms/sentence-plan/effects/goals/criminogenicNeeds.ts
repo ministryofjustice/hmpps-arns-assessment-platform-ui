@@ -1,3 +1,6 @@
+import ArnsApiClient from '../../../../data/arnsApiClient'
+import { AssessmentNeedsDto } from '../../../../interfaces/arns-api/assessmentNeeds'
+import { AssessmentNeedsDetailsDto } from '../../../../interfaces/arns-api/assessmentNeedsDetails'
 import { CriminogenicNeedsData } from '../../../../interfaces/coordinator-api/entityAssessment'
 import { mapArnsNeedsToCriminogenicNeeds } from '../../../../utils/arnsApiMapper'
 import { mapArnsIntegrationNeedsToCriminogenicNeeds } from '../../../../utils/arnsIntegrationMapper'
@@ -24,7 +27,7 @@ export const resolveCriminogenicNeedsData = async (
       throw new Error('Cannot load criminogenic needs for MPoP user: missing crn')
     }
 
-    const needs = await deps.arnsApi.getCriminogenicNeeds(crn, token)
+    const needs = await getCriminogenicNeeds(deps.arnsApi, crn, token)
     return mapArnsNeedsToCriminogenicNeeds(needs)
   }
 
@@ -36,6 +39,21 @@ export const resolveCriminogenicNeedsData = async (
     return null
   }
 
-  const needs = await deps.arnsApi.getCriminogenicNeedsDetails(handoverCrn)
+  const needs = await getCriminogenicNeedsDetails(deps.arnsApi, handoverCrn)
   return mapArnsIntegrationNeedsToCriminogenicNeeds(needs)
+}
+
+export const getCriminogenicNeeds = async (
+  arnsApi: ArnsApiClient,
+  crn: string,
+  token: string,
+): Promise<AssessmentNeedsDto> => {
+  return await arnsApi.getCriminogenicNeeds(crn, token)
+}
+
+export const getCriminogenicNeedsDetails = async (
+  arnsApi: ArnsApiClient,
+  crn: string,
+): Promise<AssessmentNeedsDetailsDto> => {
+  return await arnsApi.getCriminogenicNeedsDetails(crn)
 }

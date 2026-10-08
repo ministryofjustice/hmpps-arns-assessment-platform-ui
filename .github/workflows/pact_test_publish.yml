@@ -1,0 +1,38 @@
+name: Pact consumer test and publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_version:
+        description: App version used for the Docker image tag / Helm deploy.
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      app_version:
+        description: App version used for the Docker image tag / Helm deploy.
+        required: true
+        type: string
+    secrets:
+      PACT_BROKER_URL:
+        required: true
+      HMPPS_PACT_BROKER_USERNAME:
+        required: true
+      HMPPS_PACT_BROKER_PASSWORD:
+        required: true
+
+jobs:
+  pact_test_publish:
+    name: Pact consumer test and publish
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Generate Pact contracts
+        run: npm run pact:test
+      - name: Publish pacts
+        run: npm run pact:publish -- --consumer-app-version="${{ inputs.app_version }}" --broker-base-url="${{ PACT_BROKER_URL }}" --broker-username="${{ HMPPS_PACT_BROKER_USERNAME }}" --broker-password="${{ HMPPS_PACT_BROKER_PASSWORD }}"

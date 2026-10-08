@@ -49,6 +49,28 @@ jobs:
       upload_image_artifact: true
       image_artifact_retention_days: 1
 
+  pact_test:
+    permissions:
+      contents: read
+    name: Pact Consumer Tests and Publish Contracts
+    needs: build_docker
+    uses: ./.github/workflows/pact_test_publish.yml
+    with:
+      app_version: ${{ needs.build_docker.outputs.app_version }}
+    secrets: inherit
+
+  trigger_pact_provider_verification:
+    permissions:
+      contents: read
+    name: Trigger Pact Provider Verification
+    needs:
+      - app_version
+      - pact_test
+    uses: ./.github/workflows/trigger_pact_provider_verification.yml
+    with:
+      app_version: ${{ needs.build_docker.outputs.app_version }}
+    secrets: inherit
+
   e2e_test:
     name: E2E tests
     needs: [build_docker]
