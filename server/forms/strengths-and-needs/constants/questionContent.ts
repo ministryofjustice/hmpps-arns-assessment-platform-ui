@@ -14,7 +14,7 @@ import {
   GovUKBody,
   GovUKCheckboxInput,
   GovUKRadioInput,
-  GovUKSummaryList,
+  SummaryListRow,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { getDisplayTextForItems, getDisplayTextForSpecificItem } from '../i18n'
 import { SANGenerators } from '../generators'
@@ -159,7 +159,7 @@ export interface RevealedQuestion {
   }
 }
 
-export type SummaryRow = GovUKSummaryList['rows'][number]
+export type SummaryRow = SummaryListRow
 
 /** Placement of a field within its surrounding step, orthogonal to its content. */
 export interface FieldPlacement {

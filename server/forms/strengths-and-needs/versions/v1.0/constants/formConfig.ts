@@ -1,4 +1,4 @@
-import { FormConfig } from '../../../constants/formConfig'
+import { buildFormConfig } from '../../../constants/formConfig'
 import { formVersion } from './formVersion'
 import { accommodationSection } from '../journeys/accommodation/section'
 import { alcoholUseSection } from '../journeys/alcohol-use/section'
@@ -19,7 +19,7 @@ const sectionStatusKeys = Object.values(Section).map(section => section.statusKe
  * circular dependency back through the form's effects.
  */
 export const v1FormConfig = {
-  [formVersion]: new FormConfig(
+  [formVersion]: buildFormConfig(
     formVersion,
     [
       accommodationSection,
