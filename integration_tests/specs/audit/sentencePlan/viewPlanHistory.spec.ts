@@ -26,8 +26,8 @@ test.describe('View Plan History Page', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    await expect(auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_HISTORY, { timeout: 3_000 })).rejects.toThrow(
-      'Timed out',
-    )
+    await expect(
+      auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_HISTORY, { timeout: 3_000 }),
+    ).rejects.toThrow('Timed out')
   })
 })
