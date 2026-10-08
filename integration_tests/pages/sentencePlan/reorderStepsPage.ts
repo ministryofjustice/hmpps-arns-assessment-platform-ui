@@ -46,6 +46,13 @@ export default class ReorderStepsPage extends AbstractPage {
     return (await descriptionCell.textContent())?.trim() ?? ''
   }
 
+  async getStepStatus(index: number): Promise<string> {
+    const row = this.stepRows.nth(index)
+    const statusCell = row.locator('.govuk-table__cell').nth(3)
+
+    return (await statusCell.locator('.govuk-tag').textContent())?.trim() ?? ''
+  }
+
   async getAllStepDescriptions(): Promise<string[]> {
     const count = await this.getStepCount()
     const indices = Array.from({ length: count }, (_, i) => i)
