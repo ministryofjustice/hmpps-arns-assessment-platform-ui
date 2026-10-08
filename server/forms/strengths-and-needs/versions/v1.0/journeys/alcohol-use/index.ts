@@ -8,6 +8,14 @@ import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
 
+/**
+ * Alcohol Use Journey
+ *
+ * Flow:
+ * alcohol-use-status → (YES) → alcohol-use-details → alcohol-use-summary
+ * alcohol-use-status → (NO)  → alcohol-use-summary
+ * alcohol-use-summary → alcohol-use-analysis
+ */
 export const alcoholUseJourney = journey({
   code: Section.alcohol_use.code,
   title: sectionPageTitle(Section.alcohol_use),

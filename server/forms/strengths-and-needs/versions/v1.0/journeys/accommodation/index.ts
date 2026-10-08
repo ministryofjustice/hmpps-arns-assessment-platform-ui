@@ -13,12 +13,7 @@ import { Step } from './constants/step'
  * Accommodation Journey
  *
  * Flow:
- * current-accommodation → (branching based on type)
- *   ├── settled-accommodation        → accommodation-summary
- *   ├── temporary-accommodation      → accommodation-summary
- *   ├── temporary-accommodation-cas-ap → accommodation-summary
- *   └── no-accommodation             → accommodation-summary
- *                                         → accommodation-analysis
+ * accommodation-status → accommodation-details → accommodation-summary → accommodation-analysis
  */
 export const accommodationJourney = journey({
   code: Section.accommodation.code,

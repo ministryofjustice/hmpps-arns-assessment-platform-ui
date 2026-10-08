@@ -14,12 +14,9 @@ import { Step } from './constants/step'
  * Drug Use Journey
  *
  * Flow:
- * drug-use → (YES) → add-drugs → (branching based on injectable + recency)
- *   ├── drug-details                              → drug-use-history
- *   ├── drug-details-injected                     → drug-use-history
- *   ├── drug-details-more-than-six-months         → drug-use-history-more-than-six-months
- *                                                        → drug-use-summary
- * drug-use → (NO) → drug-use-summary → drug-use-analysis
+ * drug-use-status → (YES) → drug-use-types → drug-use-details → drug-use-history → drug-use-summary
+ * drug-use-status → (NO)  → drug-use-summary
+ * drug-use-summary → drug-use-analysis
  */
 export const drugUseJourney = journey({
   code: Section.drug_use.code,

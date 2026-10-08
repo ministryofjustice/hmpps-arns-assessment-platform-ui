@@ -12,11 +12,7 @@ import { Step } from './constants/step'
  * Health and wellbeing Journey
  *
  * Flow:
- * health-wellbeing → (branching based on type)
- *   ├── health-wellbeing               → current-employment
- *        ├── physical-mental-health         → physical-mental-health
- *            ├── health-wellbeing-summary       → health-wellbeing-summary
- *                ├── health-wellbeing-analysis      → health-wellbeing-analysis
+ * health-wellbeing-status → health-wellbeing-details → health-wellbeing-summary → health-wellbeing-analysis
  */
 export const healthWellbeingJourney = journey({
   code: Section.health_and_wellbeing.code,

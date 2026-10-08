@@ -12,11 +12,7 @@ import { Step } from './constants/step'
  * Employment Journey
  *
  * Flow:
- * current-employment → (branching based on type)
- *   ├── current-employment               → current-employment
- *   ├── employed-employment              → employed-employment
- *   ├── employment-education-summary     → employment-education-summary
- *   ├── employment-education-analysis    → employment-education-analysis
+ * employment-status → employment-education-details → employment-education-summary → employment-education-analysis
  */
 export const employmentJourney = journey({
   code: Section.employment_and_education.code,
