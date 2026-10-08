@@ -12,7 +12,7 @@ export default class DrugMisusePage extends TieringAssessmentPage {
   constructor(page: Page) {
     super(page)
     this.everMisusedDrugsYes = page.getByRole('radio', { name: 'Yes' })
-    this.everMisusedDrugsNo = page.getByRole('radio', { name: 'No' })
+    this.everMisusedDrugsNo = page.getByRole('radio', { name: 'No', exact: true })
     this.everMisusedDrugsUnknown = page.getByRole('radio', { name: 'Unknown' })
 
   }

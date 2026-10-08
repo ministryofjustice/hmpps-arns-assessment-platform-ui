@@ -22,7 +22,7 @@ import CheckAnswersPage from '../../pages/tieringAssessment/checkAnswersPage'
 import PredictorScoresPage from '../../pages/tieringAssessment/predictorScoresPage'
 
 test.describe('Assessment Dynamic', () => {
-  test('Tiering assessment Dynamic Happy Path', async ({ page }) => {
+  test('Tiering assessment Dynamic Happy Path with branching', async ({ page }) => {
     const loginPage = new LoginPage(page)
     const setupPage = new StartTieringAssessmentPage(page)
     const offenceHistoryPage = new CurrentOffenceAndOffencdingHistoryPage(page)
@@ -132,13 +132,20 @@ test.describe('Assessment Dynamic', () => {
     await employmentPage.clickEmploymentStatusUnemployedNotLookingRadioOption()
     await employmentPage.clickSaveAndContinue()
 
-    /** Drug misuse page */
+    /** Drug misuse page - No branch takes you to alcohol page */
+    await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
+    await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugMisusePage.clickEverMisusedDrugsNoRadioOption()
+    await employmentPage.clickSaveAndContinue()
+    await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
+    await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickBackLink()
     await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
     await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
     await drugMisusePage.clickEverMisusedDrugsYesRadioOption()
     await employmentPage.clickSaveAndContinue()
 
-    /** Drug use page */
+    /** Drug use page - branch when you've selected yes to drug misuse */
     await drugUsePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_USE)
     await drugUsePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
     await drugUsePage.clickDrugsUsedAmphetaminesCheckboxOption()
@@ -151,7 +158,20 @@ test.describe('Assessment Dynamic', () => {
     await drugUsePage.clickMotivationToStopNoMotivationRadioOption()
     await drugUsePage.clickSaveAndContinue()
 
-    /** Alcohol ever used more than 3 months ago */
+    /** Alcohol ever used more page - No branch takes you to personal relationships page */
+    await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
+    await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickEverDrunkAlcoholNoRadioOption()
+    await everDrunkAlcoholPage.clickSaveAndContinue()
+    await personalRelationshipsAndCommunityPage.checkPageUrl(
+      tieringAssessmentV1URLs.PERSONAL_RELATIONSHIPS_AND_COMMUNITY,
+    )
+    await personalRelationshipsAndCommunityPage.checkPageHeading(
+      tieringAssessmentPageTitles.personalRelationshipsAndCommunity,
+    )
+    await personalRelationshipsAndCommunityPage.clickBackLink()
+
+    /** Alcohol ever used more than 3 months ago - branch takes you to binge drinking page */
     await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
     await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
     await everDrunkAlcoholPage.clickEverDrunkAlcoholYesMoreThan3MonthsAgoRadioOption()
@@ -175,7 +195,7 @@ test.describe('Assessment Dynamic', () => {
     /** nav back to alcohol ever used page */
     await bingeDrinking.clickBackLink()
 
-    /** Alcohol ever used last 3 months ago */
+    /** Alcohol ever used last 3 months ago - final alcohol branch */
     await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
     await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
     await everDrunkAlcoholPage.clickEverDrunkAlcoholYesLast3MonthsRadioOption()
@@ -278,9 +298,8 @@ test.describe('Assessment Dynamic', () => {
     await checkAnswersPage.checkInterviewSubHeadingVisible()
     await checkAnswersPage.checkInterviewAnswerValue('Yes, continue assessment')
 
-    /** Check answer page dynamic factors */
+    // /** Check answer page dynamic factors */
     await checkAnswersPage.checkDynamicHeaderVisible(true)
-    await page.pause()
     await checkAnswersPage.checkAccommodationSubHeadingVisible(true)
     await checkAnswersPage.checkLivingWithAnswer(['Family', 'Friends', 'Partner', 'Person under 18 years old', 'Other'])
     await checkAnswersPage.checkAccommodationSuitableAnswer('No')
@@ -548,7 +567,6 @@ test.describe('Assessment Dynamic', () => {
 
     /** Check answer page dynamic factors */
     await checkAnswersPage.checkDynamicHeaderVisible(true)
-    await page.pause()
     await checkAnswersPage.checkAccommodationSubHeadingVisible(true)
     await checkAnswersPage.checkLivingWithAnswer('Unknown')
     await checkAnswersPage.checkAccommodationSuitableAnswer('Unknown')

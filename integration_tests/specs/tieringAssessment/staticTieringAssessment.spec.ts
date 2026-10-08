@@ -11,7 +11,7 @@ import CheckAnswersPage from '../../pages/tieringAssessment/checkAnswersPage'
 import PredictorScoresPage from '../../pages/tieringAssessment/predictorScoresPage'
 
 test.describe('Assessment', () => {
-  test('Tiering assessment', async ({ page }) => {
+  test('Happy path tiering assessment with branching', async ({ page }) => {
     const loginPage = new LoginPage(page)
     const setupPage = new StartTieringAssessmentPage(page)
     const offenceHistoryPage = new CurrentOffenceAndOffencdingHistoryPage(page)
@@ -43,7 +43,7 @@ test.describe('Assessment', () => {
     await setupPage.fillOffenceCodeTextbox()
     await setupPage.clickContinue()
 
-    /** Current offence anf Offending history page */
+    /** Current offence and Offending history page */
     await offenceHistoryPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_HISTORY)
     await offenceHistoryPage.checkPageHeading(tieringAssessmentPageTitles.offenceHistory)
     await offenceHistoryPage.fillFirstSanctionDayTextbox()
@@ -51,10 +51,30 @@ test.describe('Assessment', () => {
     await offenceHistoryPage.fillFirstSanctionYearTextbox()
     await offenceHistoryPage.fillTotalSanctionsTextbox()
     await offenceHistoryPage.fillViolentSanctionsTextbox()
+    await offenceHistoryPage.clickSexualSanctionsNoRadioOption()
+    await offenceHistoryPage.clickSaveAndContinue()
+
+    /** Current supervision date page (No branch that skips sexual offence questions and current supervision date page) */
+    await currentSupervisionDatePage.checkPageUrl(tieringAssessmentV1URLs.CURRENT_SUPERVISION)
+    await currentSupervisionDatePage.checkPageHeading(tieringAssessmentPageTitles.currentSupervision)
+    await currentSupervisionDatePage.fillCurrentSupervisionDayTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionMonthTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionYearTextbox()
+    await currentSupervisionDatePage.clickSaveAndContinue()
+    await interviewPage.checkPageUrl(tieringAssessmentV1URLs.INTERVIEW)
+    await interviewPage.checkPageHeading(tieringAssessmentPageTitles.interview)
+    await currentSupervisionDatePage.clickBackLink()
+    await currentSupervisionDatePage.checkPageUrl(tieringAssessmentV1URLs.CURRENT_SUPERVISION)
+    await currentSupervisionDatePage.checkPageHeading(tieringAssessmentPageTitles.currentSupervision)
+    await currentSupervisionDatePage.clickBackLink()
+
+    /** Going back to offence and Offending history page to change sexual question to yes for the missing branches */
+    await offenceHistoryPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_HISTORY)
+    await offenceHistoryPage.checkPageHeading(tieringAssessmentPageTitles.offenceHistory)
     await offenceHistoryPage.clickSexualSanctionsYesRadioOption()
     await offenceHistoryPage.clickSaveAndContinue()
 
-    /** Sexual offending page */
+    /** Sexual offending page (Yes Branch) */
     await sexualOffendingPage.checkPageUrl(tieringAssessmentV1URLs.SEXUAL_OFFENDING)
     await sexualOffendingPage.checkPageHeading(tieringAssessmentPageTitles.sexualOffending)
     await sexualOffendingPage.clickCurrentOffenceSexualYesRadioOption()
@@ -135,7 +155,7 @@ test.describe('Assessment', () => {
     await checkAnswersPage.checkPageHeading(tieringAssessmentPageTitles.checkAnswers)
     await checkAnswersPage.clickViewPredictorsButton()
 
-    /** nav back to Predictor scors page, complete assessment */
+    /** nav back to Predictor scores page, complete assessment */
     await predictorScoresPage.checkPageUrl(tieringAssessmentV1URLs.PREDICTOR_SCORES)
     await predictorScoresPage.checkPageHeading(tieringAssessmentPageTitles.predictorScores)
     await predictorScoresPage.checkCompleteBannerVisible(false)
