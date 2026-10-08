@@ -13,6 +13,9 @@ export const postAgreementProcessStatuses: AgreementStatus[] = ['AGREED', 'DO_NO
 // Statuses for step to choose from in dropdown
 export const stepStatusOptions = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANNOT_BE_DONE_YET', 'NO_LONGER_NEEDED']
 
+// dateOffset value representing 1 day ago (in milliseconds)
+export const oneDayAgoMs = -86400000
+
 // sentence plan V1 URLs for use in playwright testing suits:
 const sentencePlanFormPath = '/sentence-plan'
 const accessFormPath = '/access'

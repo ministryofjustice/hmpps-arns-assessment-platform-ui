@@ -1,6 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
+import ReorderStepsPage from '../../../pages/sentencePlan/reorderStepsPage'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import ChangeGoalPage from '../../../pages/sentencePlan/changeGoalPage'
@@ -9,6 +10,7 @@ import {
   checkAccessibility,
   getDatePlusDaysAsISO,
   handlePrivacyScreenIfPresent,
+  oneDayAgoMs,
   sentencePlanV1URLs,
 } from '../sentencePlanUtils'
 
@@ -38,7 +40,7 @@ test.describe('Plan History - Updated Goals', () => {
         {
           status: 'AGREED',
           createdBy: 'Test Practitioner',
-          dateOffset: -86400000, // 1 day ago
+          dateOffset: oneDayAgoMs,
         },
       ])
       .save()
@@ -86,7 +88,7 @@ test.describe('Plan History - Updated Goals', () => {
         {
           status: 'AGREED',
           createdBy: 'Test Practitioner',
-          dateOffset: -86400000, // 1 day ago
+          dateOffset: oneDayAgoMs,
         },
       ])
       .save()
@@ -120,7 +122,7 @@ test.describe('Plan History - Updated Goals', () => {
             {
               status: 'AGREED',
               createdBy: 'Test Practitioner',
-              dateOffset: -86400000,
+              dateOffset: oneDayAgoMs,
             },
           ]),
     })
@@ -160,7 +162,7 @@ test.describe('Plan History - Updated Goals', () => {
             {
               status: 'AGREED',
               createdBy: 'Test Practitioner',
-              dateOffset: -86400000,
+              dateOffset: oneDayAgoMs,
             },
           ]),
     })
@@ -202,7 +204,7 @@ test.describe('Plan History - Updated Goals', () => {
             {
               status: 'AGREED',
               createdBy: 'Test Practitioner',
-              dateOffset: -86400000,
+              dateOffset: oneDayAgoMs,
             },
           ]),
     })
@@ -243,7 +245,7 @@ test.describe('Plan History - Updated Goals', () => {
             {
               status: 'AGREED',
               createdBy: 'Test Practitioner',
-              dateOffset: -86400000,
+              dateOffset: oneDayAgoMs,
             },
           ]),
     })
@@ -284,7 +286,7 @@ test.describe('Plan History - Updated Goals', () => {
             {
               status: 'AGREED',
               createdBy: 'Test Practitioner',
-              dateOffset: -86400000,
+              dateOffset: oneDayAgoMs,
             },
           ]),
     })
@@ -305,5 +307,66 @@ test.describe('Plan History - Updated Goals', () => {
     await expect(
       planHistoryPage.mainContent.getByRole('heading', { name: /Goal updated.*Find stable accommodation/ }),
     ).toBeVisible()
+  })
+
+  test('should create one plan history entry per reorder and preserve the step order snapshot', async ({
+    page,
+    openSentencePlan,
+  }) => {
+    await openSentencePlan({
+      plan: builder =>
+        builder
+          .withGoal({
+            title: 'Find stable accommodation',
+            areaOfNeed: 'accommodation',
+            status: 'ACTIVE',
+            targetDate: getDatePlusDaysAsISO(90),
+            steps: [
+              { actor: 'probation_practitioner', description: 'Step A', status: 'NOT_STARTED' },
+              { actor: 'person_on_probation', description: 'Step B', status: 'NOT_STARTED' },
+            ],
+          })
+          .withPlanAgreements([
+            {
+              status: 'AGREED',
+              createdBy: 'Test Practitioner',
+              dateOffset: oneDayAgoMs,
+            },
+          ]),
+    })
+
+    const goalUpdatedSelector = { name: /Goal updated.*Find stable accommodation/ }
+
+    // reorder: A,B >> B,A
+    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
+    await planOverviewPage.clickUpdateGoal(0)
+    const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+    await updatePage.clickReorderSteps()
+
+    const reorderPage = await ReorderStepsPage.verifyOnPage(page)
+    await reorderPage.clickMoveDown(0)
+    await reorderPage.clickSaveAndContinue()
+    await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+    await page.getByRole('link', { name: 'Plan history' }).click()
+    const planHistoryPage = await PlanHistoryPage.verifyOnPage(page)
+    await expect(planHistoryPage.mainContent.getByRole('heading', goalUpdatedSelector)).toHaveCount(1)
+
+    // reorder back: B,A >> A,B
+    await page.getByRole('link', { name: /'s plan/i }).click()
+    await planOverviewPage.clickUpdateGoal(0)
+    await updatePage.clickReorderSteps()
+
+    await reorderPage.clickMoveDown(0)
+    await reorderPage.clickSaveAndContinue()
+
+    await page.getByRole('link', { name: 'Plan history' }).click()
+    await expect(planHistoryPage.mainContent.getByRole('heading', goalUpdatedSelector)).toHaveCount(2)
+
+    // verify the older entry preserved the B,A snapshot
+    await planHistoryPage.clickShowAllSectionsButton()
+
+    expect(await planHistoryPage.getStepDescription(1, 0)).toBe('Step B')
+    expect(await planHistoryPage.getStepDescription(1, 1)).toBe('Step A')
   })
 })
