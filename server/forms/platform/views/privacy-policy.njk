@@ -1,0 +1,16 @@
+{%- extends "platform/views/platform-policy-step.njk" -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "govuk/components/details/macro.njk" import govukDetails -%}
+
+{% block content %}
+  {{ super() }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Privacy policy</h1>
+
+      <p class="govuk-body" data-qa="privacy-policy-content">
+        This is the Privacy policy page. Content for this page will be added soon.
+      </p>
+    </div>
+  </div>
+{% endblock %}

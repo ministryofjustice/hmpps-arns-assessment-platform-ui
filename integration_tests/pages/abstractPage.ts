@@ -15,12 +15,36 @@ export default class AbstractPage {
   /** account type text shown under username in header */
   readonly accountType: Locator
 
-  protected constructor(page: Page) {
+  readonly saveAndContinue: Locator
+
+  readonly summary: Locator
+
+  readonly goToPractitionerAnalysis: Locator
+
+  readonly practitionerAnalysisTab: Locator
+
+  readonly practitionerAnalysis: Locator
+
+  readonly returnToOASys: Locator
+
+  readonly markComplete: Locator
+
+  readonly alert: Locator
+
+  constructor(page: Page) {
     this.page = page
     this.phaseBanner = page.getByTestId('header-phase-banner')
     this.usersName = page.getByTestId('header-user-name')
     this.signoutLink = page.getByText('Sign out')
     this.accountType = page.locator('.arns-common-header__menu-toggle-label, .arns-common-header__oasys-account-label')
+    this.saveAndContinue = page.getByRole('button', { name: 'Save and continue' })
+    this.summary = page.getByRole('tabpanel', { name: 'Summary' })
+    this.goToPractitionerAnalysis = page.getByRole('button', { name: 'Go to practitioner analysis' })
+    this.practitionerAnalysisTab = page.getByRole('tab', { name: 'Practitioner analysis' })
+    this.practitionerAnalysis = page.getByRole('tabpanel', { name: 'Practitioner analysis' })
+    this.returnToOASys = page.getByRole('link', { name: 'Go to the OASys homepage' })
+    this.markComplete = page.getByRole('button', { name: 'Mark as complete' })
+    this.alert = page.getByRole('alert')
   }
 
   async signOut() {

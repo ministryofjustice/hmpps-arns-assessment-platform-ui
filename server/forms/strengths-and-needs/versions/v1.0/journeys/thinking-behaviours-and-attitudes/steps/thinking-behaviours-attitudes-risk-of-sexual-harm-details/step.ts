@@ -1,0 +1,85 @@
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { contentFor } from '../../locales'
+import { commonContentFor, sectionPageTitle } from '../../../../locales'
+import { baseSanRoute } from '../../../../constants/path'
+import { thinkingBehavioursAttitudesSection } from '../../section'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { createRoute } from '../../../../../../generators'
+import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+
+export const thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep = step({
+  path: `/${Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.path}`,
+  title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
+  view: {
+    locals: {
+      sectionTitle: contentFor('step.thinking_behaviours_attitudes_risk_of_sexual_harm_details'),
+      pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.thinking_behaviours_and_attitudes.path,
+        Step.thinking_behaviours_attitudes_risk_of_sexual_harm.path,
+      ]),
+    },
+  },
+  blocks: [
+    thinkingBehavioursAttitudesSection.questions.sexualPreoccupation.displayModes.field,
+    thinkingBehavioursAttitudesSection.questions.offenceRelatedSexualInterest.displayModes.field,
+    thinkingBehavioursAttitudesSection.questions.emotionalIntimacy.displayModes.field,
+    saveButton,
+  ],
+  onAccess: [
+    auditPageView(
+      SanAuditEvent.VIEW_QUESTION_PAGE,
+      Section.thinking_behaviours_and_attitudes,
+      Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details,
+    ),
+  ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
+  onSubmission: [
+    autosaveSubmit(
+      Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
+      Section.thinking_behaviours_and_attitudes,
+    ),
+    submit({
+      when: Post('action').match(Condition.Equals('save')),
+      validate: true,
+      onAlways: {
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
+          ),
+        ],
+      },
+      onValid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.thinking_behaviours_attitudes_summary.code,
+            IsUserSubmitted.false,
+          ),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.thinking_behaviours_and_attitudes,
+            Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details,
+          ),
+        ],
+        next: [
+          redirect({
+            goto: Step.thinking_behaviours_attitudes_summary.path,
+          }),
+        ],
+      },
+    }),
+  ],
+})

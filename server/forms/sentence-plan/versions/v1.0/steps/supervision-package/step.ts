@@ -6,7 +6,7 @@ import {
   redirectToPrivacyUnlessAccepted,
 } from '../../guards'
 import { supervisionPackageSection, supervisionPackageErrorMessage } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../effects'
 
 export const supervisionPackageStep = step({
   path: '/supervision-package',
@@ -25,7 +25,7 @@ export const supervisionPackageStep = step({
     redirectToPrivacyUnlessAccepted(),
     redirectToOverviewUnlessSupervisionPackageAccessible(),
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_SUPERVISION_PACKAGE)],
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_SUPERVISION_PACKAGE)],
     }),
   ],
 })

@@ -28,15 +28,17 @@ export interface PrivacyScreenConfig {
 
   /**
    * Path to redirect to after successful submission
+   * Can be a string or a Data expression (e.g., Data('privacyScreenRedirectPath'))
    * Relative to the current journey (e.g., 'v1.0/plan/overview')
    */
-  submitRedirectPath: string
+  submitRedirectPath: ResolvableString
 
   /**
    * Path to redirect to if privacy has already been accepted this session
+   * Can be a string or a Data expression (e.g., Data('privacyScreenRedirectPath'))
    * Relative to the current journey (e.g., 'v1.0/plan/overview')
    */
-  alreadyAcceptedRedirectPath: string
+  alreadyAcceptedRedirectPath: ResolvableString
 
   /**
    * Nunjucks template to use for rendering
@@ -52,15 +54,27 @@ export interface PrivacyScreenConfig {
 
   /**
    * URL for the HMPPS header service name link
+   * Can be a string or a Data expression
    * (e.g., '/forms/sentence-plan/v1.0/plan/overview')
    */
-  headerServiceNameLink: string
+  headerServiceNameLink: ResolvableString
 
   /**
    * Expression to resolve the person's forename for display in the privacy screen content
    * (e.g., Data('caseData.name.forename'))
    */
   personForename: ResolvableString
+
+  /**
+   * The page title
+   * (e.g., 'Close other applications')
+   */
+  title: ResolvableString
+
+  /**
+   * Url for the feedback form
+   */
+  feedbackUrl: string
 }
 
 /**
@@ -99,23 +113,26 @@ export function createPrivacyScreen(config: PrivacyScreenConfig) {
     basePath,
     headerServiceNameLink,
     personForename,
+    title,
   } = config
 
   return step({
     path: '/privacy',
-    title: 'Close other applications',
+    title,
     reachability: { entryWhen: true },
     view: {
       template,
       locals: {
         basePath,
         hideNavigation: true,
+        hideNavigationLinks: true,
         hidePreviousVersions: true,
         hideBackToTop: true,
         hmppsHeaderServiceNameLink: headerServiceNameLink,
         backlink: when(Data('accessDetails.accessType').match(Condition.Equals('OASYS')))
           .then(Data('accessDetails.oasysRedirectUrl'))
           .else(null),
+        feedbackUrl: config.feedbackUrl,
       },
     },
     blocks: [createFormContent(personForename)],

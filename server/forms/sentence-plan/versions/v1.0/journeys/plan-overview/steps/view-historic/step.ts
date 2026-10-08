@@ -20,7 +20,7 @@ import {
   subNavigation,
   notificationBanners,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import { isOasysAccess } from '../../../../guards'
 
@@ -78,7 +78,7 @@ export const viewHistoricStep = step({
     // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
     access({
       effects: [
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_HISTORIC_PLAN, {
           planVersionTimestamp: Params('timestamp'),
         }),
       ],

@@ -1,0 +1,113 @@
+import {
+  access,
+  and,
+  Condition,
+  Data,
+  journey,
+  not,
+  Params,
+  redirect,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { accommodationJourney } from './journeys/accommodation'
+import { employmentJourney } from './journeys/employment-and-education'
+import { financeJourney } from './journeys/finance'
+import { drugUseJourney } from './journeys/drug-use'
+import { alcoholUseJourney } from './journeys/alcohol-use'
+import { StrengthsAndNeedsEffects } from '../../effects'
+import { Section } from './constants/section'
+import { basePath, formRootPath, formVersion } from './constants/formVersion'
+import { commonContentFor } from './locales'
+import { healthWellbeingJourney } from './journeys/health-wellbeing'
+import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
+import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { isEditMode, isHistoricView, isOasysAccess, preventPrivilegeEscalation } from './guards'
+import { offenceAnalysisJourney } from './journeys/offence-analysis'
+import config from '../../../../config'
+import { createPlatformPages, notAPlatformPage } from '../../../platform'
+import { viewAllAnswersStep } from './steps/view-all-answers/step'
+import { previousVersionsStep } from './steps/previous-versions/step'
+import { configStep } from '../configStep'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
+import { StrengthsAndNeedsTransformers } from '../../transformers'
+import { createRoute } from '../../generators'
+import { baseSanRoute } from './constants/path'
+
+const feedbackUrl = config.privateBetaFeedbackUrl
+
+/**
+ * Strengths and Needs v1.0 Journey
+ *
+ * Contains all section journeys for the SAN assessment.
+ * Sets the SAN template and section navigation for all child journeys.
+ */
+export const strengthsAndNeedsV1Journey = journey({
+  code: 'strengths-and-needs-v1',
+  title: commonContentFor('strengths_and_needs'),
+  path: `/${formVersion}/:mode/:uuid`,
+  view: {
+    template: 'strengths-and-needs/views/san-step',
+    locals: {
+      basePath: createRoute(baseSanRoute),
+      assessmentVersionDate: Data('sessionDetails.assessmentVersion').pipe(
+        StrengthsAndNeedsTransformers.FormatFullDateTime(),
+      ),
+      sectionNavItems: Object.values(Section).map(section => ({
+        ...section,
+        complete: Data(section.statusKey),
+        text: commonContentFor(`sectionTitle.${section.code}`),
+        // Override sideNavHref for read-only mode to point to analysis step
+        sideNavHref: when(Params('mode').match(Condition.Equals('edit')))
+          .then(createRoute([...baseSanRoute, section.sideNavHref], [{ name: 'resume', value: 'true' }]))
+          .else(createRoute([...baseSanRoute, section.sideNavHref])),
+      })),
+      viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
+      viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
+      buttons: {
+        showReturnToOasysButton: and(isOasysAccess, not(isHistoricView)),
+      },
+      feedbackUrl,
+      autosave: isEditMode, // Only enable autosave if we are in edit mode
+      previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
+    },
+  },
+  data: {
+    formVersion,
+    formConfig: formConfigsByVersion[formVersion],
+  },
+  onAccess: [
+    access({
+      effects: [
+        StrengthsAndNeedsEffects.initializeSessionFromAccess(),
+        StrengthsAndNeedsEffects.loadSessionData(),
+        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
+        StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
+      ],
+    }),
+    // Prevent privilege escalation: check mode against accessMode
+    preventPrivilegeEscalation(),
+    // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
+    access({
+      when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
+      next: [redirect({ goto: `${formRootPath}/privacy` })],
+    }),
+  ],
+  steps: [
+    ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
+    viewAllAnswersStep,
+    previousVersionsStep,
+    configStep,
+  ],
+  children: [
+    accommodationJourney,
+    employmentJourney,
+    financeJourney,
+    drugUseJourney,
+    alcoholUseJourney,
+    healthWellbeingJourney,
+    personalRelationshipsJourney,
+    thinkingBehavioursAndAttitudesJourney,
+    offenceAnalysisJourney,
+  ],
+})

@@ -9,7 +9,7 @@ test.describe('Accessibility page', () => {
     await page.goto(accessibilityPageUrl)
     await expect(page).toHaveURL(accessibilityPageUrl)
 
-    await checkHeaderVisibility(page, 1, 'Accessibility statement for Assess and plan: Sentence plan')
+    await checkHeaderVisibility(page, 1, 'Accessibility statement for Assess and plan')
     await checkHeaderVisibility(page, 2, 'How accessible this website is')
     await checkHeaderVisibility(page, 2, 'Feedback and contact information')
     await checkHeaderVisibility(page, 3, 'Enforcement procedure')
@@ -34,7 +34,7 @@ test.describe('Accessibility page', () => {
     await expect(webContentAccessibilityLink).toHaveAttribute('href', 'https://www.w3.org/TR/WCAG22')
 
     await checkLinkOpensInCurrentTab(feedbackAndContactLink)
-    await expect(feedbackAndContactLink).toHaveAttribute('href', 'national-rollout-feedback-url')
+    await expect(feedbackAndContactLink).toHaveAttribute('href', '#national-rollout-feedback-url')
 
     await checkLinkOpensInCurrentTab(equalityAdvisoryLink)
     await expect(equalityAdvisoryLink).toHaveAttribute('href', 'https://www.equalityadvisoryservice.com')

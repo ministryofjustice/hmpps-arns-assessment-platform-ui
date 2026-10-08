@@ -2,7 +2,7 @@ import { test } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import ChangeAreaOfNeedPage from '../../../pages/sentencePlan/changeAreaOfNeedPage'
 import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Change Area of Need page', () => {
   test('visiting change area of need page', async ({ page, auditQueue, openSentencePlan }) => {
@@ -14,7 +14,7 @@ test.describe('View Change Area of Need page', () => {
     await page.goto(sentencePlanV1UrlBuilders.goalChangeArea(goalUuid))
     await ChangeAreaOfNeedPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_CHANGE_AREA_OF_NEED)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_CHANGE_AREA_OF_NEED)
     expectAuditEvent(event, goalUuid)
   })
 })

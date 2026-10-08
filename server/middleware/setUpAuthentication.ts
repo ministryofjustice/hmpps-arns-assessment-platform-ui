@@ -60,6 +60,7 @@ const authPaths = {
  */
 const targetServicePaths: Record<string, string> = {
   'sentence-plan': '/access/sentence-plan/oasys',
+  'strengths-and-needs': '/access/strengths-and-needs/oasys',
 }
 
 passport.serializeUser((user, done) => {

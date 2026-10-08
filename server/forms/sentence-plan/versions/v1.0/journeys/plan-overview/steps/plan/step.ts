@@ -28,7 +28,7 @@ import {
   subNavigation,
   notificationBanners,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
 
@@ -126,7 +126,9 @@ export const planStep = step({
     }),
     // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') })],
+      effects: [
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
+      ],
     }),
   ],
   onSubmission: [

@@ -20,7 +20,7 @@ import {
   actionButtons,
   goalContextInsetText,
 } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
 /**
@@ -54,7 +54,7 @@ export const updateGoalAndStepsStep = step({
     access({
       effects: [
         SentencePlanEffects.loadActiveGoalForEdit(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_UPDATE_GOAL_AND_STEPS),
       ],
     }),
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
@@ -69,7 +69,7 @@ export const updateGoalAndStepsStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.updateGoalProgress(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEP_PROGRESS, {
             goalStatus: Data('activeGoal.status'),
             action: 'save',
           }),
@@ -95,7 +95,7 @@ export const updateGoalAndStepsStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.updateGoalProgress(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEP_PROGRESS, {
             goalStatus: Data('activeGoal.status'),
             action: 'mark-achieved',
           }),

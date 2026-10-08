@@ -152,28 +152,28 @@
       <div class="app-report-problem__info">
         <pre class="app-report-problem__details" id="report-problem-details">CRN: {{ data.caseData.crn if data.caseData }}
 Request ID: {{ requestId or 'Unavailable' }}
-{% if traceId and traceId != requestId %}Trace ID: {{ traceId }}
-{% endif %}Assessment ID: {{ data.assessmentUuid }}
+          {% if traceId and traceId != requestId %}Trace ID: {{ traceId }}
+          {% endif %}Assessment ID: {{ data.assessmentUuid }}
 OASys PK: {{ data.oasysAssessmentPk }}</pre>
-          <div class="app-report-problem__copy">
-            <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
-              Copy
-            </button>
-          </div>
-        </div>
-      {% endset %}
-      <div class="app-report-problem govuk-!-display-none-print" id="report-a-problem" role="complementary" aria-label="Report a problem" data-qa="report-a-problem">
-        <div class="govuk-width-container">
-          <details class="govuk-details">
-            <summary class="govuk-details__summary" data-ai-id="report-a-problem-footer">
-              <span class="govuk-details__summary-text">Report a problem</span>
-            </summary>
-            <div class="govuk-details__text">
-              {{ reportProblemHtml | safe }}
-            </div>
-          </details>
+        <div class="app-report-problem__copy">
+          <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+            Copy
+          </button>
         </div>
       </div>
+    {% endset %}
+    <div class="app-report-problem govuk-!-display-none-print" id="report-a-problem" role="complementary" aria-label="Report a problem" data-qa="report-a-problem">
+      <div class="govuk-width-container">
+        <details class="govuk-details">
+          <summary class="govuk-details__summary" data-ai-id="report-a-problem-footer">
+            <span class="govuk-details__summary-text">Report a problem</span>
+          </summary>
+          <div class="govuk-details__text">
+            {{ reportProblemHtml | safe }}
+          </div>
+        </details>
+      </div>
+    </div>
   {% endblock %}
 
   {% block govukFooter %}

@@ -10,7 +10,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, areaOfNeedField, continueButton } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 
 /**
  * Entry point for creating a goal: the practitioner picks an area of need
@@ -43,7 +43,7 @@ export const selectAreaOfNeedStep = step({
   blocks: [pageHeading, areaOfNeedField, continueButton],
   onAccess: [
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_SELECT_AREA_OF_NEED)],
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_SELECT_AREA_OF_NEED)],
     }),
   ],
   onSubmission: [

@@ -1,6 +1,6 @@
 import { access, Format, redirect, Post, step, submit, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 
@@ -26,7 +26,7 @@ export const removeGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_REMOVED),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CONFIRM_GOAL_REMOVED),
       ],
     }),
     // Only allow removing goals if plan is agreed (soft-delete for agreed plans only)
@@ -42,7 +42,7 @@ export const removeGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.markGoalAsRemoved(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_REMOVED),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_GOAL_REMOVED),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You removed a goal from %1 plan', CaseData.ForenamePossessive),

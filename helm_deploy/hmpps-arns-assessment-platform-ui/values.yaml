@@ -36,6 +36,8 @@ generic-service:
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
     OASYS_REVIEW_URL: 'https://int.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
+    NATIONAL_ROLLOUT_FEEDBACK_URL: '#national-rollout-feedback-url'
+    PRIVATE_BETA_FEEDBACK_URL: '#private-beta-feedback-url'
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

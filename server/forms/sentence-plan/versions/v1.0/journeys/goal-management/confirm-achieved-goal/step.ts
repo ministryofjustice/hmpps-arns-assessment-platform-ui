@@ -1,6 +1,6 @@
 import { access, Format, redirect, Post, step, submit, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
 import { CaseData } from '../../../constants'
 
@@ -17,7 +17,7 @@ export const confirmAchievedGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
       ],
     }),
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
@@ -32,7 +32,7 @@ export const confirmAchievedGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.markGoalAsAchieved(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_GOAL_ACHIEVED),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),

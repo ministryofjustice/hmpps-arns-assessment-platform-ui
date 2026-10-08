@@ -161,7 +161,8 @@ export default {
       agent: new AgentConfig(Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_RESPONSE', 5000))),
     },
   },
-  sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
+  sanUrl: get('SAN_URL', 'http://localhost:3000/strengths-and-needs/v1.0', requiredInProduction),
+  sanLegacyUrl: get('SAN_LEGACY_URL', ''),
   sqs: {
     audit: auditConfig(),
   },
@@ -172,6 +173,9 @@ export default {
   forms: {
     sentencePlan: {
       enabled: get('FORM_SENTENCE_PLAN_ENABLED', 'true') === 'true',
+    },
+    strengthsAndNeeds: {
+      enabled: get('FORM_STRENGTHS_AND_NEEDS_ENABLED', 'true') === 'true',
     },
     trainingSessionLauncher: {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
@@ -205,7 +209,7 @@ export default {
   ingressUrl,
   logLevel: get('LOG_LEVEL', 'info'),
   environmentName: get('ENVIRONMENT_NAME', ''),
-  feedbackFormUrl: get('FEEDBACK_FORM_URL', '#'),
+  privateBetaFeedbackUrl: get('PRIVATE_BETA_FEEDBACK_URL', '#'),
   nationalRolloutFeedbackUrl: get('NATIONAL_ROLLOUT_FEEDBACK_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
