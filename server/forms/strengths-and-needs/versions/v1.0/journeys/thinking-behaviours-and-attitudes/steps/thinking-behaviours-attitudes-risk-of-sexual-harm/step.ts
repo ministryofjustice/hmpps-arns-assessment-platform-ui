@@ -52,7 +52,10 @@ export const thinkingBehavioursAttitudesRiskOfSexualHarmStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code, Section.thinking_behaviours_and_attitudes),
+    autosaveSubmit(
+      Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+      Section.thinking_behaviours_and_attitudes,
+    ),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
