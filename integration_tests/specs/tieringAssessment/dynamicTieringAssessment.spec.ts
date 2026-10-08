@@ -22,7 +22,7 @@ import CheckAnswersPage from '../../pages/tieringAssessment/checkAnswersPage'
 import PredictorScoresPage from '../../pages/tieringAssessment/predictorScoresPage'
 
 test.describe('Assessment Dynamic', () => {
-  test('Tiering assessment Dynamic Happy Path with branching', async ({ page }) => {
+  test('Tiering assessment - Dynamic Happy Path with branching and validation error checks', async ({ page }) => {
     const loginPage = new LoginPage(page)
     const setupPage = new StartTieringAssessmentPage(page)
     const offenceHistoryPage = new CurrentOffenceAndOffencdingHistoryPage(page)
@@ -118,6 +118,10 @@ test.describe('Assessment Dynamic', () => {
     /** Accommodation page */
     await accommodationPage.checkPageUrl(tieringAssessmentV1URLs.ACCOMMODATION)
     await accommodationPage.checkPageHeading(tieringAssessmentPageTitles.accommodation)
+    await accommodationPage.clickSaveAndContinue()
+    await accommodationPage.checkErrorSummaryBoxAppears()
+    await accommodationPage.firstAccommodationQuestionError(1)
+    await accommodationPage.numberOfRequiredFieldErrors(1)
     await accommodationPage.clickLivingWithFamilyCheckboxOption()
     await accommodationPage.clickLivingWithFriendsCheckboxOption()
     await accommodationPage.clickLivingWithPartnerCheckboxOption()
@@ -129,25 +133,34 @@ test.describe('Assessment Dynamic', () => {
     /** Employment */
     await employmentPage.checkPageUrl(tieringAssessmentV1URLs.EMPLOYMENT)
     await employmentPage.checkPageHeading(tieringAssessmentPageTitles.employment)
+    await employmentPage.clickSaveAndContinue()
+    await employmentPage.checkErrorSummaryBoxAppears()
+    await employmentPage.numberOfRequiredFieldErrors(1)
     await employmentPage.clickEmploymentStatusUnemployedNotLookingRadioOption()
     await employmentPage.clickSaveAndContinue()
 
     /** Drug misuse page - No branch takes you to alcohol page */
     await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
     await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugMisusePage.clickSaveAndContinue()
+    await drugMisusePage.checkErrorSummaryBoxAppears()
+    await drugMisusePage.numberOfRequiredFieldErrors(1)
     await drugMisusePage.clickEverMisusedDrugsNoRadioOption()
-    await employmentPage.clickSaveAndContinue()
+    await drugMisusePage.clickSaveAndContinue()
     await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
     await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
     await everDrunkAlcoholPage.clickBackLink()
     await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
     await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
     await drugMisusePage.clickEverMisusedDrugsYesRadioOption()
-    await employmentPage.clickSaveAndContinue()
+    await drugMisusePage.clickSaveAndContinue()
 
     /** Drug use page - branch when you've selected yes to drug misuse */
     await drugUsePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_USE)
     await drugUsePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugUsePage.clickSaveAndContinue()
+    await drugUsePage.checkErrorSummaryBoxAppears()
+    await drugUsePage.numberOfRequiredFieldErrors(2)
     await drugUsePage.clickDrugsUsedAmphetaminesCheckboxOption()
     await drugUsePage.clickAmphetaminesRadioLast6MonthsRadioOption()
     await drugUsePage.clickDrugsUsedCannabisCheckboxOption()
@@ -161,6 +174,9 @@ test.describe('Assessment Dynamic', () => {
     /** Alcohol ever used more page - No branch takes you to personal relationships page */
     await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
     await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickSaveAndContinue()
+    await everDrunkAlcoholPage.checkErrorSummaryBoxAppears()
+    await everDrunkAlcoholPage.numberOfRequiredFieldErrors(1)
     await everDrunkAlcoholPage.clickEverDrunkAlcoholNoRadioOption()
     await everDrunkAlcoholPage.clickSaveAndContinue()
     await personalRelationshipsAndCommunityPage.checkPageUrl(
@@ -180,6 +196,9 @@ test.describe('Assessment Dynamic', () => {
     /** Binge-drinking sub-page */
     await bingeDrinking.checkPageUrl(tieringAssessmentV1URLs.BINGE_DRINKING)
     await bingeDrinking.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await bingeDrinking.clickSaveAndContinue()
+    await bingeDrinking.checkErrorSummaryBoxAppears()
+    await bingeDrinking.numberOfRequiredFieldErrors(1)
     await bingeDrinking.clickBingeDrinkingEvidenceRadioOption()
     await bingeDrinking.clickSaveAndContinue()
 
@@ -204,6 +223,9 @@ test.describe('Assessment Dynamic', () => {
     /** Alcohol use main page */
     await alcoholUsePage.checkPageUrl(tieringAssessmentV1URLs.ALCOHOL_USE)
     await alcoholUsePage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await alcoholUsePage.clickSaveAndContinue()
+    await alcoholUsePage.checkErrorSummaryBoxAppears()
+    await alcoholUsePage.numberOfRequiredFieldErrors(3)
     await alcoholUsePage.clickHowOften4PlusPerWeekRadioOption()
     await alcoholUsePage.clickUnits10PlusRadioOption()
     await alcoholUsePage.clickUnitsDetails()
@@ -218,6 +240,10 @@ test.describe('Assessment Dynamic', () => {
     await personalRelationshipsAndCommunityPage.checkPageHeading(
       tieringAssessmentPageTitles.personalRelationshipsAndCommunity,
     )
+    await personalRelationshipsAndCommunityPage.clickSaveAndContinue()
+    await personalRelationshipsAndCommunityPage.checkErrorSummaryBoxAppears()
+    await personalRelationshipsAndCommunityPage.checkFirstQuestionError()
+    await personalRelationshipsAndCommunityPage.checkSecondQuestionError()
     await personalRelationshipsAndCommunityPage.clickImportantPeoplePartnerCheckboxOption()
     await personalRelationshipsAndCommunityPage.clickImportantPeopleChildrenOrWardsCheckboxOption()
     await personalRelationshipsAndCommunityPage.clickImportantPeopleOtherChildrenCheckboxOption()
@@ -232,6 +258,9 @@ test.describe('Assessment Dynamic', () => {
     await thinkingAttitudesAndBehavioursPage.checkPageHeading(
       tieringAssessmentPageTitles.thinkingAttitudesAndBehaviours,
     )
+    await thinkingAttitudesAndBehavioursPage.clickSaveAndContinue()
+    await thinkingAttitudesAndBehavioursPage.checkErrorSummaryBoxAppears()
+    await thinkingAttitudesAndBehavioursPage.numberOfRequiredFieldErrors(4)
     await thinkingAttitudesAndBehavioursPage.clickOffendingLinkedActivitiesRegularEngagementRadioOption()
     await thinkingAttitudesAndBehavioursPage.clickTemperManagementLosesTemperRadioOption()
     await thinkingAttitudesAndBehavioursPage.clickImpulseControlActsOnImpulseProblemsRadioOption()
@@ -241,6 +270,9 @@ test.describe('Assessment Dynamic', () => {
     /** Offence analysis page */
     await offenceAnalysisPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_ANALYSIS)
     await offenceAnalysisPage.checkPageHeading(tieringAssessmentPageTitles.offenceAnalysis)
+    await offenceAnalysisPage.clickSaveAndContinue()
+    await offenceAnalysisPage.checkErrorSummaryBoxAppears()
+    await offenceAnalysisPage.numberOfRequiredFieldErrors(2)
     await offenceAnalysisPage.clickCurrentOffenceArsonCheckboxOption()
     await offenceAnalysisPage.clickCurrentOffenceDomesticAbuseCheckboxOption()
     await offenceAnalysisPage.clickCurrentOffenceExcessiveViolenceCheckboxOption()
@@ -257,6 +289,9 @@ test.describe('Assessment Dynamic', () => {
     /** Risk of serious harm (previous convictions) page */
     await previousConvictionsPage.checkPageUrl(tieringAssessmentV1URLs.PREVIOUS_CONVICTIONS)
     await previousConvictionsPage.checkPageHeading(tieringAssessmentPageTitles.riskOfSeriousHarm)
+    await previousConvictionsPage.clickSaveAndContinue()
+    await previousConvictionsPage.checkErrorSummaryBoxAppears()
+    await previousConvictionsPage.checkValidationError()
     await previousConvictionsPage.clickPreviousConvictionsMurderCheckboxOption()
     await previousConvictionsPage.clickPreviousConvictionsGBHCheckboxOption()
     await previousConvictionsPage.clickPreviousConvictionsChildSexualOffencesCheckboxOption()
@@ -411,10 +446,7 @@ test.describe('Assessment Dynamic', () => {
     const accommodationPage = new AccommodationPage(page)
     const employmentPage = new EmploymentPage(page)
     const drugMisusePage = new DrugMisusePage(page)
-    const drugUsePage = new DrugUsePage(page)
     const everDrunkAlcoholPage = new EverDrunkAlcoholPage(page)
-    const bingeDrinking = new BingeDrinkingUsePage(page)
-    const alcoholUsePage = new AlcoholUsePage(page)
     const personalRelationshipsAndCommunityPage = new PersonalRelationshipsAndCommunityPage(page)
     const thinkingAttitudesAndBehavioursPage = new ThinkingAttitudesAndBehavioursPage(page)
     const offenceAnalysisPage = new OffenceAnalysisPage(page)

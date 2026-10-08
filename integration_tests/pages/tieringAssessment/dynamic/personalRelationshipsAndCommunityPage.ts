@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import TieringAssessmentPage from '../tieringAssessmentPage'
 
 export default class PersonalRelationshipsAndCommunityPage extends TieringAssessmentPage {
@@ -25,6 +25,10 @@ export default class PersonalRelationshipsAndCommunityPage extends TieringAssess
 
   readonly relationshipStatusUnknown: Locator
 
+  readonly relationshipFirstQuestionError: Locator
+
+  readonly relationshipSecondQuestionError: Locator
+
   constructor(page: Page) {
     super(page)
     this.importantPeoplePartner = page.getByRole('checkbox', { name: "Partner or someone they're in" })
@@ -38,6 +42,8 @@ export default class PersonalRelationshipsAndCommunityPage extends TieringAssess
     this.relationshipStatusConcerns = page.getByRole('radio', { name: 'Has some concerns about their' })
     this.relationshipStatusUnHappy = page.getByRole('radio', { name: 'Unhappy about their' })
     this.relationshipStatusUnknown = page.getByRole('radio', { name: 'Unknown' })
+    this.relationshipFirstQuestionError = page.locator('[href="#important_relationships"]')
+    this.relationshipSecondQuestionError = page.locator('[href="#relationship_satisfaction"]')
   }
 
   async clickImportantPeoplePartnerCheckboxOption() {
@@ -83,4 +89,17 @@ export default class PersonalRelationshipsAndCommunityPage extends TieringAssess
   async clickRelationshipStatusUnknownRadioOption() {
     await this.relationshipStatusUnknown.click()
   }
+
+  async checkFirstQuestionError() {
+    await expect(this.relationshipFirstQuestionError).toContainText(
+      '"\\"Select·who·the·important·people·in·Charles\'·life·are,·or·select·\'Unknown\'\\""',
+    )
+  }
+
+  async checkSecondQuestionError() {
+    await expect(this.relationshipSecondQuestionError).toContainText(
+      '"\\"Select·whether·Charles\'·is·happy·with·their·current·relationship·status,·or·select·\'Unknown\'\\""',
+    )
+  }
+
 }
