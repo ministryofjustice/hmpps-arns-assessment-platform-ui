@@ -46,14 +46,14 @@ const settledAccommodation: Scenario = {
     { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('current-accommodation', 'current_accommodation'),
+    changeLink('accommodation-status', 'current_accommodation'),
     changeLink('accommodation-details', 'living_with'),
     changeLink('accommodation-details', 'suitable_housing_location'),
     changeLink('accommodation-details', 'suitable_housing'),
     changeLink('accommodation-details', 'accommodation_changes'),
   ],
   userSubmittedSteps: [
-    Step.current_accommodation.code,
+    Step.accommodation_status.code,
     Step.accommodation_details.code,
     Step.accommodation_summary.code,
   ],
@@ -81,14 +81,14 @@ const noAccommodation: Scenario = {
     { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('current-accommodation', 'current_accommodation'),
+    changeLink('accommodation-status', 'current_accommodation'),
     changeLink('accommodation-details', 'no_accommodation_reason'),
     changeLink('accommodation-details', 'past_accommodation_details'),
     changeLink('accommodation-details', 'suitable_housing_planned'),
     changeLink('accommodation-details', 'accommodation_changes'),
   ],
   userSubmittedSteps: [
-    Step.current_accommodation.code,
+    Step.accommodation_status.code,
     Step.accommodation_details.code,
     Step.accommodation_summary.code,
   ],

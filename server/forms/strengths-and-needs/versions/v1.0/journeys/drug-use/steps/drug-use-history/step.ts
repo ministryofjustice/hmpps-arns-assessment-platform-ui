@@ -16,7 +16,7 @@ export const drugUseHistoryStep = step({
   title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_details.path]),
+      backlink: createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_use_details.path]),
     },
   },
   blocks: [

@@ -1,5 +1,5 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { alcoholUseStep } from './steps/alcohol-use/step'
+import { alcoholUseStatusStep } from './steps/alcohol-use-status/step'
 import { alcoholUseDetailsStep } from './steps/alcohol-use-details/step'
 import { alcoholUseSummaryStep } from './steps/alcohol-use-summary/step'
 import { alcoholUseAnalysisStep } from './steps/alcohol-use-analysis/step'
@@ -8,6 +8,14 @@ import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
 
+/**
+ * Alcohol Use Journey
+ *
+ * Flow:
+ * alcohol-use-status → (YES) → alcohol-use-details → alcohol-use-summary
+ * alcohol-use-status → (NO)  → alcohol-use-summary
+ * alcohol-use-summary → alcohol-use-analysis
+ */
 export const alcoholUseJourney = journey({
   code: Section.alcohol_use.code,
   title: sectionPageTitle(Section.alcohol_use),
@@ -20,5 +28,5 @@ export const alcoholUseJourney = journey({
       sectionStatusTag: sectionStatusTag(Section.alcohol_use),
     },
   },
-  steps: [alcoholUseStep, alcoholUseDetailsStep, alcoholUseSummaryStep, alcoholUseAnalysisStep],
+  steps: [alcoholUseStatusStep, alcoholUseDetailsStep, alcoholUseSummaryStep, alcoholUseAnalysisStep],
 })

@@ -1,6 +1,6 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { currentEmploymentStep } from './steps/current-employment/step'
-import { employedEmploymentStep } from './steps/employed/step'
+import { employmentStatusStep } from './steps/employment-status/step'
+import { employmentEducationDetailsStep } from './steps/employment-education-details/step'
 import { employmentEducationSummaryStep } from './steps/employment-education-summary/step'
 import { employmentEducationAnalysisStep } from './steps/employment-education-analysis/step'
 import { Section } from '../../constants/section'
@@ -12,11 +12,7 @@ import { Step } from './constants/step'
  * Employment Journey
  *
  * Flow:
- * current-employment → (branching based on type)
- *   ├── current-employment               → current-employment
- *   ├── employed-employment              → employed-employment
- *   ├── employment-education-summary     → employment-education-summary
- *   ├── employment-education-analysis    → employment-education-analysis
+ * employment-status → employment-education-details → employment-education-summary → employment-education-analysis
  */
 export const employmentJourney = journey({
   code: Section.employment_and_education.code,
@@ -33,8 +29,8 @@ export const employmentJourney = journey({
     },
   },
   steps: [
-    currentEmploymentStep,
-    employedEmploymentStep,
+    employmentStatusStep,
+    employmentEducationDetailsStep,
     employmentEducationSummaryStep,
     employmentEducationAnalysisStep,
   ],

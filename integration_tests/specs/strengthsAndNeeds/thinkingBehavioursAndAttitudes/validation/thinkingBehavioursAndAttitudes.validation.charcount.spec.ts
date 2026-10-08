@@ -64,10 +64,10 @@ const answers = [
 ]
 
 const userSubmittedSteps = [
-  Step.thinking_behaviours.code,
-  Step.thinking_behaviours_risk_of_sexual_harm.code,
-  Step.thinking_behaviours_sexual_harm.code,
-  Step.thinking_behaviours_summary.code,
+  Step.thinking_behaviours_attitudes.code,
+  Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+  Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
+  Step.thinking_behaviours_attitudes_summary.code,
 ]
 
 test.describe('Thinking, behaviours and attitudes character counts', () => {
@@ -77,7 +77,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
       const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinking_behaviours.path}`)
+      await page.goto(`${section}/${Step.thinking_behaviours_attitudes.path}`)
 
       await questions.thinking_behaviours_attitudes_peer_pressure.option(option).check()
 
@@ -90,7 +90,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
       const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinking_behaviours.path}`)
+      await page.goto(`${section}/${Step.thinking_behaviours_attitudes.path}`)
 
       await questions.thinking_behaviours_attitudes_changes.option(option).check()
 
@@ -99,11 +99,11 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
   }
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
-    test(`thinking-behaviours-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
+    test(`thinking-behaviours-attitudes-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
       const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinking_behaviours_summary.path}#practitioner-analysis`)
+      await page.goto(`${section}/${Step.thinking_behaviours_attitudes_summary.path}#practitioner-analysis`)
 
       await questions.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors
         .option(answer)

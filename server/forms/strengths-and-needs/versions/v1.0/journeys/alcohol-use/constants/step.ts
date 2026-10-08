@@ -1,7 +1,7 @@
 export const Step = {
-  alcohol_use: {
-    code: 'alcohol_use',
-    path: 'alcohol-use',
+  alcohol_use_status: {
+    code: 'alcohol_use_status',
+    path: 'alcohol-use-status',
   },
   alcohol_use_details: {
     code: 'alcohol_use_details',

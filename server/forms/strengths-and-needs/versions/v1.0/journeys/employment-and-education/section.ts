@@ -130,7 +130,7 @@ const currentEmploymentStatus = question({
           }),
         ],
       },
-      actions: changeLinkActions(Step.current_employment.path, content),
+      actions: changeLinkActions(Step.employment_status.path, content),
     }),
   },
 })
@@ -148,7 +148,7 @@ const employmentSector = question({
       visibleWhen: isEmployedOrSelfEmployed,
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.employed.path,
+      changeHref: Step.employment_education_details.path,
       visibleWhen: and(
         isEmployedOrSelfEmployed,
         Answer(Question.employment_area).match(Condition.String.HasMinLength(1)),
@@ -202,7 +202,10 @@ const employmentHistory = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployedOrRetired, visibleWhen: hasBeenEmployedOrRetired }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path, visibleWhen: hasBeenEmployedOrRetired }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.employment_education_details.path,
+      visibleWhen: hasBeenEmployedOrRetired,
+    }),
   },
 })
 
@@ -242,7 +245,7 @@ const dayToDayCommitments = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
@@ -305,7 +308,7 @@ const academicQualification = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
@@ -334,7 +337,7 @@ const professionalQualification = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
@@ -366,7 +369,7 @@ const jobSkills = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
@@ -436,7 +439,7 @@ const difficultiesReadingWritingNumeracy = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
@@ -493,7 +496,10 @@ const employmentExperience = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployed, visibleWhen: hasBeenEmployed }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path, visibleWhen: hasBeenEmployed }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.employment_education_details.path,
+      visibleWhen: hasBeenEmployed,
+    }),
   },
 })
 
@@ -513,7 +519,7 @@ const educationExperience = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: isNotRetired, visibleWhen: isNotRetired }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
@@ -567,7 +573,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employed.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 

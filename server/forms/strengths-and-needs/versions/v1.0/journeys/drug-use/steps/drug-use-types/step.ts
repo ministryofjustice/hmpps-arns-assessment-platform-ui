@@ -11,8 +11,8 @@ import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const addDrugsStep = step({
-  path: `/${Step.add_drugs.path}`,
+export const drugUseTypesStep = step({
+  path: `/${Step.drug_use_types.path}`,
   title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
@@ -21,29 +21,29 @@ export const addDrugsStep = step({
   },
   cleardownFieldCodes: ['^trip_*$'],
   blocks: [drugUseSection.questions.selectMisusedDrugs.displayModes.field, saveButton],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.add_drugs)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use_types)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.add_drugs.code),
+      condition: isUserSubmittedCondition(Step.drug_use_types.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.add_drugs.code),
+    autosaveSubmit(Step.drug_use_types.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: { groups: ['default', 'drugs'] },
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.add_drugs.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_types.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.add_drugs),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_types),
         ],
-        next: [redirect({ goto: Step.drug_details.path })],
+        next: [redirect({ goto: Step.drug_use_details.path })],
       },
     }),
   ],

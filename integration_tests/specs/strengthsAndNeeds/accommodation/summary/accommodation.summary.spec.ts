@@ -24,7 +24,7 @@ test.describe('Summary', () => {
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])
@@ -41,7 +41,7 @@ test.describe('Summary', () => {
             - paragraph: Homeowner
           - definition:
             - link "Change What type of accommodation does Test currently have?":
-              - /url: current-accommodation#current_accommodation-question
+              - /url: accommodation-status#current_accommodation-question
           - term: Who is Test living with?
           - definition:
             - paragraph: Family
@@ -86,7 +86,7 @@ test.describe('Summary', () => {
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])
@@ -126,7 +126,7 @@ test.describe('Summary', () => {
         { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])

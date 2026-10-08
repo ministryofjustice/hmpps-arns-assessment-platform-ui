@@ -54,14 +54,18 @@ const answers = [
   },
 ]
 
-const userSubmittedSteps = [Step.current_employment.code, Step.employed.code, Step.employment_education_summary.code]
+const userSubmittedSteps = [
+  Step.employment_status.code,
+  Step.employment_education_details.code,
+  Step.employment_education_summary.code,
+]
 
 test.describe('Employment and education character counts', () => {
   test('employed: other responsibilities, qualifications and transferable skills', async ({ page, openSection }) => {
     const section = await openSection(employment, answers, userSubmittedSteps)
     const employmentPage = new EmploymentAndEducationPage(page)
     const { questions } = employmentPage
-    await page.goto(`${section}/${Step.employed.path}`)
+    await page.goto(`${section}/${Step.employment_education_details.path}`)
 
     await questions.employment_other_responsibilities.option(Option.carer).check()
     await questions.employment_other_responsibilities.option(Option.child).check()
@@ -77,7 +81,7 @@ test.describe('Employment and education character counts', () => {
     const section = await openSection(employment, answers, userSubmittedSteps)
     const employmentPage = new EmploymentAndEducationPage(page)
     const { questions } = employmentPage
-    await page.goto(`${section}/${Step.employed.path}`)
+    await page.goto(`${section}/${Step.employment_education_details.path}`)
 
     await questions.education_transferable_skills.option(Option.yes_some_skills).check()
 
@@ -90,7 +94,7 @@ test.describe('Employment and education character counts', () => {
       const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
-      await page.goto(`${section}/${Step.employed.path}`)
+      await page.goto(`${section}/${Step.employment_education_details.path}`)
 
       await questions.employment_history.option(option).check()
 
@@ -109,7 +113,7 @@ test.describe('Employment and education character counts', () => {
       const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
-      await page.goto(`${section}/${Step.employed.path}`)
+      await page.goto(`${section}/${Step.employment_education_details.path}`)
 
       await questions.employment_experience.option(option).check()
       await questions.education_experience.option(option).check()
@@ -123,7 +127,7 @@ test.describe('Employment and education character counts', () => {
       const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)
       const { questions } = employmentPage
-      await page.goto(`${section}/${Step.employed.path}`)
+      await page.goto(`${section}/${Step.employment_education_details.path}`)
 
       await questions.employment_education_changes.option(option).check()
 

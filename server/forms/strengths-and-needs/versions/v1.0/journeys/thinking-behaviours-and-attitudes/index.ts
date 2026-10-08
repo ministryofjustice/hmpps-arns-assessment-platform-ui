@@ -1,11 +1,11 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { thinkingBehavioursStep } from './steps/thinking-behaviours/step'
-import { thinkingBehavioursSexualHarmStep } from './steps/thinking-behaviours-sexual-harm/step'
-import { thinkingBehavioursSummaryStep } from './steps/thinking-behaviours-summary/step'
-import { thinkingBehavioursAnalysisStep } from './steps/thinking-behaviours-analysis/step'
+import { thinkingBehavioursAttitudesStep } from './steps/thinking-behaviours-attitudes/step'
+import { thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep } from './steps/thinking-behaviours-attitudes-risk-of-sexual-harm-details/step'
+import { thinkingBehavioursAttitudesSummaryStep } from './steps/thinking-behaviours-attitudes-summary/step'
+import { thinkingBehavioursAttitudesAnalysisStep } from './steps/thinking-behaviours-attitudes-analysis/step'
 import { Section } from '../../constants/section'
 import { sectionPageTitle, sectionStatusTag } from '../../locales'
-import { thinkingBehavioursRiskOfSexualHarmStep } from './steps/thinking-behaviours-risk-of-sexual-harm/step'
+import { thinkingBehavioursAttitudesRiskOfSexualHarmStep } from './steps/thinking-behaviours-attitudes-risk-of-sexual-harm/step'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
 
@@ -13,13 +13,10 @@ import { Step } from './constants/step'
  * Thinking, Behaviours and Attitudes Journey
  *
  * Flow:
- * thinking-behaviours → (branching based on risk of sexual harm)
- *   ├── thinking-behaviours                       → thinking-behaviours-risk-of-sexual-harm
- *   ├── thinking-behaviours-risk-of-sexual-harm   → thinking-behaviours-sexual-harm  (if YES)
- *   ├── thinking-behaviours-risk-of-sexual-harm   → thinking-behaviours-summary      (if NO)
- *   ├── thinking-behaviours-sexual-harm           → thinking-behaviours-summary
- *   ├── thinking-behaviours-summary               → thinking-behaviours-analysis
- *   ├── thinking-behaviours-analysis
+ * thinking-behaviours-attitudes → thinking-behaviours-attitudes-risk-of-sexual-harm
+ *   ├── (YES) → thinking-behaviours-attitudes-risk-of-sexual-harm-details → thinking-behaviours-attitudes-summary
+ *   └── (NO)  → thinking-behaviours-attitudes-summary
+ * thinking-behaviours-attitudes-summary → thinking-behaviours-attitudes-analysis
  */
 export const thinkingBehavioursAndAttitudesJourney = journey({
   code: Section.thinking_behaviours_and_attitudes.code,
@@ -29,7 +26,7 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
   onAccess: [
     redirectToAnalysisIfReadOnly(
       Section.thinking_behaviours_and_attitudes.path,
-      Step.thinking_behaviours_analysis.path,
+      Step.thinking_behaviours_attitudes_analysis.path,
     ),
   ],
   view: {
@@ -39,10 +36,10 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
     },
   },
   steps: [
-    thinkingBehavioursStep,
-    thinkingBehavioursRiskOfSexualHarmStep,
-    thinkingBehavioursSexualHarmStep,
-    thinkingBehavioursSummaryStep,
-    thinkingBehavioursAnalysisStep,
+    thinkingBehavioursAttitudesStep,
+    thinkingBehavioursAttitudesRiskOfSexualHarmStep,
+    thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep,
+    thinkingBehavioursAttitudesSummaryStep,
+    thinkingBehavioursAttitudesAnalysisStep,
   ],
 })

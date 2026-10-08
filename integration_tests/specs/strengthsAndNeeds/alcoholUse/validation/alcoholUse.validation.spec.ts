@@ -42,7 +42,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-      .withUserSubmittedSteps([Step.alcohol_use.code])
+      .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -122,7 +122,7 @@ test.describe('Validation', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId)
         .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-        .withUserSubmittedSteps([Step.alcohol_use.code])
+        .withUserSubmittedSteps([Step.alcohol_use_status.code])
         .save()
 
       await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -154,7 +154,7 @@ test.describe('Validation', () => {
       await strengthsAndNeedsBuilder
         .extend(sanAssessmentId)
         .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
-        .withUserSubmittedSteps([Step.alcohol_use.code])
+        .withUserSubmittedSteps([Step.alcohol_use_status.code])
         .save()
 
       await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')

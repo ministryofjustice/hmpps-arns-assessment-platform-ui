@@ -38,10 +38,10 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
-      .withUserSubmittedSteps([Step.drug_use.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-types')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
@@ -93,7 +93,7 @@ test.describe('Questions', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withUserSubmittedSteps([Step.drug_use.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
@@ -107,7 +107,7 @@ test.describe('Questions', () => {
           - paragraph: "No"
         - definition:
           - link "Change Has Test ever misused drugs?":
-            - /url: drug-use#drug_use-question
+            - /url: drug-use-status#drug_use-question
         - heading [level=2]
         - heading [level=2]
         - button "Go to practitioner analysis"
@@ -125,10 +125,10 @@ test.describe('Questions', () => {
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.benzodiazepines), value: Option.more_than_six },
       ])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-details')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Not used in the last 6 months')
 
@@ -190,7 +190,7 @@ test.describe('Questions', () => {
         { question: Question.not_used_in_last_six_months_details, value: 'test' },
         { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
       ])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code, Step.drug_details.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code, Step.drug_use_details.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')

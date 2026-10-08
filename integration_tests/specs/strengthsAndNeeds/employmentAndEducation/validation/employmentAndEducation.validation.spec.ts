@@ -79,8 +79,8 @@ test.describe('Validation', () => {
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.employment_status, value: Option.unemployed_not_looking_for_work }])
       .withUserSubmittedSteps([
-        Step.current_employment.code,
-        Step.employed.code,
+        Step.employment_status.code,
+        Step.employment_education_details.code,
         Step.employment_education_summary.code,
       ])
       .save()
@@ -104,13 +104,19 @@ test.describe('Validation', () => {
         { question: Question.employment_type, value: Option.full_time },
       ])
       .withUserSubmittedSteps([
-        Step.current_employment.code,
-        Step.employed.code,
+        Step.employment_status.code,
+        Step.employment_education_details.code,
         Step.employment_education_summary.code,
       ])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 

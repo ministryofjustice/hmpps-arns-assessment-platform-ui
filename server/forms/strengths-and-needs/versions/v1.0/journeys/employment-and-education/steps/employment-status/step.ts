@@ -10,8 +10,8 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const currentEmploymentStep = step({
-  path: `/${Step.current_employment.path}`,
+export const employmentStatusStep = step({
+  path: `/${Step.employment_status.path}`,
   title: sectionPageTitle(Section.employment_and_education),
   reachability: { entryWhen: true },
   view: {
@@ -20,33 +20,31 @@ export const currentEmploymentStep = step({
     },
   },
   blocks: [employmentEducationSection.questions.currentEmploymentStatus.displayModes.field, saveButton],
-  onAccess: [
-    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
-  ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employment_status)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.current_employment.code),
+      condition: isUserSubmittedCondition(Step.employment_status.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.current_employment.code),
+    autosaveSubmit(Step.employment_status.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.current_employment.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_status.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.current_employment),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employment_status),
         ],
         next: [
           redirect({
-            goto: Step.employed.path,
+            goto: Step.employment_education_details.path,
           }),
         ],
       },

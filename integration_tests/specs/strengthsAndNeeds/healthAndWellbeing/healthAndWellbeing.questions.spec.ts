@@ -61,10 +61,10 @@ test.describe('Questions', () => {
         { question: Question.health_wellbeing_mental_health_condition, value: Option.yes_ongoing_severe },
         { question: Question.health_wellbeing_mental_health_condition_yes_ongoing_severe_details, value: '' },
       ])
-      .withUserSubmittedSteps([Step.health_wellbeing.code, Step.physical_mental_health.code])
+      .withUserSubmittedSteps([Step.health_wellbeing_status.code, Step.health_wellbeing_details.code])
       .save()
 
-    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-details')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(
       page,
@@ -213,10 +213,10 @@ test.describe('Questions', () => {
         { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
       ])
-      .withUserSubmittedSteps([Step.health_wellbeing.code, Step.physical_mental_health.code])
+      .withUserSubmittedSteps([Step.health_wellbeing_status.code, Step.health_wellbeing_details.code])
       .save()
 
-    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-details')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(page, 'any illness affecting the brain')
 
