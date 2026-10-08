@@ -1,6 +1,8 @@
 import { expect, Page, Request } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import { alcohol, navigateToStrengthsAndNeeds, offence, sanFormPath, v1Path } from './sanUtils'
+import OffenceAnalysisPage from '../../pages/strengthsAndNeeds/offenceAnalysisPage';
+import AlcoholUsePage from '../../pages/strengthsAndNeeds/alcoholUsePage';
 
 const AUTOSAVE_TIMEOUT = 30_000
 const textCode = 'offence_analysis_description_of_offence'
@@ -47,15 +49,20 @@ test.describe('Autosave', () => {
     await strengthsAndNeedsBuilder.fresh().save()
     const form = await openOffenceAnalysis(page, baseURL, handoverLink, sanAssessmentId)
 
+    // enter a value to test
     await form.locator(`[name="${textCode}"]`).fill('Walked away from')
     await expect(form).toHaveAttribute('data-autosave-state', 'pending')
 
-    const flushed = page.waitForRequest(request => autosavedValue(request) === 'Walked away from', {
-      timeout: AUTOSAVE_TIMEOUT,
-    })
+    // walk away
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-status`)
+    await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol')
 
-    await flushed
+    // come back
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${offence}/offence-analysis`)
+    const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Offence analysis')
+
+    // check autosaved value is persisted
+    await expect(offenceAnalysisPage.questions.offence_analysis_description_of_offence.input).toHaveValue('Walked away from')
   })
 
   test('is off in a read-only session', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
