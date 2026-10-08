@@ -119,7 +119,7 @@ export default class PreviousConvictionsPage extends TieringAssessmentPage {
 
   async checkValidationError() {
     await expect(this.previousConvictionValidationError).toContainText(
-      '"Select·all·that·apply,·or·select·\'None·of·these·offences\'."',
+      "Select all that apply, or select 'None of these offences'.",
     )
   }
 

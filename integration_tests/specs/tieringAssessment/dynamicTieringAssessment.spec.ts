@@ -120,7 +120,7 @@ test.describe('Assessment Dynamic', () => {
     await accommodationPage.checkPageHeading(tieringAssessmentPageTitles.accommodation)
     await accommodationPage.clickSaveAndContinue()
     await accommodationPage.checkErrorSummaryBoxAppears()
-    await accommodationPage.firstAccommodationQuestionError(1)
+    await accommodationPage.firstAccommodationQuestionError()
     await accommodationPage.numberOfRequiredFieldErrors(1)
     await accommodationPage.clickLivingWithFamilyCheckboxOption()
     await accommodationPage.clickLivingWithFriendsCheckboxOption()

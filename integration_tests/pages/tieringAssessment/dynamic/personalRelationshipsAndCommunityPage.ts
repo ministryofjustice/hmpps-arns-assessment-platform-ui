@@ -92,13 +92,13 @@ export default class PersonalRelationshipsAndCommunityPage extends TieringAssess
 
   async checkFirstQuestionError() {
     await expect(this.relationshipFirstQuestionError).toContainText(
-      '"\\"Select·who·the·important·people·in·Charles\'·life·are,·or·select·\'Unknown\'\\""',
+      "Select who the important people in Charles' life are, or select 'Unknown'",
     )
   }
 
   async checkSecondQuestionError() {
     await expect(this.relationshipSecondQuestionError).toContainText(
-      '"\\"Select·whether·Charles\'·is·happy·with·their·current·relationship·status,·or·select·\'Unknown\'\\""',
+      "Select whether Charles' is happy with their current relationship status, or select 'Unknown'",
     )
   }
 
