@@ -32,7 +32,7 @@ export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (
   const crn = context.getSession().caseDetails?.crn
 
   if (!crn) {
-    logger.error('Cannot load supervision package: missing CRN in session')
+    logger.info('Skipping supervision package: no CRN in session')
 
     return
   }
