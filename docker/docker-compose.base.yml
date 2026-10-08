@@ -3,7 +3,7 @@
 
 services:
   redis:
-    image: redis:8.6
+    image: redis:8.10
     networks:
       - hmpps
     ports:
@@ -126,7 +126,7 @@ services:
       CLIENT_SAN_HANDOVER_REDIRECT_URI: http://localhost:3000/sign-in/handover?service=strengths-and-needs
 
   gotenberg:
-    image: gotenberg/gotenberg:8.34.0
+    image: gotenberg/gotenberg:8.37.0
     networks:
       - hmpps
     extra_hosts:
@@ -160,7 +160,7 @@ services:
         BUILD_NUMBER: '1.0.0'
         GIT_REF: 'a1b2c3'
         GIT_BRANCH: main
-    command: npm run start
+    command: node --run start
     ports:
       - '3000:3000'
       - '9229:9229'
@@ -212,6 +212,7 @@ services:
       NATIONAL_ROLLOUT_FEEDBACK_URL: '#national-rollout-feedback-url'
       PRIVATE_BETA_FEEDBACK_URL: '#private-beta-feedback-url'
       OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      OASYS_REVIEW_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
       MPOP_URL: 'http://aap-ui:3000/sign-in'
 
   aap-api:

@@ -2,6 +2,20 @@ import { InternalServerError, NotFound } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 /**
+ * Soft-deleting an OASys assessment marks its Coordinator association as deleted. A CRN lookup goes straight to the
+ * AAP API and would otherwise still find it, so check the plan has at least one live association remaining.
+ */
+const ensurePlanHasLiveOasysAssociation = async (deps: SentencePlanEffectsDeps, planUuid: string) => {
+  await deps.coordinatorApi.getVersionsByEntityId(planUuid).catch(error => {
+    if (error?.responseStatus === 404) {
+      throw new NotFound('Sentence plan not found')
+    }
+
+    throw error
+  })
+}
+
+/**
  * Load a sentence plan using the identifier from session details.
  *
  * Supports both UUID identifiers (OASys flow) and external identifiers (MPOP flow).
@@ -28,6 +42,10 @@ export const loadPlan = (deps: SentencePlanEffectsDeps) => async (context: Sente
 
   if (!assessment) {
     throw new NotFound('Sentence plan not found')
+  }
+
+  if (sessionDetails.planIdentifier.type === 'EXTERNAL') {
+    await ensurePlanHasLiveOasysAssociation(deps, assessment.assessmentUuid)
   }
 
   context.setData('assessment', assessment)

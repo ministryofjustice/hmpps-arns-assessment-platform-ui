@@ -40,6 +40,7 @@ generic-service:
     SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-preprod.hmpps.service.justice.gov.uk'
     SAN_URL: 'https://strengths-based-needs-assessments-preprod.hmpps.service.justice.gov.uk'
     OASYS_URL: 'https://pp.oasys.service.justice.gov.uk'
+    OASYS_REVIEW_URL: 'https://pp-int.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation-preprod.hmpps.service.justice.gov.uk'
     FEATURE_FLAG_URL: 'https://feature-toggles-preprod.hmpps.service.justice.gov.uk'
     ENVIRONMENT_NAME: PRE-PRODUCTION

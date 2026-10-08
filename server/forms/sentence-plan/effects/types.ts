@@ -1,4 +1,5 @@
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
+import { Resolvable } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
@@ -311,6 +312,8 @@ export interface PlanNotification {
   message: unknown
   target: string
   clearOtherNotifications?: boolean
+  // When false the notification is not added — for banners that depend on an earlier effect's outcome
+  onlyWhen?: Resolvable<boolean>
 }
 
 /**
@@ -359,6 +362,8 @@ export interface SentencePlanData extends Record<string, unknown> {
   activeGoalUuid: string
   activeGoalStepsOriginal: StepSession[]
   activeGoalStepsEdited: StepSession[]
+  // Set by updateActiveGoal — false when the submitted edit matched the saved goal
+  activeGoalChanged: boolean
 
   // Plan Agreements
   planAgreements: DerivedPlanAgreement[]

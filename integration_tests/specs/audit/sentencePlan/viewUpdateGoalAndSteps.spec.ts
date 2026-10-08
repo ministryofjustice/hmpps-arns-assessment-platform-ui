@@ -1,21 +1,17 @@
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
-import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
 import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('View Update Goal and Steps page', () => {
-  test('visiting update goal and steps page', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('visiting update goal and steps page', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn, plan } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(activeGoalWithSteps())
+          .withAgreementStatus('AGREED'),
     })
-    const plan = await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(activeGoalWithSteps())
-      .withAgreementStatus('AGREED')
-      .save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
     await UpdateGoalAndStepsPage.verifyOnPage(page)
 

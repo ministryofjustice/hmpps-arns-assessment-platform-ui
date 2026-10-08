@@ -1,23 +1,19 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
-import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
 import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('Update Steps', () => {
-  test('save action', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('save action', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn, plan } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(activeGoalWithSteps())
+          .withAgreementStatus('AGREED'),
     })
-    const plan = await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(activeGoalWithSteps())
-      .withAgreementStatus('AGREED')
-      .save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
     const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
@@ -31,18 +27,14 @@ test.describe('Update Steps', () => {
     expect(event.details.goalStatus).toBe('ACTIVE')
   })
 
-  test('mark-achieved action', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('mark-achieved action', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn, plan } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(currentGoalsWithCompletedSteps(1))
+          .withAgreementStatus('AGREED'),
     })
-    const plan = await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(currentGoalsWithCompletedSteps(1))
-      .withAgreementStatus('AGREED')
-      .save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
 
     const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)

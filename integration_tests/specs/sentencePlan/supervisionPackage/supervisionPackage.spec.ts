@@ -1,7 +1,12 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
-import { checkAccessibility, navigateToSentencePlan, sentencePlanV1URLs } from '../sentencePlanUtils'
+import {
+  checkAccessibility,
+  navigateToPlanOverviewViaMpop,
+  navigateToSentencePlan,
+  sentencePlanV1URLs,
+} from '../sentencePlanUtils'
 
 /**
  * Every CRN gets the fully populated default from the wiremock catch-alls: an early
@@ -12,11 +17,12 @@ import { checkAccessibility, navigateToSentencePlan, sentencePlanV1URLs } from '
  */
 const CRN_IN_STANDARD_PHASE = 'X444444'
 const CRN_WITHOUT_PACKAGE = 'X888888'
-const CRN_WITH_PROVISIONAL_TIER = 'X555555'
 const CRN_WITHOUT_APPOINTMENTS = 'X222222'
 const CRN_IN_BREACH_WITH_OPD = 'X333333'
 const CRN_WITH_FAILING_TIER_ONLY = 'X777777'
 const CRN_WITH_FAILING_APIS = 'X666666'
+const CRN_REVIEW_NOT_STARTED = 'X555555'
+const CRN_REVIEW_STARTED_NOT_FINISHED = 'X111111'
 
 test.describe('Supervision package', () => {
   test('shows the tab and the component for any person', async ({ page, createSession }) => {
@@ -62,7 +68,7 @@ test.describe('Supervision package', () => {
     await PlanOverviewPage.verifyOnPage(page)
     await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
 
-    await expect(page.getByText('Standard stage')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Supervision stage' })).toBeVisible()
   })
 
   test('shows the breach warning and status tags when the person is in breach on the OPD pathway', async ({
@@ -110,7 +116,7 @@ test.describe('Supervision package', () => {
     await expect(page.getByText('No appointments scheduled')).toBeVisible()
   })
 
-  test('hides the tab when the person has no supervision package (AC3)', async ({ page, createSession }) => {
+  test('hides the tab and redirects when the person has no supervision package', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITHOUT_PACKAGE,
@@ -121,20 +127,6 @@ test.describe('Supervision package', () => {
 
     // No package (404) is "not displayable", so the tab is hidden entirely.
     await expect(planOverviewPage.primaryNavigation.getByRole('link', { name: 'Supervision package' })).toBeHidden()
-  })
-
-  test('hides the tab and redirects when the package is not in a renderable phase (AC3)', async ({
-    page,
-    createSession,
-  }) => {
-    const { handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
-      crn: CRN_WITH_PROVISIONAL_TIER,
-    })
-    await navigateToSentencePlan(page, handoverLink)
-
-    const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-    await expect(planOverviewPage.primaryNavigation.getByRole('link', { name: 'Supervision package' })).toBeHidden()
 
     // Direct navigation is blocked too — it redirects to the plan overview, so the
     // supervision package heading is not shown.
@@ -142,10 +134,7 @@ test.describe('Supervision package', () => {
     await expect(page.getByRole('heading', { name: 'Supervision package' })).toBeHidden()
   })
 
-  test('shows the tab and an error message when the supervision package API fails (AC4)', async ({
-    page,
-    createSession,
-  }) => {
+  test('shows the tab and an error message when the supervision package API fails', async ({ page, createSession }) => {
     const { handoverLink } = await createSession({
       targetService: TargetService.SENTENCE_PLAN,
       crn: CRN_WITH_FAILING_APIS,
@@ -164,5 +153,67 @@ test.describe('Supervision package', () => {
 
     await expect(planOverviewPage.pageHeading).toHaveText('Supervision package')
     await expect(page.getByText(/problem getting the supervision package information/i)).toBeVisible()
+  })
+
+  test('shows the "Start an OASys review" prompt, same tab, for an OASys review not yet started', async ({
+    page,
+    createSession,
+  }) => {
+    const { handoverLink } = await createSession({
+      targetService: TargetService.SENTENCE_PLAN,
+      crn: CRN_REVIEW_NOT_STARTED,
+    })
+    await navigateToSentencePlan(page, handoverLink)
+
+    await PlanOverviewPage.verifyOnPage(page)
+    await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
+
+    const reviewLink = page.getByRole('link', { name: /Start an OASys review/i })
+
+    // Entered via OASys: no "(opens in new tab)" text, and no target="_blank".
+    await expect(reviewLink).toHaveText('Start an OASys review')
+    await expect(reviewLink).not.toHaveAttribute('target', '_blank')
+  })
+
+  test('shows the "Complete an OASys review" prompt when the review is started but not finished', async ({
+    page,
+    createSession,
+  }) => {
+    const { handoverLink } = await createSession({
+      targetService: TargetService.SENTENCE_PLAN,
+      crn: CRN_REVIEW_STARTED_NOT_FINISHED,
+    })
+    await navigateToSentencePlan(page, handoverLink)
+
+    await PlanOverviewPage.verifyOnPage(page)
+    await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
+
+    const reviewLink = page.getByRole('link', { name: /Complete an OASys review/i })
+
+    // Entered via OASys: no "(opens in new tab)" text, and no target="_blank".
+    await expect(reviewLink).toHaveText('Complete an OASys review')
+    await expect(reviewLink).not.toHaveAttribute('target', '_blank')
+    await expect(page.getByText('Appointments do not count towards the package until it is confirmed.')).toBeVisible()
+  })
+
+  test('shows the OASys review link with "(opens in new tab)" and opens it in a new tab for MPoP access', async ({
+    page,
+    createSession,
+    sentencePlanBuilder,
+  }) => {
+    const { sentencePlanId, crn } = await createSession({
+      targetService: TargetService.SENTENCE_PLAN,
+      crn: CRN_REVIEW_NOT_STARTED,
+    })
+    await sentencePlanBuilder.extend(sentencePlanId).save()
+    await navigateToPlanOverviewViaMpop(page, crn)
+
+    await page.goto(sentencePlanV1URLs.SUPERVISION_PACKAGE)
+
+    const reviewLink = page.getByRole('link', { name: /Start an OASys review/i })
+
+    // Entered via MPoP: the "(opens in new tab)" text and target="_blank" both appear.
+    await expect(reviewLink).toHaveText('Start an OASys review (opens in new tab)')
+    await expect(reviewLink).toHaveAttribute('target', '_blank')
   })
 })

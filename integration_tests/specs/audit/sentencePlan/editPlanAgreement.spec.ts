@@ -1,18 +1,16 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import AgreePlanPage from '../../../pages/sentencePlan/agreePlanPage'
-import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
 import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Agree Plan', () => {
-  test('agreeing plan with yes', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('agreeing plan with yes', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1URLs.PLAN_AGREE)
 
     const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
@@ -25,13 +23,11 @@ test.describe('Agree Plan', () => {
     expect(event.details.agreementStatus).toBe('yes')
   })
 
-  test('agreeing plan with no', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('agreeing plan with no', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1URLs.PLAN_AGREE)
 
     const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
@@ -45,13 +41,11 @@ test.describe('Agree Plan', () => {
     expect(event.details.agreementStatus).toBe('no')
   })
 
-  test('agreeing plan with could not answer', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('agreeing plan with could not answer', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
     })
-    await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1URLs.PLAN_AGREE)
 
     const agreePlanPage = await AgreePlanPage.verifyOnPage(page)

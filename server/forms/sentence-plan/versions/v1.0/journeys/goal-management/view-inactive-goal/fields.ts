@@ -180,6 +180,7 @@ export const viewAllNotesSection = GovUKDetails({
       fallback: [GovUKBody({ text: 'There are no notes on this goal yet.' })],
     }),
   ],
+  attributes: { 'data-ai-id': 'view-inactive-goal-view-all-notes-details' },
 })
 
 export const addToPlanButton = GovUKLinkButton({

@@ -1,23 +1,19 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { removedGoals } from '../../../builders/sentencePlanFactories'
 import ConfirmReaddGoalPage from '../../../pages/sentencePlan/confirmReaddGoalPage'
-import { navigateToSentencePlan, sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
 import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Add a Goal Back to Plan', () => {
-  test('confirming goal re-add', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('confirming goal re-add', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn, plan } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(removedGoals(1))
+          .withAgreementStatus('AGREED'),
     })
-    const plan = await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(removedGoals(1))
-      .withAgreementStatus('AGREED')
-      .save()
     const goalUuid = plan.goals[0].uuid
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1UrlBuilders.goalConfirmReAdd(goalUuid))
 
     const confirmPage = await ConfirmReaddGoalPage.verifyOnPage(page)

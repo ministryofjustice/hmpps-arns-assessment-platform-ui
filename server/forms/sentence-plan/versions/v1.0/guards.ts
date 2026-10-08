@@ -9,7 +9,6 @@ import {
   redirect,
   Condition,
   Request,
-  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
@@ -34,15 +33,22 @@ export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').
 export const isSupervisionPackageEnabled = Data('featureFlags.supervisionPackageEnabled').match(Condition.Equals(true))
 
 /**
- * MPoP only displays the supervision package component for three supervision phases:
- * INIT (Early Engagement), STD (Standard Supervision) and FTHRD (Final Third). All other
- * phases — in custody (SENT), SPNA, no package yet, etc. — render nothing, so we hide the
- * tab for them too (an allowlist, so new non-renderable phases need no change here).
- * TODO: add the 4th "In flight" phase code once MPoP finalise it.
+ * MPoP renders the supervision package component for the phases in its template's
+ * showPhaseColumn: INIT (Early Engagement), STD (Standard Supervision), FTHRD (Final
+ * Third), IOM (IOM Tier A Alignment), OPD (In OPD Treatment) and SPNS (in-flight —an OASys
+ *  review is under way but not finished). It also renders for an in-flight case with no
+ * phase set yet (currentPhase null — the "Start an OASys review" prompt).
  */
-export const isSupervisionPackageDisplayable = Data('supervisionPackageDetails.currentPhase.phase.code').match(
-  Condition.Array.IsIn(['INIT', 'STD', 'FTHRD']),
+const isRenderableSupervisionPhase = Data('supervisionPackageDetails.currentPhase.phase.code').match(
+  Condition.Array.IsIn(['INIT', 'STD', 'FTHRD', 'IOM', 'OPD', 'SPNS']),
 )
+
+const isAwaitingOasysReview = and(
+  Data('supervisionPackageDetails').match(Condition.IsRequired()),
+  Data('supervisionPackageDetails.currentPhase').not.match(Condition.IsRequired()),
+)
+
+export const isSupervisionPackageDisplayable = or(isRenderableSupervisionPhase, isAwaitingOasysReview)
 
 /**
  * True when the feature is enabled AND the case is in a phase MPoP renders the component for.
@@ -137,10 +143,7 @@ export const redirectIfGoalNotFound = (goto: string) =>
  */
 export const allActiveGoalStepsCompleted = and(
   Data('activeGoal.steps').match(Condition.IsRequired()),
-  Data('activeGoal.steps')
-    .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('COMPLETED'))))
-    .pipe(Transformer.Array.Length())
-    .match(Condition.Equals(0)),
+  Data('activeGoal.steps').each(Iterator.Every(Item().path('status').match(Condition.Equals('COMPLETED')))),
 )
 
 /**
