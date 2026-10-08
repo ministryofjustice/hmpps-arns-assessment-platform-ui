@@ -4,6 +4,7 @@ import { isEditMode } from './guards'
 
 import { IsUserSubmitted } from './constants/userSubmitted'
 import { autosaveAction } from './autosave'
+import { Section, SectionComplete } from './constants/section';
 
 /**
  * Persists the answers a practitioner has typed so far, with no validation or redirects.
@@ -17,6 +18,7 @@ export const autoSaveAccommodationSubmit = (stepCode: string) =>
       effects: [
         StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
+        StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
       ],
     },
   })

@@ -26,7 +26,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.personal_relationships_community_summary.code),
+    autosaveSubmit(Step.personal_relationships_community_summary.code, Section.personal_relationships_and_community),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

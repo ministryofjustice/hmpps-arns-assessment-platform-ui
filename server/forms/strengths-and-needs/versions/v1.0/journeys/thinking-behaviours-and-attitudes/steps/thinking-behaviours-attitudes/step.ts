@@ -45,7 +45,7 @@ export const thinkingBehavioursAttitudesStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.thinking_behaviours_attitudes.code),
+    autosaveSubmit(Step.thinking_behaviours_attitudes.code, Section.thinking_behaviours_and_attitudes),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

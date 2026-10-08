@@ -34,7 +34,7 @@ export const personalRelationshipsChildrenInformationStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.personal_relationships_children_information.code),
+    autosaveSubmit(Step.personal_relationships_children_information.code, Section.personal_relationships_and_community),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

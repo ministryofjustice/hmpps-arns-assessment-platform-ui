@@ -29,7 +29,7 @@ export const drugUseTypesStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.drug_use_types.code),
+    autosaveSubmit(Step.drug_use_types.code, Section.drug_use),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: { groups: ['default', 'drugs'] },

@@ -47,7 +47,7 @@ export const offenceAnalysisStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.offence_analysis.code),
+    autosaveSubmit(Step.offence_analysis.code, Section.offence_analysis),
     submit({
       when: and(
         Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),

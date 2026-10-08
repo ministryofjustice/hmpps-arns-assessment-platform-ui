@@ -20,7 +20,7 @@ export const accommodationSummaryStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.accommodation_summary.code),
+    autosaveSubmit(Step.accommodation_summary.code, Section.accommodation),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -46,7 +46,7 @@ export const employmentEducationDetailsStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.employment_education_details.code),
+    autosaveSubmit(Step.employment_education_details.code, Section.employment_and_education),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

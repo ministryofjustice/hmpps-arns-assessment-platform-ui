@@ -48,7 +48,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.offence_analysis_involved_parties.code),
+    autosaveSubmit(Step.offence_analysis_involved_parties.code, Section.offence_analysis),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -39,7 +39,7 @@ export const alcoholUseDetailsStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.alcohol_use_details.code),
+    autosaveSubmit(Step.alcohol_use_details.code, Section.alcohol_use),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

@@ -45,7 +45,7 @@ export const healthWellbeingDetailsStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.health_wellbeing_details.code),
+    autosaveSubmit(Step.health_wellbeing_details.code, Section.health_and_wellbeing),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

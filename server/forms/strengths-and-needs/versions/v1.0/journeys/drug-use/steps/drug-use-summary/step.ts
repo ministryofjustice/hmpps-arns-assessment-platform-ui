@@ -33,7 +33,7 @@ export const drugUseSummaryStep = step({
   ],
   blocks: [summaryTab],
   onSubmission: [
-    autosaveSubmit(Step.drug_use_summary.code),
+    autosaveSubmit(Step.drug_use_summary.code, Section.drug_use),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

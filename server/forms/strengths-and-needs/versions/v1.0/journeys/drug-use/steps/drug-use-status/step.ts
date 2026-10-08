@@ -38,7 +38,7 @@ export const drugUseStatusStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.drug_use_status.code),
+    autosaveSubmit(Step.drug_use_status.code, Section.drug_use),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,

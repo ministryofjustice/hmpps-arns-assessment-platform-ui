@@ -33,7 +33,7 @@ export const financeStep = step({
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.finance.code),
+    autosaveSubmit(Step.finance.code, Section.finance),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
