@@ -23,7 +23,7 @@ test.describe('Accessibility', () => {
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])

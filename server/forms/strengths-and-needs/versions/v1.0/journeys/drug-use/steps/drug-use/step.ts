@@ -21,7 +21,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const drugUseStep = step({
-  path: `/${Step.drug_use.path}`,
+  path: `/${Step.drug_use_status.path}`,
   title: sectionPageTitle(Section.drug_use),
   reachability: { entryWhen: true },
   view: {
@@ -30,32 +30,32 @@ export const drugUseStep = step({
     },
   },
   blocks: [drugUseSection.questions.drugUse.displayModes.field, saveButton],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use_status)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.drug_use.code),
+      condition: isUserSubmittedCondition(Step.drug_use_status.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.drug_use.code),
+    autosaveSubmit(Step.drug_use_status.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_status.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_status),
         ],
         next: [
           redirect({
             when: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
-            goto: Step.add_drugs.path,
+            goto: Step.drug_use_types.path,
           }),
           redirect({
             when: Answer(Question.drug_use).match(Condition.Equals(CommonOption.no)),

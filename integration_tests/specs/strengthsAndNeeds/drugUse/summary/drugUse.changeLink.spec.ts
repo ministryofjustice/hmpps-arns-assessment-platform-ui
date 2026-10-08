@@ -87,10 +87,10 @@ const usedInTheLastSixMonths: Scenario = {
     changeLink('drug-use-history', 'drug_use_changes'),
   ],
   userSubmittedSteps: [
-    Step.add_drugs.code,
-    Step.drug_use.code,
+    Step.drug_use_types.code,
+    Step.drug_use_status.code,
     Step.drug_use_history.code,
-    Step.drug_details.code,
+    Step.drug_use_details.code,
     Step.drug_use_summary.code,
   ],
 }
@@ -137,10 +137,10 @@ const usedMoreThanSixMonthsAgo: Scenario = {
     changeLink('drug-use-history', 'drug_use_changes'),
   ],
   userSubmittedSteps: [
-    Step.add_drugs.code,
-    Step.drug_use.code,
+    Step.drug_use_types.code,
+    Step.drug_use_status.code,
     Step.drug_use_history.code,
-    Step.drug_details.code,
+    Step.drug_use_details.code,
     Step.drug_use_summary.code,
   ],
 }

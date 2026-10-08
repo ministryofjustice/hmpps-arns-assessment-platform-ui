@@ -10,7 +10,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const healthWellbeingStep = step({
-  path: `/${Step.health_wellbeing.path}`,
+  path: `/${Step.health_wellbeing_status.path}`,
   title: sectionPageTitle(Section.health_and_wellbeing),
   reachability: { entryWhen: true },
   blocks: [
@@ -18,31 +18,31 @@ export const healthWellbeingStep = step({
     healthWellbeingSection.questions.mentalHealthProblems.displayModes.field,
     saveButton,
   ],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing_status)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.health_wellbeing.code),
+      condition: isUserSubmittedCondition(Step.health_wellbeing_status.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.health_wellbeing.code),
+    autosaveSubmit(Step.health_wellbeing_status.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_status.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing_status),
         ],
         next: [
           redirect({
-            goto: Step.physical_mental_health.path,
+            goto: Step.health_wellbeing_details.path,
           }),
         ],
       },

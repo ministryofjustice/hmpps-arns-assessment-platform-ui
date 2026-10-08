@@ -52,10 +52,10 @@ const answers = [
 ]
 
 const userSubmittedSteps = [
-  Step.add_drugs.code,
-  Step.drug_use.code,
+  Step.drug_use_types.code,
+  Step.drug_use_status.code,
   Step.drug_use_history.code,
-  Step.drug_details.code,
+  Step.drug_use_details.code,
   Step.drug_use_summary.code,
 ]
 
@@ -69,7 +69,7 @@ test.describe('Drug use character counts', () => {
     const section = await openSection(drugUse, answers, userSubmittedSteps)
     const drugUsePage = new DrugUsePage(page)
     const { questions } = drugUsePage
-    await page.goto(`${section}/${Step.add_drugs.path}`)
+    await page.goto(`${section}/${Step.drug_use_types.path}`)
 
     await questions.select_misused_drugs.option(Option.other_drug).check()
 
@@ -93,7 +93,7 @@ test.describe('Drug use character counts', () => {
       const section = await openSection(drugUse, answers, userSubmittedSteps)
       const drugUsePage = new DrugUsePage(page)
       const { questions } = drugUsePage
-      await page.goto(`${section}/${Step.drug_details.path}`)
+      await page.goto(`${section}/${Step.drug_use_details.path}`)
 
       await questions.drugs_is_receiving_treatment.option(option).check()
 

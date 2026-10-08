@@ -48,7 +48,7 @@ test.describe('Questions', () => {
         { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
         { question: Question.alcohol_binge_drinking, value: CommonOption.yes },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use.code])
+      .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -222,7 +222,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.alcohol_use, value: Option.yes_not_in_last_three_months }])
-      .withUserSubmittedSteps([Step.alcohol_use.code])
+      .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')
@@ -323,7 +323,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.alcohol_use, value: CommonOption.no }])
-      .withUserSubmittedSteps([Step.alcohol_use.code])
+      .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
 
     // "No" skips the usage questions and routes straight to the summary.
@@ -363,7 +363,7 @@ test.describe('Questions', () => {
         { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.no },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use.code, Step.alcohol_use_summary.code])
+      .withUserSubmittedSteps([Step.alcohol_use_status.code, Step.alcohol_use_summary.code])
       .save()
 
     // Reach the analysis page via the real flow: summary -> practitioner tab -> Mark as complete.
@@ -398,7 +398,7 @@ test.describe('Questions', () => {
         { question: Question.alcohol_use, value: Option.yes_not_in_last_three_months },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use.code])
+      .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-details')

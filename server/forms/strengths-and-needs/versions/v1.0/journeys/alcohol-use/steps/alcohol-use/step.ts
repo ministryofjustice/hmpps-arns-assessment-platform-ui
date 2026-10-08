@@ -20,7 +20,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const alcoholUseStep = step({
-  path: `/${Step.alcohol_use.path}`,
+  path: `/${Step.alcohol_use_status.path}`,
   title: sectionPageTitle(Section.alcohol_use),
   reachability: { entryWhen: true },
   view: {
@@ -29,27 +29,27 @@ export const alcoholUseStep = step({
     },
   },
   blocks: [alcoholUseSection.questions.alcoholUse.displayModes.field, saveButton],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_status)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.alcohol_use.code),
+      condition: isUserSubmittedCondition(Step.alcohol_use_status.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.alcohol_use.code),
+    autosaveSubmit(Step.alcohol_use_status.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_status.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_status),
         ],
         next: [
           redirect({

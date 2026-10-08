@@ -24,7 +24,7 @@ test.describe('Summary', () => {
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])
@@ -86,7 +86,7 @@ test.describe('Summary', () => {
         { question: Question.accommodation_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])
@@ -126,7 +126,7 @@ test.describe('Summary', () => {
         { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
       .withUserSubmittedSteps([
-        Step.current_accommodation.code,
+        Step.accommodation_status.code,
         Step.accommodation_details.code,
         Step.accommodation_summary.code,
       ])

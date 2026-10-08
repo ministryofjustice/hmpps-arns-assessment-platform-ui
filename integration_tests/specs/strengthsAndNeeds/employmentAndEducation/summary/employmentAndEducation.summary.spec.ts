@@ -24,8 +24,8 @@ test.describe('Summary', () => {
         { question: Question.employment_education_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_employment.code,
-        Step.employed.code,
+        Step.employment_status.code,
+        Step.employment_education_details.code,
         Step.employment_education_summary.code,
       ])
       .save()
@@ -111,8 +111,8 @@ test.describe('Summary', () => {
         { question: Question.employment_education_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.current_employment.code,
-        Step.employed.code,
+        Step.employment_status.code,
+        Step.employment_education_details.code,
         Step.employment_education_summary.code,
       ])
       .save()
@@ -157,8 +157,8 @@ test.describe('Summary', () => {
         { question: Question.employment_education_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
       .withUserSubmittedSteps([
-        Step.current_employment.code,
-        Step.employed.code,
+        Step.employment_status.code,
+        Step.employment_education_details.code,
         Step.employment_education_summary.code,
       ])
       .save()

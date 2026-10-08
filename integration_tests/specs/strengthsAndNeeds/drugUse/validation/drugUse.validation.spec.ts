@@ -32,7 +32,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
@@ -61,7 +61,7 @@ test.describe('Validation', () => {
         { question: Question.not_used_in_last_six_months_details, value: 'test' },
         { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
       ])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.add_drugs.code, Step.drug_details.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code, Step.drug_use_details.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')

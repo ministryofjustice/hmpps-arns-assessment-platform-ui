@@ -102,10 +102,10 @@ const fullyAnswered: Scenario = {
     changeLink('thinking-behaviours-sexual-harm', 'thinking_behaviours_attitudes_emotional_intimacy'),
   ],
   userSubmittedSteps: [
-    Step.thinking_behaviours.code,
-    Step.thinking_behaviours_risk_of_sexual_harm.code,
-    Step.thinking_behaviours_sexual_harm.code,
-    Step.thinking_behaviours_summary.code,
+    Step.thinking_behaviours_attitudes.code,
+    Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+    Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
+    Step.thinking_behaviours_attitudes_summary.code,
   ],
 }
 

@@ -86,7 +86,7 @@ const alcoholUse = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.alcohol_use.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.alcohol_use_status.path }),
   },
 })
 

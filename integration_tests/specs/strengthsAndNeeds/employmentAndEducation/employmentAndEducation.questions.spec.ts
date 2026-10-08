@@ -48,7 +48,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.employed },
         { question: Question.employment_type, value: Option.full_time },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -212,7 +212,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.employment_status, value: Option.self_employed }])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -233,7 +233,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.employment_status, value: Option.retired }])
-      .withUserSubmittedSteps([Step.current_employment.code, Step.employed.code])
+      .withUserSubmittedSteps([Step.employment_status.code, Step.employment_education_details.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -266,7 +266,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.currently_unavailable_for_work },
         { question: Question.has_been_employed, value: CommonOption.yes },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -301,7 +301,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.currently_unavailable_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -355,7 +355,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.unemployed_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.yes },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -390,7 +390,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.unemployed_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -421,7 +421,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.employment_status, value: Option.unemployed_looking_for_work }])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
@@ -447,7 +447,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.yes },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
@@ -482,7 +482,7 @@ test.describe('Questions', () => {
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
       ])
-      .withUserSubmittedSteps([Step.current_employment.code])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')

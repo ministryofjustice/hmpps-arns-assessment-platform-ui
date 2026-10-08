@@ -19,7 +19,7 @@ const practitionerAnalysisSummary = GovUKSummaryList({
   ],
 })
 
-const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.thinking_behaviours_analysis.path)]
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.thinking_behaviours_attitudes_analysis.path)]
 
 export const thinkingBehavioursAnalysisSummaryTab = HtmlBlock({
   content: [

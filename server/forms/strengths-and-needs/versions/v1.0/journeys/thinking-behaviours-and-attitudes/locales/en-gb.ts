@@ -7,7 +7,7 @@ import { CommonOption } from '../../../constants/commonOption'
 export const english = {
   step: {
     // Visible page heading on the two sexual-harm pages, distinct from their browser title.
-    [Step.thinking_behaviours_sexual_harm.code]: 'Risk of sexual harm',
+    [Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code]: 'Risk of sexual harm',
   },
   question: {
     [Question.thinking_behaviours_attitudes_consequences]: {

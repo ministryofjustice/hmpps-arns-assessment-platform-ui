@@ -49,7 +49,7 @@ const post = async (body: Record<string, unknown>) => {
     })
     .createClient()
 
-  const result: TestResult = await client.post(`${basePath}/${Step.alcohol_use.path}`, {
+  const result: TestResult = await client.post(`${basePath}/${Step.alcohol_use_status.path}`, {
     body,
     state: { user },
     params: { mode: 'edit' },

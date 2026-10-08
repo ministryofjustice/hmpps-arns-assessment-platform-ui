@@ -90,8 +90,8 @@ const fullyAnswered: Scenario = {
     changeLink('physical-mental-health', 'health_wellbeing_changes'),
   ],
   userSubmittedSteps: [
-    Step.health_wellbeing.code,
-    Step.physical_mental_health.code,
+    Step.health_wellbeing_status.code,
+    Step.health_wellbeing_details.code,
     Step.health_wellbeing_summary.code,
   ],
 }

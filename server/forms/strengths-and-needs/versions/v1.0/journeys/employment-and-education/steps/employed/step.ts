@@ -12,7 +12,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const employedEmploymentStep = step({
-  path: `/${Step.employed.path}`,
+  path: `/${Step.employment_education_details.path}`,
   title: sectionPageTitle(Section.employment_and_education),
   view: {
     locals: {
@@ -32,27 +32,27 @@ export const employedEmploymentStep = step({
     employmentEducationSection.questions.changes.displayModes.field,
     saveButton,
   ],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employed)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employment_education_details)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.employed.code),
+      condition: isUserSubmittedCondition(Step.employment_education_details.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.employed.code),
+    autosaveSubmit(Step.employment_education_details.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.employed.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_details.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employed),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employment_education_details),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],
       },

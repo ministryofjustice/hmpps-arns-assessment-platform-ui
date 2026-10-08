@@ -18,7 +18,7 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_summary.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
@@ -46,7 +46,7 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_summary.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
@@ -69,7 +69,7 @@ test.describe('Summary', () => {
         { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
-      .withUserSubmittedSteps([Step.drug_use.code, Step.drug_use_summary.code])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_summary.code])
       .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary#practitioner-analysis')

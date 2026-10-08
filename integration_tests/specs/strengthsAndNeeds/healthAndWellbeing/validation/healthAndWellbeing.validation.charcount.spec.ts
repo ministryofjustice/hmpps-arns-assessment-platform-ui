@@ -53,7 +53,7 @@ const answers = [
   { question: Question.health_wellbeing_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
 
-const userSubmittedSteps = [Step.health_wellbeing.code, Step.physical_mental_health.code]
+const userSubmittedSteps = [Step.health_wellbeing_status.code, Step.health_wellbeing_details.code]
 
 test.describe('Health and wellbeing character counts', () => {
   // a test per option, because each one reveals its own details field
@@ -65,7 +65,7 @@ test.describe('Health and wellbeing character counts', () => {
       const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
-      await page.goto(`${section}/${Step.health_wellbeing.path}`)
+      await page.goto(`${section}/${Step.health_wellbeing_status.path}`)
 
       await questions.health_wellbeing_physical_health_condition.option(CommonOption.yes).check()
       await questions.health_wellbeing_mental_health_condition.option(option).check()
@@ -82,7 +82,7 @@ test.describe('Health and wellbeing character counts', () => {
     const section = await openSection(health, answers, userSubmittedSteps)
     const healthPage = new HealthAndWellbeingPage(page)
     const { questions } = healthPage
-    await page.goto(`${section}/${Step.physical_mental_health.path}`)
+    await page.goto(`${section}/${Step.health_wellbeing_details.path}`)
 
     await questions.health_wellbeing_neurodiverse_conditions.option(CommonOption.yes).check()
     await questions.health_wellbeing_self_harmed.option(CommonOption.yes).check()
@@ -97,7 +97,7 @@ test.describe('Health and wellbeing character counts', () => {
       const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
-      await page.goto(`${section}/${Step.physical_mental_health.path}`)
+      await page.goto(`${section}/${Step.health_wellbeing_details.path}`)
 
       await questions.health_wellbeing_learning_difficulties.option(option).check()
 
@@ -110,7 +110,7 @@ test.describe('Health and wellbeing character counts', () => {
       const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
-      await page.goto(`${section}/${Step.physical_mental_health.path}`)
+      await page.goto(`${section}/${Step.health_wellbeing_details.path}`)
 
       await questions.health_wellbeing_changes.option(option).check()
 

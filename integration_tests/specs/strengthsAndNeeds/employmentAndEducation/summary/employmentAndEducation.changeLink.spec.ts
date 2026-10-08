@@ -80,7 +80,7 @@ const fullyAnswered: Scenario = {
     changeLink('employed', 'education_experience'),
     changeLink('employed', 'employment_education_changes'),
   ],
-  userSubmittedSteps: [Step.current_employment.code, Step.employed.code, Step.employment_education_summary.code],
+  userSubmittedSteps: [Step.employment_status.code, Step.employment_education_details.code, Step.employment_education_summary.code],
 }
 
 const practitionerAnalysisChangeLinks = [

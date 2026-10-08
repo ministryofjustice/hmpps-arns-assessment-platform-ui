@@ -21,22 +21,22 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const drugDetailsStep = step({
-  path: `/${Step.drug_details.path}`,
+  path: `/${Step.drug_use_details.path}`,
   title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.drug_use.path, Step.add_drugs.path]),
+      backlink: createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_use_types.path]),
     },
   },
   onAccess: [
     access({
       effects: [StrengthsAndNeedsEffects.deriveDrugCategories()],
     }),
-    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_details),
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use_details),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.drug_details.code),
+      condition: isUserSubmittedCondition(Step.drug_use_details.code),
       message: 'This step is not user submitted',
     }),
   ],
@@ -49,19 +49,19 @@ export const drugDetailsStep = step({
     saveButton,
   ],
   onSubmission: [
-    autosaveSubmit(Step.drug_details.code),
+    autosaveSubmit(Step.drug_use_details.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_details.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_details.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_details),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_details),
         ],
         next: [
           redirect({

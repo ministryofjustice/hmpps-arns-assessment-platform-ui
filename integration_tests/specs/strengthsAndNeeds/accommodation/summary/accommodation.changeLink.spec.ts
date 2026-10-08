@@ -53,7 +53,7 @@ const settledAccommodation: Scenario = {
     changeLink('accommodation-details', 'accommodation_changes'),
   ],
   userSubmittedSteps: [
-    Step.current_accommodation.code,
+    Step.accommodation_status.code,
     Step.accommodation_details.code,
     Step.accommodation_summary.code,
   ],
@@ -88,7 +88,7 @@ const noAccommodation: Scenario = {
     changeLink('accommodation-details', 'accommodation_changes'),
   ],
   userSubmittedSteps: [
-    Step.current_accommodation.code,
+    Step.accommodation_status.code,
     Step.accommodation_details.code,
     Step.accommodation_summary.code,
   ],

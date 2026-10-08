@@ -36,7 +36,7 @@ const noAccommodation = [
   { question: Question.type_of_no_accommodation, value: Option.homeless },
 ]
 
-const userSubmittedSteps = [Step.current_accommodation.code, Step.accommodation_details.code]
+const userSubmittedSteps = [Step.accommodation_status.code, Step.accommodation_details.code]
 test.describe('Accommodation character counts', () => {
   test('accommodation-details: who they live with, and concerns about the area and the housing', async ({
     page,

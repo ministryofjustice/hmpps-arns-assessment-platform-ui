@@ -39,7 +39,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
-      .withUserSubmittedSteps([Step.current_accommodation.code])
+      .withUserSubmittedSteps([Step.accommodation_status.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -67,7 +67,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.current_accommodation, value: Option.no_accommodation }])
-      .withUserSubmittedSteps([Step.current_accommodation.code])
+      .withUserSubmittedSteps([Step.accommodation_status.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -97,7 +97,7 @@ test.describe('Validation', () => {
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ])
-      .withUserSubmittedSteps([Step.current_accommodation.code])
+      .withUserSubmittedSteps([Step.accommodation_status.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-details')

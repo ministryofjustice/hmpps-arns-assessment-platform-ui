@@ -29,7 +29,7 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
   onAccess: [
     redirectToAnalysisIfReadOnly(
       Section.thinking_behaviours_and_attitudes.path,
-      Step.thinking_behaviours_analysis.path,
+      Step.thinking_behaviours_attitudes_analysis.path,
     ),
   ],
   view: {

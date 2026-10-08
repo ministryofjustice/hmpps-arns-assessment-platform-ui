@@ -11,7 +11,7 @@ import { autoSaveAccommodationSubmit } from '../../../../autosaveAccommodation'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const currentAccommodationStep = step({
-  path: `/${Step.current_accommodation.path}`,
+  path: `/${Step.accommodation_status.path}`,
   title: sectionPageTitle(Section.accommodation),
   reachability: { entryWhen: true },
   view: {
@@ -20,27 +20,27 @@ export const currentAccommodationStep = step({
     },
   },
   blocks: [accommodationSection.questions.currentAccommodation.displayModes.field, saveButton],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.current_accommodation)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.accommodation_status)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.current_accommodation.code),
+      condition: isUserSubmittedCondition(Step.accommodation_status.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autoSaveAccommodationSubmit(Step.current_accommodation.code),
+    autoSaveAccommodationSubmit(Step.accommodation_status.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.current_accommodation.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_status.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.current_accommodation),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.accommodation_status),
         ],
         next: [
           redirect({

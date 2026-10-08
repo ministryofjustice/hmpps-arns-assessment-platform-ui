@@ -30,8 +30,8 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.health_wellbeing.code,
-        Step.physical_mental_health.code,
+        Step.health_wellbeing_status.code,
+        Step.health_wellbeing_details.code,
         Step.health_wellbeing_summary.code,
       ])
       .save()
@@ -137,8 +137,8 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_changes, value: CommonOption.not_present },
       ])
       .withUserSubmittedSteps([
-        Step.health_wellbeing.code,
-        Step.physical_mental_health.code,
+        Step.health_wellbeing_status.code,
+        Step.health_wellbeing_details.code,
         Step.health_wellbeing_summary.code,
       ])
       .save()
@@ -181,8 +181,8 @@ test.describe('Summary', () => {
         { question: Question.health_wellbeing_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
       ])
       .withUserSubmittedSteps([
-        Step.health_wellbeing.code,
-        Step.physical_mental_health.code,
+        Step.health_wellbeing_status.code,
+        Step.health_wellbeing_details.code,
         Step.health_wellbeing_summary.code,
       ])
       .save()

@@ -72,7 +72,7 @@ const fullyAnswered: Scenario = {
     changeLink('alcohol-use-details', 'alcohol_stopped_or_reduced'),
     changeLink('alcohol-use-details', 'alcohol_use_changes'),
   ],
-  userSubmittedSteps: [Step.alcohol_use.code, Step.alcohol_use_details.code, Step.alcohol_use_summary.code],
+  userSubmittedSteps: [Step.alcohol_use_status.code, Step.alcohol_use_details.code, Step.alcohol_use_summary.code],
 }
 
 const practitionerAnalysisChangeLinks = [

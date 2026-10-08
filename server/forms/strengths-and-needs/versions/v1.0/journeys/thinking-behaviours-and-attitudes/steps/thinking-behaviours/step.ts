@@ -10,7 +10,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const thinkingBehavioursStep = step({
-  path: `/${Step.thinking_behaviours.path}`,
+  path: `/${Step.thinking_behaviours_attitudes.path}`,
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   reachability: { entryWhen: true },
   blocks: [
@@ -35,37 +35,37 @@ export const thinkingBehavioursStep = step({
     auditPageView(
       SanAuditEvent.VIEW_QUESTION_PAGE,
       Section.thinking_behaviours_and_attitudes,
-      Step.thinking_behaviours,
+      Step.thinking_behaviours_attitudes,
     ),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.thinking_behaviours.code),
+      condition: isUserSubmittedCondition(Step.thinking_behaviours_attitudes.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.thinking_behaviours.code),
+    autosaveSubmit(Step.thinking_behaviours_attitudes.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_attitudes.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_attitudes_summary.code, IsUserSubmitted.false),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,
-            Step.thinking_behaviours,
+            Step.thinking_behaviours_attitudes,
           ),
         ],
         next: [
           redirect({
-            goto: Step.thinking_behaviours_risk_of_sexual_harm.path,
+            goto: Step.thinking_behaviours_attitudes_risk_of_sexual_harm.path,
           }),
         ],
       },

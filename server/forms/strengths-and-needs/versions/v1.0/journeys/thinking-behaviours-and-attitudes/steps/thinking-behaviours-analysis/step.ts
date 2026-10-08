@@ -7,7 +7,7 @@ import { SanAuditEvent, auditPageView } from '../../../../audit'
 import { isReadOnlyMode } from '../../../../guards'
 
 export const thinkingBehavioursAnalysisStep = step({
-  path: `/${Step.thinking_behaviours_analysis.path}`,
+  path: `/${Step.thinking_behaviours_attitudes_analysis.path}`,
   title: analysisPageTitle(Section.thinking_behaviours_and_attitudes),
   blocks: [thinkingBehavioursAnalysisSummaryTab],
   reachability: { entryWhen: isReadOnlyMode },
@@ -15,7 +15,7 @@ export const thinkingBehavioursAnalysisStep = step({
     auditPageView(
       SanAuditEvent.VIEW_PRACTITIONER_ANALYSIS,
       Section.thinking_behaviours_and_attitudes,
-      Step.thinking_behaviours_analysis,
+      Step.thinking_behaviours_attitudes_analysis,
     ),
   ],
 })

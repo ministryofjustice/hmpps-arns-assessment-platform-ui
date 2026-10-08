@@ -23,7 +23,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const thinkingBehavioursRiskOfSexualHarmStep = step({
-  path: `/${Step.thinking_behaviours_risk_of_sexual_harm.path}`,
+  path: `/${Step.thinking_behaviours_attitudes_risk_of_sexual_harm.path}`,
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   view: {
     locals: {
@@ -33,7 +33,7 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
       backlink: createRoute([
         ...baseSanRoute,
         Section.thinking_behaviours_and_attitudes.path,
-        Step.thinking_behaviours.path,
+        Step.thinking_behaviours_attitudes.path,
       ]),
     },
   },
@@ -42,32 +42,32 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
     auditPageView(
       SanAuditEvent.VIEW_QUESTION_PAGE,
       Section.thinking_behaviours_and_attitudes,
-      Step.thinking_behaviours_risk_of_sexual_harm,
+      Step.thinking_behaviours_attitudes_risk_of_sexual_harm,
     ),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.thinking_behaviours_risk_of_sexual_harm.code),
+      condition: isUserSubmittedCondition(Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.thinking_behaviours_risk_of_sexual_harm.code),
+    autosaveSubmit(Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_risk_of_sexual_harm.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_attitudes_summary.code, IsUserSubmitted.false),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,
-            Step.thinking_behaviours_risk_of_sexual_harm,
+            Step.thinking_behaviours_attitudes_risk_of_sexual_harm,
           ),
         ],
         next: [
@@ -75,10 +75,10 @@ export const thinkingBehavioursRiskOfSexualHarmStep = step({
             when: Answer(Question.thinking_behaviours_attitudes_risk_sexual_harm).match(
               Condition.Equals(CommonOption.yes),
             ),
-            goto: Step.thinking_behaviours_sexual_harm.path,
+            goto: Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.path,
           }),
           redirect({
-            goto: Step.thinking_behaviours_summary.path,
+            goto: Step.thinking_behaviours_attitudes_summary.path,
           }),
         ],
       },

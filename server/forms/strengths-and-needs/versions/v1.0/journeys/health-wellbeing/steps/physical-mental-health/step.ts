@@ -12,7 +12,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const physicalMentalHealthStep = step({
-  path: `/${Step.physical_mental_health.path}`,
+  path: `/${Step.health_wellbeing_details.path}`,
   title: sectionPageTitle(Section.health_and_wellbeing),
   view: {
     locals: {
@@ -36,28 +36,28 @@ export const physicalMentalHealthStep = step({
     saveButton,
   ],
   onAccess: [
-    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing_details),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.physical_mental_health.code),
+      condition: isUserSubmittedCondition(Step.health_wellbeing_details.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.physical_mental_health.code),
+    autosaveSubmit(Step.health_wellbeing_details.code),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.physical_mental_health.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_details.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.health_and_wellbeing, Step.physical_mental_health),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing_details),
         ],
         next: [
           redirect({
