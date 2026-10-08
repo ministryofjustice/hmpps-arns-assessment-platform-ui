@@ -54,7 +54,11 @@ const answers = [
   },
 ]
 
-const userSubmittedSteps = [Step.employment_status.code, Step.employment_education_details.code, Step.employment_education_summary.code]
+const userSubmittedSteps = [
+  Step.employment_status.code,
+  Step.employment_education_details.code,
+  Step.employment_education_summary.code,
+]
 
 test.describe('Employment and education character counts', () => {
   test('employed: other responsibilities, qualifications and transferable skills', async ({ page, openSection }) => {

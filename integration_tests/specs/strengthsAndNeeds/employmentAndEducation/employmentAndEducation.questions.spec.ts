@@ -51,7 +51,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
@@ -215,7 +221,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
@@ -236,7 +248,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code, Step.employment_education_details.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
@@ -269,7 +287,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
@@ -304,7 +328,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
@@ -358,7 +388,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
@@ -393,7 +429,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
@@ -450,7 +492,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
@@ -485,7 +533,13 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      'employment-education-details',
+    )
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 

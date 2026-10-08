@@ -51,13 +51,20 @@ export const thinkingBehavioursSexualHarmStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code)],
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
+          ),
+        ],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.thinking_behaviours_attitudes_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.thinking_behaviours_attitudes_summary.code,
+            IsUserSubmitted.false,
+          ),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,

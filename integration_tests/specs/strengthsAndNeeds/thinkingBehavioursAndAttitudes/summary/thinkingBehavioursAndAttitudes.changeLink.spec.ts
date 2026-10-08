@@ -97,9 +97,18 @@ const fullyAnswered: Scenario = {
     changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_criminal_behaviour'),
     changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_changes'),
     changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm', 'thinking_behaviours_attitudes_risk_sexual_harm'),
-    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm-details', 'thinking_behaviours_attitudes_sexual_preoccupation'),
-    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm-details', 'thinking_behaviours_attitudes_offence_related_sexual_interest'),
-    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm-details', 'thinking_behaviours_attitudes_emotional_intimacy'),
+    changeLink(
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
+      'thinking_behaviours_attitudes_sexual_preoccupation',
+    ),
+    changeLink(
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
+      'thinking_behaviours_attitudes_offence_related_sexual_interest',
+    ),
+    changeLink(
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
+      'thinking_behaviours_attitudes_emotional_intimacy',
+    ),
   ],
   userSubmittedSteps: [
     Step.thinking_behaviours_attitudes.code,
@@ -114,8 +123,14 @@ const practitionerAnalysisChangeLinks = [
     'thinking-behaviours-attitudes-summary',
     'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors',
   ),
-  changeLink('thinking-behaviours-attitudes-summary', 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm'),
-  changeLink('thinking-behaviours-attitudes-summary', 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending'),
+  changeLink(
+    'thinking-behaviours-attitudes-summary',
+    'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm',
+  ),
+  changeLink(
+    'thinking-behaviours-attitudes-summary',
+    'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending',
+  ),
 ]
 
 test.describe('Thinking, behaviours and attitudes change links', () => {

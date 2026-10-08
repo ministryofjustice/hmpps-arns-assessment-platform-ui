@@ -20,9 +20,7 @@ export const currentEmploymentStep = step({
     },
   },
   blocks: [employmentEducationSection.questions.currentEmploymentStatus.displayModes.field, saveButton],
-  onAccess: [
-    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employment_status),
-  ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.employment_status)],
   validWhen: [
     validation({
       condition: isUserSubmittedCondition(Step.employment_status.code),

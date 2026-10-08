@@ -202,7 +202,10 @@ const employmentHistory = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployedOrRetired, visibleWhen: hasBeenEmployedOrRetired }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path, visibleWhen: hasBeenEmployedOrRetired }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.employment_education_details.path,
+      visibleWhen: hasBeenEmployedOrRetired,
+    }),
   },
 })
 
@@ -493,7 +496,10 @@ const employmentExperience = question({
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployed, visibleWhen: hasBeenEmployed }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path, visibleWhen: hasBeenEmployed }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.employment_education_details.path,
+      visibleWhen: hasBeenEmployed,
+    }),
   },
 })
 

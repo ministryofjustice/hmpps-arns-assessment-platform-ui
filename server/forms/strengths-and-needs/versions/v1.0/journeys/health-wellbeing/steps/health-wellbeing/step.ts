@@ -18,7 +18,9 @@ export const healthWellbeingStep = step({
     healthWellbeingSection.questions.mentalHealthProblems.displayModes.field,
     saveButton,
   ],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing_status)],
+  onAccess: [
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.health_and_wellbeing, Step.health_wellbeing_status),
+  ],
   validWhen: [
     validation({
       condition: isUserSubmittedCondition(Step.health_wellbeing_status.code),

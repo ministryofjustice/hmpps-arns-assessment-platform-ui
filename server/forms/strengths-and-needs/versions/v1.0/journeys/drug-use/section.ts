@@ -106,7 +106,10 @@ export const drugLastUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(lastUsedSummaryLabels, Answer(content.code)),
       },
-      actions: changeLinkActions(Step.drug_use_types.path, { code: content.code, text: contentFor('text.lastUsed.text') }),
+      actions: changeLinkActions(Step.drug_use_types.path, {
+        code: content.code,
+        text: contentFor('text.lastUsed.text'),
+      }),
     }),
   },
 })
