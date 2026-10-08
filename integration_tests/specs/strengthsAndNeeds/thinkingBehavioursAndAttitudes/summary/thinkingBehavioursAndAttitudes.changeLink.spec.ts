@@ -23,8 +23,8 @@ import { test } from '../../fixtures'
  * Branches: Fully answered in order to cover every question
  */
 
-const summaryPage = 'thinking-behaviours-summary'
-const analysisPage = 'thinking-behaviours-analysis'
+const summaryPage = 'thinking-behaviours-attitudes-summary'
+const analysisPage = 'thinking-behaviours-attitudes-analysis'
 
 const fullyAnswered: Scenario = {
   answers: [
@@ -81,25 +81,25 @@ const fullyAnswered: Scenario = {
     },
   ],
   summaryChangeLinks: [
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_consequences'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_stable_behaviour'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_offending_activities'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_peer_pressure'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_problem_solving'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_peoples_views'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_manipulative_predatory_behaviour'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_temper_management'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_violence_controlling_behaviour'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_impulsive_behaviour'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_positive_attitude'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_hostile_orientation'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_supervision'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_criminal_behaviour'),
-    changeLink('thinking-behaviours', 'thinking_behaviours_attitudes_changes'),
-    changeLink('thinking-behaviours-risk-of-sexual-harm', 'thinking_behaviours_attitudes_risk_sexual_harm'),
-    changeLink('thinking-behaviours-sexual-harm', 'thinking_behaviours_attitudes_sexual_preoccupation'),
-    changeLink('thinking-behaviours-sexual-harm', 'thinking_behaviours_attitudes_offence_related_sexual_interest'),
-    changeLink('thinking-behaviours-sexual-harm', 'thinking_behaviours_attitudes_emotional_intimacy'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_consequences'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_stable_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_offending_activities'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_peer_pressure'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_problem_solving'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_peoples_views'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_manipulative_predatory_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_temper_management'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_violence_controlling_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_impulsive_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_positive_attitude'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_hostile_orientation'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_supervision'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_criminal_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_changes'),
+    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm', 'thinking_behaviours_attitudes_risk_sexual_harm'),
+    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm-details', 'thinking_behaviours_attitudes_sexual_preoccupation'),
+    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm-details', 'thinking_behaviours_attitudes_offence_related_sexual_interest'),
+    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm-details', 'thinking_behaviours_attitudes_emotional_intimacy'),
   ],
   userSubmittedSteps: [
     Step.thinking_behaviours_attitudes.code,
@@ -111,11 +111,11 @@ const fullyAnswered: Scenario = {
 
 const practitionerAnalysisChangeLinks = [
   changeLink(
-    'thinking-behaviours-summary',
+    'thinking-behaviours-attitudes-summary',
     'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors',
   ),
-  changeLink('thinking-behaviours-summary', 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm'),
-  changeLink('thinking-behaviours-summary', 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending'),
+  changeLink('thinking-behaviours-attitudes-summary', 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm'),
+  changeLink('thinking-behaviours-attitudes-summary', 'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending'),
 ]
 
 test.describe('Thinking, behaviours and attitudes change links', () => {

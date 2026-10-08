@@ -41,7 +41,7 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-types')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
@@ -107,7 +107,7 @@ test.describe('Questions', () => {
           - paragraph: "No"
         - definition:
           - link "Change Has Test ever misused drugs?":
-            - /url: drug-use#drug_use-question
+            - /url: drug-use-status#drug_use-question
         - heading [level=2]
         - heading [level=2]
         - button "Go to practitioner analysis"
@@ -128,7 +128,7 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-details')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Not used in the last 6 months')
 

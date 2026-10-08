@@ -110,7 +110,7 @@ test.describe('Validation', () => {
       ])
       .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employed')
+    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'employment-education-details')
 
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 

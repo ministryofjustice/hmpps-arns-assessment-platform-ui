@@ -53,7 +53,7 @@ test.describe('Autosave', () => {
     const flushed = page.waitForRequest(request => autosavedValue(request) === 'Walked away from', {
       timeout: AUTOSAVE_TIMEOUT,
     })
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-status`)
 
     await flushed
   })

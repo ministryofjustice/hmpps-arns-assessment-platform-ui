@@ -60,7 +60,7 @@ test.describe('Validation', () => {
       .withUserSubmittedSteps([Step.health_wellbeing_status.code, Step.health_wellbeing_details.code])
       .save()
 
-    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'physical-mental-health')
+    await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'health-wellbeing-details')
 
     const healthAndWellbeingPage = await HealthAndWellbeingPage.verifyOnPage(
       page,

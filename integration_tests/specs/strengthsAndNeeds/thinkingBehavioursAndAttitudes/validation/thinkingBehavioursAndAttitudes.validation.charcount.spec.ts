@@ -99,7 +99,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
   }
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
-    test(`thinking-behaviours-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
+    test(`thinking-behaviours-attitudes-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
       const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage

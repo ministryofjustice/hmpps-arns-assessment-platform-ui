@@ -75,7 +75,7 @@ test.describe('Health and wellbeing character counts', () => {
   }
 
   // prescribed medication for physical and mental conditions is always shown on this page
-  test('physical-mental-health: neurodiverse conditions, self harm, suicidal thoughts and positive factors', async ({
+  test('health-wellbeing-details: neurodiverse conditions, self harm, suicidal thoughts and positive factors', async ({
     page,
     openSection,
   }) => {
@@ -93,7 +93,7 @@ test.describe('Health and wellbeing character counts', () => {
   })
 
   for (const option of [Option.yes_significant_difficulties, Option.yes_some_difficulties]) {
-    test(`physical-mental-health: learning difficulties ${option}`, async ({ page, openSection }) => {
+    test(`health-wellbeing-details: learning difficulties ${option}`, async ({ page, openSection }) => {
       const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
@@ -106,7 +106,7 @@ test.describe('Health and wellbeing character counts', () => {
   }
 
   for (const option of changeOptions) {
-    test(`physical-mental-health: wants to make changes ${option}`, async ({ page, openSection }) => {
+    test(`health-wellbeing-details: wants to make changes ${option}`, async ({ page, openSection }) => {
       const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage

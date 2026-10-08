@@ -41,7 +41,7 @@ test.describe('Summary', () => {
             - paragraph: Homeowner
           - definition:
             - link "Change What type of accommodation does Test currently have?":
-              - /url: current-accommodation#current_accommodation-question
+              - /url: accommodation-status#current_accommodation-question
           - term: Who is Test living with?
           - definition:
             - paragraph: Family

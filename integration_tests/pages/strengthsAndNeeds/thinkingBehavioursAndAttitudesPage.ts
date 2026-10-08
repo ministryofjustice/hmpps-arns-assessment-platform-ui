@@ -5,7 +5,7 @@ import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 export default class ThinkingBehavioursAndAttitudesPage extends StrengthsAndNeedsPage {
   static readonly section = thinking
 
-  static readonly firstStep = 'thinking-behaviours'
+  static readonly firstStep = 'thinking-behaviours-attitudes'
 
   readonly questions = this.questionsOf(ThinkingBehavioursAndAttitudesQuestions)
 }

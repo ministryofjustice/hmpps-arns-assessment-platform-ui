@@ -35,7 +35,7 @@ test.describe('Validation', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-types')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 

@@ -65,7 +65,7 @@ const notUsedInTheLastSixMonths = [
 ]
 
 test.describe('Drug use character counts', () => {
-  test('add-drugs: the name of another drug', async ({ page, openSection }) => {
+  test('drug-use-types: the name of another drug', async ({ page, openSection }) => {
     const section = await openSection(drugUse, answers, userSubmittedSteps)
     const drugUsePage = new DrugUsePage(page)
     const { questions } = drugUsePage
@@ -86,7 +86,7 @@ test.describe('Drug use character counts', () => {
 
   // a test per option, because each one reveals its own details field
   for (const option of [CommonOption.yes, CommonOption.no]) {
-    test(`drug-details: how often each drug is used, and receiving treatment ${option}`, async ({
+    test(`drug-use-details: how often each drug is used, and receiving treatment ${option}`, async ({
       page,
       openSection,
     }) => {

@@ -198,7 +198,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-risk-of-sexual-harm',
+      'thinking-behaviours-attitudes-risk-of-sexual-harm',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
@@ -259,7 +259,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-risk-of-sexual-harm',
+      'thinking-behaviours-attitudes-risk-of-sexual-harm',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
@@ -322,7 +322,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-sexual-harm',
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(

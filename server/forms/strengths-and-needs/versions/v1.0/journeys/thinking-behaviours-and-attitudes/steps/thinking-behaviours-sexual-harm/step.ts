@@ -17,7 +17,7 @@ export const thinkingBehavioursSexualHarmStep = step({
   title: sectionPageTitle(Section.thinking_behaviours_and_attitudes),
   view: {
     locals: {
-      sectionTitle: contentFor('step.thinking_behaviours_sexual_harm'),
+      sectionTitle: contentFor('step.thinking_behaviours_attitudes_risk_of_sexual_harm_details'),
       pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
       backlink: createRoute([
         ...baseSanRoute,

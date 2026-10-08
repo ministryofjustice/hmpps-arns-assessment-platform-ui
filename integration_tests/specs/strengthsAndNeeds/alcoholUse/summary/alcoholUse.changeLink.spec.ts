@@ -61,7 +61,7 @@ const fullyAnswered: Scenario = {
     { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('alcohol-use', 'alcohol_use'),
+    changeLink('alcohol-use-status', 'alcohol_use'),
     changeLink('alcohol-use-details', 'alcohol_frequency'),
     changeLink('alcohol-use-details', 'alcohol_units'),
     changeLink('alcohol-use-details', 'alcohol_binge_drinking'),

@@ -21,10 +21,10 @@ test.describe('Strengths and needs privacy screen', () => {
 
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
     await privacyPage.confirmAndContinue()
-    await expect(page).toHaveURL(/current-accommodation/)
+    await expect(page).toHaveURL(/accommodation-status/)
 
-    await page.goto(`${baseURL}/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/current-accommodation`)
-    await expect(page).toHaveURL(/current-accommodation/)
+    await page.goto(`${baseURL}/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/accommodation-status`)
+    await expect(page).toHaveURL(/accommodation-status/)
   })
 
   test('is skipped for a read only assessment (regardless of the plan access mode)', async ({

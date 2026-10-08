@@ -47,7 +47,7 @@ test.describe('Summary', () => {
           - paragraph: Unemployed - not actively looking for work
         - definition:
           - link "Change What is Test's current employment status?":
-            - /url: current-employment#employment_status-question
+            - /url: employment-status#employment_status-question
         - term: Does Test have any additional day-to-day commitments?
         - definition:
           - paragraph: None

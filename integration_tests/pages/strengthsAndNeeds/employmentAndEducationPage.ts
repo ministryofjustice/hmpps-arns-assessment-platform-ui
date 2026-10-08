@@ -5,7 +5,7 @@ import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 export default class EmploymentAndEducationPage extends StrengthsAndNeedsPage {
   static readonly section = employment
 
-  static readonly firstStep = 'current-employment'
+  static readonly firstStep = 'employment-status'
 
   readonly questions = this.questionsOf(EmploymentAndEducationQuestions)
 

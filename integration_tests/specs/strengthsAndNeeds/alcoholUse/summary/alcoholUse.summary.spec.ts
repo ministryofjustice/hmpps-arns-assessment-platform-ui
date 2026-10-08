@@ -48,7 +48,7 @@ test.describe('Summary', () => {
           - paragraph: Yes, including the last 3 months
         - definition:
           - link "Change Has Test ever drunk alcohol?":
-            - /url: alcohol-use#alcohol_use-question
+            - /url: alcohol-use-status#alcohol_use-question
         - term: How often has Test drunk alcohol in the last 3 months?
         - definition:
           - paragraph: 2 to 4 times a month

@@ -338,7 +338,7 @@ test.describe('Questions', () => {
           - paragraph: "No"
         - definition:
           - link "Change Has Test ever drunk alcohol?":
-            - /url: alcohol-use#alcohol_use-question
+            - /url: alcohol-use-status#alcohol_use-question
         - button "Go to practitioner analysis"
     `)
   })

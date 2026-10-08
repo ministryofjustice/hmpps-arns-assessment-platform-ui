@@ -55,7 +55,7 @@ test.describe('Summary', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-summary',
+      'thinking-behaviours-attitudes-summary',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(page, 'Summary')
@@ -67,115 +67,115 @@ test.describe('Summary', () => {
           - paragraph: Yes, is aware of the consequences of their actions
         - definition:
           - link "Change Is Test aware of the consequences of their actions?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_consequences-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_consequences-question
         - term: Does Test show stable behaviour?
         - definition:
           - paragraph: Yes, shows stable behaviour
         - definition:
           - link "Change Does Test show stable behaviour?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_stable_behaviour-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_stable_behaviour-question
         - term: Does Test engage in activities that could link to offending?
         - definition:
           - paragraph: Engages in pro-social activities and understands the link to offending
         - definition:
           - link "Change Does Test engage in activities that could link to offending?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_offending_activities-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_offending_activities-question
         - term: Is Test resilient towards peer pressure or influence by criminal associates?
         - definition:
           - paragraph: Yes, resilient towards peer pressure or influence by criminal associates
         - definition:
           - link "Change Is Test resilient towards peer pressure or influence by criminal associates?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_peer_pressure-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_peer_pressure-question
         - term: Is Test able to solve problems in a positive way?
         - definition:
           - paragraph: Yes, is able to solve problems and identify appropriate solutions
         - definition:
           - link "Change Is Test able to solve problems in a positive way?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_problem_solving-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_problem_solving-question
         - term: Does Test understand other people’s views?
         - definition:
           - paragraph: Yes, understands other people’s views and is able to distinguish between their own feelings and those of others
         - definition:
           - link "Change Does Test understand other people’s views?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_peoples_views-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_peoples_views-question
         - term: Does Test show manipulative behaviour or a predatory lifestyle?
         - definition:
           - paragraph: Generally gives an honest account of their lives and has no history of showing manipulative behaviour or a predatory lifestyle
         - definition:
           - link "Change Does Test show manipulative behaviour or a predatory lifestyle?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_manipulative_predatory_behaviour-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_manipulative_predatory_behaviour-question
         - term: Is Test able to manage their temper?
         - definition:
           - paragraph: Yes, is able to manage their temper well
         - definition:
           - link "Change Is Test able to manage their temper?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_temper_management-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_temper_management-question
         - term: Does Test use violence, aggressive or controlling behaviour to get their own way?
         - definition:
           - paragraph: Does not use violence, aggressive or controlling behaviour to get their own way
         - definition:
           - link "Change Does Test use violence, aggressive or controlling behaviour to get their own way?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_violence_controlling_behaviour-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_violence_controlling_behaviour-question
         - term: Does Test act on impulse?
         - definition:
           - paragraph: Considers all aspects of a situation before acting on or making a decision
         - definition:
           - link "Change Does Test act on impulse?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_impulsive_behaviour-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_impulsive_behaviour-question
         - term: Does Test have a positive attitude towards any criminal justice staff they have come into contact with?
         - definition:
           - paragraph: Yes, has a positive attitude
         - definition:
           - link "Change Does Test have a positive attitude towards any criminal justice staff they have come into contact with?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_positive_attitude-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_positive_attitude-question
         - term: Does Test have hostile orientation to others or to general rules?
         - definition:
           - paragraph: They’re able to have constructive conversations when they disagree with others and can forgive past wrongs
         - definition:
           - link "Change Does Test have hostile orientation to others or to general rules?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_hostile_orientation-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_hostile_orientation-question
         - term: Does Test accept supervision and their licence conditions?
         - definition:
           - paragraph: Accepts supervision and has responded well to supervision in the past
         - definition:
           - link "Change Does Test accept supervision and their licence conditions?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_supervision-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_supervision-question
         - term: Does Test support or excuse criminal behaviour?
         - definition:
           - paragraph: Does not support or excuse criminal behaviour
         - definition:
           - link "Change Does Test support or excuse criminal behaviour?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_criminal_behaviour-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_criminal_behaviour-question
         - term: Does Test want to make changes to their thinking, behaviours and attitudes?
         - definition:
           - paragraph: Test is not present
         - definition:
           - link "Change Does Test want to make changes to their thinking, behaviours and attitudes?":
-            - /url: thinking-behaviours#thinking_behaviours_attitudes_changes-question
+            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_changes-question
         - term: Are there any concerns that Test poses a risk of sexual harm to others?
         - definition:
           - paragraph: "Yes"
         - definition:
           - link "Change Are there any concerns that Test poses a risk of sexual harm to others?":
-            - /url: thinking-behaviours-risk-of-sexual-harm#thinking_behaviours_attitudes_risk_sexual_harm-question
+            - /url: thinking-behaviours-attitudes-risk-of-sexual-harm#thinking_behaviours_attitudes_risk_sexual_harm-question
         - term: Is there evidence Test shows sexual preoccupation?
         - definition:
           - paragraph: Yes, the amount of time they spend engaging in sexual activity or thinking about sex is unhealthy and is impacting their day-to-day life
         - definition:
           - link "Change Is there evidence Test shows sexual preoccupation?":
-            - /url: thinking-behaviours-sexual-harm#thinking_behaviours_attitudes_sexual_preoccupation-question
+            - /url: thinking-behaviours-attitudes-risk-of-sexual-harm-details#thinking_behaviours_attitudes_sexual_preoccupation-question
         - term: Is there evidence Test has offence-related sexual interests?
         - definition:
           - paragraph: Yes, there are recurrent and persistent patterns of a preference for sexual activity that is illegal or harmful and no evidence of healthy sexual interests
         - definition:
           - link "Change Is there evidence Test has offence-related sexual interests?":
-            - /url: thinking-behaviours-sexual-harm#thinking_behaviours_attitudes_offence_related_sexual_interest-question
+            - /url: thinking-behaviours-attitudes-risk-of-sexual-harm-details#thinking_behaviours_attitudes_offence_related_sexual_interest-question
         - term: Is there evidence Test finds it easier to seek emotional intimacy with children over adults?
         - definition:
           - paragraph: Yes, they find it easier to seek emotional intimacy with children and have significant difficulty forming intimate relationships with adults
         - definition:
           - link "Change Is there evidence Test finds it easier to seek emotional intimacy with children over adults?":
-            - /url: thinking-behaviours-sexual-harm#thinking_behaviours_attitudes_emotional_intimacy-question
+            - /url: thinking-behaviours-attitudes-risk-of-sexual-harm-details#thinking_behaviours_attitudes_emotional_intimacy-question
         - button "Go to practitioner analysis"
     `)
   })
@@ -228,7 +228,7 @@ test.describe('Summary', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-summary',
+      'thinking-behaviours-attitudes-summary',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(page, 'Summary')
@@ -301,7 +301,7 @@ test.describe('Summary', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-summary#practitioner-analysis',
+      'thinking-behaviours-attitudes-summary#practitioner-analysis',
     )
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
       page,
@@ -312,6 +312,6 @@ test.describe('Summary', () => {
       .click()
     await thinkingBehavioursAndAttitudesPage.markComplete.click()
     await expect(thinkingBehavioursAndAttitudesPage.complete).toBeVisible()
-    expect(page.url()).toContain('thinking-behaviours-analysis')
+    expect(page.url()).toContain('thinking-behaviours-attitudes-analysis')
   })
 })

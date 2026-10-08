@@ -32,7 +32,7 @@ test.describe('Summary', () => {
           - paragraph: "No"
         - definition:
           - link "Change Has Test ever misused drugs?":
-            - /url: drug-use#drug_use-question
+            - /url: drug-use-status#drug_use-question
         - heading [level=2]
         - heading [level=2]
         - button "Go to practitioner analysis"
