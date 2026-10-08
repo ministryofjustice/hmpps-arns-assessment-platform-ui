@@ -2,6 +2,9 @@
  * Audit events raised by the sentence plan form.
  */
 export enum SentencePlanAuditEvent {
+  // Privacy
+  CONFIRM_PRIVACY_SCREEN = 'CONFIRM_PRIVACY_SCREEN',
+
   // Plan Overview
   VIEW_PLAN_OVERVIEW = 'VIEW_PLAN_OVERVIEW',
   /*
@@ -25,7 +28,9 @@ export enum SentencePlanAuditEvent {
   DELETE_GOAL = 'DELETE_GOAL',
 
   // Goal Management - Post Agree
+  VIEW_PLAN_AGREEMENT = 'VIEW_PLAN_AGREEMENT',
   EDIT_PLAN_AGREEMENT = 'EDIT_PLAN_AGREEMENT',
+  VIEW_PLAN_AGREEMENT_UPDATE = 'VIEW_PLAN_AGREEMENT_UPDATE',
   EDIT_PLAN_AGREEMENT_UPDATE = 'EDIT_PLAN_AGREEMENT_UPDATE',
   VIEW_UPDATE_GOAL_AND_STEPS = 'VIEW_UPDATE_GOAL_AND_STEPS',
   EDIT_STEP_PROGRESS = 'EDIT_STEP_PROGRESS',
@@ -43,5 +48,4 @@ export enum SentencePlanAuditEvent {
   VIEW_PLAN_HISTORY = 'VIEW_PLAN_HISTORY',
   VIEW_PREVIOUS_VERSIONS = 'VIEW_PREVIOUS_VERSIONS',
   VIEW_HISTORIC_PLAN = 'VIEW_HISTORIC_PLAN',
-  VIEW_HISTORIC_ASSESSMENT = 'VIEW_HISTORIC_ASSESSMENT', // TODO: wire up when /view-previous-version/:uuid route is built
 }

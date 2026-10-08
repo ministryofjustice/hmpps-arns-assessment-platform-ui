@@ -21,7 +21,7 @@ export const updateAgreePlanStep = step({
     redirectToOverviewIfReadOnly(),
     redirectUnlessCouldNotAnswer(sentencePlanOverviewPath),
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT_UPDATE)],
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_AGREEMENT_UPDATE)],
     }),
   ],
   view: {

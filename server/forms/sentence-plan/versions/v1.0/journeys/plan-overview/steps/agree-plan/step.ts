@@ -28,7 +28,7 @@ export const agreePlanStep = step({
   onAccess: [
     redirectToOverviewIfReadOnly(),
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT)],
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_AGREEMENT)],
     }),
   ],
   onSubmission: [
