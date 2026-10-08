@@ -1,8 +1,8 @@
 import { expect, Page, Request } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
 import { alcohol, navigateToStrengthsAndNeeds, offence, sanFormPath, v1Path } from './sanUtils'
-import OffenceAnalysisPage from '../../pages/strengthsAndNeeds/offenceAnalysisPage';
-import AlcoholUsePage from '../../pages/strengthsAndNeeds/alcoholUsePage';
+import OffenceAnalysisPage from '../../pages/strengthsAndNeeds/offenceAnalysisPage'
+import AlcoholUsePage from '../../pages/strengthsAndNeeds/alcoholUsePage'
 
 const AUTOSAVE_TIMEOUT = 30_000
 const textCode = 'offence_analysis_description_of_offence'
@@ -62,7 +62,9 @@ test.describe('Autosave', () => {
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Offence analysis')
 
     // check autosaved value is persisted
-    await expect(offenceAnalysisPage.questions.offence_analysis_description_of_offence.input).toHaveValue('Walked away from')
+    await expect(offenceAnalysisPage.questions.offence_analysis_description_of_offence.input).toHaveValue(
+      'Walked away from',
+    )
   })
 
   test('is off in a read-only session', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
