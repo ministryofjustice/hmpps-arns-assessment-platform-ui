@@ -53,43 +53,43 @@ test.describe('Summary', () => {
           - paragraph: None
         - definition:
           - link "Change Does Test have any additional day-to-day commitments?":
-            - /url: employed#employment_other_responsibilities-question
+            - /url: employment-education-details#employment_other_responsibilities-question
         - term: Select the highest level of academic qualification Test has completed
         - definition:
           - paragraph: None of these
         - definition:
           - link "Change Select the highest level of academic qualification Test has completed":
-            - /url: employed#education_highest_level_completed-question
+            - /url: employment-education-details#education_highest_level_completed-question
         - term: Does Test have any professional or vocational qualifications?
         - definition:
           - paragraph: "No"
         - definition:
           - link "Change Does Test have any professional or vocational qualifications?":
-            - /url: employed#education_professional_or_vocational_qualifications-question
+            - /url: employment-education-details#education_professional_or_vocational_qualifications-question
         - term: Does Test have any skills that could help them in a job or to get a job?
         - definition:
           - paragraph: "No"
         - definition:
           - link "Change Does Test have any skills that could help them in a job or to get a job?":
-            - /url: employed#education_transferable_skills-question
+            - /url: employment-education-details#education_transferable_skills-question
         - term: Does Test have difficulties with reading, writing or numeracy?
         - definition:
           - paragraph: No difficulties
         - definition:
           - link "Change Does Test have difficulties with reading, writing or numeracy?":
-            - /url: employed#education_difficulties-question
+            - /url: employment-education-details#education_difficulties-question
         - term: What is Test's experience of education?
         - definition:
           - paragraph: Unknown
         - definition:
           - link "Change What is Test's experience of education?":
-            - /url: employed#education_experience-question
+            - /url: employment-education-details#education_experience-question
         - term: Does Test want to make changes to their employment and education?
         - definition:
           - paragraph: Test is not present
         - definition:
           - link "Change Does Test want to make changes to their employment and education?":
-            - /url: employed#employment_education_changes-question
+            - /url: employment-education-details#employment_education_changes-question
         - button "Go to practitioner analysis"
     `)
   })
