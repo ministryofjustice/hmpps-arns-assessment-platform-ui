@@ -22,7 +22,7 @@ import CheckAnswersPage from '../../pages/tieringAssessment/checkAnswersPage'
 import PredictorScoresPage from '../../pages/tieringAssessment/predictorScoresPage'
 
 test.describe('Assessment Dynamic', () => {
-  test('Tiering assessment Dynamic', async ({ page }) => {
+  test('Tiering assessment - Dynamic Happy Path with branching and validation error checks', async ({ page }) => {
     const loginPage = new LoginPage(page)
     const setupPage = new StartTieringAssessmentPage(page)
     const offenceHistoryPage = new CurrentOffenceAndOffencdingHistoryPage(page)
@@ -118,6 +118,10 @@ test.describe('Assessment Dynamic', () => {
     /** Accommodation page */
     await accommodationPage.checkPageUrl(tieringAssessmentV1URLs.ACCOMMODATION)
     await accommodationPage.checkPageHeading(tieringAssessmentPageTitles.accommodation)
+    await accommodationPage.clickSaveAndContinue()
+    await accommodationPage.checkErrorSummaryBoxAppears()
+    await accommodationPage.firstAccommodationQuestionError()
+    await accommodationPage.numberOfRequiredFieldErrors(1)
     await accommodationPage.clickLivingWithFamilyCheckboxOption()
     await accommodationPage.clickLivingWithFriendsCheckboxOption()
     await accommodationPage.clickLivingWithPartnerCheckboxOption()
@@ -129,18 +133,34 @@ test.describe('Assessment Dynamic', () => {
     /** Employment */
     await employmentPage.checkPageUrl(tieringAssessmentV1URLs.EMPLOYMENT)
     await employmentPage.checkPageHeading(tieringAssessmentPageTitles.employment)
+    await employmentPage.clickSaveAndContinue()
+    await employmentPage.checkErrorSummaryBoxAppears()
+    await employmentPage.numberOfRequiredFieldErrors(1)
     await employmentPage.clickEmploymentStatusUnemployedNotLookingRadioOption()
     await employmentPage.clickSaveAndContinue()
 
-    /** Drug misuse page */
+    /** Drug misuse page - No branch takes you to alcohol page */
+    await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
+    await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugMisusePage.clickSaveAndContinue()
+    await drugMisusePage.checkErrorSummaryBoxAppears()
+    await drugMisusePage.numberOfRequiredFieldErrors(1)
+    await drugMisusePage.clickEverMisusedDrugsNoRadioOption()
+    await drugMisusePage.clickSaveAndContinue()
+    await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
+    await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickBackLink()
     await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
     await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
     await drugMisusePage.clickEverMisusedDrugsYesRadioOption()
-    await employmentPage.clickSaveAndContinue()
+    await drugMisusePage.clickSaveAndContinue()
 
-    /** Drug use page */
+    /** Drug use page - branch when you've selected yes to drug misuse */
     await drugUsePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_USE)
     await drugUsePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugUsePage.clickSaveAndContinue()
+    await drugUsePage.checkErrorSummaryBoxAppears()
+    await drugUsePage.numberOfRequiredFieldErrors(2)
     await drugUsePage.clickDrugsUsedAmphetaminesCheckboxOption()
     await drugUsePage.clickAmphetaminesRadioLast6MonthsRadioOption()
     await drugUsePage.clickDrugsUsedCannabisCheckboxOption()
@@ -151,7 +171,23 @@ test.describe('Assessment Dynamic', () => {
     await drugUsePage.clickMotivationToStopNoMotivationRadioOption()
     await drugUsePage.clickSaveAndContinue()
 
-    /** Alcohol ever used more than 3 months ago */
+    /** Alcohol ever used more page - No branch takes you to personal relationships page */
+    await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
+    await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickSaveAndContinue()
+    await everDrunkAlcoholPage.checkErrorSummaryBoxAppears()
+    await everDrunkAlcoholPage.numberOfRequiredFieldErrors(1)
+    await everDrunkAlcoholPage.clickEverDrunkAlcoholNoRadioOption()
+    await everDrunkAlcoholPage.clickSaveAndContinue()
+    await personalRelationshipsAndCommunityPage.checkPageUrl(
+      tieringAssessmentV1URLs.PERSONAL_RELATIONSHIPS_AND_COMMUNITY,
+    )
+    await personalRelationshipsAndCommunityPage.checkPageHeading(
+      tieringAssessmentPageTitles.personalRelationshipsAndCommunity,
+    )
+    await personalRelationshipsAndCommunityPage.clickBackLink()
+
+    /** Alcohol ever used more than 3 months ago - branch takes you to binge drinking page */
     await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
     await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
     await everDrunkAlcoholPage.clickEverDrunkAlcoholYesMoreThan3MonthsAgoRadioOption()
@@ -160,6 +196,9 @@ test.describe('Assessment Dynamic', () => {
     /** Binge-drinking sub-page */
     await bingeDrinking.checkPageUrl(tieringAssessmentV1URLs.BINGE_DRINKING)
     await bingeDrinking.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await bingeDrinking.clickSaveAndContinue()
+    await bingeDrinking.checkErrorSummaryBoxAppears()
+    await bingeDrinking.numberOfRequiredFieldErrors(1)
     await bingeDrinking.clickBingeDrinkingEvidenceRadioOption()
     await bingeDrinking.clickSaveAndContinue()
 
@@ -175,7 +214,7 @@ test.describe('Assessment Dynamic', () => {
     /** nav back to alcohol ever used page */
     await bingeDrinking.clickBackLink()
 
-    /** Alcohol ever used last 3 months ago */
+    /** Alcohol ever used last 3 months ago - final alcohol branch */
     await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
     await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
     await everDrunkAlcoholPage.clickEverDrunkAlcoholYesLast3MonthsRadioOption()
@@ -184,6 +223,9 @@ test.describe('Assessment Dynamic', () => {
     /** Alcohol use main page */
     await alcoholUsePage.checkPageUrl(tieringAssessmentV1URLs.ALCOHOL_USE)
     await alcoholUsePage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await alcoholUsePage.clickSaveAndContinue()
+    await alcoholUsePage.checkErrorSummaryBoxAppears()
+    await alcoholUsePage.numberOfRequiredFieldErrors(3)
     await alcoholUsePage.clickHowOften4PlusPerWeekRadioOption()
     await alcoholUsePage.clickUnits10PlusRadioOption()
     await alcoholUsePage.clickUnitsDetails()
@@ -198,6 +240,10 @@ test.describe('Assessment Dynamic', () => {
     await personalRelationshipsAndCommunityPage.checkPageHeading(
       tieringAssessmentPageTitles.personalRelationshipsAndCommunity,
     )
+    await personalRelationshipsAndCommunityPage.clickSaveAndContinue()
+    await personalRelationshipsAndCommunityPage.checkErrorSummaryBoxAppears()
+    await personalRelationshipsAndCommunityPage.checkFirstQuestionError()
+    await personalRelationshipsAndCommunityPage.checkSecondQuestionError()
     await personalRelationshipsAndCommunityPage.clickImportantPeoplePartnerCheckboxOption()
     await personalRelationshipsAndCommunityPage.clickImportantPeopleChildrenOrWardsCheckboxOption()
     await personalRelationshipsAndCommunityPage.clickImportantPeopleOtherChildrenCheckboxOption()
@@ -212,6 +258,9 @@ test.describe('Assessment Dynamic', () => {
     await thinkingAttitudesAndBehavioursPage.checkPageHeading(
       tieringAssessmentPageTitles.thinkingAttitudesAndBehaviours,
     )
+    await thinkingAttitudesAndBehavioursPage.clickSaveAndContinue()
+    await thinkingAttitudesAndBehavioursPage.checkErrorSummaryBoxAppears()
+    await thinkingAttitudesAndBehavioursPage.numberOfRequiredFieldErrors(4)
     await thinkingAttitudesAndBehavioursPage.clickOffendingLinkedActivitiesRegularEngagementRadioOption()
     await thinkingAttitudesAndBehavioursPage.clickTemperManagementLosesTemperRadioOption()
     await thinkingAttitudesAndBehavioursPage.clickImpulseControlActsOnImpulseProblemsRadioOption()
@@ -221,6 +270,9 @@ test.describe('Assessment Dynamic', () => {
     /** Offence analysis page */
     await offenceAnalysisPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_ANALYSIS)
     await offenceAnalysisPage.checkPageHeading(tieringAssessmentPageTitles.offenceAnalysis)
+    await offenceAnalysisPage.clickSaveAndContinue()
+    await offenceAnalysisPage.checkErrorSummaryBoxAppears()
+    await offenceAnalysisPage.numberOfRequiredFieldErrors(2)
     await offenceAnalysisPage.clickCurrentOffenceArsonCheckboxOption()
     await offenceAnalysisPage.clickCurrentOffenceDomesticAbuseCheckboxOption()
     await offenceAnalysisPage.clickCurrentOffenceExcessiveViolenceCheckboxOption()
@@ -237,6 +289,9 @@ test.describe('Assessment Dynamic', () => {
     /** Risk of serious harm (previous convictions) page */
     await previousConvictionsPage.checkPageUrl(tieringAssessmentV1URLs.PREVIOUS_CONVICTIONS)
     await previousConvictionsPage.checkPageHeading(tieringAssessmentPageTitles.riskOfSeriousHarm)
+    await previousConvictionsPage.clickSaveAndContinue()
+    await previousConvictionsPage.checkErrorSummaryBoxAppears()
+    await previousConvictionsPage.checkValidationError()
     await previousConvictionsPage.clickPreviousConvictionsMurderCheckboxOption()
     await previousConvictionsPage.clickPreviousConvictionsGBHCheckboxOption()
     await previousConvictionsPage.clickPreviousConvictionsChildSexualOffencesCheckboxOption()
@@ -278,9 +333,8 @@ test.describe('Assessment Dynamic', () => {
     await checkAnswersPage.checkInterviewSubHeadingVisible()
     await checkAnswersPage.checkInterviewAnswerValue('Yes, continue assessment')
 
-    /** Check answer page dynamic factors */
+    // /** Check answer page dynamic factors */
     await checkAnswersPage.checkDynamicHeaderVisible(true)
-    await page.pause()
     await checkAnswersPage.checkAccommodationSubHeadingVisible(true)
     await checkAnswersPage.checkLivingWithAnswer(['Family', 'Friends', 'Partner', 'Person under 18 years old', 'Other'])
     await checkAnswersPage.checkAccommodationSuitableAnswer('No')
@@ -379,5 +433,205 @@ test.describe('Assessment Dynamic', () => {
     await predictorScoresPage.checkCompleteBannerVisible(false)
     await predictorScoresPage.clickMarkAsCompleteButton()
     await predictorScoresPage.checkCompleteBannerVisible(true)
+  })
+
+  test('Tiering assessment Dynamic Unknown Path', async ({ page }) => {
+    const loginPage = new LoginPage(page)
+    const setupPage = new StartTieringAssessmentPage(page)
+    const offenceHistoryPage = new CurrentOffenceAndOffencdingHistoryPage(page)
+    const sexualOffendingPage = new SexualOffendingPage(page)
+    const currentSupervisionDatePage = new CurrentSupervisionPage(page)
+    const offencesSinceCommunityDatePage = new OffencesSinceCommunityDatePage(page)
+    const interviewPage = new InterviewPage(page)
+    const accommodationPage = new AccommodationPage(page)
+    const employmentPage = new EmploymentPage(page)
+    const drugMisusePage = new DrugMisusePage(page)
+    const everDrunkAlcoholPage = new EverDrunkAlcoholPage(page)
+    const personalRelationshipsAndCommunityPage = new PersonalRelationshipsAndCommunityPage(page)
+    const thinkingAttitudesAndBehavioursPage = new ThinkingAttitudesAndBehavioursPage(page)
+    const offenceAnalysisPage = new OffenceAnalysisPage(page)
+    const previousConvictionsPage = new PreviousConvictionsPage(page)
+    const checkAnswersPage = new CheckAnswersPage(page)
+    const predictorScoresPage = new PredictorScoresPage(page)
+
+    /** Login */
+    await page.goto(tieringAssessmentV1URLs.LOGIN)
+    await loginPage.checkLoginPageLoaded()
+    await loginPage.fillUsernameTextbox()
+    await loginPage.fillPasswordTextbox()
+    await loginPage.clickSigninButton()
+
+    /** Start Tiering assessment dummy page */
+    await setupPage.checkStartPageLoaded()
+    await setupPage.fillForenameTextbox()
+    await setupPage.clickMaleRadioOption()
+    await setupPage.fillDobDayTextbox()
+    await setupPage.fillDobMonthTextbox()
+    await setupPage.fillDobYearTextbox()
+    await setupPage.fillDateOfConvictionDayTextbox()
+    await setupPage.fillDateOfConvictionMonthTextbox()
+    await setupPage.fillDateOfConvictionYearTextbox()
+    await setupPage.clickSupervisionCommunityRadioOption()
+    await setupPage.fillOffenceCodeTextbox()
+    await setupPage.clickContinue()
+
+    /** Current offence and Offending history page */
+    await offenceHistoryPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_HISTORY)
+    await offenceHistoryPage.checkPageHeading(tieringAssessmentPageTitles.offenceHistory)
+    await offenceHistoryPage.fillFirstSanctionDayTextbox()
+    await offenceHistoryPage.fillFirstSanctionMonthTextbox()
+    await offenceHistoryPage.fillFirstSanctionYearTextbox()
+    await offenceHistoryPage.fillTotalSanctionsTextbox()
+    await offenceHistoryPage.fillViolentSanctionsTextbox()
+    await offenceHistoryPage.clickSexualSanctionsYesRadioOption()
+    await offenceHistoryPage.clickSaveAndContinue()
+
+    /** Sexual offending page */
+    await sexualOffendingPage.checkPageUrl(tieringAssessmentV1URLs.SEXUAL_OFFENDING)
+    await sexualOffendingPage.checkPageHeading(tieringAssessmentPageTitles.sexualOffending)
+    await sexualOffendingPage.clickCurrentOffenceSexualYesRadioOption()
+    await sexualOffendingPage.fillMostRecentSexualDayTextbox()
+    await sexualOffendingPage.fillMostRecentSexualMonthTextbox()
+    await sexualOffendingPage.fillMostRecentSexualYearTextbox()
+    await sexualOffendingPage.fillDirectContactTextbox()
+    await sexualOffendingPage.fillDirectContactChildTextbox()
+    await sexualOffendingPage.clickVictimStrangerYesRadioOption()
+    await sexualOffendingPage.fillIndecentImagesTextbox()
+    await sexualOffendingPage.fillNonContactTextbox()
+    await sexualOffendingPage.clickSaveAndContinue()
+
+    /** Current supervision date page */
+    await currentSupervisionDatePage.checkPageUrl(tieringAssessmentV1URLs.CURRENT_SUPERVISION)
+    await currentSupervisionDatePage.checkPageHeading(tieringAssessmentPageTitles.currentSupervision)
+    await currentSupervisionDatePage.fillCurrentSupervisionDayTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionMonthTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionYearTextbox()
+    await currentSupervisionDatePage.clickSaveAndContinue()
+
+    /** Offences since community date page */
+    await offencesSinceCommunityDatePage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_SINCE_SUPERVISION)
+    await offencesSinceCommunityDatePage.checkPageHeading(tieringAssessmentPageTitles.offencesSinceSupervision)
+    await offencesSinceCommunityDatePage.checkRevealRecentOffenceDateVisible(false)
+    await offencesSinceCommunityDatePage.clickOffencesSinceCommunityYesRadioOption()
+    await offencesSinceCommunityDatePage.checkRevealRecentOffenceDateVisible(true)
+    await offencesSinceCommunityDatePage.fillRecentOffenceDayTextbox()
+    await offencesSinceCommunityDatePage.fillRecentOffenceMonthTextbox()
+    await offencesSinceCommunityDatePage.fillRecentOffenceYearTextbox()
+    await offencesSinceCommunityDatePage.clickSaveAndContinue()
+
+    /** Interview page */
+    await interviewPage.checkPageUrl(tieringAssessmentV1URLs.INTERVIEW)
+    await interviewPage.checkPageHeading(tieringAssessmentPageTitles.interview)
+    await interviewPage.clickInterviewYesRadioOption()
+    await interviewPage.clickSaveAndContinue()
+
+    /** Accommodation page */
+    await accommodationPage.checkPageUrl(tieringAssessmentV1URLs.ACCOMMODATION)
+    await accommodationPage.checkPageHeading(tieringAssessmentPageTitles.accommodation)
+    await accommodationPage.clickLivingWithUnknownCheckboxOption()
+    await accommodationPage.clickAccommodationSuitableUnknownRadioOption()
+    await accommodationPage.clickSaveAndContinue()
+
+    /** Employment */
+    await employmentPage.checkPageUrl(tieringAssessmentV1URLs.EMPLOYMENT)
+    await employmentPage.checkPageHeading(tieringAssessmentPageTitles.employment)
+    await employmentPage.clickEmploymentStatusUnknownRadioOption()
+    await employmentPage.clickSaveAndContinue()
+
+    /** Drug misuse page */
+    await drugMisusePage.checkPageUrl(tieringAssessmentV1URLs.DRUG_MISUSE)
+    await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugMisusePage.clickEverMisusedDrugsUnknownRadioOption()
+    await drugMisusePage.clickSaveAndContinue()
+
+    /** Alcohol ever used more than 3 months ago */
+    await everDrunkAlcoholPage.checkPageUrl(tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL)
+    await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickEverDrunkAlcoholUnknownRadioOption()
+    await everDrunkAlcoholPage.clickSaveAndContinue()
+
+    /** Personal relationships and community page */
+    await personalRelationshipsAndCommunityPage.checkPageUrl(
+      tieringAssessmentV1URLs.PERSONAL_RELATIONSHIPS_AND_COMMUNITY,
+    )
+    await personalRelationshipsAndCommunityPage.checkPageHeading(
+      tieringAssessmentPageTitles.personalRelationshipsAndCommunity,
+    )
+    await personalRelationshipsAndCommunityPage.clickImportantPeopleUnknownCheckboxOption()
+    await personalRelationshipsAndCommunityPage.clickRelationshipStatusUnknownRadioOption()
+    await personalRelationshipsAndCommunityPage.clickSaveAndContinue()
+
+    /** Thinking, attitudes and behaviours page */
+    await thinkingAttitudesAndBehavioursPage.checkPageUrl(tieringAssessmentV1URLs.THINKING_ATTITUDES_AND_BEHAVIOURS)
+    await thinkingAttitudesAndBehavioursPage.checkPageHeading(
+      tieringAssessmentPageTitles.thinkingAttitudesAndBehaviours,
+    )
+    await thinkingAttitudesAndBehavioursPage.clickOffendingLinkedActivitiesUnknownRadioOption()
+    await thinkingAttitudesAndBehavioursPage.clickTemperManagementUnknownRadioOption()
+    await thinkingAttitudesAndBehavioursPage.clickImpulseControlUnknownRadioOption()
+    await thinkingAttitudesAndBehavioursPage.clickProCriminalAttitudesUnknownRadioOption()
+    await thinkingAttitudesAndBehavioursPage.clickSaveAndContinue()
+
+    /** Offence analysis page */
+    await offenceAnalysisPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_ANALYSIS)
+    await offenceAnalysisPage.checkPageHeading(tieringAssessmentPageTitles.offenceAnalysis)
+    await offenceAnalysisPage.clickCurrentOffenceNoneCheckboxOption()
+    await offenceAnalysisPage.clickDomesticViolenceUnknownRadioOption()
+    await offenceAnalysisPage.clickSaveAndContinue()
+
+    /** Risk of serious harm (previous convictions) page */
+    await previousConvictionsPage.checkPageUrl(tieringAssessmentV1URLs.PREVIOUS_CONVICTIONS)
+    await previousConvictionsPage.checkPageHeading(tieringAssessmentPageTitles.riskOfSeriousHarm)
+    await previousConvictionsPage.clickPreviousConvictionsNoneCheckboxOption()
+    await previousConvictionsPage.clickSaveAndContinue()
+
+    /** Check answer page static factors */
+    await checkAnswersPage.checkPageUrl(tieringAssessmentV1URLs.CHECK_ANSWERS)
+    await checkAnswersPage.checkPageHeading(tieringAssessmentPageTitles.checkAnswers)
+    await checkAnswersPage.checkStaticFactorsHeaderVisible()
+    await checkAnswersPage.checkCurrentOffenceSubHeaderVisible()
+    await checkAnswersPage.checkCurrentOffenceAndOffendingHistorySubHeadingVisible()
+    await checkAnswersPage.checkSexualOffendingSubHeadingVisible()
+    await checkAnswersPage.checkCurrentSupervisionDateSubHeadingVisible()
+    await checkAnswersPage.checkOffencesSinceSupervisionSubHeadingVisible()
+    await checkAnswersPage.checkInterviewSubHeadingVisible()
+    await checkAnswersPage.checkInterviewAnswerValue('Yes, continue assessment')
+
+    /** Check answer page dynamic factors */
+    await checkAnswersPage.checkDynamicHeaderVisible(true)
+    await checkAnswersPage.checkAccommodationSubHeadingVisible(true)
+    await checkAnswersPage.checkLivingWithAnswer('Unknown')
+    await checkAnswersPage.checkAccommodationSuitableAnswer('Unknown')
+    await checkAnswersPage.checkEmploymentSubHeadingVisible(true)
+    await checkAnswersPage.checkEmploymentStatusAnswer('Unknown')
+    await checkAnswersPage.checkDrugUseSubHeadingVisible(true)
+    await checkAnswersPage.checkEverUsedDrugsAnswer('Unknown')
+    await checkAnswersPage.checkAlcoholUseSubHeadingVisible(true)
+    await checkAnswersPage.checkEverUsedAlcoholAnswer('Unknown')
+    await checkAnswersPage.checkPersonalRelationshipsSubHeadingVisible(true)
+    await checkAnswersPage.checkImportantPeopleAnswer('Unknown')
+    await checkAnswersPage.checkHappyWithStatusAnswer('Unknown')
+    await checkAnswersPage.checkThinkingAttitudesBehavioursSubHeadingVisible(true)
+    await checkAnswersPage.checkOffendingLinkedActivitiesAnswer('Unknown')
+    await checkAnswersPage.checkTemperManagementAnswer('Unknown')
+    await checkAnswersPage.checkImpulseAnswer('Unknown')
+    await checkAnswersPage.checkProCrimeAnswer('Unknown')
+    await checkAnswersPage.checkOffenceAnalysisSubHeadingVisible(true)
+    await checkAnswersPage.checkCurrentOffenceElementsAnswer('None of these elements')
+    await checkAnswersPage.checkDomesticAbuseAnswer('Unknown')
+    await checkAnswersPage.checkRiskOfSeriousHarmSubHeadingVisible(true)
+    await checkAnswersPage.checkPreviousConvictionsAnswer('None of these offences')
+
+    /** Nav to predictor page */
+    await checkAnswersPage.clickViewPredictorsButton()
+
+    /** Predictor scores dynamic scores page */
+    await predictorScoresPage.checkPageUrl(tieringAssessmentV1URLs.PREDICTOR_SCORES)
+    await predictorScoresPage.checkPageHeading(tieringAssessmentPageTitles.predictorScores)
+    await predictorScoresPage.checkCompleteBannerVisible(false)
+    await predictorScoresPage.checkAllPredictorScoreTypeVisible('Static')
+    await predictorScoresPage.checkViolentPredictorScoreTypeVisible('Static')
+    await predictorScoresPage.checkCombinedSeriousPredictorScoreTypeVisible('Combined')
+    await predictorScoresPage.checkSeriousViolentPredictorScoreTypeVisible('Static')
   })
 })

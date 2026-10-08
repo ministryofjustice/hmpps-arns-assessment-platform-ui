@@ -11,7 +11,7 @@ import CheckAnswersPage from '../../pages/tieringAssessment/checkAnswersPage'
 import PredictorScoresPage from '../../pages/tieringAssessment/predictorScoresPage'
 
 test.describe('Assessment', () => {
-  test('Tiering assessment', async ({ page }) => {
+  test('Tiering assessment with branching and validation error checks', async ({ page }) => {
     const loginPage = new LoginPage(page)
     const setupPage = new StartTieringAssessmentPage(page)
     const offenceHistoryPage = new CurrentOffenceAndOffencdingHistoryPage(page)
@@ -43,20 +43,53 @@ test.describe('Assessment', () => {
     await setupPage.fillOffenceCodeTextbox()
     await setupPage.clickContinue()
 
-    /** Current offence anf Offending history page */
+    /** Current offence and Offending history page */
     await offenceHistoryPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_HISTORY)
     await offenceHistoryPage.checkPageHeading(tieringAssessmentPageTitles.offenceHistory)
+    await offenceHistoryPage.clickSaveAndContinue()
+    await offenceHistoryPage.checkErrorSummaryBoxAppears()
+    await offenceHistoryPage.numberOfRequiredFieldErrors(3)
+    await offenceHistoryPage.numberOfValidDateErrors(1)
+    await offenceHistoryPage.numberOfWholeNumberErrors(2)
+    await offenceHistoryPage.numberOfGreaterThanZero(1)
     await offenceHistoryPage.fillFirstSanctionDayTextbox()
     await offenceHistoryPage.fillFirstSanctionMonthTextbox()
     await offenceHistoryPage.fillFirstSanctionYearTextbox()
     await offenceHistoryPage.fillTotalSanctionsTextbox()
     await offenceHistoryPage.fillViolentSanctionsTextbox()
+    await offenceHistoryPage.clickSexualSanctionsNoRadioOption()
+    await offenceHistoryPage.clickSaveAndContinue()
+
+    /** Current supervision date page (No branch that skips sexual offence questions and current supervision date page) */
+    await currentSupervisionDatePage.checkPageUrl(tieringAssessmentV1URLs.CURRENT_SUPERVISION)
+    await currentSupervisionDatePage.checkPageHeading(tieringAssessmentPageTitles.currentSupervision)
+    await currentSupervisionDatePage.fillCurrentSupervisionDayTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionMonthTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionYearTextbox()
+    await currentSupervisionDatePage.clickSaveAndContinue()
+    await interviewPage.checkPageUrl(tieringAssessmentV1URLs.INTERVIEW)
+    await interviewPage.checkPageHeading(tieringAssessmentPageTitles.interview)
+    await currentSupervisionDatePage.clickBackLink()
+    await currentSupervisionDatePage.checkPageUrl(tieringAssessmentV1URLs.CURRENT_SUPERVISION)
+    await currentSupervisionDatePage.checkPageHeading(tieringAssessmentPageTitles.currentSupervision)
+    await currentSupervisionDatePage.clickBackLink()
+
+    /** Going back to offence and Offending history page to change sexual question to yes for the missing branches */
+    await offenceHistoryPage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_HISTORY)
+    await offenceHistoryPage.checkPageHeading(tieringAssessmentPageTitles.offenceHistory)
     await offenceHistoryPage.clickSexualSanctionsYesRadioOption()
     await offenceHistoryPage.clickSaveAndContinue()
 
-    /** Sexual offending page */
+    /** Sexual offending page (Yes Branch) */
     await sexualOffendingPage.checkPageUrl(tieringAssessmentV1URLs.SEXUAL_OFFENDING)
     await sexualOffendingPage.checkPageHeading(tieringAssessmentPageTitles.sexualOffending)
+    await sexualOffendingPage.clickSaveAndContinue()
+    await sexualOffendingPage.checkErrorSummaryBoxAppears()
+    await sexualOffendingPage.numberOfRequiredFieldErrors(6)
+    await sexualOffendingPage.numberOfValidDateErrors(1)
+    await sexualOffendingPage.numberOfWholeNumberErrors(4)
+    await sexualOffendingPage.numberOfGreaterThanZero(0)
+    await sexualOffendingPage.numberOfGreaterThanOrEqual(4)
     await sexualOffendingPage.clickCurrentOffenceSexualYesRadioOption()
     await sexualOffendingPage.fillMostRecentSexualDayTextbox()
     await sexualOffendingPage.fillMostRecentSexualMonthTextbox()
@@ -71,6 +104,9 @@ test.describe('Assessment', () => {
     /** Current supervision date page */
     await currentSupervisionDatePage.checkPageUrl(tieringAssessmentV1URLs.CURRENT_SUPERVISION)
     await currentSupervisionDatePage.checkPageHeading(tieringAssessmentPageTitles.currentSupervision)
+    await currentSupervisionDatePage.clickSaveAndContinue()
+    await currentSupervisionDatePage.checkErrorSummaryBoxAppears()
+    await currentSupervisionDatePage.numberOfValidDateErrors(1)
     await currentSupervisionDatePage.fillCurrentSupervisionDayTextbox()
     await currentSupervisionDatePage.fillCurrentSupervisionMonthTextbox()
     await currentSupervisionDatePage.fillCurrentSupervisionYearTextbox()
@@ -79,17 +115,28 @@ test.describe('Assessment', () => {
     /** Offences since community date page */
     await offencesSinceCommunityDatePage.checkPageUrl(tieringAssessmentV1URLs.OFFENCE_SINCE_SUPERVISION)
     await offencesSinceCommunityDatePage.checkPageHeading(tieringAssessmentPageTitles.offencesSinceSupervision)
+    await offencesSinceCommunityDatePage.clickSaveAndContinue()
+    await offencesSinceCommunityDatePage.checkErrorSummaryBoxAppears()
+    await offencesSinceCommunityDatePage.numberOfRequiredFieldErrors(1)
+    await offencesSinceCommunityDatePage.numberOfValidDateErrors(0)
     await offencesSinceCommunityDatePage.checkRevealRecentOffenceDateVisible(false)
     await offencesSinceCommunityDatePage.clickOffencesSinceCommunityYesRadioOption()
     await offencesSinceCommunityDatePage.checkRevealRecentOffenceDateVisible(true)
-    await offencesSinceCommunityDatePage.fillRecentOffenceDayTextbox()
-    await offencesSinceCommunityDatePage.fillRecentOffenceMonthTextbox()
-    await offencesSinceCommunityDatePage.fillRecentOffenceYearTextbox()
     await offencesSinceCommunityDatePage.clickSaveAndContinue()
+    await offencesSinceCommunityDatePage.checkErrorSummaryBoxAppears()
+    await offencesSinceCommunityDatePage.numberOfRequiredFieldErrors(0)
+    await offencesSinceCommunityDatePage.numberOfValidDateErrors(1)
+    await currentSupervisionDatePage.fillCurrentSupervisionDayTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionMonthTextbox()
+    await currentSupervisionDatePage.fillCurrentSupervisionYearTextbox()
+    await currentSupervisionDatePage.clickSaveAndContinue()
 
     /** Interview page */
     await interviewPage.checkPageUrl(tieringAssessmentV1URLs.INTERVIEW)
     await interviewPage.checkPageHeading(tieringAssessmentPageTitles.interview)
+    await interviewPage.clickSaveAndContinue()
+    await interviewPage.checkErrorSummaryBoxAppears()
+    await interviewPage.numberOfRequiredFieldErrors(1)
     await interviewPage.clickInterviewNoRadioOption()
     await interviewPage.clickSaveAndContinue()
 
@@ -135,11 +182,12 @@ test.describe('Assessment', () => {
     await checkAnswersPage.checkPageHeading(tieringAssessmentPageTitles.checkAnswers)
     await checkAnswersPage.clickViewPredictorsButton()
 
-    /** nav back to Predictor scors page, complete assessment */
+    /** nav back to Predictor scores page, complete assessment */
     await predictorScoresPage.checkPageUrl(tieringAssessmentV1URLs.PREDICTOR_SCORES)
     await predictorScoresPage.checkPageHeading(tieringAssessmentPageTitles.predictorScores)
     await predictorScoresPage.checkCompleteBannerVisible(false)
     await predictorScoresPage.clickMarkAsCompleteButton()
     await predictorScoresPage.checkCompleteBannerVisible(true)
   })
+
 })
