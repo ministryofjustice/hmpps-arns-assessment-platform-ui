@@ -7,6 +7,7 @@ import {
   Transformer,
   Iterator,
   Condition,
+  not,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import {
@@ -18,7 +19,6 @@ import {
   GovUKBody,
   GovUKInsetText,
   GovUKButtonGroup,
-  GovUKLinkButton,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { WrappingSelect } from '../../../../../components'
 import { CaseData } from '../../../constants'
@@ -105,9 +105,10 @@ export const reviewStepsHeading = GovUKHeading({
   size: 'm',
 })
 
-const addOrUpdateStepsButton = GovUKLinkButton({
+const addOrUpdateStepsButton = GovUKButton({
   text: 'Add or update steps',
-  href: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')),
+  name: 'action',
+  value: 'addOrUpdateSteps',
   classes: 'govuk-button--secondary',
   attributes: {
     'data-ai-id': 'update-goal-and-steps-add-or-update-steps-button',
@@ -138,13 +139,15 @@ export const noStepsMessage = TemplateWrapper({
   `,
   slots: {
     addStepsButton: [
-      GovUKLinkButton({
+      GovUKButton({
         text: 'Add steps',
-        href: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')),
+        name: 'action',
+        value: 'addSteps',
         classes: 'govuk-button--secondary',
         attributes: {
           'data-ai-id': 'update-goal-and-steps-add-steps-button',
         },
+        visibleWhen: not(hasSteps),
       }),
     ],
   },

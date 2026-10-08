@@ -8,6 +8,7 @@ import {
   submit,
   when,
   Condition,
+  or,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   pageHeading,
@@ -75,6 +76,25 @@ export const updateGoalAndStepsStep = step({
           }),
         ],
         next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
+    submit({
+      when: or(
+        Post('action').match(Condition.Equals('addSteps')),
+        Post('action').match(Condition.Equals('addOrUpdateSteps')),
+      ),
+      validate: false,
+      onAlways: {
+        effects: [
+          SentencePlanEffects.updateGoalProgress(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEP_PROGRESS, {
+            goalStatus: Data('activeGoal.status'),
+            action: when(Post('action').match(Condition.Equals('addSteps')))
+              .then('addSteps')
+              .else('addOrUpdateSteps'),
+          }),
+        ],
+        next: [redirect({ goto: 'add-steps' })],
       },
     }),
     submit({
