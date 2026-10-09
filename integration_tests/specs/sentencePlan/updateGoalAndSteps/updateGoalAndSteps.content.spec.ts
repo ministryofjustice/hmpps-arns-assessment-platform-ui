@@ -244,6 +244,71 @@ test.describe('Update goal and steps page', () => {
       expect(await reorderPage.getStepStatus(1)).toBe('Completed')
     })
 
+    test('should save progress notes when clicking add or update steps', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal With Steps',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'NOT_STARTED' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
+      const goalUuid = plan.goals[0].uuid
+
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
+      const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      await updatePage.enterProgressNotes('Notes saved via add or update steps')
+      await updatePage.clickAddOrChangeSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.clickBack()
+
+      await UpdateGoalAndStepsPage.verifyOnPage(page)
+      await updatePage.expandViewAllNotes()
+
+      const notesContent = await updatePage.getNotesContent()
+      expect(notesContent).toContain('Notes saved via add or update steps')
+    })
+
+    test('should save progress notes when clicking add steps', async ({ page, openSentencePlan }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal Without Steps',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
+      const goalUuid = plan.goals[0].uuid
+
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
+      const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+
+      await updatePage.enterProgressNotes('Notes saved via add steps')
+      await updatePage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.clickBack()
+
+      await UpdateGoalAndStepsPage.verifyOnPage(page)
+      await updatePage.expandViewAllNotes()
+
+      const notesContent = await updatePage.getNotesContent()
+      expect(notesContent).toContain('Notes saved via add steps')
+    })
+
     test('displays no steps message when goal has no steps', async ({ page, openSentencePlan }) => {
       const { plan } = await openSentencePlan({
         plan: builder =>
