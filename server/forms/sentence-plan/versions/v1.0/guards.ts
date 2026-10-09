@@ -201,6 +201,20 @@ export const redirectUnlessSanSp = (goto: string) =>
  */
 export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition.IsRequired())
 
+const activeGoals = Data('goals').each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+const goalHasSteps = Item().path('steps').match(Condition.IsRequired())
+
+const allActiveGoalsHaveAtLeastOneStep = activeGoals.each(Iterator.Every(goalHasSteps))
+export const hasAtLeastOneActiveGoal = Data('goals').each(
+  Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE'))),
+)
+
+export const redirectUnlessAllActiveGoalsHaveSteps = (goto: string) =>
+  access({
+    when: not(and(hasAtLeastOneActiveGoal, allActiveGoalsHaveAtLeastOneStep)),
+    next: [redirect({ goto })],
+  })
+
 /**
  * Redirect MPoP users with a merged plan to the warning page.
  * This prevents access to any plan content when the underlying data may be inconsistent.

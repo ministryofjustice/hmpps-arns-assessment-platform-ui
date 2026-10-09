@@ -116,6 +116,68 @@ test.describe('Agree plan journey', () => {
     })
   })
 
+  test.describe('access validation - direct navigation via url', () => {
+    test('should redirect to plan overview when plan has no steps on active goal', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(currentGoals(1)),
+      })
+
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
+
+      await expect(page).toHaveURL(/\/overview/)
+      await PlanOverviewPage.verifyOnPage(page)
+    })
+
+    test('should redirect to plan overview when one active goal has steps but another does not', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoal({
+              title: 'Goal with steps',
+              areaOfNeed: 'finances',
+              status: 'ACTIVE',
+              steps: [{ actor: 'probation_practitioner', description: 'A step' }],
+            })
+            .withGoal({
+              title: 'Goal without steps',
+              areaOfNeed: 'health-and-wellbeing',
+              status: 'ACTIVE',
+            }),
+      })
+
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
+
+      await expect(page).toHaveURL(/\/overview/)
+      await PlanOverviewPage.verifyOnPage(page)
+    })
+
+    test('should redirect to plan overview when plan only has future goals with steps', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoal({
+            title: 'Future goal with steps',
+            areaOfNeed: 'finances',
+            status: 'FUTURE',
+            steps: [{ actor: 'probation_practitioner', description: 'A step' }],
+          }),
+      })
+
+      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
+
+      await expect(page).toHaveURL(/\/overview/)
+      await PlanOverviewPage.verifyOnPage(page)
+    })
+  })
+
   test.describe('agree plan form validation', () => {
     test('shows error when saving without selecting an option', async ({ page, openSentencePlan }) => {
       await openSentencePlan({
