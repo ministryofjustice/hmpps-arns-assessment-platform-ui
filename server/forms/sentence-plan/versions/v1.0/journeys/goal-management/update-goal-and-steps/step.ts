@@ -21,7 +21,7 @@ import {
   goalContextInsetText,
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Update goal and steps
@@ -60,6 +60,7 @@ export const updateGoalAndStepsStep = step({
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
