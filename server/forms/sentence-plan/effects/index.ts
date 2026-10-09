@@ -28,6 +28,7 @@ import { readdGoalToPlan } from './goals/readdGoalToPlan'
 import { deleteActiveGoal } from './goals/deleteActiveGoal'
 import { reorderGoal } from './goals/reorderGoal'
 import { initializeStepEditSession } from './steps/initializeStepEditSession'
+import { discardStepEditSession } from './steps/discardStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
@@ -114,6 +115,7 @@ export const SentencePlanEffects = {
   deleteActiveGoal: sentencePlanEffectRegistry.register(deleteActiveGoal),
   reorderGoal: sentencePlanEffectRegistry.register(reorderGoal),
   initializeStepEditSession: sentencePlanEffectRegistry.register(initializeStepEditSession),
+  discardStepEditSession: sentencePlanEffectRegistry.register(discardStepEditSession),
   addStepToStepEditSession: sentencePlanEffectRegistry.register(addStepToStepEditSession),
   removeStepFromStepEditSession: sentencePlanEffectRegistry.register(removeStepFromStepEditSession),
   saveStepEditSession: sentencePlanEffectRegistry.register(saveStepEditSession),
