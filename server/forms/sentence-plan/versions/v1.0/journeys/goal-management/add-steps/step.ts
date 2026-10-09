@@ -70,17 +70,16 @@ export const addStepsStep = step({
       ],
     }),
 
-    // A GET is a fresh visit, so unsaved changes from an earlier visit are thrown away.
-    // The add, remove and validation reloads are POSTs, which keep them.
+    // Fresh visits only (GET) — add, remove and validation reloads are POSTs.
     access({
       when: Request.Method().match(Condition.Equals('GET')),
-      effects: [SentencePlanEffects.discardStepEditSession()],
-    }),
-    access({
       effects: [
-        SentencePlanEffects.initializeStepEditSession(),
+        SentencePlanEffects.discardStepEditSession(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
+    }),
+    access({
+      effects: [SentencePlanEffects.initializeStepEditSession()],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
   ],
