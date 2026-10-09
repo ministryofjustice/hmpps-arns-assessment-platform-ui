@@ -188,7 +188,7 @@ export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 /**
  * True when the user can access SAN-specific content.
  */
-export const canAccessSanContent = and(hasCrn, or(not(isMpopAccess)))
+export const canAccessSanContent = and(hasCrn, not(isMpopAccess))
 
 /**
  * Redirect users who cannot access SAN content (see canAccessSanContent).
