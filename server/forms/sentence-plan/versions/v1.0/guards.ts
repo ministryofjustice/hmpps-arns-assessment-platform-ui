@@ -138,12 +138,24 @@ export const redirectIfGoalNotFound = (goto: string) =>
     next: [redirect({ goto })],
   })
 
+
 // Redirects users if goal has less than 2 steps
 // used for reorder page (nothing to reorder)
 export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
   access({
     when: Data('activeGoal.steps').pipe(Transformer.Array.Length())
       .match(Condition.Number.LessThan(2)),
+    next: [redirect({ goto })],
+  })
+
+export const isGoalActiveOrFuture = Data('activeGoal.status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE']))
+
+/**
+ * Redirect users away from achieved and removed goals, which are view-only.
+ */
+export const redirectUnlessGoalIsActiveOrFuture = (goto: string) =>
+  access({
+    when: not(isGoalActiveOrFuture),
     next: [redirect({ goto })],
   })
 
@@ -210,6 +222,20 @@ export const redirectUnlessSanSp = (goto: string) =>
  * The coordinator sets assessment.properties.MERGED when an OASys offender record has been merged.
  */
 export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition.IsRequired())
+
+const activeGoals = Data('goals').each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+const goalHasSteps = Item().path('steps').match(Condition.IsRequired())
+
+const allActiveGoalsHaveAtLeastOneStep = activeGoals.each(Iterator.Every(goalHasSteps))
+export const hasAtLeastOneActiveGoal = Data('goals').each(
+  Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE'))),
+)
+
+export const redirectUnlessAllActiveGoalsHaveSteps = (goto: string) =>
+  access({
+    when: not(and(hasAtLeastOneActiveGoal, allActiveGoalsHaveAtLeastOneStep)),
+    next: [redirect({ goto })],
+  })
 
 /**
  * Redirect MPoP users with a merged plan to the warning page.
