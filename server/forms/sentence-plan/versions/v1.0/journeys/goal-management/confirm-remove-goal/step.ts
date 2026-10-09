@@ -2,7 +2,7 @@ import { access, Format, redirect, Post, step, submit, Condition } from '@minist
 import { pageHeading, introText, goalCard, removalNoteSection, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Confirm remove goal page
@@ -33,6 +33,7 @@ export const removeGoalStep = step({
     // Draft plans should use "delete" instead
     redirectIfNotPostAgreement('../../plan/overview'),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
