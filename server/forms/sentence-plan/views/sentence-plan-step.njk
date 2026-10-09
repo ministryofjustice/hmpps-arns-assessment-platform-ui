@@ -7,6 +7,10 @@
 {% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
 {% set userFeedbackUrl = feedbackFormUrl if isPrivateBetaUser else nationalRolloutFeedbackUrl %}
 
+{% if step.title == 'Reorder steps' %}
+  {% set bodyAttributes = { 'data-scroll-restore': '' } %}
+{% endif %}
+
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
