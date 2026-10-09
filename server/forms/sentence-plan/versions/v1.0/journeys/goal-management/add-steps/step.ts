@@ -16,7 +16,7 @@ import {
 import { pageLayout } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { redirectIfGoalNotFound } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Add Steps page
@@ -82,6 +82,7 @@ export const addStepsStep = step({
       effects: [SentencePlanEffects.initializeStepEditSession()],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
