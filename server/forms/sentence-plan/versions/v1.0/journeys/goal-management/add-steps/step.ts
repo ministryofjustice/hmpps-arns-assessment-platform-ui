@@ -104,6 +104,38 @@ export const addStepsStep = step({
       },
     }),
 
+    // Handle "Reorder steps" button after creating a new goal - save and show notification
+    submit({
+      when: and(
+        Post('action').match(Condition.Equals('reorderSteps')),
+        Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      ),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+            clearOtherNotifications: true,
+          }),
+        ],
+        next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
+
+    // Handle "Reorder steps" button for an existing goal - save and redirect
+    submit({
+      when: Post('action').match(Condition.Equals('reorderSteps')),
+      validate: true,
+      onValid: {
+        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
+        next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
+
     // Save steps after creating a new goal — show "goal added" notification
     submit({
       when: and(

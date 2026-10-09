@@ -9,6 +9,7 @@ import {
   redirect,
   Condition,
   Request,
+  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
@@ -134,6 +135,16 @@ export const redirectIfPostAgreement = (goto: string) =>
 export const redirectIfGoalNotFound = (goto: string) =>
   access({
     when: Data('activeGoal').not.match(Condition.IsRequired()),
+    next: [redirect({ goto })],
+  })
+
+
+// Redirects users if goal has less than 2 steps
+// used for reorder page (nothing to reorder)
+export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
+  access({
+    when: Data('activeGoal.steps').pipe(Transformer.Array.Length())
+      .match(Condition.Number.LessThan(2)),
     next: [redirect({ goto })],
   })
 

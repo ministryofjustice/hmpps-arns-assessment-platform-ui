@@ -118,11 +118,7 @@ export const planStep = step({
       ],
     }),
     access({
-      effects: [
-        SentencePlanEffects.loadPlanTimeline(),
-        SentencePlanEffects.derivePlanLastUpdated(),
-        SentencePlanEffects.loadNotifications('plan-overview'),
-      ],
+      effects: [SentencePlanEffects.loadPlanTimeline(), SentencePlanEffects.derivePlanLastUpdated()],
       next: [
         redirect({
           when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
@@ -131,8 +127,12 @@ export const planStep = step({
       ],
     }),
     // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
+    // Load notification to final render req to ensure the redirect above doesn't consume and clear notification before it could be seen
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') })],
+      effects: [
+        SentencePlanEffects.loadNotifications('plan-overview'),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
+      ],
     }),
   ],
   onSubmission: [

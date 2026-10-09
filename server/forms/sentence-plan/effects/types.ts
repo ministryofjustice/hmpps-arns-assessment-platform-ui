@@ -340,6 +340,8 @@ export interface StepChanges {
   toDelete: string[]
   /** UUID of the STEPS collection (if goal already has one) */
   collectionUuid?: string
+  // Draft step order during reorder - applied to steps on save, discarded on cancel
+  reorderedStepsDraft?: string[]
 }
 
 /**

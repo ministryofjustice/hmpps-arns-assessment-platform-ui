@@ -13,6 +13,9 @@ export const postAgreementProcessStatuses: AgreementStatus[] = ['AGREED', 'DO_NO
 // Statuses for step to choose from in dropdown
 export const stepStatusOptions = ['NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'CANNOT_BE_DONE_YET', 'NO_LONGER_NEEDED']
 
+// dateOffset value representing 1 day ago (in milliseconds)
+export const oneDayAgoMs = -86400000
+
 // sentence plan V1 URLs for use in playwright testing suits:
 const sentencePlanFormPath = '/sentence-plan'
 const accessFormPath = '/access'
@@ -64,6 +67,7 @@ export const sentencePlanV1UrlBuilders = {
   goalViewInactive: (goalUuid: string) =>
     `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/view-inactive-goal`,
   goalCreate: (areaOfNeed: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/add-goal/${areaOfNeed}`,
+  goalReorderSteps: (goalUuid: string) => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/${goalUuid}/reorder-steps`,
   goalSelectAreaOfNeed: () => `${sentencePlanV1URLs.GOAL_MANAGEMENT_ROOT_PATH}/new/select-area-of-need`,
   planReorderGoal: (goalUuid: string, direction: 'up' | 'down', status: 'ACTIVE' | 'FUTURE' | 'ACHIEVED' | 'REMOVED') =>
     `${sentencePlanV1URLs.PLAN_OVERVIEW}?goalUuid=${goalUuid}&direction=${direction}&status=${status}`,
@@ -76,6 +80,7 @@ export const sentencePlanPageTitles = {
   createGoal: 'Add goal details',
   addSteps: 'Add steps',
   addOrUpdateSteps: 'Add or update steps',
+  reorderSteps: 'Reorder steps',
   updateGoalAndSteps: 'Update goal and steps',
   changeGoal: 'Update goal details',
   changeAreaOfNeed: 'Change area of need',
