@@ -135,6 +135,17 @@ export const redirectIfGoalNotFound = (goto: string) =>
     next: [redirect({ goto })],
   })
 
+export const isGoalActiveOrFuture = Data('activeGoal.status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE']))
+
+/**
+ * Redirect users away from achieved and removed goals, which are view-only.
+ */
+export const redirectUnlessGoalIsActiveOrFuture = (goto: string) =>
+  access({
+    when: not(isGoalActiveOrFuture),
+    next: [redirect({ goto })],
+  })
+
 /**
  * True when the active goal has at least one step and every step is COMPLETED.
  * Derived from the saved goal (not form answers), so it also holds on a direct page load.

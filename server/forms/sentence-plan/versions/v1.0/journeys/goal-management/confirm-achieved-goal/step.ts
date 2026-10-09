@@ -1,7 +1,7 @@
 import { access, Format, redirect, Post, step, submit, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, howHelpedField, buttonGroup } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 import { CaseData } from '../../../constants'
 
 // This page is for manually marking a goal as achieved and is only accessible after a plan has been agreed.
@@ -23,6 +23,7 @@ export const confirmAchievedGoalStep = step({
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
