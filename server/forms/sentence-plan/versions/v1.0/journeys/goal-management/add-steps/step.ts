@@ -7,6 +7,7 @@ import {
   match,
   Post,
   redirect,
+  Request,
   step,
   submit,
   when,
@@ -66,9 +67,19 @@ export const addStepsStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.initializeStepEditSession(),
+      ],
+    }),
+
+    // Fresh visits only (GET) — add, remove and validation reloads are POSTs.
+    access({
+      when: Request.Method().match(Condition.Equals('GET')),
+      effects: [
+        SentencePlanEffects.discardStepEditSession(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
+    }),
+    access({
+      effects: [SentencePlanEffects.initializeStepEditSession()],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
   ],
