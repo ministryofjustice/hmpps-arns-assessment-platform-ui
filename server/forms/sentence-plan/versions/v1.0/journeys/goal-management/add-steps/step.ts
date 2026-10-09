@@ -7,6 +7,7 @@ import {
   match,
   Post,
   redirect,
+  Request,
   step,
   submit,
   when,
@@ -66,6 +67,17 @@ export const addStepsStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
+      ],
+    }),
+
+    // A GET is a fresh visit, so unsaved changes from an earlier visit are thrown away.
+    // The add, remove and validation reloads are POSTs, which keep them.
+    access({
+      when: Request.Method().match(Condition.Equals('GET')),
+      effects: [SentencePlanEffects.discardStepEditSession()],
+    }),
+    access({
+      effects: [
         SentencePlanEffects.initializeStepEditSession(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
