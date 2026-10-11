@@ -308,8 +308,54 @@ test.describe('Assessment Dynamic', () => {
     await previousConvictionsPage.clickPreviousConvictionsFirearmCheckboxOption()
     await previousConvictionsPage.clickSaveAndContinue()
 
-    /** Check answer page static factors */
+    /** Change Dyanmic answer to check you have to go through whole journey again */
     await checkAnswersPage.checkPageUrl(tieringAssessmentV1URLs.CHECK_ANSWERS)
+    await checkAnswersPage.checkPageHeading(tieringAssessmentPageTitles.checkAnswers)
+    await checkAnswersPage.checkStaticFactorsHeaderVisible()
+    await checkAnswersPage.changeLivingWithAnswer()
+    await accommodationPage.checkPageUrl(`${tieringAssessmentV1URLs.ACCOMMODATION}#who_are_they_living_with`)
+    await accommodationPage.checkPageHeading(tieringAssessmentPageTitles.accommodation)
+    await accommodationPage.clickSaveAndContinue()
+    await employmentPage.checkPageUrl(`${tieringAssessmentV1URLs.EMPLOYMENT}#who_are_they_living_with`)
+    await employmentPage.checkPageHeading(tieringAssessmentPageTitles.employment)
+    await employmentPage.clickSaveAndContinue()
+    await drugMisusePage.checkPageUrl(`${tieringAssessmentV1URLs.DRUG_MISUSE}#who_are_they_living_with`)
+    await drugMisusePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugMisusePage.clickSaveAndContinue()
+    await drugUsePage.checkPageUrl(`${tieringAssessmentV1URLs.DRUG_USE}#who_are_they_living_with`)
+    await drugUsePage.checkPageHeading(tieringAssessmentPageTitles.drugUse)
+    await drugUsePage.clickSaveAndContinue()
+    await everDrunkAlcoholPage.checkPageUrl(`${tieringAssessmentV1URLs.EVER_DRUNK_ALCOHOL}#who_are_they_living_with`)
+    await everDrunkAlcoholPage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await everDrunkAlcoholPage.clickSaveAndContinue()
+    await alcoholUsePage.checkPageUrl(`${tieringAssessmentV1URLs.ALCOHOL_USE}#who_are_they_living_with`)
+    await alcoholUsePage.checkPageHeading(tieringAssessmentPageTitles.alcohol)
+    await alcoholUsePage.clickSaveAndContinue()
+    await personalRelationshipsAndCommunityPage.checkPageUrl(
+      `${tieringAssessmentV1URLs.PERSONAL_RELATIONSHIPS_AND_COMMUNITY}#who_are_they_living_with`,
+    )
+    await personalRelationshipsAndCommunityPage.checkPageHeading(
+      tieringAssessmentPageTitles.personalRelationshipsAndCommunity,
+    )
+    await personalRelationshipsAndCommunityPage.clickSaveAndContinue()
+    await thinkingAttitudesAndBehavioursPage.checkPageUrl(
+      `${tieringAssessmentV1URLs.THINKING_ATTITUDES_AND_BEHAVIOURS}#who_are_they_living_with`,
+    )
+    await thinkingAttitudesAndBehavioursPage.checkPageHeading(
+      tieringAssessmentPageTitles.thinkingAttitudesAndBehaviours,
+    )
+    await thinkingAttitudesAndBehavioursPage.clickSaveAndContinue()
+    await offenceAnalysisPage.checkPageUrl(`${tieringAssessmentV1URLs.OFFENCE_ANALYSIS}#who_are_they_living_with`)
+    await offenceAnalysisPage.checkPageHeading(tieringAssessmentPageTitles.offenceAnalysis)
+    await offenceAnalysisPage.clickSaveAndContinue()
+    await previousConvictionsPage.checkPageUrl(
+      `${tieringAssessmentV1URLs.PREVIOUS_CONVICTIONS}#who_are_they_living_with`,
+    )
+    await previousConvictionsPage.checkPageHeading(tieringAssessmentPageTitles.riskOfSeriousHarm)
+    await previousConvictionsPage.clickSaveAndContinue()
+
+    /** Check answer page static factors */
+    await checkAnswersPage.checkPageUrl(`${tieringAssessmentV1URLs.CHECK_ANSWERS}#who_are_they_living_with`)
     await checkAnswersPage.checkPageHeading(tieringAssessmentPageTitles.checkAnswers)
     await checkAnswersPage.checkStaticFactorsHeaderVisible()
     await checkAnswersPage.checkCurrentOffenceSubHeaderVisible()
@@ -413,7 +459,7 @@ test.describe('Assessment Dynamic', () => {
     await checkAnswersPage.clickViewPredictorsButton()
 
     /** Predictor scores dynamic scores page */
-    await predictorScoresPage.checkPageUrl(tieringAssessmentV1URLs.PREDICTOR_SCORES)
+    await predictorScoresPage.checkPageUrl(`${tieringAssessmentV1URLs.PREDICTOR_SCORES}#who_are_they_living_with`)
     await predictorScoresPage.checkPageHeading(tieringAssessmentPageTitles.predictorScores)
     await predictorScoresPage.checkCompleteBannerVisible(false)
     await predictorScoresPage.checkAllPredictorScoreTypeVisible('Dynamic')
