@@ -50,7 +50,7 @@ export const offenceAnalysisImpactStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.yes),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
         ],
@@ -58,6 +58,13 @@ export const offenceAnalysisImpactStep = step({
           redirect({
             goto: Step.offence_analysis_summary.path,
           }),
+        ],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
         ],
       },
     }),

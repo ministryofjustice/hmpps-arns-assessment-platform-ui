@@ -6,11 +6,14 @@ import { Question } from '../../versions/v1.0/journeys/accommodation/constants/q
 import { sendFormAuditEvent } from '../../../shared'
 import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
 import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
+import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
+import { dependenciesForTouchedAnswers, inapplicableAnswerCodes } from './answerDependency'
+import { strengthsAndNeedsAnswerDependencies } from '../../versions/v1.0/answerDependencies'
 
 /**
- * Sanitize a date string from the API. Returns undefined for invalid values
- * (e.g. the literal string "null") so downstream code and transformers
- * receive either a valid ISO date or undefined — never a garbage string.
+ * Clean up a date string coming back from the API. Returns undefined for
+ * anything that is not a real date — including the literal strings "null" and
+ * "undefined" — so the rest of the code only ever sees a valid date or nothing.
  */
 export const sanitizeDateValue = (value: string | undefined): string | undefined => {
   if (!value || value === 'null' || value === 'undefined') {
@@ -26,10 +29,10 @@ export const sanitizeDateValue = (value: string | undefined): string | undefined
   return value
 }
 
-// TODO: replace this with saveAndClearStaleAnswers
+// TODO: replace this with saveCurrentStepAnswers
 export const saveCurrentAccommodationStepAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) =>
-  async (context: StrengthsAndNeedsContext, isAutosaved = false) => {
+  async (context: StrengthsAndNeedsContext, clearFields = true, isAutosaved = false) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
@@ -41,10 +44,14 @@ export const saveCurrentAccommodationStepAnswers =
       Question.immigration_accommodation_end_date,
     ] as const
 
-    for (const question of TEMPORARY_DATE_QUESTIONS) {
-      const rawDate = context.getAnswer(question)
-      if (rawDate !== null) {
-        context.setAnswer(question, sanitizeDateValue(rawDate as string))
+    if (clearFields && isAutosaved) {
+      for (const question of TEMPORARY_DATE_QUESTIONS) {
+        const rawDate = context.getAnswer(question)
+        // An absent date has nothing to sanitize — writing undefined back would
+        // only stamp a mutation that hides the stored value from the restore below.
+        if (rawDate !== undefined && rawDate !== null) {
+          context.setAnswer(question, sanitizeDateValue(rawDate as string))
+        }
       }
     }
 
@@ -59,22 +66,43 @@ export const saveCurrentAccommodationStepAnswers =
     const histories = context.getAllAnswerHistories()
     const delta = buildAnswerDelta(histories)
 
-    if (!Object.keys(delta.added).length && !delta.removed.length) {
+    // Answers on other pages that this save has made irrelevant.
+    // The fields we just saved tell us which journey we are in, so we only
+    // check that journey's rules.
+    // Skipped on an autosave or a failed save, which must never delete anything.
+    const touched = [...Object.keys(delta.added), ...delta.removed]
+    const inapplicable =
+      clearFields && !isAutosaved
+        ? inapplicableAnswerCodes(
+            dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
+            code => histories[code]?.current,
+          )
+        : []
+
+    if (!Object.keys(delta.added).length && !delta.removed.length && !inapplicable.length) {
       return
     }
+
+    inapplicable.forEach(code => context.clearAnswer(code))
+    const removed = [...new Set([...delta.removed, ...inapplicable])]
 
     await deps.api.executeCommand({
       type: 'UpdateAssessmentAnswersCommand',
       assessmentUuid,
       user,
       added: wrapAll(delta.added),
-      removed: isAutosaved ? [] : delta.removed,
+      removed: clearFields && !isAutosaved ? removed : [],
       hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 
-    const fieldsToChange = buildChangedAnswerCodes(histories)
-    const changedFields = isAutosaved ? fieldsToChange.filter(field => !delta.removed.includes(field)) : fieldsToChange
+    if (!clearFields && isAutosaved) {
+      restoreSuppressedAnswers(context, histories, removed)
+    }
+
+    const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...inapplicable])]
+    const changedFields =
+      !clearFields && isAutosaved ? fieldsToChange.filter(field => !removed.includes(field)) : fieldsToChange
 
     if (changedFields.length) {
       /* Field codes only, answers do not belong in the audit log. */

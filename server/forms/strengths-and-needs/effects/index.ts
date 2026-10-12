@@ -8,7 +8,7 @@ import { setPrivacyAccepted } from './session/setPrivacyAccepted'
 import { setDynamicBacklink } from './session/setDynamicBacklink'
 import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
-import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
+import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { addItemToCollection } from './assessment/addItemToCollection'
 import { loadAnswersFromCollection } from './assessment/loadAnswersFromCollection'
 import { loadItemFromCollection } from './assessment/loadItemFromCollection'
@@ -31,7 +31,7 @@ export const StrengthsAndNeedsEffects = {
   setDynamicBacklink: sanEffects.register('setDynamicBacklink', setDynamicBacklink),
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
   loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
-  saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
+  saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   addItemToCollection: sanEffects.register('addItemToCollection', addItemToCollection),
