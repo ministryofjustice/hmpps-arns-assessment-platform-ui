@@ -138,7 +138,6 @@ export const redirectIfGoalNotFound = (goto: string) =>
     next: [redirect({ goto })],
   })
 
-
 // Redirects users if goal has less than 2 steps
 // used for reorder page (nothing to reorder)
 export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
