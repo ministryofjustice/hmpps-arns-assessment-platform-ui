@@ -36,6 +36,8 @@ export const saveCurrentAccommodationStepAnswers =
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
 
+    const clearRemovals = clearFields && !isAutosaved
+
     const TEMPORARY_DATE_QUESTIONS = [
       Question.approved_premises_end_date,
       Question.short_term_accommodation_end_date,
@@ -44,7 +46,7 @@ export const saveCurrentAccommodationStepAnswers =
       Question.immigration_accommodation_end_date,
     ] as const
 
-    if (clearFields && isAutosaved) {
+    if (clearRemovals) {
       for (const question of TEMPORARY_DATE_QUESTIONS) {
         const rawDate = context.getAnswer(question)
         // An absent date has nothing to sanitize — writing undefined back would
@@ -71,13 +73,12 @@ export const saveCurrentAccommodationStepAnswers =
     // check that journey's rules.
     // Skipped on an autosave or a failed save, which must never delete anything.
     const touched = [...Object.keys(delta.added), ...delta.removed]
-    const inapplicable =
-      clearFields && !isAutosaved
-        ? inapplicableAnswerCodes(
-            dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
-            code => histories[code]?.current,
-          )
-        : []
+    const inapplicable = clearRemovals
+      ? inapplicableAnswerCodes(
+          dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
+          code => histories[code]?.current,
+        )
+      : []
 
     if (!Object.keys(delta.added).length && !delta.removed.length && !inapplicable.length) {
       return
@@ -96,7 +97,7 @@ export const saveCurrentAccommodationStepAnswers =
       autosaved: isAutosaved,
     })
 
-    if (!clearFields && isAutosaved) {
+    if (!clearRemovals) {
       restoreSuppressedAnswers(context, histories, removed)
     }
 

@@ -23,11 +23,14 @@ export const saveCurrentStepAnswers =
       throw new InternalServerError('Assessment UUID is required to save strengths and needs answers')
     }
 
+    // Answers only leave the record on a real, successful save. A failed save
+    // and an autosave both keep what is stored, and put back anything forge
+    // emptied along the way so the page still shows it.
+    const clearRemovals = clearFields && !isAutosaved
+
     const fieldsToClear = context.getFieldsToClear()
 
-    // Only forget the answer here if we are about to delete it for real.
-    // Otherwise it gets put back below, so the page still shows it.
-    if (clearFields || isAutosaved) {
+    if (clearRemovals) {
       for (const field of fieldsToClear) {
         context.clearAnswer(field)
       }
@@ -37,13 +40,12 @@ export const saveCurrentStepAnswers =
     const delta = buildAnswerDelta(histories)
 
     const touched = [...Object.keys(delta.added), ...delta.removed, ...fieldsToClear]
-    const inapplicable =
-      clearFields && !isAutosaved
-        ? inapplicableAnswerCodes(
-            dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
-            code => histories[code]?.current,
-          )
-        : []
+    const inapplicable = clearRemovals
+      ? inapplicableAnswerCodes(
+          dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
+          code => histories[code]?.current,
+        )
+      : []
 
     if (!Object.keys(delta.added).length && !delta.removed.length && !inapplicable.length) {
       return
@@ -57,18 +59,17 @@ export const saveCurrentStepAnswers =
       assessmentUuid,
       user,
       added: wrapAll(delta.added),
-      removed: clearFields ? removed : [],
+      removed: clearRemovals ? removed : [],
       hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 
-    if (!clearFields || isAutosaved) {
+    if (!clearRemovals) {
       restoreSuppressedAnswers(context, histories, removed)
     }
 
     const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear, ...inapplicable])]
-    const changedFields =
-      !clearFields || isAutosaved ? fieldsToChange.filter(field => !removed.includes(field)) : fieldsToChange
+    const changedFields = clearRemovals ? fieldsToChange : fieldsToChange.filter(field => !removed.includes(field))
 
     if (changedFields.length) {
       /* Field codes only, answers do not belong in the audit log. */
