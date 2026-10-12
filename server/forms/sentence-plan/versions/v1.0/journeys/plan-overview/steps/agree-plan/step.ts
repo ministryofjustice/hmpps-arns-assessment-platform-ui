@@ -11,7 +11,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
-import { redirectToOverviewIfReadOnly } from '../../../../guards'
+import { redirectToOverviewIfReadOnly, redirectUnlessAllActiveGoalsHaveSteps } from '../../../../guards'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
@@ -27,6 +27,7 @@ export const agreePlanStep = step({
   },
   onAccess: [
     redirectToOverviewIfReadOnly(),
+    redirectUnlessAllActiveGoalsHaveSteps('overview'),
     access({
       effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT)],
     }),

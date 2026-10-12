@@ -30,7 +30,13 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
+import {
+  hasAtLeastOneActiveGoal,
+  hasPostAgreementStatus,
+  isOasysAccess,
+  isPrintAndShareEnabled,
+  isReadOnlyAccess,
+} from '../../../../guards'
 
 /**
  * True when at least one goal appears in a tab a draft plan can show.
@@ -68,7 +74,7 @@ export const planStep = step({
   },
   validWhen: [
     validation({
-      condition: Data('goals').each(Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE')))),
+      condition: hasAtLeastOneActiveGoal,
       message: 'To agree the plan, create a goal to work on now',
       details: { href: '#blank-plan-content' },
     }),
