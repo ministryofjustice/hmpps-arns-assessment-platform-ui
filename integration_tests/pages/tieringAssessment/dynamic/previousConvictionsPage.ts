@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import TieringAssessmentPage from '../tieringAssessmentPage'
 
 export default class PreviousConvictionsPage extends TieringAssessmentPage {
@@ -33,6 +33,8 @@ export default class PreviousConvictionsPage extends TieringAssessmentPage {
 
   readonly previousConvictionsNone: Locator
 
+  readonly previousConvictionValidationError: Locator
+
   constructor(page: Page) {
     super(page)
     this.previousConvictionsMurder = page.getByRole('checkbox', { name: 'Murder, attempted murder,' })
@@ -52,6 +54,7 @@ export default class PreviousConvictionsPage extends TieringAssessmentPage {
     this.previousConvictionsCustodyOffences = page.getByRole('checkbox', { name: 'Any offence committed in custody' })
     this.previousConvictionsFirearm = page.getByRole('checkbox', { name: 'Possession of a firearm with' })
     this.previousConvictionsNone = page.getByRole('checkbox', { name: 'None of these offences' })
+    this.previousConvictionValidationError = page.locator('[href="#previous_convictions"]')
   }
 
   async clickPreviousConvictionsMurderCheckboxOption() {
@@ -112,6 +115,12 @@ export default class PreviousConvictionsPage extends TieringAssessmentPage {
 
   async clickPreviousConvictionsNoneCheckboxOption() {
     await this.previousConvictionsNone.click()
+  }
+
+  async checkValidationError() {
+    await expect(this.previousConvictionValidationError).toContainText(
+      "Select all that apply, or select 'None of these offences'.",
+    )
   }
 
 }

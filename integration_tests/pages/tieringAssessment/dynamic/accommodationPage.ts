@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import TieringAssessmentPage from '../tieringAssessmentPage'
 
 export default class AccommodationPage extends TieringAssessmentPage {
@@ -25,6 +25,8 @@ export default class AccommodationPage extends TieringAssessmentPage {
 
   readonly accommodationSuitableUnknown: Locator
 
+  readonly accommodationFirstQuestionError: Locator
+
   constructor(page: Page) {
     super(page)
     this.livingWithFamily = page.getByRole('checkbox', { name: 'Family' })
@@ -38,6 +40,7 @@ export default class AccommodationPage extends TieringAssessmentPage {
     this.accommodationSuitableWithConcerns = page.getByRole('radio', { name: 'Yes, with concerns' })
     this.accommodationSuitableNo = page.getByRole('radio', { name: 'No', exact: true })
     this.accommodationSuitableUnknown = page.getByRole('radio', { name: 'Unknown' })
+    this.accommodationFirstQuestionError = page.locator('[href="#who_are_they_living_with"]')
   }
 
   async clickLivingWithFamilyCheckboxOption() {
@@ -82,5 +85,11 @@ export default class AccommodationPage extends TieringAssessmentPage {
 
   async clickAccommodationSuitableUnknownRadioOption() {
     await this.accommodationSuitableUnknown.click()
+  }
+
+  async firstAccommodationQuestionError() {
+    await expect(this.accommodationFirstQuestionError).toContainText(
+      "Select who Charles is living with, or select 'Alone' or 'Unknown'",
+    )
   }
 }

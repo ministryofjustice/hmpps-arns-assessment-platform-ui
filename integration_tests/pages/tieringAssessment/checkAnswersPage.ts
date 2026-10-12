@@ -12,6 +12,8 @@ export default class CheckAnswersPage extends TieringAssessmentPage {
 
   readonly firstSanctionDateAnswer: Locator
 
+  readonly firstSanctionDateChange: Locator
+
   readonly totalSanctionsAnswer: Locator
 
   readonly violentSanctionsAnswer: Locator
@@ -52,6 +54,8 @@ export default class CheckAnswersPage extends TieringAssessmentPage {
   readonly accommodationSubHeading: Locator
 
   readonly livingWithAnswer: Locator
+
+  readonly livingWithAnswerChange: Locator
 
   readonly accommodationSuitableAnswer: Locator
 
@@ -115,6 +119,7 @@ export default class CheckAnswersPage extends TieringAssessmentPage {
     // todo add the 3 current offence row answers
     this.currentOffenceAndOffendingHistorySubHeading = page.getByTestId('heading_current_offence_and_offending_history')
     this.firstSanctionDateAnswer = page.getByTestId('answer_date_at_first_sanction')
+    this.firstSanctionDateChange = page.getByRole('link', { name: 'Change' }).first()
     this.totalSanctionsAnswer = page.getByTestId('answer_number_of_sanctions_for_all_offences')
     this.violentSanctionsAnswer = page.getByTestId('answer_number_of_violent_sanctions')
     this.sexualSanctionsAnswer = page.getByTestId('answer_has_ever_committed_sexual_offence')
@@ -137,6 +142,7 @@ export default class CheckAnswersPage extends TieringAssessmentPage {
     this.dynamicHeader = page.getByRole('heading', { name: 'Dynamic factors' })
     this.accommodationSubHeading = page.getByTestId('heading_accommodation')
     this.livingWithAnswer = page.getByTestId('answer_who_are_they_living_with')
+    this.livingWithAnswerChange = page.locator('[href="accommodation#who_are_they_living_with"]')
     this.accommodationSuitableAnswer = page.getByTestId('answer_suitability_of_accommodation')
     this.employmentSubHeading = page.getByTestId('heading_employment')
     this.employmentStatusAnswer = page.getByTestId('answer_is_unemployed')
@@ -186,6 +192,10 @@ export default class CheckAnswersPage extends TieringAssessmentPage {
   async checkFirstSanctionDateAnswerValue(value: string = '30 June 1990') {
     await expect(this.firstSanctionDateAnswer).toBeVisible()
     await expect(this.firstSanctionDateAnswer).toContainText(value)
+  }
+
+  async changeFirstSanctionDateAnswer() {
+    await this.firstSanctionDateChange.click()
   }
 
   async checkTotalSanctionsAnswerValue(value: string = '8') {
@@ -292,6 +302,10 @@ export default class CheckAnswersPage extends TieringAssessmentPage {
   async checkLivingWithAnswer(values: string | string[]) {
     const expectedArray = Array.isArray(values) ? values : [values]
     await expect(this.livingWithAnswer).toHaveText(expectedArray)
+  }
+
+  async changeLivingWithAnswer() {
+    await this.livingWithAnswerChange.click()
   }
 
   async checkAccommodationSuitableAnswer(value: string) {
