@@ -41,6 +41,17 @@ describe('canAccessSanInfo()', () => {
     expect(canAccessSanInfo(context)).toBe(false)
   })
 
+  it('should return true when access is MPoP and the assessment has SAN_BETA flag and a CRN', () => {
+    const context = createMockContext({
+      data: {
+        assessment: { flags: ['SAN_BETA'] },
+      },
+      session: { sessionDetails: { accessType: 'HMPPS_AUTH' }, caseDetails: { crn: 'X123456' } },
+    })
+
+    expect(canAccessSanInfo(context)).toBe(true)
+  })
+
   it('should return false when assessment has no flags property', () => {
     const context = createMockContext({
       data: { assessment: { assessmentUuid: 'some-uuid' } },
