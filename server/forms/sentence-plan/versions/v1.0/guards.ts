@@ -175,6 +175,11 @@ export const redirectUnlessCouldNotAnswer = (goto: string) =>
   })
 
 /**
+ * True when the plan has the SAN_BETA flag (private beta).
+ */
+export const isSanSpAssessment = Data('assessment.flags').match(Condition.Array.Contains('SAN_BETA'))
+
+/**
  * True when the user entered via MPoP (CRN-based access).
  */
 export const isMpopAccess = Data('sessionDetails.accessType').match(Condition.Equals('HMPPS_AUTH'))
