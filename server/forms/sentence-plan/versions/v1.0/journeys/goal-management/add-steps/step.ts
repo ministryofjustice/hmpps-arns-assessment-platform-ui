@@ -7,6 +7,7 @@ import {
   match,
   Post,
   redirect,
+  Request,
   step,
   submit,
   when,
@@ -15,7 +16,7 @@ import {
 import { pageLayout } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { redirectIfGoalNotFound } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Add Steps page
@@ -66,11 +67,22 @@ export const addStepsStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.initializeStepEditSession(),
+      ],
+    }),
+
+    // Fresh visits only (GET) — add, remove and validation reloads are POSTs.
+    access({
+      when: Request.Method().match(Condition.Equals('GET')),
+      effects: [
+        SentencePlanEffects.discardStepEditSession(),
         SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_ADD_STEPS),
       ],
     }),
+    access({
+      effects: [SentencePlanEffects.initializeStepEditSession()],
+    }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
