@@ -7,7 +7,7 @@
 {% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
 {% set userFeedbackUrl = feedbackFormUrl if isPrivateBetaUser else nationalRolloutFeedbackUrl %}
 
-{% if step.title in ['Reorder steps', 'Plan'] %}
+{% if step.code in ['reorder-steps', 'plan-overview'] %}
   {% set bodyAttributes = { 'data-scroll-restore': '' } %}
 {% endif %}
 

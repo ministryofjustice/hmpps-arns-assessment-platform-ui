@@ -59,6 +59,7 @@ const showPrintAllGoalsButton = and(isPrintAndShareEnabled, or(hasPostAgreementS
 export const planStep = step({
   path: '/overview',
   title: 'Plan',
+  code: 'plan-overview',
   view: {
     locals: {
       headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
