@@ -26,6 +26,7 @@ Reorder steps page:
 export const reorderStepsStep = step({
   path: '/reorder-steps',
   title: 'Reorder steps',
+  code: 'reorder-steps',
   reachability: { entryWhen: true },
   view: {
     locals: {

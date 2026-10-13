@@ -197,7 +197,10 @@ export const goalsSection = TemplateWrapper({
           .each(
             Iterator.Map(
               TemplateWrapper({
-                template: Format('<li class="goal-list__item" id="goal-%1">{{slot:card}}</li>', Item().path('uuid')),
+                template: Format(
+                  '<li class="goal-list__item" id="goal-%1" tabindex="-1">{{slot:card}}</li>',
+                  Item().path('uuid'),
+                ),
                 slots: {
                   card: [
                     TemplateWrapper({

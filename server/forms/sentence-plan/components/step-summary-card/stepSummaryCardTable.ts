@@ -14,10 +14,11 @@ import { statusTag } from '../../versions/v1.0/journeys/goal-management/sharedFi
 
 interface StepSummaryCardProps {
   page: string
+  focusSelector?: string
 }
 
 // Step summary card list with move up/down buttons
-export const StepSummaryCardList = ({ page }: StepSummaryCardProps) => {
+export const StepSummaryCardTable = ({ page, focusSelector }: StepSummaryCardProps) => {
   const stepCount = Data('activeGoal.steps').pipe(Transformer.Array.Length())
   const isFirstStep = Loop.Index0().match(Condition.Equals(0))
   const isLastStep = Loop.Index0().match(Condition.Equals(stepCount.pipe(Transformer.Number.Subtract(1))))
@@ -25,15 +26,28 @@ export const StepSummaryCardList = ({ page }: StepSummaryCardProps) => {
   const columnCount = 4
   const dataColumnCount = columnCount - 1
 
+  const moveUpButtonAttributes: Record<string, string | ReturnType<typeof Format>> = {
+    'data-ai-id': Format(`${page}-move-up-%1`, Loop.Index0()),
+  }
+
+  const moveDownButtonAttributes: Record<string, string | ReturnType<typeof Format>> = {
+    'data-ai-id': Format(`${page}-move-down-%1`, Loop.Index0()),
+  }
+
+  if (focusSelector) {
+    moveUpButtonAttributes['data-scroll-restore-focus'] = focusSelector
+    moveUpButtonAttributes['data-scroll-restore-offset'] = '-1'
+    moveDownButtonAttributes['data-scroll-restore-focus'] = focusSelector
+    moveDownButtonAttributes['data-scroll-restore-offset'] = '1'
+  }
+
   const moveUpButton = GovUKButton({
     html: Format('Move up<span class="govuk-visually-hidden"> (%1)</span>', stepDescription),
     name: 'action',
     value: Format('moveUp_%1', Loop.Index0()),
     classes: 'govuk-button--secondary govuk-!-margin-bottom-0',
     visibleWhen: when(isFirstStep).then(false).else(true),
-    attributes: {
-      'data-ai-id': Format(`${page}-move-up-%1`, Loop.Index0()),
-    },
+    attributes: moveUpButtonAttributes,
   })
 
   const moveDownButton = GovUKButton({
@@ -42,9 +56,7 @@ export const StepSummaryCardList = ({ page }: StepSummaryCardProps) => {
     value: Format('moveDown_%1', Loop.Index0()),
     classes: 'govuk-button--secondary govuk-!-margin-bottom-0',
     visibleWhen: when(isLastStep).then(false).else(true),
-    attributes: {
-      'data-ai-id': Format(`${page}-move-down-%1`, Loop.Index0()),
-    },
+    attributes: moveDownButtonAttributes,
   })
 
   const spacerRow = TemplateWrapper({
@@ -70,7 +82,7 @@ export const StepSummaryCardList = ({ page }: StepSummaryCardProps) => {
           collection: Data('activeGoal.steps').each(
             Iterator.Map(
               TemplateWrapper({
-                template: `<tbody>
+                template: `<tbody id="step-{{stepIndex}}" tabindex="-1">
                   <tr class="govuk-table__row reorder-steps-table__data-row">
                     <td class="govuk-table__cell reorder-steps-table__counter" rowspan="2">{{stepNumber}}.</td>
                     <td class="govuk-table__cell">{{actorLabel}}</td>
@@ -87,6 +99,7 @@ export const StepSummaryCardList = ({ page }: StepSummaryCardProps) => {
                   {{slot:spacer}}
                 </tbody>`,
                 values: {
+                  stepIndex: Loop.Index0(),
                   stepNumber: Loop.Index0().pipe(Transformer.Number.Add(1)),
                   actorLabel: Item().path('actorLabel').pipe(Transformer.String.EscapeHtml()),
                   description: Item().path('description').pipe(Transformer.String.EscapeHtml()),
