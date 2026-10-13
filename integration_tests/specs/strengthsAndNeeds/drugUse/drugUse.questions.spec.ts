@@ -121,9 +121,10 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.drug_use, value: CommonOption.yes },
-        { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.benzodiazepines] },
+        { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.other_drug] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
-        { question: forDrug(Question.drug_last_used_value, Option.benzodiazepines), value: Option.more_than_six },
+        { question: Question.other_drug_name, value: 'calpol' },
+        { question: forDrug(Question.drug_last_used_value, Option.other_drug), value: Option.more_than_six },
       ])
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
@@ -151,7 +152,7 @@ test.describe('Questions', () => {
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
       - separator
       - heading "Not used in the last 6 months" [level=2]
-      - text: Test used benzodiazepines (including diazepam, temazepam) more than 6 months ago. Give details about Test's use of these drugs For example, how often they used these drugs, when they stopped using, and if their use was an issue.
+      - text: Test used calpol more than 6 months ago. Give details about Test's use of these drugs For example, how often they used these drugs, when they stopped using, and if their use was an issue.
       - textbox "Give details about Test's use of these drugs"
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
       - group "Which drugs has Test injected?":
@@ -160,8 +161,8 @@ test.describe('Questions', () => {
         - text: None or
         - checkbox "Amphetamines (including speed, methamphetamine)"
         - text: Amphetamines (including speed, methamphetamine)
-        - checkbox "Benzodiazepines (including diazepam, temazepam)"
-        - text: Benzodiazepines (including diazepam, temazepam)
+        - checkbox "calpol"
+        - text: calpol
       - group "Is Test receiving treatment for their drug use?":
         - text: Is Test receiving treatment for their drug use?
         - radio "Yes"

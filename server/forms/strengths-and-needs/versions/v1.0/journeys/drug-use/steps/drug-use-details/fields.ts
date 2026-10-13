@@ -17,6 +17,7 @@ import { drugHowOftenUsed, drugHowOftenUsedDetails, drugUseSection } from '../..
 import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
+import { Option } from '../../constants/option'
 
 // --- Conditions ---
 
@@ -90,7 +91,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
             .each(
               Iterator.Map(
                 when(
-                  Item().path('value').pipe(Transformer.String.EscapeHtml()).match(Condition.Equals(CommonOption.other)),
+                  Item().path('value').pipe(Transformer.String.EscapeHtml()).match(Condition.Equals(Option.other_drug)),
                 )
                   .then(Answer(Question.other_drug_name).pipe(Transformer.String.EscapeHtml()))
                   .else(
