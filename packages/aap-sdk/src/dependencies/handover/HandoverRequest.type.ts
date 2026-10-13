@@ -1,0 +1,31 @@
+import { HandoverPrincipalDetails, HandoverSubjectDetails, CriminogenicNeedsData } from './HandoverShared.type'
+
+export interface CreateHandoverLinkRequest {
+  user: HandoverPrincipalDetails
+  subjectDetails: HandoverSubjectDetails
+  oasysAssessmentPk: string
+  assessmentVersion?: number | null
+  sentencePlanVersion?: number | null
+  tieringAssessmentVersion?: number | null
+  criminogenicNeedsData?: CriminogenicNeedsData
+}
+
+export interface UpdateHandoverContextRequest {
+  principal: HandoverPrincipalDetails
+  subject: HandoverSubjectDetails
+  assessmentContext?: HandoverAssessmentContext
+  sentencePlanContext?: HandoverSentencePlanContext
+  criminogenicNeedsData?: CriminogenicNeedsData
+}
+
+export interface HandoverAssessmentContext {
+  oasysAssessmentPk?: string
+  assessmentId?: string
+  assessmentVersion?: number
+}
+
+export interface HandoverSentencePlanContext {
+  oasysAssessmentPk?: string
+  planId?: string
+  planVersion?: number
+}

@@ -1,0 +1,21 @@
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "declaration": true,
+    "declarationDir": "dist/declarations",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "isolatedModules": true,
+    "lib": ["ES2024", "DOM"],
+    "noImplicitAny": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    "types": ["node"],
+    "strict": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.mjs"],
+  "exclude": ["src/**/*.test.ts"]
+}

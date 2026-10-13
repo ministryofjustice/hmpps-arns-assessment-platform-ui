@@ -3,10 +3,10 @@ import prettierConfig from './prettier.config.mjs'
 
 export default [
   ...hmppsConfig({
-    extraIgnorePaths: ['test_results/', 'server/forms/**/components/**/*.mjs'],
+    extraIgnorePaths: ['test_results/', 'server/forms/**/components/**/*.mjs', 'packages/*/dist/'],
   }),
   {
-    ignores: ['test_results/**'],
+    ignores: ['test_results/**', 'packages/*/dist/**'],
   },
   {
     rules: {
@@ -51,6 +51,15 @@ export default [
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
+    },
+  },
+  {
+    files: ['packages/aap-sdk/src/utils/browser/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        CustomEvent: 'readonly',
+        document: 'readonly',
+      },
     },
   },
   {
