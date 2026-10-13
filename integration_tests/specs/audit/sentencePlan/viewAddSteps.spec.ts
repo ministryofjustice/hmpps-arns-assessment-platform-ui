@@ -41,9 +41,9 @@ test.describe('View Add or Change Steps', () => {
     await expect(page).toHaveURL(/\/plan\/overview/)
 
     // The save event is sent last, so every view event has arrived by the time it is seen.
-    await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_STEPS)
+    await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_STEPS)
     // waitForAuditEvent fails when it finds more than one matching event.
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_ADD_STEPS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_ADD_STEPS)
     expectAuditEvent(event, goalUuid)
   })
 })
