@@ -72,8 +72,6 @@ export const canAccessSupervisionPackage = and(
   or(isSupervisionPackageDisplayable, hasSupervisionPackageError),
 )
 
-export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
-
 /**
  * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
  *
@@ -195,7 +193,7 @@ export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 /**
  * True when the user can access SAN-specific content.
  */
-export const canAccessSanContent = and(isSanSpAssessment, hasCrn, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
+export const canAccessSanContent = and(isSanSpAssessment, hasCrn)
 
 /**
  * Redirect users who cannot access SAN content (see canAccessSanContent).
