@@ -1,5 +1,5 @@
 import { Condition, Format, Item, Iterator, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKBody, GovUKTable, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKBody, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
 import { basePath, CaseData } from '../../constants/formVersion'
@@ -21,7 +21,7 @@ const tableHeadColumns = [
   { text: contentFor('previous_versions_table_head_date') },
   { text: contentFor('previous_versions_table_head_assessment') },
   { text: contentFor('previous_versions_table_head_plan') },
-  { text: contentFor('previous_versions_table_head_status') },
+  // { text: contentFor('previous_versions_table_head_status') },
 ]
 
 const dateCell = {
@@ -89,17 +89,22 @@ const planCell = {
   ],
 }
 
-const statusCell = {
-  classes: 'govuk-!-width-one-quarter',
-  blocks: [
-    GovUKTag({
-      classes: 'previous-version-status',
-      text: Item().path('assessmentVersionStatus').pipe(StrengthsAndNeedsTransformers.FormatVersionStatus()),
-    }),
-  ],
-}
+// const statusCell = {
+//   classes: 'govuk-!-width-one-quarter',
+//   blocks: [
+//     GovUKTag({
+//       classes: 'previous-version-status',
+//       text: Item().path('assessmentVersionStatus').pipe(StrengthsAndNeedsTransformers.FormatVersionStatus()),
+//     }),
+//   ],
+// }
 
-const tableRows = [dateCell, assessmentCell, planCell, statusCell]
+const tableRows = [
+  dateCell,
+  assessmentCell,
+  planCell,
+  // statusCell,
+]
 
 const createVersionTable = (caption: ResolvableString, sessionKey: 'countersignedVersions' | 'previousVersions') =>
   GovUKTable({
