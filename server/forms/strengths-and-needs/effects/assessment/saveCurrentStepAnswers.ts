@@ -1,13 +1,11 @@
-import { InternalServerError } from 'http-errors'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
-import { sendFormAuditEvent } from '../../../shared'
-import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
-import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
-import { dependenciesForTouchedAnswers, inapplicableAnswerCodes } from './answerDependency'
-import { strengthsAndNeedsAnswerDependencies } from '../../versions/v1.0/answerDependencies'
+import {InternalServerError} from 'http-errors'
+import {wrapAll} from '../../../../data/aap-api/wrappers'
+import {buildAnswerDelta, buildChangedAnswerCodes} from './answerDelta'
+import {sendFormAuditEvent} from '../../../shared'
+import {SAN_AUDIT_FORM, SanAuditEvent} from '../../auditEvents'
+import {StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
+import {UpdateOasysDataMappingHook} from './updateOasysDataMappingHook'
+import {restoreSuppressedAnswers} from './restoreSuppressedAnswers'
 
 export const saveCurrentStepAnswers =
   (deps: StrengthsAndNeedsEffectsDeps) =>
@@ -39,20 +37,10 @@ export const saveCurrentStepAnswers =
     const histories = context.getAllAnswerHistories()
     const delta = buildAnswerDelta(histories)
 
-    const touched = [...Object.keys(delta.added), ...delta.removed, ...fieldsToClear]
-    const inapplicable = clearRemovals
-      ? inapplicableAnswerCodes(
-          dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
-          code => histories[code]?.current,
-        )
-      : []
-
-    if (!Object.keys(delta.added).length && !delta.removed.length && !inapplicable.length) {
+    if (!Object.keys(delta.added).length && !delta.removed.length) {
       return
     }
-
-    inapplicable.forEach(code => context.clearAnswer(code))
-    const removed = [...new Set([...delta.removed, ...fieldsToClear, ...inapplicable])]
+    const removed = [...new Set([...delta.removed, ...fieldsToClear])]
 
     await deps.api.executeCommand({
       type: 'UpdateAssessmentAnswersCommand',
@@ -68,7 +56,7 @@ export const saveCurrentStepAnswers =
       restoreSuppressedAnswers(context, histories, removed)
     }
 
-    const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear, ...inapplicable])]
+    const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear])]
     const changedFields = clearRemovals ? fieldsToChange : fieldsToChange.filter(field => !removed.includes(field))
 
     if (changedFields.length) {

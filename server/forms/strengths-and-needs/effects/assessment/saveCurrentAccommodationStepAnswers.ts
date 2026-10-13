@@ -1,14 +1,12 @@
-import { InternalServerError } from 'http-errors'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { Question } from '../../versions/v1.0/journeys/accommodation/constants/question'
-import { sendFormAuditEvent } from '../../../shared'
-import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
-import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
-import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
-import { dependenciesForTouchedAnswers, inapplicableAnswerCodes } from './answerDependency'
-import { strengthsAndNeedsAnswerDependencies } from '../../versions/v1.0/answerDependencies'
+import {InternalServerError} from 'http-errors'
+import {wrapAll} from '../../../../data/aap-api/wrappers'
+import {buildAnswerDelta, buildChangedAnswerCodes} from './answerDelta'
+import {StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
+import {Question} from '../../versions/v1.0/journeys/accommodation/constants/question'
+import {sendFormAuditEvent} from '../../../shared'
+import {SAN_AUDIT_FORM, SanAuditEvent} from '../../auditEvents'
+import {UpdateOasysDataMappingHook} from './updateOasysDataMappingHook'
+import {restoreSuppressedAnswers} from './restoreSuppressedAnswers'
 
 /**
  * Clean up a date string coming back from the API. Returns undefined for
@@ -68,24 +66,10 @@ export const saveCurrentAccommodationStepAnswers =
     const histories = context.getAllAnswerHistories()
     const delta = buildAnswerDelta(histories)
 
-    // Answers on other pages that this save has made irrelevant.
-    // The fields we just saved tell us which journey we are in, so we only
-    // check that journey's rules.
-    // Skipped on an autosave or a failed save, which must never delete anything.
-    const touched = [...Object.keys(delta.added), ...delta.removed]
-    const inapplicable = clearRemovals
-      ? inapplicableAnswerCodes(
-          dependenciesForTouchedAnswers(strengthsAndNeedsAnswerDependencies, touched),
-          code => histories[code]?.current,
-        )
-      : []
-
-    if (!Object.keys(delta.added).length && !delta.removed.length && !inapplicable.length) {
+    if (!Object.keys(delta.added).length && !delta.removed.length) {
       return
     }
-
-    inapplicable.forEach(code => context.clearAnswer(code))
-    const removed = [...new Set([...delta.removed, ...inapplicable])]
+    const removed = [...new Set([...delta.removed])]
 
     await deps.api.executeCommand({
       type: 'UpdateAssessmentAnswersCommand',
@@ -101,7 +85,7 @@ export const saveCurrentAccommodationStepAnswers =
       restoreSuppressedAnswers(context, histories, removed)
     }
 
-    const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...inapplicable])]
+    const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories)])]
     const changedFields =
       !clearFields && isAutosaved ? fieldsToChange.filter(field => !removed.includes(field)) : fieldsToChange
 
