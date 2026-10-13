@@ -1,13 +1,13 @@
 import { TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKButton, GovUKButtonGroup, GovUKHeading } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { goalContextInsetText } from '../sharedFields'
-import { StepSummaryCardList } from '../../../../../components/step-summary-card/stepSummaryCardList'
+import { StepSummaryCardTable } from '../../../../../components/step-summary-card/stepSummaryCardTable'
 
 const pageHeading = GovUKHeading({
   text: 'Reorder steps',
 })
 
-const stepSummaryCardList = StepSummaryCardList({ page: 'reorder-steps' })
+const stepSummaryCardTable = StepSummaryCardTable({ page: 'reorder-steps', focusSelector: 'tbody' })
 
 const saveAndContinueButton = GovUKButton({
   text: 'Save and continue',
@@ -37,14 +37,14 @@ export const pageLayout = TemplateWrapper({
     <div>
       {{slot:pageHeading}}
       {{slot:goalContextInsetText}}
-      {{slot:stepSummaryCardList}}
+      {{slot:stepSummaryCardTable}}
       {{slot:actionButtons}}
     </div>
   `,
   slots: {
     pageHeading: [pageHeading],
     goalContextInsetText: [goalContextInsetText],
-    stepSummaryCardList: [stepSummaryCardList],
+    stepSummaryCardTable: [stepSummaryCardTable],
     actionButtons: [actionButtons],
   },
 })
