@@ -48,6 +48,14 @@ export const accommodationStatusStep = step({
           }),
         ],
       },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.accommodation_status),
+        ],
+      },
     }),
   ],
 })

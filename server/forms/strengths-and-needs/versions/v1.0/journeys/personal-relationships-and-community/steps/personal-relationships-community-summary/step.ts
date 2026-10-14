@@ -35,7 +35,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(
             Section.personal_relationships_and_community,
             SectionComplete.yes,
@@ -47,6 +47,17 @@ export const personalRelationshipsCommunitySummaryStep = step({
           ),
         ],
         next: [redirect({ goto: `${Step.personal_relationships_community_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.personal_relationships_and_community,
+            Step.personal_relationships_community_summary,
+          ),
+        ],
       },
     }),
   ],

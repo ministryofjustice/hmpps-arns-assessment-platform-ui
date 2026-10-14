@@ -62,7 +62,7 @@ export const thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(
             Step.thinking_behaviours_attitudes_summary.code,
@@ -78,6 +78,21 @@ export const thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep = step({
           redirect({
             goto: Step.thinking_behaviours_attitudes_summary.path,
           }),
+        ],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.thinking_behaviours_attitudes_summary.code,
+            IsUserSubmitted.false,
+          ),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.thinking_behaviours_and_attitudes,
+            Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details,
+          ),
         ],
       },
     }),

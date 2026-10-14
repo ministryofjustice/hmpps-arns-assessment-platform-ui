@@ -29,11 +29,18 @@ export const financeSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.finance_summary),
         ],
         next: [redirect({ goto: `${Step.finance_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance_summary),
+        ],
       },
     }),
   ],

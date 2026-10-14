@@ -43,7 +43,7 @@ export const personalRelationshipsChildrenInformationStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(
             Step.personal_relationships_community_summary.code,
@@ -59,6 +59,21 @@ export const personalRelationshipsChildrenInformationStep = step({
           redirect({
             goto: Step.personal_relationships.path,
           }),
+        ],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(
+            Step.personal_relationships_community_summary.code,
+            IsUserSubmitted.false,
+          ),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.personal_relationships_and_community,
+            Step.personal_relationships_children_information,
+          ),
         ],
       },
     }),
