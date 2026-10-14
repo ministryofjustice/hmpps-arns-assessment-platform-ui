@@ -51,14 +51,30 @@ export const loadSupervisionPackage = (deps: SentencePlanEffectsDeps) => async (
     logger.error({ err: tierResult.reason, crn }, 'Failed to fetch tier details from MPoP Components API')
   }
 
-  // Record a failure (drives the error message) or store a returned context (guard reads its
-  // phase code). A null return is a genuine 404 — nothing to store, tab stays hidden.
   if (packageResult.status === 'rejected') {
     context.setData('supervisionPackageError', true)
     logger.error({ err: packageResult.reason, crn }, 'Failed to load supervision package')
-  } else if (packageResult.value) {
-    context.setData('supervisionPackageDetails', packageResult.value)
-  } else {
-    logger.info({ crn }, 'No supervision package for this person yet')
+
+    return
   }
+
+  const packageContext = packageResult.value
+
+  // A null return is a genuine 404 — nothing to store, tab stays hidden.
+  if (!packageContext) {
+    logger.info({ crn }, 'No supervision package for this person yet')
+
+    return
+  }
+
+  // A 500 resolves to an error object rather than rejecting. Treat it like a rejection so the
+  // step shows our warning instead of storing the error as package details.
+  if (packageContext.outcome === 'error') {
+    context.setData('supervisionPackageError', true)
+    logger.error({ crn, httpStatus: packageContext.status }, 'Failed to load supervision package')
+
+    return
+  }
+
+  context.setData('supervisionPackageDetails', packageContext)
 }
