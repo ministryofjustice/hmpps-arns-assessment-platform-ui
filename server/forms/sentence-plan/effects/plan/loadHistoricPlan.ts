@@ -10,7 +10,13 @@ import { getRequiredEffectContext } from '../goals/goalUtils'
 export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const { user, assessmentUuid } = getRequiredEffectContext(context, 'loadHistoricPlan')
 
-  const pointInTime = new Date(Number(context.getRequestParam('timestamp')))
+  const timestamp = context.getRequestParam('timestamp')
+
+  const pointInTime = new Date(Number(timestamp))
+
+  if (!timestamp || !Number.isFinite(pointInTime.getTime())) {
+    throw new NotFound('Historic sentence plan not found')
+  }
 
   const assessment = await deps.api.executeQuery({
     type: 'AssessmentVersionQuery',
