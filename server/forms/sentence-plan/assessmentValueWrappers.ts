@@ -1,4 +1,4 @@
-import { Values } from '../../interfaces/aap-api/dataModel'
+import { Values } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 
 /**
  * Wraps plain values into the API's Single/Multi format.

@@ -6,9 +6,9 @@ import {
   CriminogenicNeedsData,
   CriminogenicNeedArea,
   SubAreaData,
-} from '../interfaces/coordinator-api/entityAssessment'
-import { areasOfNeed, subAreasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
-import { AreaOfNeed } from '../forms/sentence-plan/effects/types'
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { areasOfNeed, subAreasOfNeed } from '../../versions/v1.0/constants'
+import { AreaOfNeed } from '../types'
 
 /**
  * Converts a needs-data boolean (handover for OASys, ARNS for MPoP) to LinkedIndicator format.

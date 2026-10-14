@@ -1,7 +1,10 @@
+import {
+  AssessmentNeedDetailDto,
+  AssessmentNeedsDetailsDto,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeedsDetails.type'
+import { AssessmentVersion } from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeeds.type'
+import { CriminogenicNeedArea } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 import { mapArnsIntegrationNeedsToCriminogenicNeeds } from './arnsIntegrationMapper'
-import { AssessmentNeedDetailDto, AssessmentNeedsDetailsDto } from '../interfaces/arns-api/assessmentNeedsDetails'
-import { AssessmentVersion } from '../interfaces/arns-api/assessmentNeeds'
-import { CriminogenicNeedArea } from '../interfaces/coordinator-api/entityAssessment'
 
 const buildDto = (
   needs: AssessmentNeedDetailDto[],

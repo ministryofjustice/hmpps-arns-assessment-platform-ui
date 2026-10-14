@@ -1,4 +1,4 @@
-import { TimelineItem } from '../../../../interfaces/aap-api/dataModel'
+import { TimelineItem } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 import { AgreementStatus, HistoricPlanData, SentencePlanContext } from '../types'
 import {
   derivePlanLastUpdated,

@@ -1,4 +1,4 @@
-import AuditService, { AuditEvent, AuditMessage } from './auditService'
+import AuditService, { AuditMessage } from './auditService'
 
 jest.mock('@ministryofjustice/hmpps-audit-client', () => ({
   auditService: {
@@ -19,7 +19,7 @@ describe('AuditService', () => {
   describe('send', () => {
     it('should send audit event with all fields populated', async () => {
       const message: AuditMessage = {
-        action: AuditEvent.VIEW_PLAN_OVERVIEW,
+        action: 'VIEW_PLAN_OVERVIEW',
         who: 'testuser',
         subjectId: 'CRN123',
         subjectType: 'CRN',
@@ -45,7 +45,7 @@ describe('AuditService', () => {
 
     it('should handle missing optional fields gracefully', async () => {
       const message: AuditMessage = {
-        action: AuditEvent.VIEW_PLAN_OVERVIEW,
+        action: 'VIEW_PLAN_OVERVIEW',
         who: 'testuser',
       }
 
@@ -64,7 +64,7 @@ describe('AuditService', () => {
 
     it('should handle audit client errors gracefully', async () => {
       const message: AuditMessage = {
-        action: AuditEvent.VIEW_PLAN_OVERVIEW,
+        action: 'VIEW_PLAN_OVERVIEW',
         who: 'testuser',
       }
 
@@ -76,7 +76,7 @@ describe('AuditService', () => {
 
     it('should stringify details object', async () => {
       const message: AuditMessage = {
-        action: AuditEvent.CREATE_GOAL,
+        action: 'CREATE_GOAL',
         who: 'testuser',
         correlationId: 'correlation-123',
         details: { key1: 'value1', key2: 'value2' },

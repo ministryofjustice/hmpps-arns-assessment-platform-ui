@@ -1,6 +1,6 @@
-import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { Commands } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentCommand.type'
+import { wrapAll } from '../../assessmentValueWrappers'
 import { SentencePlanContext, SentencePlanEffectsDeps, StepChangesStorage, StepProperties } from '../types'
-import { Commands } from '../../../../interfaces/aap-api/command'
 import { getPractitionerName, getRequiredEffectContext } from '../goals/goalUtils'
 import { snapshotFromGoal } from '../goals/goalSnapshot'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'

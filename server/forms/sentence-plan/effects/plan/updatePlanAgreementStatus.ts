@@ -6,7 +6,7 @@ import {
   SentencePlanContext,
   SentencePlanEffectsDeps,
 } from '../types'
-import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { wrapAll } from '../../assessmentValueWrappers'
 import { getRequiredEffectContext } from '../goals/goalUtils'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 

@@ -1,5 +1,11 @@
-import { AssessmentNeedDetailDto, AssessmentNeedsDetailsDto } from '../interfaces/arns-api/assessmentNeedsDetails'
-import { CriminogenicNeedsData, CriminogenicNeedArea } from '../interfaces/coordinator-api/entityAssessment'
+import {
+  AssessmentNeedDetailDto,
+  AssessmentNeedsDetailsDto,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeedsDetails.type'
+import {
+  CriminogenicNeedsData,
+  CriminogenicNeedArea,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 
 /**
  * The integration endpoint names sections differently depending on whether the underlying

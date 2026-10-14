@@ -1,4 +1,3 @@
-import logger from '../../../../../logger'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 // loads sentence information from Delius API if not already present via CRN access route:
@@ -8,12 +7,12 @@ export const loadSentenceInformation = (deps: SentencePlanEffectsDeps) => async 
   const assessmentUuid = context.getData('assessmentUuid')
 
   if (!caseDetails?.crn) {
-    logger.error({ assessmentUuid }, 'Cannot load sentence information: missing CRN in session')
+    deps.logger.error({ assessmentUuid }, 'Cannot load sentence information: missing CRN in session')
     return
   }
 
   if (caseDetails.sentences && caseDetails.sentences.length > 0) {
-    logger.debug(
+    deps.logger.debug(
       { assessmentUuid, crn: caseDetails.crn },
       'Sentence information already loaded, skipping Delius API call',
     )
@@ -28,7 +27,7 @@ export const loadSentenceInformation = (deps: SentencePlanEffectsDeps) => async 
     }
     context.setData('caseData', session.caseDetails)
   } catch (error) {
-    logger.error(
+    deps.logger.error(
       { err: error, assessmentUuid, crn: caseDetails.crn },
       'Failed to load sentence information from Delius',
     )

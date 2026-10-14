@@ -1,5 +1,11 @@
-import { AssessmentNeedsDto, AssessmentNeedDto } from '../interfaces/arns-api/assessmentNeeds'
-import { CriminogenicNeedsData, CriminogenicNeedArea } from '../interfaces/coordinator-api/entityAssessment'
+import {
+  AssessmentNeedsDto,
+  AssessmentNeedDto,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeeds.type'
+import {
+  CriminogenicNeedsData,
+  CriminogenicNeedArea,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 
 const SECTION_TO_NEEDS_KEY: Record<string, keyof CriminogenicNeedsData> = {
   ACCOMMODATION: 'accommodation',

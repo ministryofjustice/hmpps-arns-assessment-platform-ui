@@ -1,12 +1,15 @@
 import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { AssessmentArea, MotivationLevel } from '../interfaces/coordinator-api/entityAssessment'
+import {
+  AssessmentArea,
+  MotivationLevel,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 import {
   getLinkedText,
   getMotivationText,
   hasAnyData,
   buildParams,
   AssessmentInfoDetails,
-} from '../forms/sentence-plan/components/assessment-info-details/assessmentInfoDetails'
+} from './assessmentInfoDetails'
 
 /**
  * Creates a minimal AssessmentArea for testing.

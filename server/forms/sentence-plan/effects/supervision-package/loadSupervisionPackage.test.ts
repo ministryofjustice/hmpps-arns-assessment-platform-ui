@@ -1,12 +1,12 @@
 import { loadSupervisionPackage } from './loadSupervisionPackage'
 import type { SentencePlanContext, SentencePlanEffectsDeps, SupervisionPackageDetails, TierCalculation } from '../types'
 
-jest.mock('../../../../../logger', () => ({
-  info: jest.fn(),
+const mockLogger = {
+  debug: jest.fn(),
   error: jest.fn(),
-}))
-
-const mockLogger = jest.requireMock('../../../../../logger')
+  info: jest.fn(),
+  warn: jest.fn(),
+}
 
 const supervisionPackageDetails = {
   currentPhase: {
@@ -67,6 +67,7 @@ function createMockDeps(): SentencePlanEffectsDeps {
       getSupervisionPackageFrontendContext: jest.fn().mockResolvedValue(supervisionPackageDetails),
       getTierDetails: jest.fn().mockResolvedValue({ calculation: tierCalculation, httpStatus: 200, error: null }),
     },
+    logger: mockLogger,
   } as unknown as SentencePlanEffectsDeps
 }
 

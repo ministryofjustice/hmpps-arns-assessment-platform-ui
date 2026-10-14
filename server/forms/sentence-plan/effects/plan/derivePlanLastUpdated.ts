@@ -1,10 +1,16 @@
-import { TimelineItem } from '../../../../interfaces/aap-api/dataModel'
+import { TimelineItem } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 import { AgreementStatus, HistoricPlanData, SentencePlanContext } from '../types'
 
 export interface LastUpdatedData {
   isUpdatedAfterAgreement: boolean
   lastUpdatedDate?: string
   lastUpdatedByName?: string
+}
+
+const getStringProperty = (data: Record<string, unknown>, property: string): string | undefined => {
+  const value = data[property]
+
+  return typeof value === 'string' ? value : undefined
 }
 
 /**
@@ -126,11 +132,11 @@ export const derivePlanLastUpdatedData = (
   // Each event type stores the actor under a different key
   const customData = mostRecentEvent.customData ?? {}
   const updatedByName =
-    customData.updatedBy ??
-    customData.createdBy ??
-    customData.achievedBy ??
-    customData.removedBy ??
-    customData.readdedBy ??
+    getStringProperty(customData, 'updatedBy') ??
+    getStringProperty(customData, 'createdBy') ??
+    getStringProperty(customData, 'achievedBy') ??
+    getStringProperty(customData, 'removedBy') ??
+    getStringProperty(customData, 'readdedBy') ??
     mostRecentEvent.user?.name ??
     'Unknown'
 

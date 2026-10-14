@@ -1,4 +1,4 @@
-import { TimelineItem } from '../../../../interfaces/aap-api/dataModel'
+import { TimelineItem } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentDataModel.type'
 import {
   AreaOfNeed,
   DerivedGoal,
@@ -11,6 +11,43 @@ import {
 } from '../types'
 import { GoalSnapshotData } from '../goals/goalSnapshot'
 import { sanitizeDateValue } from '../goals/goalUtils'
+
+const getStringProperty = (data: Record<string, unknown> | undefined, property: string): string | undefined => {
+  const value = data?.[property]
+
+  return typeof value === 'string' ? value : undefined
+}
+
+const isGoalStatus = (value: unknown): value is GoalStatus => {
+  return value === 'ACTIVE' || value === 'FUTURE' || value === 'REMOVED' || value === 'ACHIEVED'
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return Boolean(value) && typeof value === 'object'
+}
+
+const isGoalSnapshotStep = (value: unknown): value is GoalSnapshotData['steps'][number] => {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return typeof value.actor === 'string' && typeof value.description === 'string' && typeof value.status === 'string'
+}
+
+const isGoalSnapshotData = (value: unknown): value is GoalSnapshotData => {
+  if (!isRecord(value)) {
+    return false
+  }
+
+  return isGoalStatus(value.status) &&
+    (value.targetDate === undefined || typeof value.targetDate === 'string') &&
+    typeof value.statusDate === 'string' &&
+    typeof value.areaOfNeed === 'string' &&
+    Array.isArray(value.relatedAreasOfNeed) &&
+    value.relatedAreasOfNeed.every(area => typeof area === 'string') &&
+    Array.isArray(value.steps) &&
+    value.steps.every(isGoalSnapshotStep)
+}
 
 const resolveAreaLabel = (slug: string | undefined, areasOfNeed: AreaOfNeed[]): string | undefined => {
   if (!slug) {
@@ -37,9 +74,9 @@ const resolveActorLabel = (
 }
 
 const getTimelineGoalUuid = (item: TimelineItem): string | undefined => {
-  const goalUuid = item.customData?.goalUuid ?? item.data?.goalUuid
+  const goalUuid = getStringProperty(item.customData, 'goalUuid') ?? getStringProperty(item.data, 'goalUuid')
 
-  return typeof goalUuid === 'string' && goalUuid.length > 0 ? goalUuid : undefined
+  return goalUuid?.length ? goalUuid : undefined
 }
 
 /**
@@ -118,14 +155,16 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
   // history item rather than back-to-back created + updated.
   const initialStepAddSteps = new Map<string, GoalSnapshotData['steps']>()
   for (const item of planTimeline) {
+    const goalUuid = getStringProperty(item.customData, 'goalUuid')
+    const goalSnapshot = item.customData?.goalSnapshot
+
     if (
       item.customType === 'GOAL_UPDATED' &&
       item.customData?.isInitialStepAdd &&
-      item.customData?.goalUuid &&
-      item.customData?.goalSnapshot
+      goalUuid &&
+      isGoalSnapshotData(goalSnapshot)
     ) {
-      const stepAddSnapshot = item.customData.goalSnapshot as GoalSnapshotData
-      initialStepAddSteps.set(item.customData.goalUuid, stepAddSnapshot.steps)
+      initialStepAddSteps.set(goalUuid, goalSnapshot.steps)
     }
   }
 
@@ -151,11 +190,12 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
     const customData = item.customData ?? {}
     const date = item.timestamp
     const goalUuid = getTimelineGoalUuid(item)
+    const goalTitle = getStringProperty(customData, 'goalTitle')
     const currentGoal = goals.find(g => g.uuid === goalUuid)
-    let snapshot = customData.goalSnapshot as GoalSnapshotData | undefined
+    let snapshot = isGoalSnapshotData(customData.goalSnapshot) ? customData.goalSnapshot : undefined
 
-    if (item.customType === 'GOAL_CREATED' && snapshot) {
-      const initialSteps = initialStepAddSteps.get(customData.goalUuid)
+    if (item.customType === 'GOAL_CREATED' && snapshot && goalUuid) {
+      const initialSteps = initialStepAddSteps.get(goalUuid)
       if (initialSteps) {
         snapshot = { ...snapshot, steps: initialSteps }
       }
@@ -167,72 +207,76 @@ export const derivePlanHistoryEntries = () => (context: SentencePlanContext) => 
     }
 
     switch (item.customType) {
-      case 'GOAL_CREATED':
+      case 'GOAL_CREATED': {
         entries.push({
           type: 'goal_created',
           uuid: `created-${item.uuid}-${item.timestamp}`,
           date,
-          goalUuid: customData.goalUuid,
-          goalTitle: customData.goalTitle,
-          createdBy: customData.createdBy,
+          goalUuid,
+          goalTitle,
+          createdBy: getStringProperty(customData, 'createdBy'),
           ...goalContext,
         })
         break
+      }
 
-      case 'GOAL_ACHIEVED':
+      case 'GOAL_ACHIEVED': {
         entries.push({
           type: 'goal_achieved',
-          uuid: `achieved-${customData.goalUuid}-${item.timestamp}`,
+          uuid: `achieved-${goalUuid}-${item.timestamp}`,
           date,
-          goalUuid: customData.goalUuid,
-          goalTitle: customData.goalTitle,
-          achievedBy: customData.achievedBy,
-          notes: customData.notes,
+          goalUuid,
+          goalTitle,
+          achievedBy: getStringProperty(customData, 'achievedBy'),
+          notes: getStringProperty(customData, 'notes'),
           ...goalContext,
         })
         break
+      }
 
       case 'GOAL_REMOVED': {
         const isCurrentlyActive = currentGoal?.status === 'ACTIVE' || currentGoal?.status === 'FUTURE'
         entries.push({
           type: 'goal_removed',
-          uuid: `removed-${customData.goalUuid}-${item.timestamp}`,
+          uuid: `removed-${goalUuid}-${item.timestamp}`,
           date,
-          goalUuid: customData.goalUuid,
-          goalTitle: customData.goalTitle,
-          removedBy: customData.removedBy,
-          reason: customData.reason,
+          goalUuid,
+          goalTitle,
+          removedBy: getStringProperty(customData, 'removedBy'),
+          reason: getStringProperty(customData, 'reason'),
           isCurrentlyActive,
           ...goalContext,
         })
         break
       }
 
-      case 'GOAL_READDED':
+      case 'GOAL_READDED': {
         entries.push({
           type: 'goal_readded',
-          uuid: `readded-${customData.goalUuid}-${item.timestamp}`,
+          uuid: `readded-${goalUuid}-${item.timestamp}`,
           date,
-          goalUuid: customData.goalUuid,
-          goalTitle: customData.goalTitle,
-          readdedBy: customData.readdedBy,
-          reason: customData.reason,
+          goalUuid,
+          goalTitle,
+          readdedBy: getStringProperty(customData, 'readdedBy'),
+          reason: getStringProperty(customData, 'reason'),
           ...goalContext,
         })
         break
+      }
 
-      case 'GOAL_UPDATED':
+      case 'GOAL_UPDATED': {
         entries.push({
           type: 'goal_updated',
-          uuid: `updated-${customData.goalUuid}-${item.timestamp}`,
+          uuid: `updated-${goalUuid}-${item.timestamp}`,
           date,
-          goalUuid: customData.goalUuid,
-          goalTitle: customData.goalTitle,
-          updatedBy: customData.updatedBy,
-          notes: customData.notes,
+          goalUuid,
+          goalTitle,
+          updatedBy: getStringProperty(customData, 'updatedBy'),
+          notes: getStringProperty(customData, 'notes'),
           ...goalContext,
         })
         break
+      }
 
       default:
         break
