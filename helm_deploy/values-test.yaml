@@ -127,5 +127,4 @@ wiremock:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
-  alertSeverity: hmpps-arns-assessment-platform-test
   businessHoursOnly: true
