@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, oneDayAgoMs } from '../sentencePlanUtils'
 
 test.describe('Plan History - Accordion behaviour', () => {
   test.beforeEach(async ({ page, createSession, sentencePlanBuilder }) => {
@@ -20,7 +20,7 @@ test.describe('Plan History - Accordion behaviour', () => {
         {
           status: 'AGREED',
           createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
+          dateOffset: oneDayAgoMs,
         },
       ])
       .save()

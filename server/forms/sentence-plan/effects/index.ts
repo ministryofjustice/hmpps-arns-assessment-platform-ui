@@ -32,6 +32,8 @@ import { discardStepEditSession } from './steps/discardStepEditSession'
 import { addStepToStepEditSession } from './steps/addStepToStepEditSession'
 import { removeStepFromStepEditSession } from './steps/removeStepFromStepEditSession'
 import { saveStepEditSession } from './steps/saveStepEditSession'
+import { reorderStepsInSession } from './steps/reorderStepsInSession'
+import { saveReorderedSteps } from './steps/saveReorderedSteps'
 import { setPrivacyAccepted } from './access/setPrivacyAccepted'
 import { updatePlanAgreement } from './plan/updatePlanAgreement'
 import { loadPreviousVersions } from './plan/loadPreviousVersions'
@@ -117,6 +119,8 @@ export const SentencePlanEffects = {
   addStepToStepEditSession: sentencePlanEffectRegistry.register(addStepToStepEditSession),
   removeStepFromStepEditSession: sentencePlanEffectRegistry.register(removeStepFromStepEditSession),
   saveStepEditSession: sentencePlanEffectRegistry.register(saveStepEditSession),
+  reorderStepsInSession: sentencePlanEffectRegistry.register(reorderStepsInSession),
+  saveReorderedSteps: sentencePlanEffectRegistry.register(saveReorderedSteps),
   sendAuditEvent: sentencePlanEffectRegistry.register(sendAuditEvent),
   sendTelemetryEvent: sentencePlanEffectRegistry.register(sendTelemetryEvent),
   loadFeatureFlags: sentencePlanEffectRegistry.register(loadFeatureFlags),
