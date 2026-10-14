@@ -9,6 +9,7 @@ import {
   redirect,
   Condition,
   Request,
+  Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
@@ -71,8 +72,6 @@ export const canAccessSupervisionPackage = and(
   isSupervisionPackageEnabled,
   or(isSupervisionPackageDisplayable, hasSupervisionPackageError),
 )
-
-export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
 
 /**
  * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
@@ -137,6 +136,15 @@ export const redirectIfGoalNotFound = (goto: string) =>
     next: [redirect({ goto })],
   })
 
+// Redirects users if goal has less than 2 steps
+// used for reorder page (nothing to reorder)
+export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
+  access({
+    when: Data('activeGoal.steps').pipe(Transformer.Array.Length())
+      .match(Condition.Number.LessThan(2)),
+    next: [redirect({ goto })],
+  })
+
 export const isGoalActiveOrFuture = Data('activeGoal.status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE']))
 
 /**
@@ -195,7 +203,7 @@ export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 /**
  * True when the user can access SAN-specific content.
  */
-export const canAccessSanContent = and(isSanSpAssessment, hasCrn, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
+export const canAccessSanContent = and(isSanSpAssessment, hasCrn)
 
 /**
  * Redirect users who cannot access SAN content (see canAccessSanContent).

@@ -34,6 +34,7 @@ const supervisionPackageDetails = {
   createdAt: '2026-01-05T09:00:00Z',
   updatedAt: '2026-08-01T09:00:00Z',
   context: {},
+  outcome: 'success',
 } as unknown as SupervisionPackageDetails
 
 const tierCalculation = {
@@ -141,6 +142,23 @@ describe('loadSupervisionPackage', () => {
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
     expect(context.setData).toHaveBeenCalledWith('supervisionPackageError', true)
     // Tier is settled independently, so a package failure does not lose the tier
+    expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
+  })
+
+  it('should set an error status when the package client resolves a 500 error outcome', async () => {
+    const context = createMockContext()
+    ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue({
+      outcome: 'error',
+      status: 500,
+      error: 'Internal Server Error',
+      timestamp: '2026-10-13T09:00:00Z',
+      path: '/frontend-context/X123456',
+    })
+
+    await loadSupervisionPackage(deps)(context)
+
+    expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageError', true)
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
   })
 

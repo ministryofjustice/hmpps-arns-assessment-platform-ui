@@ -138,25 +138,25 @@ test.describe('Assessment Info Details - Access by Assessment Type', () => {
       await navigateToPlanOverviewViaMpop(page, crn)
     })
 
-    test('hides assessment info details on create goal page', async ({ page }) => {
+    test('show assessment info details on create goal page', async ({ page }) => {
       await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
 
-      await expect(createGoalPage.assessmentInfoDetails).not.toBeVisible()
+      await expect(createGoalPage.assessmentInfoDetails).toBeVisible()
     })
 
-    test('hides assessment info details on change goal page', async ({ page }) => {
+    test('show assessment info details on change goal page', async ({ page }) => {
       await page.getByRole('link', { name: 'Update goal' }).click()
 
       const changeGoalPage = await ChangeGoalPage.verifyOnPage(page)
-      await expect(changeGoalPage.assessmentInfoDetails).not.toBeVisible()
+      await expect(changeGoalPage.assessmentInfoDetails).toBeVisible()
     })
 
-    test('hides assessment info details on add steps page', async ({ page }) => {
+    test('show assessment info details on add steps page', async ({ page }) => {
       await page.getByRole('link', { name: 'Add steps' }).click()
 
       const addStepsPage = await AddStepsPage.verifyOnPage(page)
-      await expect(addStepsPage.assessmentInfoDetails).not.toBeVisible()
+      await expect(addStepsPage.assessmentInfoDetails).toBeVisible()
     })
   })
 

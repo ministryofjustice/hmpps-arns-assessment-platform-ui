@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, oneDayAgoMs } from '../sentencePlanUtils'
 import ViewInactiveGoalPage from '../../../pages/sentencePlan/viewInactiveGoalPage'
 
 test.describe('Plan History - Achieved Goals', () => {
@@ -36,7 +36,7 @@ test.describe('Plan History - Achieved Goals', () => {
         {
           status: 'AGREED',
           createdBy: 'Test Practitioner',
-          dateOffset: -86400000, // 1 day ago
+          dateOffset: oneDayAgoMs,
         },
       ])
       .save()
@@ -77,7 +77,7 @@ test.describe('Plan History - Achieved Goals', () => {
         {
           status: 'AGREED',
           createdBy: 'Test Practitioner',
-          dateOffset: -86400000,
+          dateOffset: oneDayAgoMs,
         },
       ])
       .save()
