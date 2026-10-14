@@ -18,12 +18,30 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
     throw new NotFound('Historic sentence plan not found')
   }
 
-  const assessment = await deps.api.executeQuery({
-    type: 'AssessmentVersionQuery',
-    user,
-    assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
-    timestamp: pointInTime.toISOString().replace('Z', '999Z'),
-  })
+  const assessment = await (async () => {
+    try {
+      return await deps.api.executeQuery({
+        type: 'AssessmentVersionQuery',
+        user,
+        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+        timestamp: pointInTime.toISOString().replace('Z', '999Z'),
+      })
+    } catch (error) {
+      const apiError = error as {
+        responseStatus?: number
+        data?: { developerMessage?: string }
+      }
+
+      if (
+        apiError?.responseStatus === 400 &&
+        apiError?.data?.developerMessage === 'Timestamp cannot be before the assessment created date'
+      ) {
+        throw new NotFound('Historic sentence plan not found')
+      }
+
+      throw error
+    }
+  })()
 
   if (!assessment) {
     throw new NotFound('Historic sentence plan not found')
