@@ -31,21 +31,21 @@ import {
   yesNo,
 } from '../../constants/questionContent'
 
+const isEmployedOrSelfEmployed = or(
+  Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
+  Answer(Question.employment_status).match(Condition.Equals(Option.self_employed)),
+)
+
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
 const hasBeenEmployed = or(
-  Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
+  isEmployedOrSelfEmployed,
   Answer(Question.has_been_employed).match(Condition.Equals(CommonOption.yes)),
 )
 
 const hasBeenEmployedOrRetired = or(
   hasBeenEmployed,
   Answer(Question.employment_status).match(Condition.Equals(Option.retired)),
-)
-
-const isEmployedOrSelfEmployed = or(
-  Answer(Question.employment_status).match(Condition.Equals(Option.employed)),
-  Answer(Question.employment_status).match(Condition.Equals(Option.self_employed)),
 )
 
 const isNotRetired = Answer(Question.employment_status).not.match(Condition.Equals(Option.retired))
