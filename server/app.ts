@@ -71,6 +71,7 @@ export default function createApp(services: Services): express.Application {
       mpopComponents: services.mpopComponents,
       auditService: services.auditService,
       featureFlagService: services.featureFlagService,
+      logger,
       domainEventsService: services.domainEventsService,
     })
 

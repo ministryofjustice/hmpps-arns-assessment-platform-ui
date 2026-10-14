@@ -1,6 +1,9 @@
-import { SanAssessmentData, CriminogenicNeedsData } from '../interfaces/coordinator-api/entityAssessment'
-import { transformAssessmentData } from './assessmentUtils'
-import { areasOfNeed } from '../forms/sentence-plan/versions/v1.0/constants'
+import {
+  SanAssessmentData,
+  CriminogenicNeedsData,
+} from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { transformAssessmentData } from './assessmentData'
+import { areasOfNeed } from '../../versions/v1.0/constants'
 
 const areasOfNeedThresholdsAndUpperBounds = Object.fromEntries(
   areasOfNeed.map(area => [area.crimNeedsKey, { threshold: area.threshold, upperBound: area.upperBound }]),

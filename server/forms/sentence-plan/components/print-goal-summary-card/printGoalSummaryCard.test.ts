@@ -1,12 +1,9 @@
-import nunjucks from 'nunjucks'
 import { StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import JourneyTemplateLoader from '../../test-support/JourneyTemplateLoader'
 import { PrintGoalSummaryCard } from './printGoalSummaryCard'
 
-const nunjucksEnv = nunjucks.configure(
-  ['server/views', 'server/forms', 'node_modules/govuk-frontend/dist/', 'node_modules/@ministryofjustice/frontend/'],
-  { autoescape: true },
-)
+const nunjucksEnv = JourneyTemplateLoader.createEnvironment()
 
 describe('print goal summary card', () => {
   it('renders the print-only goal and step layout', async () => {

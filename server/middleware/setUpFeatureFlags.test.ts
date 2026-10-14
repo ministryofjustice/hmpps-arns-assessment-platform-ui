@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express'
+import { BooleanFeatureFlags } from '@ministryofjustice/hmpps-aap-sdk/dependencies/feature-flags/featureFlags'
 import setUpFeatureFlags from './setUpFeatureFlags'
-import { BooleanFeatureFlags } from '../utils/featureFlagsUtils'
 
 type MiddlewareStack = Array<{ handle: (req: Request, res: Response, next: () => void) => unknown }>
 

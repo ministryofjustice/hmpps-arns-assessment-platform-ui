@@ -1,5 +1,6 @@
 import { ApplicationInsights } from '@microsoft/applicationinsights-web'
 import { ClickAnalyticsPlugin } from '@microsoft/applicationinsights-clickanalytics-js'
+import { browserTelemetry } from '@ministryofjustice/hmpps-aap-sdk/utils/browser/telemetry.mjs'
 
 const connectionString = document.querySelector('meta[name="ai-connection-string"]')?.content
 
@@ -100,6 +101,8 @@ function createAppInsights() {
 }
 
 export const appInsights = createAppInsights()
+
+browserTelemetry.subscribe(event => appInsights?.trackEvent(event))
 
 const accordionNames = {
   'high-scoring-areas-accordion': 'High scoring areas',

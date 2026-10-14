@@ -1,18 +1,12 @@
 import { loadAllAreasAssessmentInfo } from './loadAllAreasAssessmentInfo'
 import { canAccessSanInfo } from '../helpers'
 import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
-import { transformAssessmentData } from '../../../../utils/assessmentUtils'
+import { transformAssessmentData } from './assessmentData'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 jest.mock('../helpers')
 jest.mock('./criminogenicNeeds')
-jest.mock('../../../../utils/assessmentUtils')
-jest.mock('../../../../../logger', () => ({
-  info: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn(),
-}))
+jest.mock('./assessmentData')
 
 const mockCanAccessSanInfo = canAccessSanInfo as jest.Mock
 const mockResolveCriminogenicNeedsData = resolveCriminogenicNeedsData as jest.Mock
@@ -22,6 +16,7 @@ const createMockDeps = (getEntityAssessment = jest.fn()): SentencePlanEffectsDep
   ({
     coordinatorApi: { getEntityAssessment },
     arnsApi: { getCriminogenicNeeds: jest.fn() },
+    logger: { debug: jest.fn(), error: jest.fn(), info: jest.fn(), warn: jest.fn() },
   }) as unknown as SentencePlanEffectsDeps
 
 const createMockContext = (

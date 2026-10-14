@@ -1,5 +1,5 @@
 import { InternalServerError } from 'http-errors'
-import { AuthSource } from '../../../../interfaces/hmppsUser'
+import { AuthSource } from '@ministryofjustice/hmpps-aap-sdk/types/authentication/HmppsUser.type'
 import { AreaOfNeed, DerivedGoal, SentencePlanContext } from '../types'
 import {
   MONTHS_BY_OPTION,

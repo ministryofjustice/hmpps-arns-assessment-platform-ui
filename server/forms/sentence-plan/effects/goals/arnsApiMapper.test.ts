@@ -1,6 +1,6 @@
+import { AssessmentNeedsDto } from '@ministryofjustice/hmpps-aap-sdk/dependencies/arns/ArnsAssessmentNeeds.type'
+import { CriminogenicNeedArea } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
 import { mapArnsNeedsToCriminogenicNeeds } from './arnsApiMapper'
-import { AssessmentNeedsDto } from '../interfaces/arns-api/assessmentNeeds'
-import { CriminogenicNeedArea } from '../interfaces/coordinator-api/entityAssessment'
 
 const buildNeedsDto = (overrides: Partial<AssessmentNeedsDto> = {}): AssessmentNeedsDto => ({
   identifiedNeeds: [],

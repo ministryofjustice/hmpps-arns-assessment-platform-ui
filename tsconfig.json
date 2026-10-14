@@ -15,6 +15,9 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@ministryofjustice/hmpps-forge/jsx-components",
     "typeRoots": ["./server/@types", "./node_modules/@types"],
+    "paths": {
+      "@ministryofjustice/hmpps-aap-sdk/*": ["./packages/aap-sdk/src/*"]
+    },
     "types": ["node", "jest"]
   },
   "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "esbuild", "eslint.config.mjs"],

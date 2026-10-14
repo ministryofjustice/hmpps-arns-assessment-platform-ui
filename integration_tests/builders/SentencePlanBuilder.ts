@@ -1,5 +1,5 @@
 import type { Commands } from '@server/interfaces/aap-api/command'
-import { wrapAll } from '@server/data/aap-api/wrappers'
+import { wrapAll } from '@server/forms/sentence-plan/assessmentValueWrappers'
 import { AgreementStatus } from '@server/forms/sentence-plan/effects'
 import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance } from './AssessmentBuilder'

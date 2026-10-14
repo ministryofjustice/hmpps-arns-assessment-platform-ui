@@ -1,6 +1,6 @@
+import { IdentifierType } from '@ministryofjustice/hmpps-aap-sdk/dependencies/assessment-platform/AssessmentIdentifier.type'
 import { loadPlan } from './loadPlan'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 
 const planUuid = 'plan-uuid-123'
 

@@ -1,7 +1,6 @@
-import logger from '../../../../../logger'
-import { transformAssessmentData } from '../../../../utils/assessmentUtils'
+import { AssessmentArea } from '@ministryofjustice/hmpps-aap-sdk/dependencies/coordinator/CoordinatorEntityAssessment.type'
+import { transformAssessmentData } from './assessmentData'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
-import { AssessmentArea } from '../../../../interfaces/coordinator-api/entityAssessment'
 import { canAccessSanInfo } from '../helpers'
 import { resolveCriminogenicNeedsData } from './criminogenicNeeds'
 
@@ -28,7 +27,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
   const crn = session.caseDetails?.crn
 
   if (!assessmentUuid) {
-    logger.error({ crn }, 'Cannot load all areas assessment info: missing assessmentUuid')
+    deps.logger.error({ crn }, 'Cannot load all areas assessment info: missing assessmentUuid')
     setErrorState(context)
     return
   }
@@ -46,7 +45,10 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
 
     const criminogenicNeedsData = await resolveCriminogenicNeedsData(deps, context, crn)
     if (!criminogenicNeedsData) {
-      logger.error({ assessmentUuid, crn }, 'Cannot load all areas assessment info: ARNS API returned no needs data')
+      deps.logger.error(
+        { assessmentUuid, crn },
+        'Cannot load all areas assessment info: ARNS API returned no needs data',
+      )
       setErrorState(context)
       return
     }
@@ -87,7 +89,7 @@ export const loadAllAreasAssessmentInfo = (deps: SentencePlanEffectsDeps) => asy
 
     context.setData('allAreasAssessmentStatus', 'success')
   } catch (error) {
-    logger.error({ err: error, assessmentUuid, crn }, 'Failed to load all areas assessment info')
+    deps.logger.error({ err: error, assessmentUuid, crn }, 'Failed to load all areas assessment info')
     setErrorState(context)
   }
 }

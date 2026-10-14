@@ -1,4 +1,4 @@
-import { DomainEvent } from '../../../../services/domainEventsService'
+import type { DomainEvent } from '@ministryofjustice/hmpps-aap-sdk/dependencies/domain-events/DomainEvents.type'
 
 interface GoalsEventParams {
   planUuid?: string

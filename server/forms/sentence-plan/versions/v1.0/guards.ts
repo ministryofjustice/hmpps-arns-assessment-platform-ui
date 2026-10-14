@@ -10,8 +10,8 @@ import {
   Condition,
   Request,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { PDF_RENDER_HEADER, PDF_RENDER_HEADER_VALUE } from '@ministryofjustice/hmpps-aap-sdk/utils/pdf/pdfRender'
 import { POST_AGREEMENT_PROCESS_STATUSES } from '../../effects'
-import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
 import { sentencePlanOverviewPath } from './constants'
 
 /**
@@ -78,9 +78,7 @@ export const canAccessSupervisionPackage = and(
  * This only picks which label the audit event gets, never whether one is sent. A faked header
  * can mislabel an event but cannot remove it.
  */
-export const isPdfRenderRequest = Request.Headers(GOTENBERG_RENDER_HEADER).match(
-  Condition.Equals(GOTENBERG_RENDER_HEADER_VALUE),
-)
+export const isPdfRenderRequest = Request.Headers(PDF_RENDER_HEADER).match(Condition.Equals(PDF_RENDER_HEADER_VALUE))
 
 export const hasPostAgreementStatus = Data('latestAgreementStatus').match(
   Condition.Array.IsIn(POST_AGREEMENT_PROCESS_STATUSES),

@@ -1,6 +1,6 @@
-import nunjucks from 'nunjucks'
 import { StructureType } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { EvaluatedBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import JourneyTemplateLoader from '../../test-support/JourneyTemplateLoader'
 import {
   GoalSummaryCardAgreed,
   GoalSummaryCardDraft,
@@ -9,16 +9,7 @@ import {
   GoalStep,
 } from './goalSummaryCard'
 
-const nunjucksEnv = nunjucks.configure(
-  [
-    'server/views',
-    'server/forms',
-    'packages/form-engine-moj-components/src/',
-    'node_modules/govuk-frontend/dist/',
-    'node_modules/@ministryofjustice/frontend/',
-  ],
-  { autoescape: true },
-)
+const nunjucksEnv = JourneyTemplateLoader.createEnvironment()
 
 describe('goal summary card', () => {
   const baseBlock = {
