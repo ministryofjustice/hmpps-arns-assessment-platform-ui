@@ -114,7 +114,7 @@ export const addStepsStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.saveStepEditSession(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.ADD_STEPS),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
@@ -131,7 +131,7 @@ export const addStepsStep = step({
       when: Post('action').match(Condition.Equals('reorderSteps')),
       validate: true,
       onValid: {
-        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
+        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEPS)],
         next: [redirect({ goto: 'reorder-steps' })],
       },
     }),
