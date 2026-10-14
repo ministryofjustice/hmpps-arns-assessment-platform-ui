@@ -7,6 +7,7 @@ import {
   Transformer,
   Iterator,
   Condition,
+  not,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock, TemplateWrapper, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import {
@@ -17,11 +18,15 @@ import {
   GovUKHeading,
   GovUKBody,
   GovUKInsetText,
+  GovUKButtonGroup,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { WrappingSelect } from '../../../../../components'
 import { CaseData } from '../../../constants'
 
 const hasSteps = Data('activeGoal.steps').match(Condition.IsRequired())
+const hasMoreThanOneStep = Data('activeGoal.steps')
+  .pipe(Transformer.Array.Length())
+  .match(Condition.Number.GreaterThan(1))
 
 const stepStatusOptions = [
   { text: 'Not started', value: 'NOT_STARTED' },
@@ -100,25 +105,52 @@ export const reviewStepsHeading = GovUKHeading({
   size: 'm',
 })
 
-export const addOrChangeStepsLink = GovUKBody({
+const addOrUpdateStepsButton = GovUKButton({
+  text: 'Add or update steps',
+  name: 'action',
+  value: 'addOrUpdateSteps',
+  classes: 'govuk-button--secondary',
+  attributes: {
+    'data-ai-id': 'update-goal-and-steps-add-or-update-steps-button',
+  },
   visibleWhen: hasSteps,
-  text: Format(
-    '<a href="../../goal/%1/add-steps" class="govuk-link" data-ai-id="update-goal-and-steps-add-or-update-steps-link">Add or update steps</a>',
-    Data('activeGoal.uuid'),
-  ),
 })
 
-export const noStepsMessage = HtmlBlock({
+const reorderStepButton = GovUKButton({
+  text: 'Reorder steps',
+  name: 'action',
+  value: 'reorderSteps',
+  classes: 'govuk-button--secondary',
+  attributes: {
+    'data-ai-id': 'update-goal-and-steps-reorder-steps-button',
+  },
+  visibleWhen: hasMoreThanOneStep,
+})
+
+export const stepActionButtonsGroup = GovUKButtonGroup({ buttons: [addOrUpdateStepsButton, reorderStepButton] })
+
+export const noStepsMessage = TemplateWrapper({
   visibleWhen: Data('activeGoal.steps').not.match(Condition.IsRequired()),
-  classes: 'goal-summary-card__steps--empty-no-shadow',
-  content: [
-    GovUKBody({
-      text: Format(
-        'No steps added. <a href="../../goal/%1/add-steps" class="govuk-link" data-ai-id="update-goal-and-steps-add-steps-link">Add steps</a>',
-        Data('activeGoal.uuid'),
-      ),
-    }),
-  ],
+  template: `
+    <div class="govuk-body">
+      <span class="govuk-!-display-inline-block govuk-!-padding-top-1 govuk-!-padding-right-1">No steps added.</span>
+      {{slot:addStepsButton}}
+    </div>
+  `,
+  slots: {
+    addStepsButton: [
+      GovUKButton({
+        text: 'Add steps',
+        name: 'action',
+        value: 'addSteps',
+        classes: 'govuk-button--secondary',
+        attributes: {
+          'data-ai-id': 'update-goal-and-steps-add-steps-button',
+        },
+        visibleWhen: not(hasSteps),
+      }),
+    ],
+  },
 })
 
 export const reviewStepsTable = TemplateWrapper({

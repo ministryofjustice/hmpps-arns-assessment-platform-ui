@@ -18,9 +18,11 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
 
   readonly noStepsMessage: Locator
 
-  readonly addStepsLink: Locator
+  readonly addStepsButton: Locator
 
-  readonly addOrUpdateStepsLink: Locator
+  readonly addOrUpdateStepsButton: Locator
+
+  readonly reorderStepsButton: Locator
 
   readonly progressNotesTextarea: Locator
 
@@ -51,11 +53,10 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
     this.futureGoalMessage = this.goalContextInset.locator('p').filter({ hasText: 'This is a future goal' })
     this.changeGoalDetailsLink = this.goalContextInset.getByRole('link', { name: 'Update goal details' })
     this.stepsTable = page.locator('table.goal-summary-card__steps')
-    this.noStepsMessage = page.locator('.goal-summary-card__steps--empty-no-shadow')
-    this.addStepsLink = page
-      .locator('.goal-summary-card__steps--empty-no-shadow')
-      .getByRole('link', { name: 'Add steps' })
-    this.addOrUpdateStepsLink = page.getByRole('link', { name: 'Add or update steps' })
+    this.noStepsMessage = page.getByText('No steps added.')
+    this.addStepsButton = page.getByRole('button', { name: 'Add steps' })
+    this.addOrUpdateStepsButton = page.getByRole('button', { name: 'Add or update steps' })
+    this.reorderStepsButton = page.getByRole('button', { name: 'Reorder steps' })
     this.progressNotesTextarea = page.locator('#progress_notes')
     this.progressNotesLabel = page.locator('label[for="progress_notes"]')
     this.progressNotesHint = page.locator('#progress_notes-hint')
@@ -97,11 +98,15 @@ export default class UpdateGoalAndStepsPage extends AbstractPage {
   }
 
   async clickAddSteps(): Promise<void> {
-    await this.addStepsLink.click()
+    await this.addStepsButton.click()
   }
 
   async clickAddOrChangeSteps(): Promise<void> {
-    await this.addOrUpdateStepsLink.click()
+    await this.addOrUpdateStepsButton.click()
+  }
+
+  async clickReorderSteps(): Promise<void> {
+    await this.reorderStepsButton.click()
   }
 
   async getStepCount(): Promise<number> {
