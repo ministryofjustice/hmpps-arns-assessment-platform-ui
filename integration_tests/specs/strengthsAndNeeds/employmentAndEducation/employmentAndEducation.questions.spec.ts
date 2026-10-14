@@ -232,9 +232,18 @@ test.describe('Questions', () => {
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'job sector')
 
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
-      - text: What job sector does Test work in? (optional)
       - textbox "What job sector does Test work in? (optional)"
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
+      - group "What is Test's employment history?"
+      - group "Does Test have any additional day-to-day commitments?"
+      - group "Select the highest level of academic qualification Test has completed"
+      - group "Does Test have any professional or vocational qualifications?"
+      - group "Does Test have any skills that could help them in a job or to get a job?"
+      - group "Does Test have difficulties with reading, writing or numeracy?"
+      - group "What is Test's overall experience of employment?"
+      - group "What is Test's experience of education?"
+      - group "Does Test want to make changes to their employment and education?"
+      - button "Save and continue"
     `)
   })
 
