@@ -1,9 +1,9 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { Section , SectionComplete} from '../../versions/v2.0/constants/section'
+import { Section, SectionComplete } from '../../versions/v2.0/constants/section'
 import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
-  export const setSectionProgressV2 =
+export const setSectionProgressV2 =
   (deps: StrengthsAndNeedsEffectsDeps) =>
   async (
     context: StrengthsAndNeedsContext,

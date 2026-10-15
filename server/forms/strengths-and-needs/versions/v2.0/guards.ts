@@ -12,6 +12,7 @@ import {
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
 import { basePath } from './constants/formVersion'
+import { Section } from './constants/section'
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -89,7 +90,7 @@ export const preventPrivilegeEscalation = () => {
     when: and(isReadWriteMode, not(hasReadWriteAccess)),
     next: [
       redirect({
-        goto: createRoute([basePath, 'view', Params('uuid'), 'accommodation']),
+        goto: createRoute([basePath, 'view', Params('uuid'), Section.alcohol_use.path]), // TODO During ACT-750 work, replace with accommodation
       }),
     ],
   })

@@ -1,5 +1,5 @@
 export const Question = {
- // Base usage (shown whenever they have alcohol issues)
+  // Base usage (shown whenever they have alcohol issues)
   alcohol_current_issues: 'alcohol_current_issues',
   alcohol_evidence_of_excess_drinking: 'alcohol_evidence_of_excess_drinking',
   alcohol_past_issues: 'alcohol_past_issues',

@@ -22,7 +22,7 @@ import { commonContentFor } from './locales'
 // import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 // import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isEditMode, isHistoricView, isOasysAccess, preventPrivilegeEscalation } from './guards'
-//import { offenceAnalysisJourney } from './journeys/offence-analysis'
+// import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
@@ -82,7 +82,7 @@ export const strengthsAndNeedsV2Journey = journey({
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
         StrengthsAndNeedsEffects.loadAssessment(),
-        //StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
+        // StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
     // Prevent privilege escalation: check mode against accessMode

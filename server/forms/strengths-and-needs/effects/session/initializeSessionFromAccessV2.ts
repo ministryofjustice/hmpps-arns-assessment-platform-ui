@@ -1,7 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsSession } from '../types'
-import { Section, SectionComplete} from '../../versions/v2.0/constants/section'
+import { Section, SectionComplete } from '../../versions/v2.0/constants/section'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
 

@@ -62,7 +62,14 @@ const post = async (body: Record<string, unknown>) => {
 
 describe('autosave submit hook', () => {
   it('accepts a part filled page without validating or redirecting', async () => {
-    const result = await post({ action: autosaveAction, alcohol_current_issues: '',alcohol_evidence_of_excess_drinking: '',alcohol_past_issues:'',alcohol_stopped_or_reduced:'', alcohol_use_changes: ''  })
+    const result = await post({
+      action: autosaveAction,
+      alcohol_current_issues: '',
+      alcohol_evidence_of_excess_drinking: '',
+      alcohol_past_issues: '',
+      alcohol_stopped_or_reduced: '',
+      alcohol_use_changes: '',
+    })
 
     expect(result.type).toBe('render')
     if (result.type === 'render') {
@@ -75,7 +82,17 @@ describe('autosave submit hook', () => {
   })
 
   it('leaves the save action to redirect as before', async () => {
-    const result = await post({ action: 'save', alcohol_current_issues: '',alcohol_evidence_of_excess_drinking: '',alcohol_past_issues:'',alcohol_stopped_or_reduced:'', alcohol_use_changes: '' })
+    const result = await post({
+      action: 'save',
+      alcohol_current_issues: 'SIGNIFICANT',
+      alcohol_evidence_of_excess_drinking: 'NO_EVIDENCE',
+      alcohol_past_issues: 'YES',
+      alcohol_past_issues_yes_details: 'Details',
+      alcohol_stopped_or_reduced: 'YES',
+      alcohol_stopped_or_reduced_yes_details: 'Details',
+      alcohol_use_changes: 'MADE_CHANGES',
+      alcohol_use_changes_made_changes_details: 'Details',
+    })
 
     expect(result.type).toBe('redirect')
   })

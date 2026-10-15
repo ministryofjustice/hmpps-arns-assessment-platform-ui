@@ -22,7 +22,7 @@ export const v2FormConfig = {
   [formVersion]: buildFormConfig(
     formVersion,
     [
-      //accommodationSection,
+      // accommodationSection,
       alcoholUseSection,
       // drugUseSection,
       // employmentEducationSection,
