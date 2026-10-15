@@ -31,7 +31,7 @@ export const Section = {
   alcohol_use: {
     code: 'alcohol-use',
     path: '/alcohol-use',
-    sideNavHref: `alcohol-use/alcohol-use-details`,
+    sideNavHref: `alcohol-use/alcohol-use-current-issues`,
     statusKey: 'alcohol_use_section_complete',
   },
   health_and_wellbeing: {

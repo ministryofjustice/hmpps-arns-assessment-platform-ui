@@ -11,8 +11,8 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
-export const alcoholUseDetailsStep = step({
-  path: `/${Step.alcohol_use_details.path}`,
+export const alcoholUseChanges = step({
+  path: `/${Step.alcohol_use_changes.path}`,
   title: sectionPageTitle(Section.alcohol_use),
   reachability: { entryWhen: true },
   view: {
@@ -20,35 +20,28 @@ export const alcoholUseDetailsStep = step({
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),
     },
   },
-  blocks: [
-    alcoholUseSection.questions.currentIssues.displayModes.field,
-    alcoholUseSection.questions.evidenceOfExcessDrinking.displayModes.field,
-    alcoholUseSection.questions.pastIssues.displayModes.field,
-    alcoholUseSection.questions.stoppedOrReduced.displayModes.field,
-    alcoholUseSection.questions.changes.displayModes.field,
-    saveButton,
-  ],
-  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_details)],
+  blocks: [alcoholUseSection.questions.changes.displayModes.field, saveButton],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_changes)],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.alcohol_use_details.code),
+      condition: isUserSubmittedCondition(Step.alcohol_use_changes.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.alcohol_use_details.code, Section.alcohol_use),
+    autosaveSubmit(Step.alcohol_use_changes.code, Section.alcohol_use),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_details.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_changes.code)],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.alcohol_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_details),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_changes),
         ],
         next: [redirect({ goto: Step.alcohol_use_summary.path })],
       },
@@ -57,7 +50,7 @@ export const alcoholUseDetailsStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.alcohol_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_details),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_changes),
         ],
       },
     }),

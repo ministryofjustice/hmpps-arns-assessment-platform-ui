@@ -45,7 +45,7 @@ test.describe('HMPPS Auth error', () => {
     // HMPPS Auth login
     await login(page)
 
-    await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-details`)
+    await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-current-issues`)
 
     await expect(page.getByRole('heading', { name: 'there is a problem with the service' })).toBeVisible()
   })

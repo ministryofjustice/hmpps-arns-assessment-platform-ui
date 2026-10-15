@@ -49,7 +49,7 @@ test.describe('Autosave', () => {
   //   await form.locator(`[name="${textCode}"]`).fill('Walked away from')
   //   await expect(form).toHaveAttribute('data-autosave-state', 'pending')
   //   // walk away
-  //   await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-details`)
+  //   await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-current-issues`)
   //   await AlcoholUsePage.verifyOnPage(page, 'Does Test have any current issues with alcohol?')
   //   // come back
   //   await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${offence}/offence-analysis`)

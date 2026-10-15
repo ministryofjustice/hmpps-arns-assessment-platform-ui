@@ -29,7 +29,13 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
+      .withUserSubmittedSteps([
+        Step.alcohol_use_current_issues.code,
+        Step.alcohol_use_excessive_drinking_past_issues.code,
+        Step.alcohol_use_stopped_or_reduced.code,
+        Step.alcohol_use_changes.code,
+        Step.alcohol_use_summary.code,
+      ])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
@@ -42,34 +48,34 @@ test.describe('Summary', () => {
           - paragraph: Significant
         - definition:
           - link "Change Does Test have any current issues with alcohol?":
-            - /url: alcohol-use-details#alcohol_current_issues-question
+            - /url: alcohol-use-current-issues#alcohol_current_issues-question
         - term: Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?
         - definition:
           - paragraph: Some evidence of binge drinking or excessive alcohol use
         - definition:
           - link "Change Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?":
-            - /url: alcohol-use-details#alcohol_evidence_of_excess_drinking-question
+            - /url: alcohol-use-excessive-drinking-past-issues#alcohol_evidence_of_excess_drinking-question
         - term: Does Test have any past issues with alcohol?
         - definition:
           - paragraph: "Yes"
           - paragraph: Had issues a few years ago
         - definition:
           - link "Change Does Test have any past issues with alcohol?":
-            - /url: alcohol-use-details#alcohol_past_issues-question
+            - /url: alcohol-use-excessive-drinking-past-issues#alcohol_past_issues-question
         - term: Has anything helped Test to stop or reduce drinking alcohol in the past?
         - definition:
           - paragraph: "Yes"
           - paragraph: Cut down last year
         - definition:
           - link "Change Has anything helped Test to stop or reduce drinking alcohol in the past?":
-            - /url: alcohol-use-details#alcohol_stopped_or_reduced-question
+            - /url: alcohol-use-stopped-or-reduced#alcohol_stopped_or_reduced-question
         - term: Does Test want to make changes to their alcohol use?
         - definition:
           - paragraph: I have already made positive changes and want to maintain them
           - paragraph: Stopped drinking spirits
         - definition:
           - link "Change Does Test want to make changes to their alcohol use?":
-            - /url: alcohol-use-details#alcohol_use_changes-question
+            - /url: alcohol-use-changes#alcohol_use_changes-question
         - button "Go to practitioner analysis"
     `)
   })
@@ -91,7 +97,13 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
+      .withUserSubmittedSteps([
+        Step.alcohol_use_current_issues.code,
+        Step.alcohol_use_excessive_drinking_past_issues.code,
+        Step.alcohol_use_stopped_or_reduced.code,
+        Step.alcohol_use_changes.code,
+        Step.alcohol_use_summary.code,
+      ])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
@@ -117,7 +129,13 @@ test.describe('Summary', () => {
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
+      .withUserSubmittedSteps([
+        Step.alcohol_use_current_issues.code,
+        Step.alcohol_use_excessive_drinking_past_issues.code,
+        Step.alcohol_use_stopped_or_reduced.code,
+        Step.alcohol_use_changes.code,
+        Step.alcohol_use_summary.code,
+      ])
       .save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')

@@ -25,12 +25,14 @@ test.describe('Strengths and needs privacy screen', () => {
     // await expect(page).toHaveURL(/accommodation-status/)
     //
     // await page.goto(`${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/accommodation/accommodation-status`)
-    // await expect(page).toHaveURL(/alcohol-use-details/)
+    // await expect(page).toHaveURL(/accommodation-status/)
 
-    await expect(page).toHaveURL(/alcohol-use-details/)
+    await expect(page).toHaveURL(/alcohol-use-current-issues/)
 
-    await page.goto(`${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/alcohol-use/alcohol-use-details`)
-    await expect(page).toHaveURL(/alcohol-use-details/)
+    await page.goto(
+      `${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/alcohol-use/alcohol-use-current-issues`,
+    )
+    await expect(page).toHaveURL(/alcohol-use-current-issues/)
   })
 
   // TODO Uncomment it during ACT-750 Accommodation framework (because of entryWhen: isReadOnlyMode)

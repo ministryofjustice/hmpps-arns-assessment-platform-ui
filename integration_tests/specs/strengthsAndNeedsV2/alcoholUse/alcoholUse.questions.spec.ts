@@ -36,46 +36,6 @@ test.describe('Questions', () => {
         - text: No current problems
         - radio "Has never drank"
         - text: Has never drank
-      - group "Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?":
-        - text: Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?
-        - radio "No evidence of binge drinking or excessive alcohol use"
-        - text: No evidence of binge drinking or excessive alcohol use
-        - radio "Some evidence of binge drinking or excessive alcohol use"
-        - text: Some evidence of binge drinking or excessive alcohol use There is a pattern of alcohol use but has not caused any serious problems.
-        - radio "Evidence of binge drinking or excessive alcohol use"
-        - text: Evidence of binge drinking or excessive alcohol use There is a detrimental effect on other areas of their life and is often directly related to offending.
-      - group "Does Test have any past issues with alcohol?":
-        - text: Does Test have any past issues with alcohol?
-        - radio "Yes"
-        - text: "Yes"
-        - radio "No"
-        - text: "No"
-      - group "Has anything helped Test to stop or reduce drinking alcohol in the past?":
-        - text: Has anything helped Test to stop or reduce drinking alcohol in the past? Consider strategies, people or support networks that may have helped.
-        - radio "Yes"
-        - text: "Yes"
-        - radio "No"
-        - text: "No"
-      - group "Does Test want to make changes to their alcohol use?":
-        - text: Does Test want to make changes to their alcohol use? Test must answer this question.
-        - radio "I have already made positive changes and want to maintain them"
-        - text: I have already made positive changes and want to maintain them
-        - radio "I am actively making changes"
-        - text: I am actively making changes
-        - radio "I want to make changes and know how to"
-        - text: I want to make changes and know how to
-        - radio "I want to make changes but need help"
-        - text: I want to make changes but need help
-        - radio "I am thinking about making changes"
-        - text: I am thinking about making changes
-        - radio "I do not want to make changes"
-        - text: I do not want to make changes
-        - radio "I do not want to answer"
-        - text: I do not want to answer or
-        - radio "Test is not present"
-        - text: Test is not present
-        - radio "Not applicable"
-        - text: Not applicable
       - button "Save and continue"
     `)
   })
@@ -107,7 +67,13 @@ test.describe('Questions', () => {
         { question: Question.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.no },
       ])
-      .withUserSubmittedSteps([Step.alcohol_use_details.code, Step.alcohol_use_summary.code])
+      .withUserSubmittedSteps([
+        Step.alcohol_use_current_issues.code,
+        Step.alcohol_use_excessive_drinking_past_issues.code,
+        Step.alcohol_use_stopped_or_reduced.code,
+        Step.alcohol_use_changes.code,
+        Step.alcohol_use_summary.code,
+      ])
       .save()
 
     // Reach the analysis page via the real flow: summary -> practitioner tab -> Mark as complete.

@@ -1,4 +1,4 @@
-import { Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
@@ -18,6 +18,9 @@ import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../
 import { CharacterLimit } from '../../../../constants/characterLimit'
 
 const drankAlcohol = Answer(Question.alcohol_current_issues).not.match(Condition.Equals(Option.has_never_drank))
+const noCurrentProblems = Answer(Question.alcohol_current_issues).not.match(
+  Condition.Equals(Option.no_current_problems),
+)
 
 const currentIssues = question({
   content: {
@@ -47,8 +50,7 @@ const currentIssues = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.alcohol_use_details.path,
-      visibleWhen: drankAlcohol,
+      changeHref: Step.alcohol_use_current_issues.path,
     }),
   },
 })
@@ -77,10 +79,13 @@ const evidenceOfExcessDrinking = question({
     validationMessage: contentFor('question.alcohol_evidence_of_excess_drinking.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: and(drankAlcohol, noCurrentProblems),
+      visibleWhen: and(drankAlcohol, noCurrentProblems),
+    }),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.alcohol_use_details.path,
-      visibleWhen: drankAlcohol,
+      changeHref: Step.alcohol_use_excessive_drinking_past_issues.path,
+      visibleWhen: and(drankAlcohol, noCurrentProblems),
     }),
   },
 })
@@ -106,7 +111,7 @@ const pastIssues = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_excessive_drinking_past_issues.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -134,7 +139,7 @@ const stoppedOrReduced = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_stopped_or_reduced.path,
       visibleWhen: drankAlcohol,
     }),
   },
@@ -191,7 +196,7 @@ const changes = question({
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.alcohol_use_details.path,
+      changeHref: Step.alcohol_use_changes.path,
       visibleWhen: drankAlcohol,
     }),
   },

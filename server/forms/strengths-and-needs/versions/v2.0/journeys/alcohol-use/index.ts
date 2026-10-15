@@ -1,11 +1,14 @@
 import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { alcoholUseDetailsStep } from './steps/alcohol-use-details/step'
 import { alcoholUseSummaryStep } from './steps/alcohol-use-summary/step'
 import { alcoholUseAnalysisStep } from './steps/alcohol-use-analysis/step'
 import { Section } from '../../constants/section'
 import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
+import { alcoholUseCurrentIssuesStep } from './steps/alcohol-use-current-issues/step'
+import { alcoholUseExcessiveDrinkingPastIssuesStep } from './steps/alcohol-use-excessive-drinking-past-issues/step'
+import { alcoholUseStoppedOrReducedStep } from './steps/alcohol-use-stopped-or-reduced/step'
+import { alcoholUseChanges } from './steps/alcohol-use-changes/step'
 
 /**
  * Alcohol Use Journey
@@ -27,5 +30,12 @@ export const alcoholUseJourney = journey({
       sectionStatusTag: sectionStatusTag(Section.alcohol_use),
     },
   },
-  steps: [alcoholUseDetailsStep, alcoholUseSummaryStep, alcoholUseAnalysisStep],
+  steps: [
+    alcoholUseCurrentIssuesStep,
+    alcoholUseExcessiveDrinkingPastIssuesStep,
+    alcoholUseStoppedOrReducedStep,
+    alcoholUseChanges,
+    alcoholUseSummaryStep,
+    alcoholUseAnalysisStep,
+  ],
 })

@@ -31,17 +31,23 @@ const answers = [
   { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
   { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
-const userSubmittedSteps = [Step.alcohol_use_details.code, Step.alcohol_use_summary.code]
+const userSubmittedSteps = [
+  Step.alcohol_use_current_issues.code,
+  Step.alcohol_use_excessive_drinking_past_issues.code,
+  Step.alcohol_use_stopped_or_reduced.code,
+  Step.alcohol_use_changes.code,
+  Step.alcohol_use_summary.code,
+]
 
 test.describe('Alcohol use character counts', () => {
-  test('alcohol-use-details: past issues, reasons, impact and what has helped', async ({ page, openSection }) => {
+  test('alcohol_use_excessive_drinking_past_issues: past issues', async ({ page, openSection }) => {
     const section = await openSection(alcohol, answers, userSubmittedSteps)
     const alcoholUsePage = new AlcoholUsePage(page)
     const { questions } = alcoholUsePage
-    await page.goto(`${section}/${Step.alcohol_use_details.path}`)
+    await page.goto(`${section}/${Step.alcohol_use_excessive_drinking_past_issues.path}`)
 
+    await questions.alcohol_evidence_of_excess_drinking.option(Option.no_evidence).check()
     await questions.alcohol_past_issues.option(CommonOption.yes).check()
-    await questions.alcohol_stopped_or_reduced.option(CommonOption.yes).check()
 
     await expectTheLimitsOnThePage(alcoholUsePage)
   })
@@ -52,7 +58,7 @@ test.describe('Alcohol use character counts', () => {
       const section = await openSection(alcohol, answers, userSubmittedSteps)
       const alcoholUsePage = new AlcoholUsePage(page)
       const { questions } = alcoholUsePage
-      await page.goto(`${section}/${Step.alcohol_use_details.path}`)
+      await page.goto(`${section}/${Step.alcohol_use_changes.path}`)
 
       await questions.alcohol_use_changes.option(option).check()
 

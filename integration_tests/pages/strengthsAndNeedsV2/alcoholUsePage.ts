@@ -5,7 +5,7 @@ import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 export default class AlcoholUsePage extends StrengthsAndNeedsPage {
   static readonly section = alcohol
 
-  static readonly firstStep = 'alcohol-use-details'
+  static readonly firstStep = 'alcohol-use-current-issues'
 
   readonly questions = this.questionsOf(AlcoholUseQuestions)
 }

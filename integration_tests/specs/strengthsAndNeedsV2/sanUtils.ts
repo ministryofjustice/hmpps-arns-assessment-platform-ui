@@ -94,7 +94,7 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  expectedPath: string = 'alcohol-use-details', // TODO Use 'accommodation-status', during ACT-750 Accommodation framework
+  expectedPath: string = 'alcohol-use-current-issues', // TODO Use 'accommodation-status', during ACT-750 Accommodation framework
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)

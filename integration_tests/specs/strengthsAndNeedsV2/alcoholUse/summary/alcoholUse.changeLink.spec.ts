@@ -50,13 +50,19 @@ const fullyAnswered: Scenario = {
     { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('alcohol-use-details', 'alcohol_current_issues'),
-    changeLink('alcohol-use-details', 'alcohol_evidence_of_excess_drinking'),
-    changeLink('alcohol-use-details', 'alcohol_past_issues'),
-    changeLink('alcohol-use-details', 'alcohol_stopped_or_reduced'),
-    changeLink('alcohol-use-details', 'alcohol_use_changes'),
+    changeLink('alcohol-use-current-issues', 'alcohol_current_issues'),
+    changeLink('alcohol-use-excessive-drinking-past-issues', 'alcohol_evidence_of_excess_drinking'),
+    changeLink('alcohol-use-excessive-drinking-past-issues', 'alcohol_past_issues'),
+    changeLink('alcohol-use-stopped-or-reduced', 'alcohol_stopped_or_reduced'),
+    changeLink('alcohol-use-changes', 'alcohol_use_changes'),
   ],
-  userSubmittedSteps: [Step.alcohol_use_details.code, Step.alcohol_use_summary.code],
+  userSubmittedSteps: [
+    Step.alcohol_use_current_issues.code,
+    Step.alcohol_use_excessive_drinking_past_issues.code,
+    Step.alcohol_use_stopped_or_reduced.code,
+    Step.alcohol_use_changes.code,
+    Step.alcohol_use_summary.code,
+  ],
 }
 
 const practitionerAnalysisChangeLinks = [
