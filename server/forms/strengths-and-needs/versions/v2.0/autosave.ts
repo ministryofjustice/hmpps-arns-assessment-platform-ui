@@ -20,7 +20,7 @@ export const autosaveSubmit = (stepCode: string, section: (typeof Section)[keyof
     validate: false,
     onAlways: {
       effects: [
-        StrengthsAndNeedsEffects.saveAndClearStaleAnswers(true),
+        StrengthsAndNeedsEffects.saveCurrentStepAnswers(false, true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
         StrengthsAndNeedsEffects.setSectionProgressV2(section, SectionComplete.no),
       ],
