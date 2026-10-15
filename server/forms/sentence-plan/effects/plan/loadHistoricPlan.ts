@@ -14,7 +14,10 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
 
   const pointInTime = new Date(Number(timestamp))
 
-  if (!timestamp || !Number.isFinite(pointInTime.getTime())) {
+  /**
+   * Convert the API's pre-creation timestamp error into a 404. Reject missing, invalid and future timestamps.
+   */
+  if (!timestamp || !Number.isFinite(pointInTime.getTime()) || pointInTime.getTime() > Date.now()) {
     throw new NotFound('Historic sentence plan not found')
   }
 
@@ -27,15 +30,7 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
         timestamp: pointInTime.toISOString().replace('Z', '999Z'),
       })
     } catch (error) {
-      const apiError = error as {
-        responseStatus?: number
-        data?: { developerMessage?: string }
-      }
-
-      if (
-        apiError?.responseStatus === 400 &&
-        apiError?.data?.developerMessage === 'Timestamp cannot be before the assessment created date'
-      ) {
+      if (isHistoricPlanTimestampError(error)) {
         throw new NotFound('Historic sentence plan not found')
       }
 
@@ -62,4 +57,15 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
     latestAgreementDate: planAgreementsData.latestAgreementDate,
     latestAgreementStatus: planAgreementsData.latestAgreementStatus,
   })
+}
+
+// Verify if API response from invalid numerical URL param is a 400 error.
+const isHistoricPlanTimestampError = (error: unknown): boolean => {
+  const apiError = error as {
+    responseStatus?: number
+    data?: { developerMessage?: string }
+  }
+
+  return apiError?.responseStatus === 400 &&
+    apiError?.data?.developerMessage === 'Timestamp cannot be before the assessment created date'
 }
