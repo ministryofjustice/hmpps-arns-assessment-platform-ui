@@ -15,9 +15,9 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
   const pointInTime = new Date(Number(timestamp))
 
   /**
-   * Convert the API's pre-creation timestamp error into a 404. Reject missing, invalid and future timestamps.
+   * Reject missing or invalid timestamps with a 404.
    */
-  if (!timestamp || !Number.isFinite(pointInTime.getTime()) || pointInTime.getTime() > Date.now()) {
+  if (!timestamp || !Number.isFinite(pointInTime.getTime())) {
     throw new NotFound('Historic sentence plan not found')
   }
 
