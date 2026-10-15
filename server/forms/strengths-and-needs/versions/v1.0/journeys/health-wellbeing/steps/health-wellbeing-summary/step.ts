@@ -31,7 +31,7 @@ export const healthWellbeingSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.yes),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
@@ -40,6 +40,17 @@ export const healthWellbeingSummaryStep = step({
           ),
         ],
         next: [redirect({ goto: `${Step.health_wellbeing_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.health_and_wellbeing,
+            Step.health_wellbeing_summary,
+          ),
+        ],
       },
     }),
   ],

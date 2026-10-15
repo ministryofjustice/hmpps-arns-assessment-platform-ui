@@ -29,11 +29,18 @@ export const accommodationSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.accommodation, Step.accommodation_summary),
         ],
         next: [redirect({ goto: `${Step.accommodation_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.accommodation_summary),
+        ],
       },
     }),
   ],

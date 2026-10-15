@@ -35,7 +35,7 @@ export const thinkingBehavioursAttitudesSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.yes),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
@@ -44,6 +44,17 @@ export const thinkingBehavioursAttitudesSummaryStep = step({
           ),
         ],
         next: [redirect({ goto: `${Step.thinking_behaviours_attitudes_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.thinking_behaviours_and_attitudes, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.thinking_behaviours_and_attitudes,
+            Step.thinking_behaviours_attitudes_summary,
+          ),
+        ],
       },
     }),
   ],

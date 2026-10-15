@@ -55,7 +55,7 @@ export const employmentEducationDetailsStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(
@@ -65,6 +65,18 @@ export const employmentEducationDetailsStep = step({
           ),
         ],
         next: [redirect({ goto: Step.employment_education_summary.path })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.employment_and_education,
+            Step.employment_education_details,
+          ),
+        ],
       },
     }),
   ],

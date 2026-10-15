@@ -29,11 +29,17 @@ export const alcoholUseSummaryStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.alcohol_use, Step.alcohol_use_summary),
         ],
         next: [redirect({ goto: `${Step.alcohol_use_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
+        ],
       },
     }),
   ],

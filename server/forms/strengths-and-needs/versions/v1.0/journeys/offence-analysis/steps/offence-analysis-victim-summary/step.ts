@@ -77,7 +77,6 @@ export const offenceAnalysisVictimSummaryStep = step({
     }),
     submit({
       when: Post('action').match(Condition.Equals('add_another')),
-      validate: true,
       onValid: {
         next: [redirect({ goto: Step.offence_analysis_victim.path })],
       },

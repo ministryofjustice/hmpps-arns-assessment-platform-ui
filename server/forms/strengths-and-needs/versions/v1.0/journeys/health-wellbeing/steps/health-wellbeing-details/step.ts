@@ -54,7 +54,7 @@ export const healthWellbeingDetailsStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveAndClearStaleAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code, IsUserSubmitted.false),
           auditPageAction(
@@ -67,6 +67,18 @@ export const healthWellbeingDetailsStep = step({
           redirect({
             goto: Step.health_wellbeing_summary.path,
           }),
+        ],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code, IsUserSubmitted.false),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.health_and_wellbeing,
+            Step.health_wellbeing_details,
+          ),
         ],
       },
     }),
