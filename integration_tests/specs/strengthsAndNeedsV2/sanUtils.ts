@@ -4,10 +4,9 @@ import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 
-// strengths and needs V1 URLs for use in playwright testing suits:
+// strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
 export const v2Path = '/v2.0'
-const privacyStepPath = '/privacy'
 export const accommodation = Section.accommodation.path
 export const employment = Section.employment_and_education.path
 export const health = Section.health_and_wellbeing.path
@@ -18,13 +17,6 @@ export const personal = Section.personal_relationships_and_community.path
 export const thinking = Section.thinking_behaviours_and_attitudes.path
 export const finances = Section.finance.path
 export const viewAllAnswers = '/view-all-answers'
-
-export const sentencePlanV1URLs = {
-  PRIVACY_SCREEN: `${sanFormPath}${privacyStepPath}`,
-  ACCOMMODATION: sanFormPath + v2Path + accommodation,
-  EMPLOYMENT_AND_EDUCATION: sanFormPath + v2Path + employment,
-  ALCOHOL_USE: sanFormPath + v2Path + alcohol,
-}
 
 // Page titles for san
 export const sanPageTitles = {
