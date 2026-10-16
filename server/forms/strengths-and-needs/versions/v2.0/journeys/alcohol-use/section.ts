@@ -1,4 +1,4 @@
-import { and, Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
@@ -139,7 +139,7 @@ const hasStoppedOrReduced = question({
     validationMessage: contentFor('question.alcohol_has_stopped_or_reduced.validation'),
   },
   displayModes: {
-    field: radioField({dependentWhen: noCurrentIssues, visibleWhen: noCurrentIssues}),
+    field: radioField({ dependentWhen: noCurrentIssues, visibleWhen: noCurrentIssues }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_stopped_or_reduced.path,
       visibleWhen: noCurrentIssues,
@@ -167,7 +167,7 @@ const doesStopOrReduce = question({
     validationMessage: contentFor('question.alcohol_does_stop_or_reduce.validation'),
   },
   displayModes: {
-    field: radioField({dependentWhen: someOrSignificantIssues, visibleWhen: someOrSignificantIssues}),
+    field: radioField({ dependentWhen: someOrSignificantIssues, visibleWhen: someOrSignificantIssues }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_stopped_or_reduced.path,
       visibleWhen: someOrSignificantIssues,
