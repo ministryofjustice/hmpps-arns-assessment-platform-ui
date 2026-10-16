@@ -68,6 +68,16 @@ export interface GoalConfig {
   createdBy?: string
 }
 
+export interface AnswerConfig {
+  question: string
+  value: string | string[]
+}
+
+export interface DataConfig {
+  key: string
+  value: string | string[]
+}
+
 /**
  * Definition types - built during fluent API calls, before execution
  */

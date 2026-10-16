@@ -3,6 +3,7 @@ import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKTextInput, GovUKSelectInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
 import { stubbedCrns } from '../../../../scenarios/stubbedCrns'
+import { handoverGenderOptions } from '../../../../../shared/constants/gender'
 
 /**
  * Subject details tab content
@@ -65,12 +66,7 @@ export const subjectDetailsTabContent = [
       label: 'Gender',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.gender'),
-      items: [
-        { value: '0', text: 'Not known' },
-        { value: '1', text: 'Male' },
-        { value: '2', text: 'Female' },
-        { value: '9', text: 'Not specified' },
-      ],
+      items: handoverGenderOptions,
     }),
   }),
 
@@ -165,6 +161,18 @@ export const subjectDetailsTabContent = [
       hint: 'Version number',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.sentencePlanVersion'),
+    }),
+  }),
+
+  RandomizableField({
+    fieldKey: 'sanAssessmentVersion',
+    randomize: Data('sanAssessmentVersion_isRandomized'),
+    field: GovUKTextInput({
+      code: 'sanAssessmentVersion',
+      label: 'SAN Assessment Version',
+      hint: 'Unix timestamp in milliseconds (leave blank for current version)',
+      classes: 'govuk-input--width-10',
+      defaultValue: Data('scenario.sanAssessmentVersion'),
     }),
   }),
 ]
