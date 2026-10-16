@@ -20,7 +20,7 @@ export function StrengthsAndNeedsBuilder(client: TestAapApiClient): StrengthsAnd
     fresh: () =>
       new StrengthsAndNeedsBuilderInstance(
         client,
-        AssessmentBuilder(client).fresh().ofType('SAN_SP').withFormVersion('1.0'),
+        AssessmentBuilder(client).fresh().ofType('SAN_SP').withFormVersion('2.0'),
       ),
     extend: (sanAssessmentId: string) =>
       new StrengthsAndNeedsBuilderInstance(client, AssessmentBuilder(client).extend(sanAssessmentId)),
