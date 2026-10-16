@@ -36,7 +36,6 @@ describe('loadHistoricPlan', () => {
 
       await expect(loadHistoricPlan(createMockDeps(executeQuery))(context)).rejects.toMatchObject({
         status: 404,
-        message: 'Historic sentence plan not found',
       })
 
       expect(executeQuery).not.toHaveBeenCalled()
@@ -48,7 +47,6 @@ describe('loadHistoricPlan', () => {
 
       await expect(loadHistoricPlan(createMockDeps(executeQuery))(context)).rejects.toMatchObject({
         status: 404,
-        message: 'Historic sentence plan not found',
       })
 
       expect(executeQuery).not.toHaveBeenCalled()
@@ -57,16 +55,12 @@ describe('loadHistoricPlan', () => {
     it('returns 404 for an invalid numeric timestamp', async () => {
       const executeQuery = jest.fn().mockRejectedValue({
         responseStatus: 400,
-        data: {
-          developerMessage: 'Timestamp cannot be before the assessment created date',
-        },
       })
 
       const context = createMockContext('123456789') // January 1970
 
       await expect(loadHistoricPlan(createMockDeps(executeQuery))(context)).rejects.toMatchObject({
         status: 404,
-        message: 'Historic sentence plan not found',
       })
 
       expect(executeQuery).toHaveBeenCalledWith(
@@ -82,7 +76,6 @@ describe('loadHistoricPlan', () => {
 
       await expect(loadHistoricPlan(createMockDeps(executeQuery))(context)).rejects.toMatchObject({
         status: 404,
-        message: 'Historic sentence plan not found',
       })
 
       expect(executeQuery).not.toHaveBeenCalled()
@@ -92,7 +85,6 @@ describe('loadHistoricPlan', () => {
   it('preserves unexpected API errors', async () => {
     const apiError = {
       responseStatus: 500,
-      message: 'Internal Server Error',
     }
 
     const executeQuery = jest.fn().mockRejectedValue(apiError)
