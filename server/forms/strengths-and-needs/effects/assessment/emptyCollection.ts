@@ -1,4 +1,3 @@
-import { BadRequest } from 'http-errors'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { Collection } from '../../constants/collection'
 
@@ -12,7 +11,8 @@ export const emptyCollection =
     const foundCollection = collections.find(it => it.name === collection.name) ?? null
 
     if (!foundCollection) {
-      throw BadRequest(`Collection ${collection.name} not found`)
+      // Collections are created lazily, so an absent collection is already empty.
+      return
     }
 
     await Promise.all(
