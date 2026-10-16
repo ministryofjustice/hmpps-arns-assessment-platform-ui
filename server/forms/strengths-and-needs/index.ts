@@ -7,20 +7,20 @@ import {
   redirect,
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { strengthsAndNeedsV1Journey } from './versions/v1.0'
 import { CommonAuditEvent, sanEffects, StrengthsAndNeedsEffects } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
 import { sanTransformers } from './transformers'
 import { sanConditions } from './conditions'
-import { commonContentFor } from './versions/v1.0/locales'
+import { commonContentFor } from './versions/v2.0/locales'
 import { createPrivacyScreen } from '../shared'
-import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
+import { CaseData, formRootPath, basePath } from './versions/v2.0/constants/formVersion'
 import { sanGeneratorRegistry, SANGenerators } from './generators'
-import { Section } from './versions/v1.0/constants/section'
+import { Section } from './versions/v2.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
 import { isHistoricVersion } from './versions/v1.0/guards'
 import { currentVersion } from './versions/v1.0/constants/path'
+import { strengthsAndNeedsV2Journey } from './versions/v2.0'
 
 const { createRoute } = SANGenerators
 
@@ -90,7 +90,7 @@ export const strengthsAndNeedsRootJourney = journey({
     }),
   ],
   steps: [versionRedirectStep, privacyScreenStep],
-  children: [strengthsAndNeedsV1Journey],
+  children: [strengthsAndNeedsV2Journey],
 })
 
 /**
