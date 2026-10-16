@@ -67,7 +67,8 @@ describe('autosave submit hook', () => {
       alcohol_current_issues: '',
       alcohol_evidence_of_excess_drinking: '',
       alcohol_past_issues: '',
-      alcohol_stopped_or_reduced: '',
+      alcohol_has_stopped_or_reduced: '',
+      alcohol_does_stop_or_reduce: '',
       alcohol_use_changes: '',
     })
 

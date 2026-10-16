@@ -18,6 +18,7 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { CommonOption } from '../../../../constants/commonOption'
 
 export const alcoholUseExcessiveDrinkingPastIssuesStep = step({
   path: `/${Step.alcohol_use_excessive_drinking_past_issues.path}`,
@@ -67,7 +68,7 @@ export const alcoholUseExcessiveDrinkingPastIssuesStep = step({
         ],
         next: [
           redirect({
-            when: Answer('alcohol_past_issues').match(Condition.Equals('no')),
+            when: Answer('alcohol_past_issues').match(Condition.Equals(CommonOption.no)),
             goto: Step.alcohol_use_summary.path,
           }),
           redirect({ goto: Step.alcohol_use_stopped_or_reduced.path }),

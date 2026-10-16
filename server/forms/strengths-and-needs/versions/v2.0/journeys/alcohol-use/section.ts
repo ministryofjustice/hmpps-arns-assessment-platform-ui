@@ -1,4 +1,4 @@
-import { and, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
@@ -18,9 +18,11 @@ import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../
 import { CharacterLimit } from '../../../../constants/characterLimit'
 
 const drankAlcohol = Answer(Question.alcohol_current_issues).not.match(Condition.Equals(Option.has_never_drank))
-const noCurrentProblems = Answer(Question.alcohol_current_issues).not.match(
-  Condition.Equals(Option.no_current_problems),
+const someOrSignificantIssues = or(
+  Answer(Question.alcohol_current_issues).match(Condition.Equals(Option.some_problems)),
+  Answer(Question.alcohol_current_issues).match(Condition.Equals(Option.significant)),
 )
+const noCurrentIssues = Answer(Question.alcohol_current_issues).match(Condition.Equals(Option.no_current_problems))
 
 const currentIssues = question({
   content: {
@@ -80,12 +82,12 @@ const evidenceOfExcessDrinking = question({
   },
   displayModes: {
     field: radioField({
-      dependentWhen: and(drankAlcohol, noCurrentProblems),
-      visibleWhen: and(drankAlcohol, noCurrentProblems),
+      dependentWhen: someOrSignificantIssues,
+      visibleWhen: someOrSignificantIssues,
     }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_excessive_drinking_past_issues.path,
-      visibleWhen: and(drankAlcohol, noCurrentProblems),
+      visibleWhen: someOrSignificantIssues,
     }),
   },
 })
@@ -117,30 +119,58 @@ const pastIssues = question({
   },
 })
 
-const stoppedOrReduced = question({
+const hasStoppedOrReduced = question({
   content: {
-    code: Question.alcohol_stopped_or_reduced,
+    code: Question.alcohol_has_stopped_or_reduced,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.alcohol_stopped_or_reduced.text', CaseData.Forename),
-    hint: contentFor('question.alcohol_stopped_or_reduced.hint'),
+    text: contentFor('question.alcohol_has_stopped_or_reduced.text', CaseData.Forename),
+    hint: contentFor('question.alcohol_has_stopped_or_reduced.hint'),
     options: [
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
         reveals: requiredDetails({
-          code: Question.alcohol_stopped_or_reduced_yes_details,
-          validationMessage: contentFor('question.alcohol_stopped_or_reduced_yes_details.validation'),
+          code: Question.alcohol_has_stopped_or_reduced_yes_details,
+          validationMessage: contentFor('question.alcohol_has_stopped_or_reduced_yes_details.validation'),
         }),
       },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
     ],
-    validationMessage: contentFor('question.alcohol_stopped_or_reduced.validation'),
+    validationMessage: contentFor('question.alcohol_has_stopped_or_reduced.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({dependentWhen: noCurrentIssues, visibleWhen: noCurrentIssues}),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_stopped_or_reduced.path,
-      visibleWhen: drankAlcohol,
+      visibleWhen: noCurrentIssues,
+    }),
+  },
+})
+
+const doesStopOrReduce = question({
+  content: {
+    code: Question.alcohol_does_stop_or_reduce,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.alcohol_does_stop_or_reduce.text', CaseData.Forename),
+    hint: contentFor('question.alcohol_does_stop_or_reduce.hint'),
+    options: [
+      {
+        value: CommonOption.yes,
+        text: commonContentFor('option.YES'),
+        reveals: requiredDetails({
+          code: Question.alcohol_does_stop_or_reduce_yes_details,
+          validationMessage: contentFor('question.alcohol_does_stop_or_reduce_yes_details.validation'),
+        }),
+      },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+    ],
+    validationMessage: contentFor('question.alcohol_does_stop_or_reduce.validation'),
+  },
+  displayModes: {
+    field: radioField({dependentWhen: someOrSignificantIssues, visibleWhen: someOrSignificantIssues}),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.alcohol_use_stopped_or_reduced.path,
+      visibleWhen: someOrSignificantIssues,
     }),
   },
 })
@@ -304,7 +334,8 @@ export const alcoholUseSection = {
     currentIssues,
     evidenceOfExcessDrinking,
     pastIssues,
-    stoppedOrReduced,
+    hasStoppedOrReduced,
+    doesStopOrReduce,
     changes,
   },
   practitionerAnalysis: {

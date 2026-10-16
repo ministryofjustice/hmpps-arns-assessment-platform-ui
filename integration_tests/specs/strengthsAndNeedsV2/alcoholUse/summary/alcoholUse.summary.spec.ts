@@ -24,8 +24,8 @@ test.describe('Summary', () => {
         { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_does_stop_or_reduce, value: CommonOption.yes },
+        { question: Question.alcohol_does_stop_or_reduce_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
@@ -62,13 +62,13 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Does Test have any past issues with alcohol?":
             - /url: alcohol-use-excessive-drinking-past-issues#alcohol_past_issues-question
-        - term: Has anything helped Test to stop or reduce drinking alcohol in the past?
+        - term: Does anything help Test to stop or reduce drinking alcohol?
         - definition:
           - paragraph: "Yes"
           - paragraph: Cut down last year
         - definition:
-          - link "Change Has anything helped Test to stop or reduce drinking alcohol in the past?":
-            - /url: alcohol-use-stopped-or-reduced#alcohol_stopped_or_reduced-question
+          - link "Change Does anything help Test to stop or reduce drinking alcohol?":
+            - /url: alcohol-use-stopped-or-reduced#alcohol_does_stop_or_reduce-question
         - term: Does Test want to make changes to their alcohol use?
         - definition:
           - paragraph: I have already made positive changes and want to maintain them
@@ -92,8 +92,10 @@ test.describe('Summary', () => {
         { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_does_stop_or_reduce, value: CommonOption.yes },
+        { question: Question.alcohol_does_stop_or_reduce_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
@@ -120,12 +122,11 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: Question.alcohol_current_issues, value: Option.significant },
-        { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
+        { question: Question.alcohol_current_issues, value: Option.no_current_problems },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])

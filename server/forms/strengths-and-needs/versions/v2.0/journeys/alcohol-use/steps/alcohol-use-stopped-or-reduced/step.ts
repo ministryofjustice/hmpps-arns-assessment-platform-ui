@@ -20,7 +20,11 @@ export const alcoholUseStoppedOrReducedStep = step({
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),
     },
   },
-  blocks: [alcoholUseSection.questions.stoppedOrReduced.displayModes.field, saveButton],
+  blocks: [
+    alcoholUseSection.questions.hasStoppedOrReduced.displayModes.field,
+    alcoholUseSection.questions.doesStopOrReduce.displayModes.field,
+    saveButton,
+  ],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_stopped_or_reduced)],
   validWhen: [
     validation({

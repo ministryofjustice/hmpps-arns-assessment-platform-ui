@@ -56,8 +56,10 @@ test.describe('Questions', () => {
         { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_evidence },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Some details' },
-        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Some details' },
+        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Some details' },
+        { question: Question.alcohol_does_stop_or_reduce, value: CommonOption.yes },
+        { question: Question.alcohol_does_stop_or_reduce_yes_details, value: 'Some details' },
         { question: Question.alcohol_use_changes, value: CommonOption.does_not_want_to_make_changes },
         { question: Question.alcohol_use_changes_does_not_want_to_make_changes_details, value: 'Some details' },
         {

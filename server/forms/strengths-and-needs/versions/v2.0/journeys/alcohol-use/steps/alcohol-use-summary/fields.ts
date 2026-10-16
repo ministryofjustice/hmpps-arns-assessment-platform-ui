@@ -20,7 +20,8 @@ export const summary = GovUKSummaryList({
     alcoholUseSection.questions.currentIssues.displayModes.summaryRow,
     alcoholUseSection.questions.evidenceOfExcessDrinking.displayModes.summaryRow,
     alcoholUseSection.questions.pastIssues.displayModes.summaryRow,
-    alcoholUseSection.questions.stoppedOrReduced.displayModes.summaryRow,
+    alcoholUseSection.questions.hasStoppedOrReduced.displayModes.summaryRow,
+    alcoholUseSection.questions.doesStopOrReduce.displayModes.summaryRow,
     alcoholUseSection.questions.changes.displayModes.summaryRow,
   ],
 })

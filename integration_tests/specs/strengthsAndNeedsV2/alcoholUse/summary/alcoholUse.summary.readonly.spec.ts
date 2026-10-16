@@ -17,12 +17,11 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([
-        { question: Question.alcohol_current_issues, value: Option.significant },
-        { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
+        { question: Question.alcohol_current_issues, value: Option.no_current_problems },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
@@ -42,10 +41,7 @@ test.describe('Summary', () => {
       - tabpanel "Summary":
         - term: Does Test have any current issues with alcohol?
         - definition:
-          - paragraph: Significant
-        - term: Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?
-        - definition:
-          - paragraph: Some evidence of binge drinking or excessive alcohol use
+          - paragraph: No current problems
         - term: Does Test have any past issues with alcohol?
         - definition:
           - paragraph: "Yes"
@@ -75,8 +71,10 @@ test.describe('Summary', () => {
         { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_does_stop_or_reduce, value: CommonOption.yes },
+        { question: Question.alcohol_does_stop_or_reduce_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
         {
