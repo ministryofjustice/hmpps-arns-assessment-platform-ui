@@ -20,13 +20,15 @@ export interface CreateAssessmentCommand {
   identifiers?: Identifiers
   formVersion: string
   properties?: Properties
+  flags?: string[]
   timeline?: CommandTimeline
   user: User
 }
 
-export interface GroupCommand extends Command {
-  type: 'GroupCommand'
-  commands: Commands[]
+export interface CreateTimelineItemCommand extends Command {
+  type: 'CreateTimelineItemCommand'
+  timestamp: string
+  timeline: CommandTimeline
 }
 
 export interface UpdateAssessmentAnswersCommand extends Command {
@@ -35,9 +37,24 @@ export interface UpdateAssessmentAnswersCommand extends Command {
   removed: QuestionCodes
 }
 
-export interface RollBackAssessmentAnswersCommand extends Command {
-  type: 'RollBackAssessmentAnswersCommand'
+export interface RollbackCommand extends Command {
+  type: 'RollbackCommand'
   pointInTime: string
+}
+
+export interface SoftDeleteCommand extends Command {
+  type: 'SoftDeleteCommand'
+  pointInTime: string
+}
+
+export interface UndeleteCommand extends Command {
+  type: 'UndeleteCommand'
+  pointInTime: string
+}
+
+export interface UpdateFlagsCommand extends Command {
+  type: 'UpdateFlagsCommand'
+  flags: string[]
 }
 
 export interface UpdateAssessmentPropertiesCommand extends Command {
@@ -94,12 +111,15 @@ export type Commands =
   | AddCollectionItemCommand
   | CreateAssessmentCommand
   | CreateCollectionCommand
-  | GroupCommand
+  | CreateTimelineItemCommand
   | RemoveCollectionItemCommand
   | ReorderCollectionItemCommand
-  | RollBackAssessmentAnswersCommand
+  | RollbackCommand
+  | SoftDeleteCommand
+  | UndeleteCommand
   | UpdateAssessmentAnswersCommand
   | UpdateAssessmentPropertiesCommand
   | UpdateCollectionItemAnswersCommand
   | UpdateCollectionItemPropertiesCommand
+  | UpdateFlagsCommand
   | UpdateFormVersionCommand

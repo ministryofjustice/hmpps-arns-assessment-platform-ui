@@ -58,24 +58,22 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
   const hasStepChanges = newSteps.length > 0 || modifiedSteps.length > 0 || toDelete.length > 0
   const isCreatingGoal = context.getData('navigationReferrer') === 'add-goal'
 
-  // Find or create STEPS collection if we have new steps to add
-  let stepsCollectionUuid = collectionUuid
+  // Build batch of all step commands
+  const commands: Commands[] = []
 
-  if (newSteps.length > 0 && !stepsCollectionUuid) {
-    // Create the STEPS collection (goal doesn't have one yet)
-    const createResult = await deps.api.executeCommand({
+  // The API swaps "@0" for the UUID created by the first command in the batch
+  const stepsCollectionUuid = collectionUuid ?? '@0'
+
+  // 0. Create the STEPS collection if we have new steps and the goal doesn't have one yet
+  if (newSteps.length > 0 && !collectionUuid) {
+    commands.push({
       type: 'CreateCollectionCommand',
       name: 'STEPS',
       parentCollectionItemUuid: activeGoalUuid,
       assessmentUuid,
       user,
     })
-
-    stepsCollectionUuid = createResult.collectionUuid
   }
-
-  // Build batch of all step commands
-  const commands: Commands[] = []
 
   // 1. DELETE commands
   toDelete.forEach(stepId => {
@@ -138,7 +136,7 @@ export const saveStepEditSession = (deps: SentencePlanEffectsDeps) => async (con
 
     commands.push({
       type: 'AddCollectionItemCommand',
-      collectionUuid: stepsCollectionUuid!,
+      collectionUuid: stepsCollectionUuid,
       properties: wrapAll(properties),
       answers: wrapAll(answers),
       timeline: { type: 'STEP_ADDED', data: {} },
