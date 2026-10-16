@@ -21,22 +21,19 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
     throw new NotFound('Historic sentence plan not found')
   }
 
-  const assessment = await (async () => {
-    try {
-      return await deps.api.executeQuery({
-        type: 'AssessmentVersionQuery',
-        user,
-        assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
-        timestamp: pointInTime.toISOString().replace('Z', '999Z'),
-      })
-    } catch (error) {
-      if (isHistoricPlanTimestampError(error)) {
+  const assessment = await deps.api
+    .executeQuery({
+      type: 'AssessmentVersionQuery',
+      user,
+      assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+      timestamp: pointInTime.toISOString().replace('Z', '999Z'),
+    })
+    .catch(error => {
+      if (error?.responseStatus === 400) {
         throw new NotFound('Historic sentence plan not found')
       }
-
       throw error
-    }
-  })()
+    })
 
   if (!assessment) {
     throw new NotFound('Historic sentence plan not found')
@@ -57,15 +54,4 @@ export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (contex
     latestAgreementDate: planAgreementsData.latestAgreementDate,
     latestAgreementStatus: planAgreementsData.latestAgreementStatus,
   })
-}
-
-// Verify if API response from invalid numerical URL param is a 400 error.
-const isHistoricPlanTimestampError = (error: unknown): boolean => {
-  const apiError = error as {
-    responseStatus?: number
-    data?: { developerMessage?: string }
-  }
-
-  return apiError?.responseStatus === 400 &&
-    apiError?.data?.developerMessage === 'Timestamp cannot be before the assessment created date'
 }
