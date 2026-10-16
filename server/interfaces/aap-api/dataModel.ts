@@ -46,7 +46,7 @@ export interface Collection {
 export interface TimelineItem {
   uuid: string
   position: number
-  event: string
+  event?: string
   timestamp: string
   assessment: string
   data: Record<string, any>
@@ -63,4 +63,5 @@ export interface EventDTO {
   createdAt: string
   position: number
   data: Record<string, any>
+  autosaved: boolean
 }
