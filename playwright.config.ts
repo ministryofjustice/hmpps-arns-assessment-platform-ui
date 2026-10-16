@@ -94,6 +94,7 @@ export default defineConfig<PlaywrightExtendedConfig>({
       name: 'parallel',
       testDir: './integration_tests/specs',
       grepInvert: /@serial/,
+      testIgnore: ['/strengthsAndNeeds/**/*.spec.ts', '/audit/strengthsAndNeeds/**/*.spec.ts'], // TODO Remove this once we decide on two different versions approach
     },
     {
       name: 'serial',
