@@ -70,6 +70,7 @@ const weaponDetailsRevealed = revealedQuestion({
             message: contentFor('question.offence_weapon_details.validation', CharacterLimit.c200),
           }),
         ],
+        formatters: [StrengthsAndNeedsTransformers.NormaliseText()],
       }),
   },
 })
@@ -233,7 +234,7 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
           }),
         ],
         parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.NormaliseText(), StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
   },
 })
@@ -338,7 +339,10 @@ const offenceAnalysisLeader = question({
                 }),
               ],
               parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-              formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+              formatters: [
+                StrengthsAndNeedsTransformers.NormaliseText(),
+                StrengthsAndNeedsTransformers.EncodeHtmlEntities(),
+              ],
             }),
         },
       }),
@@ -363,7 +367,10 @@ const offenceAnalysisLeader = question({
                 }),
               ],
               parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-              formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+              formatters: [
+                StrengthsAndNeedsTransformers.NormaliseText(),
+                StrengthsAndNeedsTransformers.EncodeHtmlEntities(),
+              ],
             }),
         },
       }),
@@ -622,7 +629,7 @@ const offenceAnalysisRiskDetailsField = (content: QuestionContent, parent: Paren
       }),
     ],
     parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-    formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+    formatters: [StrengthsAndNeedsTransformers.NormaliseText(), StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
   })
 
 const offenceAnalysisRisk = question({
