@@ -71,7 +71,7 @@ export const characterCountField =
         visibleWhen: placement.visibleWhen,
         validWhen: characterCountValidationsOf(content, placement.maxLength),
         parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.NormaliseText(), StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     )
 
@@ -92,7 +92,7 @@ export const characterCountDetails =
         dependentWhen: parent.selectedWhen,
         validWhen: characterCountValidationsOf(content, options.maxLength),
         parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.NormaliseText(), StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     )
 

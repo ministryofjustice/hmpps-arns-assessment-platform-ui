@@ -178,7 +178,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
           }),
         ],
         parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
-        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.NormaliseText(), StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     collectionSummaryRow: content => ({
       key: { text: content.text },
@@ -259,6 +259,7 @@ const otherDrugNameRevealed = revealedQuestion({
             message: contentFor('question.other_drug_name.validation', CharacterLimit.c200),
           }),
         ],
+        formatters: [StrengthsAndNeedsTransformers.NormaliseText()],
       }),
   },
 })
