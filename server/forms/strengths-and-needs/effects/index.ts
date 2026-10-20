@@ -21,6 +21,8 @@ import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAcc
 import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
 import { generateInitialFormUrl } from './session/generateInitialFormUrl'
 import { setUserSubmitted } from './assessment/setUserSubmitted'
+import { findNextMigration } from './migration/findNextMigration'
+import { runMigration } from './migration/runMigration'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -42,6 +44,8 @@ export const StrengthsAndNeedsEffects = {
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
   setUserSubmitted: sanEffects.register('setUserSubmitted', setUserSubmitted),
+  findNextMigration: sanEffects.register('findNextMigration', findNextMigration),
+  runMigration: sanEffects.register('runMigration', runMigration),
   extractModeAndVersionUuidFromUrl: sanEffects.register(
     'extractModeAndVersionUuidFromUrl',
     extractModeAndVersionUuidFromUrl,

@@ -8,6 +8,7 @@ import {
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
+import { migrationJourney } from './migration'
 import { CommonAuditEvent, sanEffects, StrengthsAndNeedsEffects } from './effects'
 import { StrengthsAndNeedsEffectsDeps } from './effects/types'
 import config from '../../config'
@@ -15,7 +16,8 @@ import { sanTransformers } from './transformers'
 import { sanConditions } from './conditions'
 import { commonContentFor } from './versions/v1.0/locales'
 import { createPrivacyScreen } from '../shared'
-import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
+import { CaseData, formRootPath } from './versions/v1.0/constants/formVersion'
+import { latestVersion } from './constants/formVersion'
 import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
@@ -25,7 +27,13 @@ const { createRoute } = SANGenerators
 // Where to send the user after accepting privacy, using the mode/uuid from the
 // handover session so they resume where they left off in the accommodation section.
 const privacyScreenRedirectPath = createRoute(
-  [basePath, 'edit', Session('sessionDetails.assessmentIdentifier.uuid'), Section.accommodation.sideNavHref],
+  [
+    formRootPath,
+    latestVersion,
+    'edit',
+    Session('sessionDetails.assessmentIdentifier.uuid'),
+    Section.accommodation.sideNavHref,
+  ],
   [{ name: 'resume', value: 'true' }],
 )
 
@@ -38,7 +46,7 @@ const privacyScreenStep = createPrivacyScreen({
   submitRedirectPath: privacyScreenRedirectPath,
   alreadyAcceptedRedirectPath: privacyScreenRedirectPath,
   template: 'strengths-and-needs/views/san-step',
-  basePath,
+  basePath: `${formRootPath}/${latestVersion}`,
   headerServiceNameLink: privacyScreenRedirectPath,
   personForename: CaseData.Forename,
   title: commonContentFor('pageTitle.privacy'),
@@ -65,7 +73,7 @@ export const strengthsAndNeedsRootJourney = journey({
   title: commonContentFor('strengths_and_needs'),
   path: formRootPath,
   steps: [versionRedirectStep, privacyScreenStep],
-  children: [strengthsAndNeedsV1Journey],
+  children: [strengthsAndNeedsV1Journey, migrationJourney],
 })
 
 /**
