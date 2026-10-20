@@ -97,10 +97,14 @@ export const characterCountDetails =
     )
 
 /** A step path anchored to one of its questions */
-const changeHrefOf = (stepPath: string, code: ResolvableString): ResolvableString => {
+export const changeHrefOf = (stepPath: ResolvableString, code: ResolvableString): ResolvableString => {
   const questionId = questionIdOf(code)
 
-  return typeof questionId === 'string' ? `${stepPath}#${questionId}` : Format(`${stepPath}#%1`, questionId)
+  if (typeof stepPath === 'string') {
+    return typeof questionId === 'string' ? `${stepPath}#${questionId}` : Format(`${stepPath}#%1`, questionId)
+  }
+
+  return Format('%1#%2', stepPath, questionId)
 }
 
 /**

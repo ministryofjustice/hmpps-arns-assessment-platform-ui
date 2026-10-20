@@ -22,11 +22,15 @@ import { Option } from '../../constants/option'
 import { victimsCollection } from '../../constants/collections'
 import { CommonOption } from '../../../../constants/commonOption'
 import { isEditMode, isReadOnlyMode } from '../../../../guards'
+import { changeHrefOf } from '../../../../constants/questionContent'
 
 const victimCardActions = {
   items: [
     {
-      href: Format(Step.offence_analysis_victim_edit.path, Loop.Index0()),
+      href: changeHrefOf(
+        Format(Step.offence_analysis_victim_edit.path, Loop.Index0()),
+        Question.offence_analysis_victim_relationship,
+      ),
       text: 'Change',
     },
     {
