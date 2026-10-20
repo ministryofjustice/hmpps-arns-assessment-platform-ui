@@ -225,7 +225,7 @@ test.describe('Summary', () => {
           - list:
             - listitem:
               - link "Change (First victim)":
-                - /url: offence-analysis-victim/edit/0
+                - /url: offence-analysis-victim/edit/0#offence_analysis_victim_relationship-question
             - listitem:
               - link "Delete (First victim)":
                 - /url: "#"
