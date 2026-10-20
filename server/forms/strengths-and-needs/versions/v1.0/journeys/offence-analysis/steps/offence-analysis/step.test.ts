@@ -16,13 +16,9 @@ import { offenceAnalysisStep } from './step'
 import { offenceAnalysisInvolvedPartiesStep } from '../offence-analysis-involved-parties/step'
 
 describe('offence analysis submission', () => {
-  const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
-  const user = { id: 'test.user', name: 'Test User', authSource: 'HMPPS_AUTH', token: 'test-token' }
-
-  let executeCommand: jest.Mock
-  let client: ReturnType<ForgeTestHarness['createClient']>
-
-  beforeEach(() => {
+  it('redirects an Other-only save to involved parties before any victim collection has been created', async () => {
+    const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
+    const user = { id: 'test.user', name: 'Test User', authSource: 'HMPPS_AUTH', token: 'test-token' }
     const assessment: AssessmentVersionQueryResult = {
       type: 'AssessmentVersionQueryResult',
       assessmentUuid,
@@ -38,7 +34,7 @@ describe('offence analysis submission', () => {
       identifiers: { CRN: 'X123456' },
       flags: [],
     }
-    executeCommand = jest.fn().mockResolvedValue(undefined)
+    const executeCommand = jest.fn().mockResolvedValue(undefined)
     const deps = {
       api: { executeCommand },
       auditService: { send: jest.fn() },
@@ -48,7 +44,7 @@ describe('offence analysis submission', () => {
       context.setData('assessmentUuid', assessmentUuid)
       context.setData('assessment', assessment)
     })
-    client = new ForgeTestHarness()
+    const client = new ForgeTestHarness()
       .registerGlobalComponents(govukComponents)
       .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions], deps)
       .registerPackage({
@@ -62,9 +58,7 @@ describe('offence analysis submission', () => {
         forgePackage: true,
       })
       .createClient()
-  })
 
-  it('redirects an Other-only save to involved parties before any victim collection has been created', async () => {
     const result = await client.post(`${basePath}/${Step.offence_analysis.path}`, {
       body: {
         action: 'save',
@@ -90,42 +84,5 @@ describe('offence analysis submission', () => {
     )
     expect(executeCommand).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'CreateCollectionCommand' }))
     expect(executeCommand).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'RemoveCollectionItemCommand' }))
-  })
-
-  it('should save curly quotes and long dashes as plain characters when free text is submitted', async () => {
-    // Arrange
-    const body = {
-      action: 'save',
-      [Question.offence_analysis_description_of_offence]: '  He said “stop” – then ‘left’ — quickly  ',
-      [Question.offence_analysis_elements]: [Option.weapon],
-      [Question.offence_weapon_details]: 'A ‘kitchen’ knife',
-      [Question.offence_analysis_reason]: 'An argument with the business owner escalated.',
-      [Question.offence_analysis_motivations]: [Option.emotional_state],
-      [Question.offence_analysis_who_was_the_victim]: [CommonOption.other],
-      [Question.offence_analysis_who_was_the_victim_other_details]: 'A local business.',
-    }
-
-    // Act
-    await client.post(`${basePath}/${Step.offence_analysis.path}`, {
-      body,
-      state: { user },
-      params: { mode: 'edit' },
-      session: {},
-      headers: { 'accept-language': 'en-gb' },
-    })
-
-    // Assert
-    expect(executeCommand).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: 'UpdateAssessmentAnswersCommand',
-        added: expect.objectContaining({
-          [Question.offence_analysis_description_of_offence]: {
-            type: 'Single',
-            value: 'He said &quot;stop&quot; - then &#x27;left&#x27; - quickly',
-          },
-          [Question.offence_weapon_details]: { type: 'Single', value: "A 'kitchen' knife" },
-        }),
-      }),
-    )
   })
 })

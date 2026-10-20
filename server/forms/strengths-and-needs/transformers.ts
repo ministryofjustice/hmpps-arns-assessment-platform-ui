@@ -110,19 +110,6 @@ export const StrengthsAndNeedsTransformers = {
     return value ? statusMappings[value] : value
   }),
 
-  // Matches the HMPO form wizard default formatters used by original SAN service
-  NormaliseText: sanTransformers.register(
-    'NormaliseText',
-    () => (value: unknown) =>
-      typeof value === 'string'
-        ? value
-            .trim()
-            .replace(/[–—-]+/g, '-')
-            .replace(/[`‘’]/g, "'")
-            .replace(/[“”]/g, '"')
-        : value,
-  ),
-
   EncodeHtmlEntities: sanTransformers.register(
     'EncodeHtmlEntities',
     () => (value: unknown) => (typeof value === 'string' ? escape(value) : value),
