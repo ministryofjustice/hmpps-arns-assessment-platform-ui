@@ -97,15 +97,8 @@ export const characterCountDetails =
     )
 
 /** A step path anchored to one of its questions */
-export const changeHrefOf = (stepPath: ResolvableString, code: ResolvableString): ResolvableString => {
-  const questionId = questionIdOf(code)
-
-  if (typeof stepPath === 'string') {
-    return typeof questionId === 'string' ? `${stepPath}#${questionId}` : Format(`${stepPath}#%1`, questionId)
-  }
-
-  return Format('%1#%2', stepPath, questionId)
-}
+export const changeHrefOf = (stepPath: ResolvableString, code: ResolvableString): ResolvableString =>
+  Format('%1#%2', stepPath, questionIdOf(code))
 
 /**
  * The "Change" action for a summary row, shown in edit mode only
