@@ -1,17 +1,30 @@
+import { NotFound } from 'http-errors'
 import { StrengthsAndNeedsContext } from '../types'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 
 // UUID v4 format: 8-4-4-4-12 hexadecimal digits
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /**
- * Extracts mode and UUID from the URL path: /strengths-and-needs/v1.0/{mode}/{uuid}
- * Validates mode is 'edit', 'view', or 'view-historic', and stores both in session.
+ * Extracts form version, mode and UUID from the URL path: /strengths-and-needs/{formVersion}/{mode}/{uuid}
+ * Exposes the form version and its config as data, and stores mode and UUID in session after validating
+ * mode is 'edit', 'view', or 'view-historic'.
  *
  * - In edit or view mode: uuid is the assessmentUuid
  * - In view-historic mode: uuid is the versionUuid
  */
 export const extractModeAndVersionUuidFromUrl = () => (context: StrengthsAndNeedsContext) => {
   const session = context.getSession()
+  const formVersion = context.getRequestParam('formVersion')
+
+  if (formVersion) {
+    if (!formConfigsByVersion[formVersion]) {
+      throw new NotFound(`Unknown strengths and needs form version: ${formVersion}`)
+    }
+
+    context.setData('formVersion', formVersion)
+    context.setData('formConfig', formConfigsByVersion[formVersion])
+  }
 
   // Extract from URL path, e.g. /strengths-and-needs/v1.0/{mode}/{uuid}
   // The forge framework will handle :mode/:uuid route parameters

@@ -1,6 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import { StrengthsAndNeedsContext } from '../types'
 import { Section } from '../../versions/v1.0/constants/section'
+import { latestVersion } from '../../constants/formVersion'
 
 /**
  * Generates the initial redirect URL for the SAN form, including mode and UUID.
@@ -21,6 +22,6 @@ export const generateInitialFormUrl = () => (context: StrengthsAndNeedsContext) 
   // Store the generated URL on context so it can be used by the redirect
   context.setData(
     'initialFormUrl',
-    `/strengths-and-needs/v1.0/${mode}/${assessmentUuid}/${Section.accommodation.sideNavHref}`,
+    `/strengths-and-needs/${latestVersion}/${mode}/${assessmentUuid}/${Section.accommodation.sideNavHref}`,
   )
 }
