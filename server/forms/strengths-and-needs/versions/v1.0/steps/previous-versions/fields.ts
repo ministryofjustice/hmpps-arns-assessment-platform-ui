@@ -1,8 +1,8 @@
-import { Condition, Format, Item, Iterator, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Format, Item, Iterator, Params, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
-import { basePath, CaseData } from '../../constants/formVersion'
+import { CaseData, formRootPath } from '../../constants/formVersion'
 import { contentFor } from './locales'
 import { Section } from '../../constants/section'
 import { SANGenerators } from '../../../../generators'
@@ -44,7 +44,8 @@ const assessmentCell = {
           text: Format(
             '<a class="button-as-link" href="%1" target="_blank">%2<span class="govuk-visually-hidden"> %3 %4</span></a>',
             createRoute([
-              basePath,
+              formRootPath,
+              Params('formVersion'),
               'view-historic',
               Item().path('assessmentVersionId'),
               Section.accommodation.sideNavHref,

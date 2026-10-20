@@ -16,7 +16,7 @@ import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
-import { basePath, formRootPath, formVersion } from './constants/formVersion'
+import { basePath, formRootPath } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
@@ -28,23 +28,24 @@ import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { previousVersionsStep } from './steps/previous-versions/step'
 import { configStep } from '../configStep'
-import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
+import { migrationPath } from '../../migration/sanMigration'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
 /**
  * Strengths and Needs v1.0 Journey
  *
- * Contains all section journeys for the SAN assessment.
+ * Contains all section journeys for the SAN assessment. The form version is a
+ * URL param, so every version that still asks v1.0's questions shares these screens.
  * Sets the SAN template and section navigation for all child journeys.
  */
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
-  path: `/${formVersion}/:mode/:uuid`,
+  path: '/:formVersion/:mode/:uuid',
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
@@ -71,10 +72,6 @@ export const strengthsAndNeedsV1Journey = journey({
       previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
     },
   },
-  data: {
-    formVersion,
-    formConfig: formConfigsByVersion[formVersion],
-  },
   onAccess: [
     access({
       effects: [
@@ -82,6 +79,7 @@ export const strengthsAndNeedsV1Journey = journey({
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
         StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.findNextMigration(),
         StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
       ],
     }),
@@ -91,6 +89,26 @@ export const strengthsAndNeedsV1Journey = journey({
     access({
       when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
       next: [redirect({ goto: `${formRootPath}/privacy` })],
+    }),
+    // An assessment saved in an older form version is migrated before anyone edits it
+    access({
+      when: and(notAPlatformPage, isEditMode, Data('nextMigrationPath').match(Condition.IsRequired())),
+      next: [redirect({ goto: migrationPath })],
+    }),
+    // Open the assessment in the version it was saved in, e.g. a historic version from before a migration
+    access({
+      when: and(notAPlatformPage, Params('formVersion').not.match(Condition.Equals(Data('assessmentFormVersion')))),
+      next: [
+        redirect({
+          goto: createRoute([
+            formRootPath,
+            Data('assessmentFormVersion'),
+            Params('mode'),
+            Params('uuid'),
+            Section.accommodation.sideNavHref,
+          ]),
+        }),
+      ],
     }),
   ],
   steps: [

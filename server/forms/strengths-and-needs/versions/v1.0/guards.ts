@@ -11,7 +11,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
-import { basePath } from './constants/formVersion'
+import { formRootPath } from './constants/formVersion'
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -89,7 +89,7 @@ export const preventPrivilegeEscalation = () => {
     when: and(isReadWriteMode, not(hasReadWriteAccess)),
     next: [
       redirect({
-        goto: createRoute([basePath, 'view', Params('uuid'), 'accommodation']),
+        goto: createRoute([formRootPath, Params('formVersion'), 'view', Params('uuid'), 'accommodation']),
       }),
     ],
   })

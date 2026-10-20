@@ -1,6 +1,6 @@
 import { access, Data, Session, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../effects'
-import { basePath } from '../../constants/formVersion'
+import { formRootPath } from '../../constants/formVersion'
 import { commonContentFor } from '../../locales'
 import { viewAllAnswersBlocks } from './fields'
 
@@ -14,7 +14,7 @@ export const viewAllAnswersStep = step({
   onAccess: [
     access({
       effects: [
-        StrengthsAndNeedsEffects.setDynamicBacklink(basePath),
+        StrengthsAndNeedsEffects.setDynamicBacklink(formRootPath),
         StrengthsAndNeedsEffects.sendAuditEvent(SanAuditEvent.VIEW_ALL_ANSWERS),
       ],
     }),
