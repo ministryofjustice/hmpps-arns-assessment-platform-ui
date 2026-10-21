@@ -8,6 +8,7 @@ import {
   Params,
   redirect,
   Request,
+  Session,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
@@ -89,7 +90,7 @@ export const preventPrivilegeEscalation = () => {
     when: and(isReadWriteMode, not(hasReadWriteAccess)),
     next: [
       redirect({
-        goto: createRoute([basePath, 'view', Params('uuid'), 'accommodation']),
+        goto: createRoute([basePath, Session('mode'), Session('uuid'), 'accommodation']),
       }),
     ],
   })
