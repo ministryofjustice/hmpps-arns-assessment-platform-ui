@@ -1,4 +1,4 @@
-import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { access, and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { offenceAnalysisStep } from './steps/offence-analysis/step'
 import { offenceAnalysisVictimStep } from './steps/offence-analysis-victim/step'
 import { offenceAnalysisVictimSummaryStep } from './steps/offence-analysis-victim-summary/step'
@@ -10,6 +10,10 @@ import { offenceAnalysisImpactStep } from './steps/offence-analysis-impact/step'
 import { offenceAnalysisSummaryStep } from './steps/offence_analysis_summary/step'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
+import { auditPageView } from '../../audit';
+import { SanAuditEvent } from '../../../../auditEvents';
+import { StrengthsAndNeedsEffects } from '../../../../effects';
+import { victimsCollection } from './constants/collections';
 
 /**
  * Offence Analysis Journey
@@ -28,7 +32,12 @@ export const offenceAnalysisJourney = journey({
   title: 'Offence analysis',
   path: Section.offence_analysis.path,
   reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
-  onAccess: [redirectToAnalysisIfReadOnly(Section.offence_analysis.path, Step.offence_analysis_summary.path)],
+  onAccess: [
+    access({
+      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
+    }),
+    redirectToAnalysisIfReadOnly(Section.offence_analysis.path, Step.offence_analysis_summary.path),
+  ],
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.offence_analysis),
@@ -37,8 +46,8 @@ export const offenceAnalysisJourney = journey({
   },
   steps: [
     offenceAnalysisStep,
-    offenceAnalysisVictimStep,
     offenceAnalysisVictimSummaryStep,
+    offenceAnalysisVictimStep,
     offenceAnalysisEditVictimStep,
     offenceAnalysisInvolvedPartiesStep,
     offenceAnalysisImpactStep,

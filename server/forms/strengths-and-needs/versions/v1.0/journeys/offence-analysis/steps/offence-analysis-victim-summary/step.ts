@@ -19,7 +19,7 @@ import { contentFor } from '../../locales'
 import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { Section } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
 import { Question } from '../../constants/question'
@@ -43,12 +43,13 @@ export const offenceAnalysisVictimSummaryStep = step({
   },
   blocks: [victimCards, saveButton, addAnotherButton],
   onAccess: [
-    access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
-    }),
     auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_victim_summary),
   ],
   validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.offence_analysis_victim_summary.code),
+      message: 'This step is not user submitted',
+    }),
     validation({
       condition: or(
         Data(victimsCollection.name).match(Condition.IsRequired()),
@@ -58,18 +59,15 @@ export const offenceAnalysisVictimSummaryStep = step({
       ),
       message: contentFor('validation.add_one_or_more_victims'),
     }),
-    validation({
-      condition: isUserSubmittedCondition(Step.offence_analysis_victim_summary.code),
-      message: 'This step is not user submitted',
-    }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.offence_analysis_victim_summary.code, Section.offence_analysis),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code)],
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code),
+        ],
       },
       onValid: {
         next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
@@ -84,10 +82,15 @@ export const offenceAnalysisVictimSummaryStep = step({
     submit({
       when: Post('delete').match(Condition.IsRequired()),
       validate: true,
+      onAlways: {
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+        ],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.removeItemFromCollection(victimsCollection, Post('delete')),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
         ],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },

@@ -35,9 +35,6 @@ export const offenceAnalysisStep = step({
     saveButton,
   ],
   onAccess: [
-    access({
-      effects: [StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection)],
-    }),
     auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis),
   ],
   validWhen: [
@@ -49,93 +46,43 @@ export const offenceAnalysisStep = step({
   onSubmission: [
     autosaveSubmit(Step.offence_analysis.code, Section.offence_analysis),
     submit({
-      when: and(
-        Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),
-        Data(victimsCollection.name).match(Condition.IsRequired()),
-        Post('action').match(Condition.Equals('save')),
-      ),
-      validate: true,
-      onAlways: {
-        effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis.code),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
-      },
-      onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
-        next: [
-          redirect({
-            goto: Step.offence_analysis_victim_summary.path,
-          }),
-        ],
-      },
-      onInvalid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
-      },
-    }),
-    submit({
-      when: and(
-        Answer(Question.offence_analysis_who_was_the_victim).match(Condition.Array.Contains(Option.one_or_more_person)),
-        Post('action').match(Condition.Equals('save')),
-      ),
-      validate: true,
-      onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis.code)],
-      },
-      onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
-        next: [
-          redirect({
-            goto: Step.offence_analysis_victim.path,
-          }),
-        ],
-      },
-      onInvalid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
-      },
-    }),
-    submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
         effects: [
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis.code),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
         ],
       },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
           StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
         ],
         next: [
+          redirect({
+            when: and(
+              Answer(Question.offence_analysis_who_was_the_victim).match(
+                Condition.Array.Contains(Option.one_or_more_person),
+              ),
+              Data(victimsCollection.name).match(Condition.IsRequired()),
+            ),
+            goto: Step.offence_analysis_victim_summary.path,
+          }),
+          redirect({
+            when: Answer(Question.offence_analysis_who_was_the_victim).match(
+              Condition.Array.Contains(Option.one_or_more_person),
+            ),
+            goto: Step.offence_analysis_victim.path,
+          }),
           redirect({
             goto: Step.offence_analysis_involved_parties.path,
           }),
         ],
       },
       onInvalid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-        ],
+        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(false)],
       },
     }),
   ],
