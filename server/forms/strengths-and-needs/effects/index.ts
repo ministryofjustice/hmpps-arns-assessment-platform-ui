@@ -19,8 +19,8 @@ import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
 import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
-import { generateInitialFormUrl } from './session/generateInitialFormUrl'
 import { setUserSubmitted } from './assessment/setUserSubmitted'
+import { extractModeAndVersionUuidFromHandoverContext } from './session/extractModeAndVersionUuidFromHandoverContext'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -42,11 +42,14 @@ export const StrengthsAndNeedsEffects = {
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
   setUserSubmitted: sanEffects.register('setUserSubmitted', setUserSubmitted),
+  extractModeAndVersionUuidFromHandoverContext: sanEffects.register(
+    'extractModeAndVersionUuidFromHandoverContext',
+    extractModeAndVersionUuidFromHandoverContext,
+  ),
   extractModeAndVersionUuidFromUrl: sanEffects.register(
     'extractModeAndVersionUuidFromUrl',
     extractModeAndVersionUuidFromUrl,
   ),
-  generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
   saveCurrentAccommodationStepAnswers: sanEffects.register(
     'saveCurrentAccommodationStepAnswers',

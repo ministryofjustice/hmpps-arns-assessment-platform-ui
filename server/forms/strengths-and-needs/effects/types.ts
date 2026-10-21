@@ -26,7 +26,6 @@ export interface StrengthsAndNeedsSession {
   privacyAccepted?: boolean
   mode?: 'edit' | 'view' | 'view-historic'
   uuid?: string
-  versionUuid?: string
   countersignedVersions: PreviousVersionDisplay[]
   previousVersions?: PreviousVersionDisplay[]
   patternDrafts?: Record<string, Record<string, unknown>>

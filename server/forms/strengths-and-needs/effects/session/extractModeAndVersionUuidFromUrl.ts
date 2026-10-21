@@ -41,8 +41,4 @@ export const extractModeAndVersionUuidFromUrl = () => (context: StrengthsAndNeed
 
   session.mode = mode
   session.uuid = uuid
-
-  if (mode === 'view-historic') {
-    session.versionUuid = uuid
-  }
 }
