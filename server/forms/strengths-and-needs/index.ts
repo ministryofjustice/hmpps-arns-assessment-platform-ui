@@ -2,6 +2,7 @@ import {
   access,
   createForgePackage,
   Data,
+  Format,
   journey,
   redirect,
   Session,
@@ -30,7 +31,7 @@ const privacyScreenRedirectPath = createRoute(
 )
 
 const privacyScreenStep = createPrivacyScreen({
-  loadEffects: [StrengthsAndNeedsEffects.loadSessionData()],
+  loadEffects: [],
   submitEffects: [
     StrengthsAndNeedsEffects.setPrivacyAccepted(),
     StrengthsAndNeedsEffects.sendAuditEvent(CommonAuditEvent.CONFIRM_PRIVACY_SCREEN),
@@ -50,10 +51,14 @@ const versionRedirectStep = step({
   title: commonContentFor('strengths_and_needs'),
   onAccess: [
     access({
-      effects: [StrengthsAndNeedsEffects.generateInitialFormUrl()],
       next: [
         redirect({
-          goto: Data('initialFormUrl'),
+          goto: Format(
+            `/strengths-and-needs/%1/%2/%3`,
+            Data('assessment.formVersion'),
+            Session('mode'),
+            Session('uuid'),
+          ),
         }),
       ],
     }),
@@ -64,6 +69,17 @@ export const strengthsAndNeedsRootJourney = journey({
   code: 'strengths-and-needs',
   title: commonContentFor('strengths_and_needs'),
   path: formRootPath,
+  onAccess: [
+    access({
+      effects: [
+        StrengthsAndNeedsEffects.initializeSessionFromAccess(),
+        StrengthsAndNeedsEffects.loadSessionData(),
+        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
+        StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromHandoverContext(),
+      ],
+    }),
+  ],
   steps: [versionRedirectStep, privacyScreenStep],
   children: [strengthsAndNeedsV1Journey],
 })
