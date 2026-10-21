@@ -13,24 +13,6 @@ import { test } from '../../fixtures'
  * fields, then check each one holds to its limit: one character over fails validation, exactly the limit passes.
  */
 
-// const answers = [
-//   { question: Question.current_accommodation, value: Option.settled },
-//   { question: Question.type_of_settled_accommodation, value: Option.homeowner },
-//   { question: Question.living_with, value: [Option.family] },
-//   { question: Question.suitable_housing_location, value: CommonOption.yes },
-//   { question: Question.suitable_housing, value: CommonOption.yes },
-//   { question: Question.accommodation_changes, value: CommonOption.made_changes },
-//   { question: Question.accommodation_changes_made_changes_details, value: 'Some details' },
-//   { question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
-//   {
-//     question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
-//     value: 'Some details',
-//   },
-//   { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
-//   { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
-//   { question: Question.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
-//   { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
-// ]
 const answers = [
   { question: Question.community_current_accommodation, value: Option.settled },
   { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
