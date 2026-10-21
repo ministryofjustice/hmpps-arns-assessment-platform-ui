@@ -7,6 +7,7 @@ import {
   SentencePlanEffectsDeps,
 } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
+import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext } from '../goals/goalUtils'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 
@@ -54,19 +55,21 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
     throw new InternalServerError(`Invalid agreement answer: ${agreementAnswer}`)
   }
 
-  // Get or create PLAN_AGREEMENTS collection
-  let planAgreementsCollectionUuid = context.getData('planAgreementsCollectionUuid')
+  // Create the PLAN_AGREEMENTS collection in the same batch if it doesn't exist yet.
+  // The API swaps "@0" for the UUID created by the first command in the batch.
+  const existingCollectionUuid = context.getData('planAgreementsCollectionUuid')
+  const planAgreementsCollectionUuid = existingCollectionUuid ?? '@0'
 
-  if (!planAgreementsCollectionUuid) {
-    const createResult = await deps.api.executeCommand({
-      type: 'CreateCollectionCommand',
-      name: 'PLAN_AGREEMENTS',
-      assessmentUuid,
-      user,
-    })
-
-    planAgreementsCollectionUuid = createResult.collectionUuid
-  }
+  const commands: Commands[] = existingCollectionUuid
+    ? []
+    : [
+        {
+          type: 'CreateCollectionCommand',
+          name: 'PLAN_AGREEMENTS',
+          assessmentUuid,
+          user,
+        },
+      ]
 
   // Build properties
   const properties: PlanAgreementProperties = {
@@ -102,7 +105,7 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
   }
 
   // Add the agreement record to the collection
-  await deps.api.executeCommand({
+  commands.push({
     type: 'AddCollectionItemCommand',
     collectionUuid: planAgreementsCollectionUuid,
     properties: wrapAll(properties),
@@ -114,6 +117,8 @@ export const updatePlanAgreementStatus = (deps: SentencePlanEffectsDeps) => asyn
     assessmentUuid,
     user,
   })
+
+  await deps.api.executeCommands(...commands)
 
   trackBusinessEvent(context, 'AGREE_PLAN_PAGE_SUBMITTED', { assessmentUuid, status: agreementStatus })
 }

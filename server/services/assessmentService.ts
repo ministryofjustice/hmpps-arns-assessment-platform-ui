@@ -16,13 +16,17 @@ import {
   Commands,
   CreateAssessmentCommand,
   CreateCollectionCommand,
+  CreateTimelineItemCommand,
   RemoveCollectionItemCommand,
   ReorderCollectionItemCommand,
-  RollBackAssessmentAnswersCommand,
+  RollbackCommand,
+  SoftDeleteCommand,
+  UndeleteCommand,
   UpdateAssessmentAnswersCommand,
   UpdateAssessmentPropertiesCommand,
   UpdateCollectionItemAnswersCommand,
   UpdateCollectionItemPropertiesCommand,
+  UpdateFlagsCommand,
   UpdateFormVersionCommand,
 } from '../interfaces/aap-api/command'
 import {
@@ -34,9 +38,13 @@ import {
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
+  CreateTimelineItem: { cmd: CreateTimelineItemCommand; res: CommandResult }
   UpdateAssessmentAnswers: { cmd: UpdateAssessmentAnswersCommand; res: CommandResult }
-  RollBackAssessmentAnswers: { cmd: RollBackAssessmentAnswersCommand; res: CommandResult }
+  Rollback: { cmd: RollbackCommand; res: CommandResult }
+  SoftDelete: { cmd: SoftDeleteCommand; res: CommandResult }
+  Undelete: { cmd: UndeleteCommand; res: CommandResult }
   UpdateAssessmentProperties: { cmd: UpdateAssessmentPropertiesCommand; res: CommandResult }
+  UpdateFlags: { cmd: UpdateFlagsCommand; res: CommandResult }
   UpdateFormVersion: { cmd: UpdateFormVersionCommand; res: CommandResult }
   CreateCollection: { cmd: CreateCollectionCommand; res: CreateCollectionCommandResult }
   AddCollectionItem: { cmd: AddCollectionItemCommand; res: AddCollectionItemCommandResult }

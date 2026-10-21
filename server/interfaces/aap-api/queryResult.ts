@@ -6,6 +6,11 @@ export interface QueryResult {
   type: string
 }
 
+export interface PageInfo {
+  pageNumber: number
+  totalPages: number
+}
+
 export interface AssessmentVersionQueryResult extends QueryResult {
   type: 'AssessmentVersionQueryResult'
   assessmentUuid: string
@@ -19,12 +24,14 @@ export interface AssessmentVersionQueryResult extends QueryResult {
   collections: Collection[]
   collaborators: User[]
   identifiers: Identifiers
+  assignedUser?: User
   flags: string[]
 }
 
 export interface TimelineQueryResult extends QueryResult {
   type: 'TimelineQueryResult'
   timeline: TimelineItem[]
+  pageInfo: PageInfo
 }
 
 export interface CollectionQueryResult extends QueryResult {
