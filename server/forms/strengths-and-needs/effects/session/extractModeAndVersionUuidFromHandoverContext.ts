@@ -33,7 +33,10 @@ export const extractModeAndVersionUuidFromHandoverContext =
     )
 
     if (!previousVersion) {
-      throw new InternalServerError(`Invalid assessment version timestamp: ${session.sessionDetails.assessmentVersion}`)
+      const validTimestamps = session.previousVersions.map(it => it.assessmentUpdatedDate).join(', ')
+      throw new InternalServerError(
+        `Invalid assessment version timestamp: ${session.sessionDetails.assessmentVersion}. Valid timestamps: ${validTimestamps}`,
+      )
     }
 
     session.mode = 'view-historic'
