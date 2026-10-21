@@ -10,7 +10,10 @@
     "baseUrl": ".",
     "paths": {
       "@server/*": ["../server/*"],
-      "@ministryofjustice/hmpps-aap-sdk/*": ["../packages/aap-sdk/src/*"]
+      "@ministryofjustice/hmpps-aap-sdk/*": ["../packages/aap-sdk/src/*"],
+      "@ministryofjustice/hmpps-arns-sentence-plan/*": [
+        "../node_modules/@ministryofjustice/hmpps-arns-sentence-plan/src/*"
+      ]
     }
   },
   "include": ["**/*.ts"]

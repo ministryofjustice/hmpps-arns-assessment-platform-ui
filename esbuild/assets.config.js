@@ -19,6 +19,9 @@ const getAssetsConfig = buildConfig => ({
   target: 'es2018',
   external: ['/assets/*'],
   bundle: true,
+  // Rehearsal: tsconfig path aliases aren't applied inside node_modules, so the installed
+  // Sentence Plan package needs this to find the SDK.
+  alias: { '@ministryofjustice/hmpps-aap-sdk': path.join(process.cwd(), 'packages/aap-sdk/src') },
   plugins: [
     clean({
       patterns: globSync(buildConfig.assets.clear),

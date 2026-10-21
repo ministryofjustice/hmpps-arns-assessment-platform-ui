@@ -16,7 +16,13 @@
     "jsxImportSource": "@ministryofjustice/hmpps-forge/jsx-components",
     "typeRoots": ["./server/@types", "./node_modules/@types"],
     "paths": {
-      "@ministryofjustice/hmpps-aap-sdk/*": ["./packages/aap-sdk/src/*"]
+      "@ministryofjustice/hmpps-aap-sdk/*": ["./packages/aap-sdk/src/*"],
+      "@ministryofjustice/hmpps-arns-sentence-plan": [
+        "./node_modules/@ministryofjustice/hmpps-arns-sentence-plan/src/index.ts"
+      ],
+      "@ministryofjustice/hmpps-arns-sentence-plan/*": [
+        "./node_modules/@ministryofjustice/hmpps-arns-sentence-plan/src/*"
+      ]
     },
     "types": ["node", "jest"]
   },

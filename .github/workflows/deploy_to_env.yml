@@ -27,7 +27,7 @@ env:
 
 jobs:
   deploy_to_env:
-    uses: ministryofjustice/hmpps-assess-risks-and-needs-github-actions/.github/workflows/deploy_to_env.yml@v1
+    uses: ministryofjustice/hmpps-assess-risks-and-needs-github-actions/.github/workflows/deploy_to_env.yml@rehearsal-npm-token
     secrets: inherit
     with:
       environment: ${{ inputs.environment }}

@@ -1,5 +1,5 @@
 import { Answers, Properties } from '@server/interfaces/aap-api/dataModel'
-import { GoalStatus, StepStatus, AreaOfNeedSlug } from '@server/forms/sentence-plan/effects/types'
+import { GoalStatus, StepStatus, AreaOfNeedSlug } from '@ministryofjustice/hmpps-arns-sentence-plan/effects/types'
 
 export { GoalStatus, StepStatus, AreaOfNeedSlug }
 

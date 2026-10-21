@@ -1,6 +1,6 @@
 import type { Commands } from '@server/interfaces/aap-api/command'
-import { wrapAll } from '@server/forms/sentence-plan/assessmentValueWrappers'
-import { AgreementStatus } from '@server/forms/sentence-plan/effects'
+import { wrapAll } from '@ministryofjustice/hmpps-arns-sentence-plan/assessmentValueWrappers'
+import { AgreementStatus } from '@ministryofjustice/hmpps-arns-sentence-plan/effects'
 import { AssessmentBuilder, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
 import type { AssessmentBuilderInstance } from './AssessmentBuilder'
 import type { TestAapApiClient } from '../support/apis/TestAapApiClient'

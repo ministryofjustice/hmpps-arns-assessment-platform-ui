@@ -27,6 +27,13 @@ export default [
     },
   },
   {
+    // Rehearsal: Sentence Plan is a dev dependency because it's bundled into the app from source at build time.
+    files: ['server/app.ts', 'server/routes/pdf.ts', 'assets/js/index.js'],
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    },
+  },
+  {
     files: ['**/test-utils/**/*.ts', '**/test-utils/**/*.js'],
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],

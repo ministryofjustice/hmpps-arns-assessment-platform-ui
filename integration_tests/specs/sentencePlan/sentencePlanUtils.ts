@@ -1,6 +1,6 @@
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
-import { AgreementStatus } from '@server/forms/sentence-plan/effects'
+import { AgreementStatus } from '@ministryofjustice/hmpps-arns-sentence-plan/effects'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { login } from '../../testUtils'

@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import { NotFound, Unauthorized } from 'http-errors'
-import GotenbergClient from '../data/gotenbergClient'
-import { SESSION_COOKIE_NAME } from '../middleware/setUpWebSession'
 import {
   sentencePlanPrintPreviewPath,
   sentencePlanPrintPreviewPdfPath,
-} from '../forms/sentence-plan/versions/v1.0/constants'
+} from '@ministryofjustice/hmpps-arns-sentence-plan/versions/v1.0/constants'
+import GotenbergClient from '../data/gotenbergClient'
+import { SESSION_COOKIE_NAME } from '../middleware/setUpWebSession'
 
 export const PRINT_PREVIEW_PATH = sentencePlanPrintPreviewPath
 export const PRINT_PREVIEW_PDF_PATH = sentencePlanPrintPreviewPdfPath

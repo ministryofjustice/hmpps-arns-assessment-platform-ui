@@ -20,7 +20,10 @@ ENV NODE_ENV=development
 # Install ALL dependencies (dev + prod) for building
 FROM base AS deps
 COPY package*.json .npmrc .allowed-scripts.mjs ./
+# Rehearsal: the token is only mounted for this step, so it never ends up in the image.
+# It's needed to download the Sentence Plan package from GitHub Packages.
 RUN --mount=type=cache,target=/root/.npm \
+    --mount=type=secret,id=node_auth_token,env=NODE_AUTH_TOKEN \
     npm run setup
 
 # Install ONLY production dependencies (cached separately)

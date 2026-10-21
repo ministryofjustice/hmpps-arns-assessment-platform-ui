@@ -122,6 +122,7 @@
     "@axe-core/playwright": "4.13.0",
     "@jgoz/esbuild-plugin-typecheck": "^4.0.5",
     "@ministryofjustice/eslint-config-hmpps": "^2.0.0-alpha.2",
+    "@ministryofjustice/hmpps-arns-sentence-plan": "https://npm.pkg.github.com/download/@ministryofjustice/hmpps-arns-sentence-plan/0.0.1-rehearsal.3/befe6f099924d44f146c9aff8fb2e176213615f6",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
     "@ministryofjustice/hmpps-precommit-hooks": "^2.0.2",
     "@playwright/test": "1.63.0",

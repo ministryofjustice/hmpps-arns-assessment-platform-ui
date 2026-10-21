@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test'
-import { areasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
+import { areasOfNeed } from '@ministryofjustice/hmpps-arns-sentence-plan/versions/v1.0/constants'
 import { test, TargetService } from '../../support/fixtures'
 import CreateGoalPage from '../../pages/sentencePlan/createGoalPage'
 import AddStepsPage from '../../pages/sentencePlan/addStepsPage'

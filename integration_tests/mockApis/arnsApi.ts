@@ -1,6 +1,6 @@
 import { SuperAgentRequest } from 'superagent'
 import type { CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
-import { areasOfNeed, subAreasOfNeed } from '@server/forms/sentence-plan/versions/v1.0/constants'
+import { areasOfNeed, subAreasOfNeed } from '@ministryofjustice/hmpps-arns-sentence-plan/versions/v1.0/constants'
 import { stubFor } from './wiremock'
 
 export interface AssessmentNeedDetail {
