@@ -1,6 +1,7 @@
 export enum IdentifierType {
   CRN = 'CRN',
-  NOMIS = 'NOMIS',
+  PRN = 'PRN',
+  NOMIS_ID = 'NOMIS_ID',
 }
 
 export type Identifiers = {

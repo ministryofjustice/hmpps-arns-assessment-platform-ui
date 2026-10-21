@@ -53,7 +53,6 @@ function createMockContext(options: MockContextOptions = {}) {
 function createDeps() {
   return {
     api: {
-      executeCommand: jest.fn().mockResolvedValue({ collectionUuid: 'created-steps-collection' }),
       executeCommands: jest.fn().mockResolvedValue([]),
     },
   } as unknown as SentencePlanEffectsDeps
@@ -160,6 +159,46 @@ describe('saveStepEditSession', () => {
         type: 'UpdateCollectionItemPropertiesCommand',
         collectionItemUuid: activeGoal.uuid,
         timeline: expect.objectContaining({ type: 'GOAL_UPDATED' }),
+      }),
+    )
+  })
+
+  it('should create the STEPS collection in the same batch when the goal has no steps collection', async () => {
+    const deps = createDeps()
+    const newStep = createStep({ id: 'step-new', actor: '', description: '' })
+    const session: SentencePlanSession = {
+      stepChanges: {
+        [activeGoal.uuid]: createStepChanges({
+          steps: [newStep],
+          toCreate: [newStep.id],
+          collectionUuid: undefined,
+        }),
+      },
+    }
+    const context = createMockContext({
+      session,
+      answers: {
+        step_actor_0: 'probation_practitioner',
+        step_description_0: 'Book an appointment',
+        step_status_0: 'NOT_STARTED',
+      },
+    })
+
+    await saveStepEditSession(deps)(context)
+
+    const commands = getExecutedCommands(deps)
+    expect(deps.api.executeCommands).toHaveBeenCalledTimes(1)
+    expect(commands[0]).toEqual(
+      expect.objectContaining({
+        type: 'CreateCollectionCommand',
+        name: 'STEPS',
+        parentCollectionItemUuid: activeGoal.uuid,
+      }),
+    )
+    expect(commands).toContainEqual(
+      expect.objectContaining({
+        type: 'AddCollectionItemCommand',
+        collectionUuid: '@0',
       }),
     )
   })
