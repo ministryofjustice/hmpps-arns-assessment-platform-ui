@@ -5,8 +5,8 @@ const config = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
 
   // keep your existing bits:
-  collectCoverageFrom: ['server/**/*.{ts,js,jsx,mjs}', '!server/forms/**'],
-  testMatch: ['<rootDir>/server/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
+  collectCoverageFrom: ['{server,packages}/**/*.{ts,js,jsx,mjs}', '!server/forms/**'],
+  testMatch: ['<rootDir>/(server|packages)/**/?(*.)(cy|test).{ts,js,jsx,mjs}'],
   testPathIgnorePatterns: ['/node_modules/'],
   reporters: [
     'default',
