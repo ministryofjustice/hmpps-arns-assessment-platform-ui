@@ -10,10 +10,8 @@ import { offenceAnalysisImpactStep } from './steps/offence-analysis-impact/step'
 import { offenceAnalysisSummaryStep } from './steps/offence_analysis_summary/step'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
-import { auditPageView } from '../../audit';
-import { SanAuditEvent } from '../../../../auditEvents';
-import { StrengthsAndNeedsEffects } from '../../../../effects';
-import { victimsCollection } from './constants/collections';
+import { StrengthsAndNeedsEffects } from '../../../../effects'
+import { victimsCollection } from './constants/collections'
 
 /**
  * Offence Analysis Journey

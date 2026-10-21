@@ -1,5 +1,4 @@
 import {
-  access,
   and,
   Answer,
   Condition,
@@ -34,9 +33,7 @@ export const offenceAnalysisStep = step({
     offenceAnalysisSection.questions.offenceCommitedAgainst.displayModes.field,
     saveButton,
   ],
-  onAccess: [
-    auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis),
-  ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis)],
   validWhen: [
     validation({
       condition: isUserSubmittedCondition(Step.offence_analysis.code),

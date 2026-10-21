@@ -1,12 +1,4 @@
-import {
-  access,
-  Condition,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { SanAuditEvent, StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { victimQuestions } from '../../section'
 import { Step } from '../../constants/step'
@@ -39,9 +31,7 @@ export const offenceAnalysisVictimStep = step({
       message: 'This step is not user submitted',
     }),
   ],
-  onAccess: [
-    auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_victim),
-  ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.offence_analysis, Step.offence_analysis_victim)],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

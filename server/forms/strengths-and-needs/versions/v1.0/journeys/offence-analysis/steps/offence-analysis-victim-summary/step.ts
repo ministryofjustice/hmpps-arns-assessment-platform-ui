@@ -1,5 +1,4 @@
 import {
-  access,
   Answer,
   Condition,
   Data,
@@ -20,7 +19,6 @@ import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
@@ -65,9 +63,7 @@ export const offenceAnalysisVictimSummaryStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code),
-        ],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code)],
       },
       onValid: {
         next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
@@ -89,9 +85,7 @@ export const offenceAnalysisVictimSummaryStep = step({
         ],
       },
       onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.removeItemFromCollection(victimsCollection, Post('delete')),
-        ],
+        effects: [StrengthsAndNeedsEffects.removeItemFromCollection(victimsCollection, Post('delete'))],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),

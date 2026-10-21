@@ -1,5 +1,4 @@
 import {
-  access,
   Answer,
   Condition,
   Post,
@@ -21,7 +20,6 @@ import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
 import { auditPageView } from '../../../../audit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
-import { victimsCollection } from '../../constants/collections';
 
 export const offenceAnalysisInvolvedPartiesStep = step({
   path: `/${Step.offence_analysis_involved_parties.path}`,
