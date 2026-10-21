@@ -85,7 +85,14 @@ test.describe('Offence analysis character counts', () => {
   })
 
   test('offence-analysis-victim/create: how they know the victim', async ({ page, openSection }) => {
-    const section = await openSection(offence, answers, userSubmittedSteps)
+    const answersVictim = [
+      ...answers,
+      {
+        question: Question.offence_analysis_who_was_the_victim,
+        value: [Option.one_or_more_person, CommonOption.other],
+      },
+    ]
+    const section = await openSection(offence, answersVictim, userSubmittedSteps)
     const offenceAnalysisPage = new OffenceAnalysisPage(page)
     const { questions } = offenceAnalysisPage
     await page.goto(`${section}/${Step.offence_analysis_victim.path}`)

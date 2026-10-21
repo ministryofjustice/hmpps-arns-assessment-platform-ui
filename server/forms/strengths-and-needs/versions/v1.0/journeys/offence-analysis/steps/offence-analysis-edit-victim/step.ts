@@ -16,7 +16,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { Section } from '../../../../constants/section'
+import { Section, SectionComplete } from '../../../../constants/section'
 import { auditPageView } from '../../../../audit'
 import { autoSaveVictimEditSubmit } from '../../../../autoVictimEdit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
@@ -46,7 +46,6 @@ export const offenceAnalysisEditVictimStep = step({
   onAccess: [
     access({
       effects: [
-        StrengthsAndNeedsEffects.loadAnswersFromCollection(victimsCollection),
         StrengthsAndNeedsEffects.loadItemFromCollection(
           victimsCollection,
           Params('itemId').pipe(Transformer.String.ToInt()),
@@ -73,6 +72,8 @@ export const offenceAnalysisEditVictimStep = step({
       onAlways: {
         effects: [
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
         ],
       },
       onValid: {

@@ -53,14 +53,14 @@ export const offenceAnalysisInvolvedPartiesStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_involved_parties.code)],
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_involved_parties.code),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+        ],
       },
       onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
+        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
         next: [
           redirect({
             goto: Step.offence_analysis_impact.path,
@@ -68,11 +68,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         ],
       },
       onInvalid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-        ],
+        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(false)],
       },
     }),
   ],
