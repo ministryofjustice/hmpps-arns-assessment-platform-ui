@@ -30,24 +30,24 @@ const analysisPage = 'accommodation-analysis'
 
 const settledAccommodation: Scenario = {
   answers: [
-    { question: Question.accommodation_community_current_accommodation, value: Option.settled },
-    { question: Question.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-    { question: Question.accommodation_community_suitable_housing_location, value: CommonOption.no },
+    { question: Question.community_current_accommodation, value: Option.settled },
+    { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
+    { question: Question.community_suitable_housing_location, value: CommonOption.no },
     {
-      question: Question.accommodation_community_suitable_housing_location_concerns,
+      question: Question.community_suitable_housing_location_concerns,
       value: [Option.criminal_associates, Option.victimisation, CommonOption.other],
     },
     {
-      question: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+      question: Question.community_suitable_housing_location_concerns_other_details,
       value: details('location concerns other'),
     },
-    { question: Question.accommodation_community_suitable_housing, value: CommonOption.no },
+    { question: Question.community_suitable_housing, value: CommonOption.no },
     {
-      question: Question.accommodation_community_unsuitable_housing_concerns,
+      question: Question.community_unsuitable_housing_concerns,
       value: [Option.facilities, Option.overcrowding, CommonOption.other],
     },
     {
-      question: Question.accommodation_community_unsuitable_housing_concerns_other_details,
+      question: Question.community_unsuitable_housing_concerns_other_details,
       value: details('housing concerns other'),
     },
     { question: Question.accommodation_changes, value: CommonOption.making_changes },
@@ -74,35 +74,35 @@ const settledAccommodation: Scenario = {
   ],
   summaryChangeLinks: [
     changeLink(
-      Step.accommodation_community_current_accommodation.path,
-      'accommodation_community_current_accommodation',
+      Step.community_current_accommodation.path,
+      'community_current_accommodation',
     ),
     changeLink(
-      Step.accommodation_community_current_accommodation_settled.path,
-      'accommodation_community_current_accommodation_settled',
+      Step.community_current_accommodation_settled.path,
+      'community_current_accommodation_settled',
     ),
     changeLink(
-      Step.accommodation_community_suitable_housing_location.path,
-      'accommodation_community_suitable_housing_location',
+      Step.community_suitable_housing_location.path,
+      'community_suitable_housing_location',
     ),
     changeLink(
-      Step.accommodation_community_suitable_housing_location_concerns.path,
-      'accommodation_community_suitable_housing_location_concerns',
+      Step.community_suitable_housing_location_concerns.path,
+      'community_suitable_housing_location_concerns',
     ),
-    changeLink(Step.accommodation_community_suitable_housing.path, 'accommodation_community_suitable_housing'),
+    changeLink(Step.community_suitable_housing.path, 'community_suitable_housing'),
     changeLink(
-      Step.accommodation_community_suitable_housing_concerns.path,
-      'accommodation_community_unsuitable_housing_concerns',
+      Step.community_suitable_housing_concerns.path,
+      'community_unsuitable_housing_concerns',
     ),
     changeLink(Step.accommodation_changes.path, 'accommodation_changes'),
   ],
   userSubmittedSteps: [
-    Step.accommodation_community_current_accommodation.code,
-    Step.accommodation_community_current_accommodation_settled.code,
-    Step.accommodation_community_suitable_housing_location.code,
-    Step.accommodation_community_suitable_housing_location_concerns.code,
-    Step.accommodation_community_suitable_housing.code,
-    Step.accommodation_community_suitable_housing_concerns.code,
+    Step.community_current_accommodation.code,
+    Step.community_current_accommodation_settled.code,
+    Step.community_suitable_housing_location.code,
+    Step.community_suitable_housing_location_concerns.code,
+    Step.community_suitable_housing.code,
+    Step.community_suitable_housing_concerns.code,
     Step.accommodation_changes.code,
     Step.accommodation_summary.code,
   ],
@@ -110,8 +110,8 @@ const settledAccommodation: Scenario = {
 
 const noAccommodation: Scenario = {
   answers: [
-    { question: Question.accommodation_community_current_accommodation, value: Option.no_accommodation },
-    { question: Question.accommodation_community_no_accommodation_reason, value: Option.alcohol_problems },
+    { question: Question.community_current_accommodation, value: Option.no_accommodation },
+    { question: Question.community_no_accommodation_reason, value: Option.alcohol_problems },
     { question: Question.accommodation_changes, value: CommonOption.made_changes },
     { question: Question.accommodation_changes_made_changes_details, value: 'Some details' },
     { question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
@@ -126,18 +126,18 @@ const noAccommodation: Scenario = {
   ],
   summaryChangeLinks: [
     changeLink(
-      Step.accommodation_community_current_accommodation.path,
-      Step.accommodation_community_current_accommodation.code,
+      Step.community_current_accommodation.path,
+      Step.community_current_accommodation.code,
     ),
     changeLink(
-      Step.accommodation_community_no_accommodation_reason.path,
-      Step.accommodation_community_no_accommodation_reason.code,
+      Step.community_no_accommodation_reason.path,
+      Step.community_no_accommodation_reason.code,
     ),
     changeLink(Step.accommodation_changes.path, Step.accommodation_changes.code),
   ],
   userSubmittedSteps: [
-    Step.accommodation_community_current_accommodation.code,
-    Step.accommodation_community_no_accommodation_reason.code,
+    Step.community_current_accommodation.code,
+    Step.community_no_accommodation_reason.code,
     Step.accommodation_changes.code,
     Step.accommodation_summary.code,
   ],

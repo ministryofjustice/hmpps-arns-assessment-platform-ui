@@ -15,24 +15,24 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.accommodation_community_current_accommodation, value: Option.settled },
-        { question: Question.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-        { question: Question.accommodation_community_suitable_housing_location, value: CommonOption.no },
+        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
+        { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns,
+          question: Question.community_suitable_housing_location_concerns,
           value: [Option.criminal_associates, Option.victimisation, CommonOption.other],
         },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+          question: Question.community_suitable_housing_location_concerns_other_details,
           value: details('location concerns other'),
         },
-        { question: Question.accommodation_community_suitable_housing, value: Option.yes_with_concerns },
+        { question: Question.community_suitable_housing, value: Option.yes_with_concerns },
         {
-          question: Question.accommodation_community_suitable_housing_concerns,
+          question: Question.community_suitable_housing_concerns,
           value: [Option.facilities, Option.overcrowding, CommonOption.other],
         },
         {
-          question: Question.accommodation_community_suitable_housing_concerns_other_details,
+          question: Question.community_suitable_housing_concerns_other_details,
           value: details('housing concerns other'),
         },
         { question: Question.accommodation_changes, value: CommonOption.making_changes },
@@ -42,12 +42,12 @@ test.describe('Summary', () => {
         },
       ])
       .withUserSubmittedSteps([
-        Step.accommodation_community_current_accommodation.code,
-        Step.accommodation_community_current_accommodation_settled.code,
-        Step.accommodation_community_suitable_housing_location.code,
-        Step.accommodation_community_suitable_housing_location_concerns.code,
-        Step.accommodation_community_suitable_housing.code,
-        Step.accommodation_community_suitable_housing_concerns.code,
+        Step.community_current_accommodation.code,
+        Step.community_current_accommodation_settled.code,
+        Step.community_suitable_housing_location.code,
+        Step.community_suitable_housing_location_concerns.code,
+        Step.community_suitable_housing.code,
+        Step.community_suitable_housing_concerns.code,
         Step.accommodation_changes.code,
         Step.accommodation_summary.code,
       ])
@@ -63,19 +63,19 @@ test.describe('Summary', () => {
             - paragraph: Settled
           - definition:
             - link "Change Does Test currently have somewhere to live?":
-              - /url: accommodation-community-current-accommodation#accommodation_community_current_accommodation-question
+              - /url: accommodation-community-current-accommodation#community_current_accommodation-question
           - term: Is Test's accommodation settled?
           - definition:
             - paragraph: "Yes"
           - definition:
             - link "Change Is Test's accommodation settled?":
-              - /url: accommodation-community-current-accommodation-settled#accommodation_community_current_accommodation_settled-question
+              - /url: accommodation-community-current-accommodation-settled#community_current_accommodation_settled-question
           - term: Is the location of Test's accommodation suitable?
           - definition:
             - paragraph: "No"
           - definition:
             - link "Change Is the location of Test's accommodation suitable?":
-              - /url: accommodation-community-suitable-housing-location#accommodation_community_suitable_housing_location-question
+              - /url: accommodation-community-suitable-housing-location#community_suitable_housing_location-question
           - term: What are the concerns with the location?
           - definition:
             - paragraph: Close to criminal associates
@@ -84,13 +84,13 @@ test.describe('Summary', () => {
             - paragraph: location concerns other — free text answer.
           - definition:
             - link "Change What are the concerns with the location?":
-              - /url: accommodation-community-suitable-housing-location-concerns#accommodation_community_suitable_housing_location_concerns-question
+              - /url: accommodation-community-suitable-housing-location-concerns#community_suitable_housing_location_concerns-question
           - term: Is Test accommodation suitable?
           - definition:
             - paragraph: Yes, with concerns
           - definition:
             - link "Change Is Test accommodation suitable?":
-              - /url: accommodation-community-suitable-housing#accommodation_community_suitable_housing-question
+              - /url: accommodation-community-suitable-housing#community_suitable_housing-question
           - term: What are your concerns about the location of Test's accommodation?
           - definition:
             - paragraph: Issues with the property - for example, poor kitchen or bathroom facilities
@@ -99,7 +99,7 @@ test.describe('Summary', () => {
             - paragraph: housing concerns other — free text answer.
           - definition:
             - link "Change What are your concerns about the location of Test's accommodation?":
-              - /url: accommodation-community-suitable-housing-concerns#accommodation_community_suitable_housing_concerns-question
+              - /url: accommodation-community-suitable-housing-concerns#community_suitable_housing_concerns-question
           - term: Does Test want to make changes to their accommodation?
           - definition:
             - paragraph: I am actively making changes
@@ -117,14 +117,14 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.accommodation_community_current_accommodation, value: Option.no_accommodation },
-        { question: Question.accommodation_community_no_accommodation_reason, value: Option.alcohol_problems },
+        { question: Question.community_current_accommodation, value: Option.no_accommodation },
+        { question: Question.community_no_accommodation_reason, value: Option.alcohol_problems },
         { question: Question.accommodation_changes, value: CommonOption.made_changes },
         { question: Question.accommodation_changes_made_changes_details, value: 'Some details' },
       ])
       .withUserSubmittedSteps([
-        Step.accommodation_community_current_accommodation.code,
-        Step.accommodation_community_no_accommodation_reason.code,
+        Step.community_current_accommodation.code,
+        Step.community_no_accommodation_reason.code,
         Step.accommodation_changes.code,
         Step.accommodation_summary.code,
       ])
@@ -143,18 +143,18 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.accommodation_community_current_accommodation, value: Option.settled },
-        { question: Question.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-        { question: Question.accommodation_community_suitable_housing_location, value: CommonOption.no },
+        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
+        { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns,
+          question: Question.community_suitable_housing_location_concerns,
           value: [Option.criminal_associates, Option.victimisation, CommonOption.other],
         },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+          question: Question.community_suitable_housing_location_concerns_other_details,
           value: details('location concerns other'),
         },
-        { question: Question.accommodation_community_suitable_housing, value: CommonOption.yes },
+        { question: Question.community_suitable_housing, value: CommonOption.yes },
         { question: Question.accommodation_changes, value: CommonOption.making_changes },
         {
           question: Question.accommodation_changes_making_changes_details,
@@ -176,11 +176,11 @@ test.describe('Summary', () => {
         },
       ])
       .withUserSubmittedSteps([
-        Step.accommodation_community_current_accommodation.code,
-        Step.accommodation_community_current_accommodation_settled.code,
-        Step.accommodation_community_suitable_housing_location.code,
-        Step.accommodation_community_suitable_housing_location_concerns.code,
-        Step.accommodation_community_suitable_housing.code,
+        Step.community_current_accommodation.code,
+        Step.community_current_accommodation_settled.code,
+        Step.community_suitable_housing_location.code,
+        Step.community_suitable_housing_location_concerns.code,
+        Step.community_suitable_housing.code,
         Step.accommodation_changes.code,
         Step.accommodation_summary.code,
       ])

@@ -12,7 +12,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const noAccommodationStep = step({
-  path: `/${Step.accommodation_community_no_accommodation_reason.path}`,
+  path: `/${Step.community_no_accommodation_reason.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
@@ -24,22 +24,22 @@ export const noAccommodationStep = step({
     auditPageView(
       SanAuditEvent.VIEW_QUESTION_PAGE,
       Section.accommodation,
-      Step.accommodation_community_no_accommodation_reason,
+      Step.community_no_accommodation_reason,
     ),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.accommodation_community_no_accommodation_reason.code),
+      condition: isUserSubmittedCondition(Step.community_no_accommodation_reason.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.accommodation_community_no_accommodation_reason.code, Section.accommodation),
+    autosaveSubmit(Step.community_no_accommodation_reason.code, Section.accommodation),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_community_no_accommodation_reason.code)],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.community_no_accommodation_reason.code)],
       },
       onValid: {
         effects: [
@@ -49,7 +49,7 @@ export const noAccommodationStep = step({
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
-            Step.accommodation_community_no_accommodation_reason,
+            Step.community_no_accommodation_reason,
           ),
         ],
         next: [redirect({ goto: Step.accommodation_changes.path })],
@@ -62,7 +62,7 @@ export const noAccommodationStep = step({
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
-            Step.accommodation_community_no_accommodation_reason,
+            Step.community_no_accommodation_reason,
           ),
         ],
       },

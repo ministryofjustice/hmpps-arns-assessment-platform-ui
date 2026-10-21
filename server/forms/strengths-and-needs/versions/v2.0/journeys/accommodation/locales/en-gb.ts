@@ -4,7 +4,7 @@ import { Option } from '../constants/option'
 
 export const english = {
   question: {
-    [Question.accommodation_community_current_accommodation]: {
+    [Question.community_current_accommodation]: {
       text: 'Does %1 currently have somewhere to live?',
       option: {
         [Option.settled]: 'Settled',
@@ -13,15 +13,15 @@ export const english = {
       },
       validation: 'Select the type of accommodation they currently have',
     },
-    [Question.accommodation_community_current_accommodation_settled]: {
+    [Question.community_current_accommodation_settled]: {
       text: 'Is %1 accommodation settled?',
       validation: 'Select if the accommodation is settled',
     },
-    [Question.accommodation_community_suitable_housing_location]: {
+    [Question.community_suitable_housing_location]: {
       text: 'Is the location of %1 accommodation suitable?',
       validation: 'Select if the location of the accommodation is suitable',
     },
-    [Question.accommodation_community_suitable_housing_location_concerns]: {
+    [Question.community_suitable_housing_location_concerns]: {
       text: 'What are the concerns with the location?',
       option: {
         [Option.criminal_associates]: 'Close to criminal associates',
@@ -32,7 +32,7 @@ export const english = {
       },
       validation: 'Select if there are concerns with the location',
     },
-    [Question.accommodation_community_suitable_housing]: {
+    [Question.community_suitable_housing]: {
       text: 'Is %1 accommodation suitable?',
       hint: 'This includes things like safety or having appropriate amenities.',
       option: {
@@ -40,7 +40,7 @@ export const english = {
       },
       validation: 'Select if the accommodation is suitable',
     },
-    [Question.accommodation_community_suitable_housing_concerns]: {
+    [Question.community_suitable_housing_concerns]: {
       text: 'What are your concerns about the location of %1 accommodation?',
       option: {
         [Option.facilities]: 'Issues with the property - for example, poor kitchen or bathroom facilities',
@@ -52,7 +52,7 @@ export const english = {
       },
       validation: 'Select if there are concerns with the accommodation',
     },
-    [Question.accommodation_community_unsuitable_housing_concerns]: {
+    [Question.community_unsuitable_housing_concerns]: {
       text: 'What are the concerns?',
       option: {
         [Option.facilities]: 'Issues with the property - for example, poor kitchen or bathroom facilities',
@@ -64,7 +64,7 @@ export const english = {
       },
       validation: 'Select if there are concerns with the accommodation',
     },
-    [Question.accommodation_community_no_accommodation_reason]: {
+    [Question.community_no_accommodation_reason]: {
       text: 'Why does %1 have no accommodation?',
       hint:
         '<div class="govuk-!-width-two-thirds">' +

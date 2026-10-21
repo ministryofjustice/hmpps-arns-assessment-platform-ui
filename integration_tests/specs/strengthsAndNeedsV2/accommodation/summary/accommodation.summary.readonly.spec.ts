@@ -17,24 +17,24 @@ test.describe('Summary read-only', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.accommodation_community_current_accommodation, value: Option.settled },
-        { question: Question.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-        { question: Question.accommodation_community_suitable_housing_location, value: CommonOption.no },
+        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
+        { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns,
+          question: Question.community_suitable_housing_location_concerns,
           value: [Option.criminal_associates, Option.victimisation, CommonOption.other],
         },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+          question: Question.community_suitable_housing_location_concerns_other_details,
           value: details('location concerns other'),
         },
-        { question: Question.accommodation_community_suitable_housing, value: Option.yes_with_concerns },
+        { question: Question.community_suitable_housing, value: Option.yes_with_concerns },
         {
-          question: Question.accommodation_community_suitable_housing_concerns,
+          question: Question.community_suitable_housing_concerns,
           value: [Option.facilities, Option.overcrowding, CommonOption.other],
         },
         {
-          question: Question.accommodation_community_suitable_housing_concerns_other_details,
+          question: Question.community_suitable_housing_concerns_other_details,
           value: details('housing concerns other'),
         },
         { question: Question.accommodation_changes, value: CommonOption.making_changes },
@@ -44,12 +44,12 @@ test.describe('Summary read-only', () => {
         },
       ])
       .withUserSubmittedSteps([
-        Step.accommodation_community_current_accommodation.code,
-        Step.accommodation_community_current_accommodation_settled.code,
-        Step.accommodation_community_suitable_housing_location.code,
-        Step.accommodation_community_suitable_housing_location_concerns.code,
-        Step.accommodation_community_suitable_housing.code,
-        Step.accommodation_community_suitable_housing_concerns.code,
+        Step.community_current_accommodation.code,
+        Step.community_current_accommodation_settled.code,
+        Step.community_suitable_housing_location.code,
+        Step.community_suitable_housing_location_concerns.code,
+        Step.community_suitable_housing.code,
+        Step.community_suitable_housing_concerns.code,
         Step.accommodation_changes.code,
         Step.accommodation_summary.code,
       ])
@@ -99,18 +99,18 @@ test.describe('Summary read-only', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.accommodation_community_current_accommodation, value: Option.settled },
-        { question: Question.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-        { question: Question.accommodation_community_suitable_housing_location, value: CommonOption.no },
+        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
+        { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns,
+          question: Question.community_suitable_housing_location_concerns,
           value: [Option.criminal_associates, Option.victimisation, CommonOption.other],
         },
         {
-          question: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+          question: Question.community_suitable_housing_location_concerns_other_details,
           value: details('location concerns other'),
         },
-        { question: Question.accommodation_community_suitable_housing, value: CommonOption.yes },
+        { question: Question.community_suitable_housing, value: CommonOption.yes },
         { question: Question.accommodation_changes, value: CommonOption.making_changes },
         {
           question: Question.accommodation_changes_making_changes_details,
@@ -137,11 +137,11 @@ test.describe('Summary read-only', () => {
         },
       ])
       .withUserSubmittedSteps([
-        Step.accommodation_community_current_accommodation.code,
-        Step.accommodation_community_current_accommodation_settled.code,
-        Step.accommodation_community_suitable_housing_location.code,
-        Step.accommodation_community_suitable_housing_location_concerns.code,
-        Step.accommodation_community_suitable_housing.code,
+        Step.community_current_accommodation.code,
+        Step.community_current_accommodation_settled.code,
+        Step.community_suitable_housing_location.code,
+        Step.community_suitable_housing_location_concerns.code,
+        Step.community_suitable_housing.code,
         Step.accommodation_changes.code,
         Step.accommodation_summary.code,
       ])

@@ -12,24 +12,24 @@ import { test, TargetService } from '../../support/fixtures'
 type Answer = { question: string; value: string | string[] }
 
 const accommodation: Answer[] = [
-  { question: AccommodationQuestion.accommodation_community_current_accommodation, value: AccommodationOption.settled },
-  { question: AccommodationQuestion.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-  { question: AccommodationQuestion.accommodation_community_suitable_housing_location, value: CommonOption.no },
+  { question: AccommodationQuestion.community_current_accommodation, value: AccommodationOption.settled },
+  { question: AccommodationQuestion.community_current_accommodation_settled, value: CommonOption.yes },
+  { question: AccommodationQuestion.community_suitable_housing_location, value: CommonOption.no },
   {
-    question: AccommodationQuestion.accommodation_community_suitable_housing_location_concerns,
+    question: AccommodationQuestion.community_suitable_housing_location_concerns,
     value: [AccommodationOption.criminal_associates, AccommodationOption.victimisation, CommonOption.other],
   },
   {
-    question: AccommodationQuestion.accommodation_community_suitable_housing_location_concerns_other_details,
+    question: AccommodationQuestion.community_suitable_housing_location_concerns_other_details,
     value: details('location concerns other'),
   },
-  { question: AccommodationQuestion.accommodation_community_suitable_housing, value: CommonOption.no },
+  { question: AccommodationQuestion.community_suitable_housing, value: CommonOption.no },
   {
-    question: AccommodationQuestion.accommodation_community_suitable_housing_concerns,
+    question: AccommodationQuestion.community_suitable_housing_concerns,
     value: [AccommodationOption.facilities, AccommodationOption.overcrowding, CommonOption.other],
   },
   {
-    question: AccommodationQuestion.accommodation_community_suitable_housing_concerns_other_details,
+    question: AccommodationQuestion.community_suitable_housing_concerns_other_details,
     value: details('housing concerns other'),
   },
   { question: AccommodationQuestion.accommodation_changes, value: CommonOption.making_changes },
@@ -447,15 +447,15 @@ test.describe('View all answers', () => {
       .extend(sanAssessmentId)
       .withAnswers([
         {
-          question: AccommodationQuestion.accommodation_community_current_accommodation,
+          question: AccommodationQuestion.community_current_accommodation,
           value: AccommodationOption.no_accommodation,
         },
         {
-          question: AccommodationQuestion.accommodation_community_no_accommodation_reason,
+          question: AccommodationQuestion.community_no_accommodation_reason,
           value: [AccommodationOption.drug_problems, CommonOption.other],
         },
         {
-          question: AccommodationQuestion.accommodation_community_no_accommodation_reason_other_details,
+          question: AccommodationQuestion.community_no_accommodation_reason_other_details,
           value: details('other reason for no'),
         },
         { question: AlcoholQuestion.alcohol_current_issues, value: 'SIGNIFICANT' },

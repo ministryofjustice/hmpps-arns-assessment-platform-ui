@@ -19,44 +19,44 @@ import {
   yesNo,
 } from '../../constants/questionContent'
 
-export const hasAccommodation = Answer(Question.accommodation_community_current_accommodation).not.match(
+export const hasAccommodation = Answer(Question.community_current_accommodation).not.match(
   Condition.Equals(Option.no_accommodation),
 )
 
 export const isNotSuitableHousingLocation = Answer(
-  Question.accommodation_community_suitable_housing_location,
+  Question.community_suitable_housing_location,
 ).not.match(Condition.Equals(CommonOption.yes))
 
-export const isSuitableAccommodation = Answer(Question.accommodation_community_suitable_housing).match(
+export const isSuitableAccommodation = Answer(Question.community_suitable_housing).match(
   Condition.Equals(CommonOption.yes),
 )
-export const isSuitableWithConcernsAccommodation = Answer(Question.accommodation_community_suitable_housing).match(
+export const isSuitableWithConcernsAccommodation = Answer(Question.community_suitable_housing).match(
   Condition.Equals(Option.yes_with_concerns),
 )
-export const isNotSuitableAccommodation = Answer(Question.accommodation_community_suitable_housing).match(
+export const isNotSuitableAccommodation = Answer(Question.community_suitable_housing).match(
   Condition.Equals(CommonOption.no),
 )
 
 const currentAccommodation = question({
   content: {
-    code: Question.accommodation_community_current_accommodation,
+    code: Question.community_current_accommodation,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.accommodation_community_current_accommodation.text', CaseData.Forename),
+    text: contentFor('question.community_current_accommodation.text', CaseData.Forename),
     options: [
       {
         value: Option.settled,
-        text: contentFor('question.accommodation_community_current_accommodation.option.SETTLED'),
+        text: contentFor('question.community_current_accommodation.option.SETTLED'),
       },
       {
         value: Option.temporary,
-        text: contentFor('question.accommodation_community_current_accommodation.option.TEMPORARY'),
+        text: contentFor('question.community_current_accommodation.option.TEMPORARY'),
       },
       {
         value: Option.no_accommodation,
-        text: contentFor('question.accommodation_community_current_accommodation.option.NO_ACCOMMODATION'),
+        text: contentFor('question.community_current_accommodation.option.NO_ACCOMMODATION'),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_current_accommodation.validation'),
+    validationMessage: contentFor('question.community_current_accommodation.validation'),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
@@ -72,17 +72,17 @@ const currentAccommodation = question({
           }),
         ],
       },
-      actions: changeLinkActions(Step.accommodation_community_current_accommodation.path, content),
+      actions: changeLinkActions(Step.community_current_accommodation.path, content),
     }),
   },
 })
 
 const settledAccommodation = question({
   content: {
-    code: Question.accommodation_community_current_accommodation_settled,
+    code: Question.community_current_accommodation_settled,
     format: QuestionFormat.RADIO,
     text: contentFor(
-      'question.accommodation_community_current_accommodation_settled.text',
+      'question.community_current_accommodation_settled.text',
       CaseData.ForenamePossessive,
     ),
     options: [
@@ -95,12 +95,12 @@ const settledAccommodation = question({
         text: commonContentFor('option.NO'),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_current_accommodation_settled.validation'),
+    validationMessage: contentFor('question.community_current_accommodation_settled.validation'),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_current_accommodation_settled.path,
+      changeHref: Step.community_current_accommodation_settled.path,
       visibleWhen: hasAccommodation,
     }),
   },
@@ -108,9 +108,9 @@ const settledAccommodation = question({
 
 const suitableHousingLocation = question({
   content: {
-    code: Question.accommodation_community_suitable_housing_location,
+    code: Question.community_suitable_housing_location,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.accommodation_community_suitable_housing_location.text', CaseData.ForenamePossessive),
+    text: contentFor('question.community_suitable_housing_location.text', CaseData.ForenamePossessive),
     options: [
       {
         value: CommonOption.yes,
@@ -121,12 +121,12 @@ const suitableHousingLocation = question({
         text: commonContentFor('option.NO'),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_suitable_housing_location.validation'),
+    validationMessage: contentFor('question.community_suitable_housing_location.validation'),
   },
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_suitable_housing_location.path,
+      changeHref: Step.community_suitable_housing_location.path,
       visibleWhen: hasAccommodation,
     }),
   },
@@ -134,49 +134,49 @@ const suitableHousingLocation = question({
 
 const suitableHousingLocationConcerns = question({
   content: {
-    code: Question.accommodation_community_suitable_housing_location_concerns,
+    code: Question.community_suitable_housing_location_concerns,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.accommodation_community_suitable_housing_location_concerns.text'),
+    text: contentFor('question.community_suitable_housing_location_concerns.text'),
     options: [
       {
         value: Option.criminal_associates,
         text: contentFor(
-          'question.accommodation_community_suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES',
+          'question.community_suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES',
         ),
       },
       {
         value: Option.victimisation,
-        text: contentFor('question.accommodation_community_suitable_housing_location_concerns.option.VICTIMISATION'),
+        text: contentFor('question.community_suitable_housing_location_concerns.option.VICTIMISATION'),
       },
       {
         value: Option.victim_proximity,
-        text: contentFor('question.accommodation_community_suitable_housing_location_concerns.option.VICTIM_PROXIMITY'),
+        text: contentFor('question.community_suitable_housing_location_concerns.option.VICTIM_PROXIMITY'),
       },
       {
         value: Option.neighbour_difficulty,
         text: contentFor(
-          'question.accommodation_community_suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY',
+          'question.community_suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY',
         ),
       },
       {
         value: Option.area_safety,
-        text: contentFor('question.accommodation_community_suitable_housing_location_concerns.option.AREA_SAFETY'),
+        text: contentFor('question.community_suitable_housing_location_concerns.option.AREA_SAFETY'),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
         reveals: requiredDetails({
-          code: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+          code: Question.community_suitable_housing_location_concerns_other_details,
           validationMessage: commonContentFor('validation.enter_details'),
         }),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_suitable_housing_location_concerns.validation'),
+    validationMessage: contentFor('question.community_suitable_housing_location_concerns.validation'),
   },
   displayModes: {
     field: checkboxField({ dependentWhen: isNotSuitableHousingLocation, visibleWhen: isNotSuitableHousingLocation }),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_suitable_housing_location_concerns.path,
+      changeHref: Step.community_suitable_housing_location_concerns.path,
       visibleWhen: isNotSuitableHousingLocation,
     }),
   },
@@ -184,27 +184,27 @@ const suitableHousingLocationConcerns = question({
 
 const suitableAccommodation = question({
   content: {
-    code: Question.accommodation_community_suitable_housing,
+    code: Question.community_suitable_housing,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.accommodation_community_suitable_housing.text', CaseData.Forename),
-    hint: contentFor('question.accommodation_community_suitable_housing.hint'),
+    text: contentFor('question.community_suitable_housing.text', CaseData.Forename),
+    hint: contentFor('question.community_suitable_housing.hint'),
     options: [
       { value: CommonOption.yes, text: commonContentFor('option.YES') },
       {
         value: Option.yes_with_concerns,
-        text: contentFor('question.accommodation_community_suitable_housing.option.YES_WITH_CONCERNS'),
+        text: contentFor('question.community_suitable_housing.option.YES_WITH_CONCERNS'),
       },
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_suitable_housing.validation'),
+    validationMessage: contentFor('question.community_suitable_housing.validation'),
   },
   displayModes: {
     field: radioField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_suitable_housing.path,
+      changeHref: Step.community_suitable_housing.path,
       visibleWhen: hasAccommodation,
     }),
   },
@@ -212,45 +212,45 @@ const suitableAccommodation = question({
 
 const suitableAccommodationConcerns = question({
   content: {
-    code: Question.accommodation_community_suitable_housing_concerns,
+    code: Question.community_suitable_housing_concerns,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.accommodation_community_suitable_housing_concerns.text', CaseData.ForenamePossessive),
+    text: contentFor('question.community_suitable_housing_concerns.text', CaseData.ForenamePossessive),
     hint: commonContentFor('select_all_that_apply'),
     options: [
       {
         value: Option.facilities,
-        text: contentFor('question.accommodation_community_suitable_housing_concerns.option.FACILITIES'),
+        text: contentFor('question.community_suitable_housing_concerns.option.FACILITIES'),
       },
       {
         value: Option.overcrowding,
-        text: contentFor('question.accommodation_community_suitable_housing_concerns.option.OVERCROWDING'),
+        text: contentFor('question.community_suitable_housing_concerns.option.OVERCROWDING'),
       },
       {
         value: Option.exploitation,
-        text: contentFor('question.accommodation_community_suitable_housing_concerns.option.EXPLOITATION'),
+        text: contentFor('question.community_suitable_housing_concerns.option.EXPLOITATION'),
       },
       {
         value: Option.safety,
-        text: contentFor('question.accommodation_community_suitable_housing_concerns.option.SAFETY'),
+        text: contentFor('question.community_suitable_housing_concerns.option.SAFETY'),
       },
       {
         value: Option.lives_with_victim,
-        text: contentFor('question.accommodation_community_suitable_housing_concerns.option.LIVES_WITH_VICTIM'),
+        text: contentFor('question.community_suitable_housing_concerns.option.LIVES_WITH_VICTIM'),
       },
       {
         value: Option.victimisation,
-        text: contentFor('question.accommodation_community_suitable_housing_concerns.option.VICTIMISATION'),
+        text: contentFor('question.community_suitable_housing_concerns.option.VICTIMISATION'),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
         reveals: requiredDetails({
-          code: Question.accommodation_community_suitable_housing_concerns_other_details,
+          code: Question.community_suitable_housing_concerns_other_details,
           validationMessage: commonContentFor('validation.enter_details'),
         }),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_suitable_housing_concerns.validation'),
+    validationMessage: contentFor('question.community_suitable_housing_concerns.validation'),
   },
   displayModes: {
     field: checkboxField({
@@ -258,7 +258,7 @@ const suitableAccommodationConcerns = question({
       visibleWhen: isSuitableWithConcernsAccommodation,
     }),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_suitable_housing_concerns.path,
+      changeHref: Step.community_suitable_housing_concerns.path,
       visibleWhen: isSuitableWithConcernsAccommodation,
     }),
   },
@@ -266,50 +266,50 @@ const suitableAccommodationConcerns = question({
 
 const unsuitableAccommodationConcerns = question({
   content: {
-    code: Question.accommodation_community_unsuitable_housing_concerns,
+    code: Question.community_unsuitable_housing_concerns,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.accommodation_community_unsuitable_housing_concerns.text'),
+    text: contentFor('question.community_unsuitable_housing_concerns.text'),
     hint: commonContentFor('select_all_that_apply'),
     options: [
       {
         value: Option.facilities,
-        text: contentFor('question.accommodation_community_unsuitable_housing_concerns.option.FACILITIES'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.FACILITIES'),
       },
       {
         value: Option.overcrowding,
-        text: contentFor('question.accommodation_community_unsuitable_housing_concerns.option.OVERCROWDING'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.OVERCROWDING'),
       },
       {
         value: Option.exploitation,
-        text: contentFor('question.accommodation_community_unsuitable_housing_concerns.option.EXPLOITATION'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.EXPLOITATION'),
       },
       {
         value: Option.safety,
-        text: contentFor('question.accommodation_community_unsuitable_housing_concerns.option.SAFETY'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.SAFETY'),
       },
       {
         value: Option.lives_with_victim,
-        text: contentFor('question.accommodation_community_unsuitable_housing_concerns.option.LIVES_WITH_VICTIM'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.LIVES_WITH_VICTIM'),
       },
       {
         value: Option.victimisation,
-        text: contentFor('question.accommodation_community_unsuitable_housing_concerns.option.VICTIMISATION'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.VICTIMISATION'),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
         reveals: requiredDetails({
-          code: Question.accommodation_community_unsuitable_housing_concerns_other_details,
+          code: Question.community_unsuitable_housing_concerns_other_details,
           validationMessage: commonContentFor('validation.enter_details'),
         }),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_unsuitable_housing_concerns.validation'),
+    validationMessage: contentFor('question.community_unsuitable_housing_concerns.validation'),
   },
   displayModes: {
     field: checkboxField({ dependentWhen: isNotSuitableAccommodation, visibleWhen: isNotSuitableAccommodation }),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_suitable_housing_concerns.path,
+      changeHref: Step.community_suitable_housing_concerns.path,
       visibleWhen: isNotSuitableAccommodation,
     }),
   },
@@ -317,50 +317,50 @@ const unsuitableAccommodationConcerns = question({
 
 const noAccommodationReason = question({
   content: {
-    code: Question.accommodation_community_no_accommodation_reason,
+    code: Question.community_no_accommodation_reason,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.accommodation_community_no_accommodation_reason.text', CaseData.Forename),
-    hint: { html: contentFor('question.accommodation_community_no_accommodation_reason.hint') },
+    text: contentFor('question.community_no_accommodation_reason.text', CaseData.Forename),
+    hint: { html: contentFor('question.community_no_accommodation_reason.hint') },
     options: [
       {
         value: Option.alcohol_problems,
-        text: contentFor('question.accommodation_community_no_accommodation_reason.option.ALCOHOL_PROBLEMS'),
+        text: contentFor('question.community_no_accommodation_reason.option.ALCOHOL_PROBLEMS'),
       },
       {
         value: Option.drug_problems,
-        text: contentFor('question.accommodation_community_no_accommodation_reason.option.DRUG_PROBLEMS'),
+        text: contentFor('question.community_no_accommodation_reason.option.DRUG_PROBLEMS'),
       },
       {
         value: Option.financial_difficulties,
-        text: contentFor('question.accommodation_community_no_accommodation_reason.option.FINANCIAL_DIFFICULTIES'),
+        text: contentFor('question.community_no_accommodation_reason.option.FINANCIAL_DIFFICULTIES'),
       },
       {
         value: Option.risk_to_others,
-        text: contentFor('question.accommodation_community_no_accommodation_reason.option.RISK_TO_OTHERS'),
+        text: contentFor('question.community_no_accommodation_reason.option.RISK_TO_OTHERS'),
       },
       {
         value: Option.safety,
-        text: contentFor('question.accommodation_community_no_accommodation_reason.option.SAFETY'),
+        text: contentFor('question.community_no_accommodation_reason.option.SAFETY'),
       },
       {
         value: Option.prison_release,
-        text: contentFor('question.accommodation_community_no_accommodation_reason.option.PRISON_RELEASE'),
+        text: contentFor('question.community_no_accommodation_reason.option.PRISON_RELEASE'),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
         reveals: requiredDetails({
-          code: Question.accommodation_community_no_accommodation_reason_other_details,
+          code: Question.community_no_accommodation_reason_other_details,
           validationMessage: commonContentFor('validation.enter_details'),
         }),
       },
     ],
-    validationMessage: contentFor('question.accommodation_community_no_accommodation_reason.validation'),
+    validationMessage: contentFor('question.community_no_accommodation_reason.validation'),
   },
   displayModes: {
     field: checkboxField(),
     summaryRow: itemisedSummaryRow({
-      changeHref: Step.accommodation_community_no_accommodation_reason.path,
+      changeHref: Step.community_no_accommodation_reason.path,
       visibleWhen: not(hasAccommodation),
     }),
   },

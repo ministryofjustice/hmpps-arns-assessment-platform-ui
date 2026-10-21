@@ -1,30 +1,30 @@
 export const Step = {
-  accommodation_community_current_accommodation: {
-    code: 'accommodation_community_current_accommodation',
+  community_current_accommodation: {
+    code: 'community_current_accommodation',
     path: 'accommodation-community-current-accommodation', // accommodation-status
   },
-  accommodation_community_current_accommodation_settled: {
-    code: 'accommodation_community_current_accommodation_settled',
+  community_current_accommodation_settled: {
+    code: 'community_current_accommodation_settled',
     path: 'accommodation-community-current-accommodation-settled',
   },
-  accommodation_community_suitable_housing_location: {
-    code: 'accommodation_community_suitable_housing_location',
+  community_suitable_housing_location: {
+    code: 'community_suitable_housing_location',
     path: 'accommodation-community-suitable-housing-location',
   },
-  accommodation_community_suitable_housing_location_concerns: {
-    code: 'accommodation_community_suitable_housing_location_concerns',
+  community_suitable_housing_location_concerns: {
+    code: 'community_suitable_housing_location_concerns',
     path: 'accommodation-community-suitable-housing-location-concerns',
   },
-  accommodation_community_suitable_housing: {
-    code: 'accommodation_community_suitable_housing',
+  community_suitable_housing: {
+    code: 'community_suitable_housing',
     path: 'accommodation-community-suitable-housing',
   },
-  accommodation_community_suitable_housing_concerns: {
-    code: 'accommodation_community_suitable_housing_concerns',
+  community_suitable_housing_concerns: {
+    code: 'community_suitable_housing_concerns',
     path: 'accommodation-community-suitable-housing-concerns',
   },
-  accommodation_community_no_accommodation_reason: {
-    code: 'accommodation_community_no_accommodation_reason',
+  community_no_accommodation_reason: {
+    code: 'community_no_accommodation_reason',
     path: 'accommodation-community-no-accommodation-reason',
   },
   accommodation_changes: {

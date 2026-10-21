@@ -7,9 +7,9 @@ import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeedsV2/sanUtils
 import { expectSanAuditEvent, SanAuditEvent } from './helpers'
 
 const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
-  `/strengths-and-needs/v2.0/edit/${sanAssessmentId}/accommodation/${Step.accommodation_community_current_accommodation.path}`
+  `/strengths-and-needs/v2.0/edit/${sanAssessmentId}/accommodation/${Step.community_current_accommodation.path}`
 
-const settledAnswers = [{ question: Question.accommodation_community_current_accommodation, value: Option.settled }]
+const settledAnswers = [{ question: Question.community_current_accommodation, value: Option.settled }]
 
 test.describe('User changes an answer', () => {
   test('records which fields changed, not their values', async ({
@@ -31,7 +31,7 @@ test.describe('User changes an answer', () => {
 
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.EDIT_ANSWERS)
     expectSanAuditEvent(event)
-    expect(event.details.changedFields).toContain('accommodation_community_current_accommodation')
+    expect(event.details.changedFields).toContain('community_current_accommodation')
     expect(JSON.stringify(event.details)).not.toContain('TEMPORARY')
   })
   test('is not raised when a page is resubmitted unchanged', async ({

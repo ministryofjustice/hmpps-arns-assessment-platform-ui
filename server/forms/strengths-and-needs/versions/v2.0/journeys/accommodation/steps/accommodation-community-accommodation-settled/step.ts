@@ -12,7 +12,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const accommodationSettledStep = step({
-  path: `/${Step.accommodation_community_current_accommodation_settled.path}`,
+  path: `/${Step.community_current_accommodation_settled.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
@@ -24,23 +24,23 @@ export const accommodationSettledStep = step({
     auditPageView(
       SanAuditEvent.VIEW_QUESTION_PAGE,
       Section.accommodation,
-      Step.accommodation_community_current_accommodation_settled,
+      Step.community_current_accommodation_settled,
     ),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.accommodation_community_current_accommodation_settled.code),
+      condition: isUserSubmittedCondition(Step.community_current_accommodation_settled.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.accommodation_community_current_accommodation_settled.code, Section.accommodation),
+    autosaveSubmit(Step.community_current_accommodation_settled.code, Section.accommodation),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
         effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_community_current_accommodation_settled.code),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.community_current_accommodation_settled.code),
         ],
       },
       onValid: {
@@ -51,10 +51,10 @@ export const accommodationSettledStep = step({
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
-            Step.accommodation_community_current_accommodation_settled,
+            Step.community_current_accommodation_settled,
           ),
         ],
-        next: [redirect({ goto: Step.accommodation_community_suitable_housing_location.path })],
+        next: [redirect({ goto: Step.community_suitable_housing_location.path })],
       },
       onInvalid: {
         effects: [
@@ -64,7 +64,7 @@ export const accommodationSettledStep = step({
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
-            Step.accommodation_community_current_accommodation_settled,
+            Step.community_current_accommodation_settled,
           ),
         ],
       },

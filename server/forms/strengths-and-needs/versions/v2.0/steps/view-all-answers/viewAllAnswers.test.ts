@@ -147,8 +147,8 @@ describe('view all answers', () => {
 
   it('reads as answer-then-detail however deeply the answers are nested', async () => {
     const result = await renderPage({
-      accommodation_community_suitable_housing_concerns: 'OTHER',
-      accommodation_community_suitable_housing_concerns_other_details: 'Details',
+      community_suitable_housing_concerns: 'OTHER',
+      community_suitable_housing_concerns_other_details: 'Details',
     })
 
     expect(bodyText(result)).toEqual(['Other', 'Details'])

@@ -12,7 +12,7 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const suitableHousingConcernsStep = step({
-  path: `/${Step.accommodation_community_suitable_housing_concerns.path}`,
+  path: `/${Step.community_suitable_housing_concerns.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
@@ -28,23 +28,23 @@ export const suitableHousingConcernsStep = step({
     auditPageView(
       SanAuditEvent.VIEW_QUESTION_PAGE,
       Section.accommodation,
-      Step.accommodation_community_suitable_housing_concerns,
+      Step.community_suitable_housing_concerns,
     ),
   ],
   validWhen: [
     validation({
-      condition: isUserSubmittedCondition(Step.accommodation_community_suitable_housing_concerns.code),
+      condition: isUserSubmittedCondition(Step.community_suitable_housing_concerns.code),
       message: 'This step is not user submitted',
     }),
   ],
   onSubmission: [
-    autosaveSubmit(Step.accommodation_community_suitable_housing_concerns.code, Section.accommodation),
+    autosaveSubmit(Step.community_suitable_housing_concerns.code, Section.accommodation),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
         effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_community_suitable_housing_concerns.code),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.community_suitable_housing_concerns.code),
         ],
       },
       onValid: {
@@ -55,7 +55,7 @@ export const suitableHousingConcernsStep = step({
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
-            Step.accommodation_community_suitable_housing_concerns,
+            Step.community_suitable_housing_concerns,
           ),
         ],
         next: [redirect({ goto: Step.accommodation_changes.path })],
@@ -68,7 +68,7 @@ export const suitableHousingConcernsStep = step({
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
-            Step.accommodation_community_suitable_housing_concerns,
+            Step.community_suitable_housing_concerns,
           ),
         ],
       },

@@ -35,14 +35,14 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.accommodation_community_current_accommodation, value: Option.settled }])
-      .withUserSubmittedSteps([Step.accommodation_community_current_accommodation.code])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.settled }])
+      .withUserSubmittedSteps([Step.community_current_accommodation.code])
       .save()
 
     await navigateToStrengthsAndNeeds(
       page,
       handoverLink,
-      Step.accommodation_community_current_accommodation_settled.path,
+      Step.community_current_accommodation_settled.path,
     )
     const accommodationPage = await AccommodationPage.verifyOnPage(page, "Is Test's accommodation settled?")
 
@@ -64,12 +64,12 @@ test.describe('Questions', () => {
 
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.accommodation_community_current_accommodation, value: Option.no_accommodation },
+        { question: Question.community_current_accommodation, value: Option.no_accommodation },
       ])
-      .withUserSubmittedSteps([Step.accommodation_community_current_accommodation.code])
+      .withUserSubmittedSteps([Step.community_current_accommodation.code])
       .save()
 
-    await navigateToStrengthsAndNeeds(page, handoverLink, Step.accommodation_community_no_accommodation_reason.path)
+    await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_no_accommodation_reason.path)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'have no accommodation')
 
     await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`

@@ -12,7 +12,7 @@ test.describe("Selects 'Save and Continue' for each Criminogenic Needs question 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await expect(page).toHaveURL(/accommodation-community-current-accommodation-settled/)
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.SAVE_QUESTION_PAGE, {
-      additionalFilter: onPage('accommodation', 'accommodation_community_current_accommodation'),
+      additionalFilter: onPage('accommodation', 'community_current_accommodation'),
     })
     expectSanAuditEvent(event)
   })

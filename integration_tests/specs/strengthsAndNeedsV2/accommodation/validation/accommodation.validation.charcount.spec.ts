@@ -32,24 +32,24 @@ import { test } from '../../fixtures'
 //   { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 // ]
 const answers = [
-  { question: Question.accommodation_community_current_accommodation, value: Option.settled },
-  { question: Question.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
-  { question: Question.accommodation_community_suitable_housing_location, value: CommonOption.no },
+  { question: Question.community_current_accommodation, value: Option.settled },
+  { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
+  { question: Question.community_suitable_housing_location, value: CommonOption.no },
   {
-    question: Question.accommodation_community_suitable_housing_location_concerns,
+    question: Question.community_suitable_housing_location_concerns,
     value: [Option.criminal_associates, Option.victimisation, CommonOption.other],
   },
   {
-    question: Question.accommodation_community_suitable_housing_location_concerns_other_details,
+    question: Question.community_suitable_housing_location_concerns_other_details,
     value: details('location concerns other'),
   },
-  { question: Question.accommodation_community_suitable_housing, value: Option.yes_with_concerns },
+  { question: Question.community_suitable_housing, value: Option.yes_with_concerns },
   {
-    question: Question.accommodation_community_suitable_housing_concerns,
+    question: Question.community_suitable_housing_concerns,
     value: [Option.facilities, Option.overcrowding, CommonOption.other],
   },
   {
-    question: Question.accommodation_community_suitable_housing_concerns_other_details,
+    question: Question.community_suitable_housing_concerns_other_details,
     value: details('housing concerns other'),
   },
   { question: Question.accommodation_changes, value: CommonOption.making_changes },
@@ -60,17 +60,17 @@ const answers = [
 ]
 
 const noAccommodation = [
-  { question: Question.accommodation_community_current_accommodation, value: Option.no_accommodation },
-  { question: Question.accommodation_community_no_accommodation_reason, value: Option.alcohol_problems },
+  { question: Question.community_current_accommodation, value: Option.no_accommodation },
+  { question: Question.community_no_accommodation_reason, value: Option.alcohol_problems },
 ]
 
 const userSubmittedSteps = [
-  Step.accommodation_community_current_accommodation.code,
-  Step.accommodation_community_current_accommodation_settled.code,
-  Step.accommodation_community_suitable_housing_location.code,
-  Step.accommodation_community_suitable_housing_location_concerns.code,
-  Step.accommodation_community_suitable_housing.code,
-  Step.accommodation_community_suitable_housing_concerns.code,
+  Step.community_current_accommodation.code,
+  Step.community_current_accommodation_settled.code,
+  Step.community_suitable_housing_location.code,
+  Step.community_suitable_housing_location_concerns.code,
+  Step.community_suitable_housing.code,
+  Step.community_suitable_housing_concerns.code,
   Step.accommodation_changes.code,
   Step.accommodation_summary.code,
 ]
@@ -80,9 +80,9 @@ test.describe('Accommodation character counts', () => {
     const section = await openSection(accommodation, answers, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
-    await page.goto(`${section}/${Step.accommodation_community_suitable_housing_location_concerns.path}`)
+    await page.goto(`${section}/${Step.community_suitable_housing_location_concerns.path}`)
 
-    await questions.accommodation_community_suitable_housing_location_concerns.option(CommonOption.other).check()
+    await questions.community_suitable_housing_location_concerns.option(CommonOption.other).check()
 
     await expectTheLimitsOnThePage(accommodationPage)
   })
@@ -91,9 +91,9 @@ test.describe('Accommodation character counts', () => {
     const section = await openSection(accommodation, answers, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
-    await page.goto(`${section}/${Step.accommodation_community_suitable_housing_concerns.path}`)
+    await page.goto(`${section}/${Step.community_suitable_housing_concerns.path}`)
 
-    await questions.accommodation_community_suitable_housing_concerns.option(CommonOption.other).check()
+    await questions.community_suitable_housing_concerns.option(CommonOption.other).check()
 
     await expectTheLimitsOnThePage(accommodationPage)
   })
@@ -102,9 +102,9 @@ test.describe('Accommodation character counts', () => {
     const section = await openSection(accommodation, noAccommodation, userSubmittedSteps)
     const accommodationPage = new AccommodationPage(page)
     const { questions } = accommodationPage
-    await page.goto(`${section}/${Step.accommodation_community_no_accommodation_reason.path}`)
+    await page.goto(`${section}/${Step.community_no_accommodation_reason.path}`)
 
-    await questions.accommodation_community_no_accommodation_reason.option(CommonOption.other).check()
+    await questions.community_no_accommodation_reason.option(CommonOption.other).check()
 
     await expectTheLimitsOnThePage(accommodationPage)
   })

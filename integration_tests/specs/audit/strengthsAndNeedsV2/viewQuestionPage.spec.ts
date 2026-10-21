@@ -9,7 +9,7 @@ test.describe('Views Question pages for each Criminogenic Needs section', () => 
     await strengthsAndNeedsBuilder.fresh().save()
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.VIEW_QUESTION_PAGE, {
-      additionalFilter: onPage('accommodation', Step.accommodation_community_current_accommodation.code),
+      additionalFilter: onPage('accommodation', Step.community_current_accommodation.code),
     })
     expectSanAuditEvent(event)
   })
