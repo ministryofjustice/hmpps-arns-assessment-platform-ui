@@ -23,7 +23,6 @@ import { CommonOption } from '../../../../constants/commonOption'
 export const alcoholUseExcessiveDrinkingPastIssuesStep = step({
   path: `/${Step.alcohol_use_excessive_drinking_past_issues.path}`,
   title: sectionPageTitle(Section.alcohol_use),
-  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),

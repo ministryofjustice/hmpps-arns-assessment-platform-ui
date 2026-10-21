@@ -40,7 +40,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     assessmentId: string,
     step: string = this.firstStep,
   ): Promise<void> {
-    await navigateToStrengthsAndNeeds(page, handoverLink, step)
+    await navigateToStrengthsAndNeeds(page, handoverLink)
 
     await page.goto(`${baseUrl}${sanFormPath}${v2Path}/edit/${assessmentId}${this.section}/${step}`)
     expect(page.url()).toContain(step)
@@ -56,7 +56,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     assessmentId: string,
     step: string = this.firstStep,
   ): Promise<void> {
-    await navigateToStrengthsAndNeedsReadOnly(page, handoverLink, step)
+    await navigateToStrengthsAndNeedsReadOnly(page, handoverLink)
     await page.goto(`${baseUrl}${sanFormPath}${v2Path}/view/${assessmentId}${this.section}/${step}`)
     expect(page.url()).toContain(step)
   }

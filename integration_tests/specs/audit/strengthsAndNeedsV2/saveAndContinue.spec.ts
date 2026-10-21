@@ -1,21 +1,19 @@
-// import { expect } from '@playwright/test'
-import { test } from '../../../support/fixtures'
-// import { navigateToStrengthsAndNeeds } from '../../strengthsAndNeeds/sanUtils'
-// import { expectSanAuditEvent, onPage, SanAuditEvent } from './helpers'
+import { expect } from '@playwright/test'
+import { TargetService, test } from '../../../support/fixtures'
+import { navigateToStrengthsAndNeeds } from '../../strengthsAndNeedsV2/sanUtils'
+import { expectSanAuditEvent, onPage, SanAuditEvent } from './helpers'
 
 test.describe("Selects 'Save and Continue' for each Criminogenic Needs question page", () => {
-  // TODO Uncomment it during ACT-750 Accommodation framework
-  // test('saving a question page', async ({ page, createSession, strengthsAndNeedsBuilder, auditQueue }) => {
-  //   const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-  //   await strengthsAndNeedsBuilder.fresh().save()
-  //   await navigateToStrengthsAndNeeds(page, handoverLink)
-  //   await page.getByLabel('Settled').check()
-  //   await page.getByLabel('Homeowner').check()
-  //   await page.getByRole('button', { name: 'Save and continue' }).click()
-  //   await expect(page).toHaveURL(/accommodation-details/)
-  //   const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.SAVE_QUESTION_PAGE, {
-  //     additionalFilter: onPage('accommodation', 'accommodation_status'),
-  //   })
-  //   expectSanAuditEvent(event)
-  // })
+  test('saving a question page', async ({ page, createSession, strengthsAndNeedsBuilder, auditQueue }) => {
+    const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    await strengthsAndNeedsBuilder.fresh().save()
+    await navigateToStrengthsAndNeeds(page, handoverLink)
+    await page.getByLabel('Settled').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await expect(page).toHaveURL(/accommodation-community-current-accommodation-settled/)
+    const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.SAVE_QUESTION_PAGE, {
+      additionalFilter: onPage('accommodation', 'accommodation_community_current_accommodation'),
+    })
+    expectSanAuditEvent(event)
+  })
 })

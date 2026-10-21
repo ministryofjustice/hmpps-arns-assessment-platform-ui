@@ -1,40 +1,81 @@
-import { expect } from '@playwright/test'
+import { expect, Page } from '@playwright/test'
 import { Section, SectionComplete } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
-import { test, TargetService } from '../../support/fixtures'
+import { Question as AlcoholQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/question'
+import { Question as AccommodationQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
+import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
+import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
+import { details } from 'testUtils'
 import { checkAccessibility, navigateToStrengthsAndNeeds, sanFormPath, v2Path, viewAllAnswers } from './sanUtils'
+import { test, TargetService } from '../../support/fixtures'
 
 type Answer = { question: string; value: string | string[] }
 
-const details = (label: string) => `${label} — free text answer.`
+const accommodation: Answer[] = [
+  { question: AccommodationQuestion.accommodation_community_current_accommodation, value: AccommodationOption.settled },
+  { question: AccommodationQuestion.accommodation_community_current_accommodation_settled, value: CommonOption.yes },
+  { question: AccommodationQuestion.accommodation_community_suitable_housing_location, value: CommonOption.no },
+  {
+    question: AccommodationQuestion.accommodation_community_suitable_housing_location_concerns,
+    value: [AccommodationOption.criminal_associates, AccommodationOption.victimisation, CommonOption.other],
+  },
+  {
+    question: AccommodationQuestion.accommodation_community_suitable_housing_location_concerns_other_details,
+    value: details('location concerns other'),
+  },
+  { question: AccommodationQuestion.accommodation_community_suitable_housing, value: CommonOption.no },
+  {
+    question: AccommodationQuestion.accommodation_community_suitable_housing_concerns,
+    value: [AccommodationOption.facilities, AccommodationOption.overcrowding, CommonOption.other],
+  },
+  {
+    question: AccommodationQuestion.accommodation_community_suitable_housing_concerns_other_details,
+    value: details('housing concerns other'),
+  },
+  { question: AccommodationQuestion.accommodation_changes, value: CommonOption.making_changes },
+  {
+    question: AccommodationQuestion.accommodation_changes_making_changes_details,
+    value: details('actively making changings'),
+  },
 
-// TODO Uncomment it during ACT-750 Accommodation framework
-// const accommodation: Answer[] = [
-//   { question: 'current_accommodation', value: 'TEMPORARY' },
-//   { question: 'type_of_temporary_accommodation', value: 'CAS3' },
-//   { question: 'cas3_end_date', value: '2027-01-15' },
-//   { question: 'living_with', value: ['FAMILY', 'PARTNER', 'OTHER'] },
-//   { question: 'living_with_partner_details', value: details('living with partner') },
-//   { question: 'living_with_other_details', value: details('living with other') },
-//   { question: 'past_accommodation_details', value: details('past accommodation') },
-//   { question: 'suitable_housing_location', value: 'NO' },
-//   { question: 'suitable_housing_location_concerns', value: ['AREA_SAFETY', 'OTHER'] },
-//   { question: 'suitable_housing_location_concerns_details', value: details('location concerns other') },
-//   { question: 'suitable_housing', value: 'YES_WITH_CONCERNS' },
-//   { question: 'suitable_housing_concerns', value: ['FACILITIES', 'OVERCROWDING', 'OTHER'] },
-//   { question: 'suitable_housing_concerns_details', value: details('housing concerns other') },
-//   { question: 'suitable_housing_planned', value: 'YES' },
-//   { question: 'future_accommodation_type', value: ['AWAITING_PLACEMENT', 'OTHER'] },
-//   { question: 'future_accommodation_type_awaiting_placement_details', value: details('awaiting placement') },
-//   { question: 'future_accommodation_type_other_details', value: details('future accommodation other') },
-//   { question: 'accommodation_changes', value: 'WANTS_TO_MAKE_CHANGES_NEEDS_HELP' },
-//   { question: 'wants_to_make_changes_needs_help_accommodation_details', value: details('needs help to change') },
-//   { question: 'accommodation_strengths_protective_factors', value: 'YES' },
-//   { question: 'accommodation_strengths_protective_factors_details', value: details('accommodation strengths') },
-//   { question: 'accommodation_linked_to_serious_harm', value: 'NO' },
-//   { question: 'accommodation_no_serious_harm_details', value: details('no serious harm') },
-//   { question: 'accommodation_linked_to_reoffending', value: 'YES' },
-//   { question: 'accommodation_risk_of_reoffending_details', value: details('reoffending risk') },
-// ]
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors,
+    value: CommonOption.yes,
+  },
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
+    value: details('accommodation strengths'),
+  },
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm_no_details,
+    value: details('no serious harm'),
+  },
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending_yes_details,
+    value: details('reoffending risk'),
+  },
+
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors,
+    value: CommonOption.yes,
+  },
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
+    value: details('accommodation strengths'),
+  },
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm_no_details,
+    value: details('no serious harm'),
+  },
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+  {
+    question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
+    value: details('reoffending risk'),
+  },
+]
 
 // TODO Uncomment it during ACT-751 Employment and Education framework
 // const employment: Answer[] = [
@@ -135,29 +176,35 @@ const details = (label: string) => `${label} — free text answer.`
 // ]
 
 const alcohol: Answer[] = [
-  { question: 'alcohol_current_issues', value: 'SIGNIFICANT' },
-  { question: 'alcohol_evidence_of_excess_drinking', value: 'YES_WITH_EVIDENCE' },
-  { question: 'alcohol_past_issues', value: 'YES' },
-  { question: 'alcohol_past_issues_yes_details', value: details('past alcohol issues') },
-  { question: 'alcohol_has_stopped_or_reduced', value: 'YES' },
-  { question: 'alcohol_has_stopped_or_reduced_yes_details', value: details('has cut down before') },
-  { question: 'alcohol_does_stop_or_reduce', value: 'YES' },
-  { question: 'alcohol_does_stop_or_reduce_yes_details', value: details('has cut down before') },
-  { question: 'alcohol_use_changes', value: 'DOES_NOT_WANT_TO_MAKE_CHANGES' },
-  { question: 'alcohol_use_changes_does_not_want_to_make_changes_details', value: details('does not want to change') },
-  { question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors', value: 'NO' },
+  { question: AlcoholQuestion.alcohol_current_issues, value: AlcoholOption.significant },
+  { question: AlcoholQuestion.alcohol_evidence_of_excess_drinking, value: AlcoholOption.yes_with_evidence },
+  { question: AlcoholQuestion.alcohol_past_issues, value: CommonOption.yes },
+  { question: AlcoholQuestion.alcohol_past_issues_yes_details, value: details('past alcohol issues') },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced_past, value: CommonOption.yes },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced_past_yes_details, value: details('has cut down before') },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced, value: CommonOption.yes },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced_yes_details, value: details('has cut down before') },
+  { question: AlcoholQuestion.alcohol_use_changes, value: CommonOption.does_not_want_to_make_changes },
   {
-    question: 'alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details',
+    question: AlcoholQuestion.alcohol_use_changes_does_not_want_to_make_changes_details,
+    value: details('does not want to change'),
+  },
+  {
+    question: AlcoholQuestion.alcohol_use_practitioner_analysis_strengths_or_protective_factors,
+    value: CommonOption.no,
+  },
+  {
+    question: AlcoholQuestion.alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details,
     value: details('no alcohol strengths'),
   },
-  { question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
+  { question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
   {
-    question: 'alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details',
+    question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details,
     value: details('alcohol serious harm'),
   },
-  { question: 'alcohol_use_practitioner_analysis_risk_of_reoffending', value: 'YES' },
+  { question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
   {
-    question: 'alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details',
+    question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details,
     value: details('alcohol reoffending'),
   },
 ]
@@ -297,7 +344,7 @@ const alcohol: Answer[] = [
 // ]
 
 const statuses: Record<string, string> = {
-  // [Section.accommodation.statusKey]: SectionComplete.no,
+  [Section.accommodation.statusKey]: SectionComplete.yes,
   // [Section.employment_and_education.statusKey]: SectionComplete.no,
   // [Section.finance.statusKey]: SectionComplete.no,
   // [Section.drug_use.statusKey]: SectionComplete.yes,
@@ -308,7 +355,7 @@ const statuses: Record<string, string> = {
   // [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
 
-// const pageText = (page: Page) => page.locator('#main-content').innerText()
+const pageText = (page: Page) => page.locator('#main-content').innerText()
 
 test.describe('View all answers', () => {
   test('shows every section, and within each every answer given', async ({
@@ -324,7 +371,7 @@ test.describe('View all answers', () => {
       .extend(sanAssessmentId)
       .withAnswers([
         // TODO Uncomment for each section work
-        // ...accommodation,
+        ...accommodation,
         // ...employment,
         // ...finance,
         // ...drugUse,
@@ -344,21 +391,12 @@ test.describe('View all answers', () => {
 
     // Every section, and a status against each.
     // TODO Uncomment for each section work
-    // expect(page.getByText('Accommodation\nIncomplete', { exact: true })).toBeVisible()
+    expect(page.getByText('Accommodation\nComplete', { exact: true })).toBeVisible()
     // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
     // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
     expect(page.getByText('Alcohol use\nComplete', { exact: true })).toBeVisible()
 
-    // A date reads as a date, not as it is stored.
-    // TODO Uncomment it during ACT-750 Accommodation framework
-    // expect(page.getByText('15 January 2027', { exact: true })).toBeVisible()
-    // expect(page.getByText('2027-01-15', { exact: true })).not.toBeVisible()
-
     // Each selected option is followed by what it revealed
-
-    // TODO Uncomment it during ACT-750 Accommodation framework
-    // expect(page.getByText('Awaiting placement', { exact: true })).toBeVisible()
-    // expect(page.getByText('awaiting placement — free')).toBeVisible()
 
     // TODO Uncomment it during ACT-752 Finance framework
     // expect(page.getByText('Debt to others', { exact: true })).toBeVisible()
@@ -394,38 +432,64 @@ test.describe('View all answers', () => {
     // expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
-  // TODO Uncomment it during ACT-750 Accommodation framework
-  // test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
-  //   const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+  test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
 
-  //   await navigateToStrengthsAndNeeds(page, handoverLink)
-  //   await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await navigateToStrengthsAndNeeds(page, handoverLink)
+    await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
-  //   // Nothing answered: the sections, their statuses, and nothing else.
-  //   expect(await pageText(page)).toContain('Accommodation\nIncomplete\nEmployment and education')
+    // Nothing answered: the sections, their statuses, and nothing else.
+    expect(await pageText(page)).toContain(
+      "Back\nTest's strengths and needs\nAccommodation\nIncomplete\nAlcohol use\nIncomplete",
+    )
 
-  //   await strengthsAndNeedsBuilder
-  //     .extend(sanAssessmentId)
-  //     .withAnswers([
-  //       { question: 'current_accommodation', value: 'NO_ACCOMMODATION' },
-  //       { question: 'type_of_no_accommodation', value: 'ROUGH_SLEEPING' },
-  //       { question: 'no_accommodation_reason', value: ['DRUG_PROBLEMS', 'FINANCIAL_DIFFICULTIES', 'OTHER'] },
-  //       { question: 'no_accommodation_reason_other_details', value: details('other reason for no accommodation') },
-  //       { question: 'living_with', value: ['ALONE'] },
-  //       { question: 'drug_use', value: 'NO' },
-  //     ])
-  //     .save()
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId)
+      .withAnswers([
+        {
+          question: AccommodationQuestion.accommodation_community_current_accommodation,
+          value: AccommodationOption.no_accommodation,
+        },
+        {
+          question: AccommodationQuestion.accommodation_community_no_accommodation_reason,
+          value: [AccommodationOption.drug_problems, CommonOption.other],
+        },
+        {
+          question: AccommodationQuestion.accommodation_community_no_accommodation_reason_other_details,
+          value: details('other reason for no'),
+        },
+        { question: AlcoholQuestion.alcohol_current_issues, value: 'SIGNIFICANT' },
+        { question: AlcoholQuestion.alcohol_evidence_of_excess_drinking, value: 'YES_WITH_EVIDENCE' },
+        { question: AlcoholQuestion.alcohol_past_issues, value: 'YES' },
+        { question: AlcoholQuestion.alcohol_past_issues_yes_details, value: details('past alcohol issues') },
+        { question: AlcoholQuestion.alcohol_stopped_or_reduced_past, value: 'YES' },
+        {
+          question: AlcoholQuestion.alcohol_stopped_or_reduced_past_yes_details,
+          value: details('has cut down before'),
+        },
+        { question: AlcoholQuestion.alcohol_stopped_or_reduced, value: 'YES' },
+        { question: AlcoholQuestion.alcohol_stopped_or_reduced_yes_details, value: details('has cut down before') },
+        { question: AlcoholQuestion.alcohol_use_changes, value: 'DOES_NOT_WANT_TO_MAKE_CHANGES' },
+        {
+          question: AlcoholQuestion.alcohol_use_changes_does_not_want_to_make_changes_details,
+          value: details('does not want to change'),
+        },
+        { question: AlcoholQuestion.alcohol_use_practitioner_analysis_strengths_or_protective_factors, value: 'NO' },
+      ])
+      .save()
 
-  //   await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
-  //   expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
-  //   expect(page.getByText('No accommodation', { exact: true })).toBeVisible()
-  //   expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
-  //   expect(page.getByText('Other', { exact: true })).toBeVisible()
-  //   expect(page.getByText('other reason for no')).toBeVisible()
-  //   expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
-  //   expect(page.getByText('Is the location of Test')).not.toBeVisible()
-  // })
+    expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
+    expect(page.getByText('No accommodation', { exact: true })).toBeVisible()
+    expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
+    expect(page.getByText('Other', { exact: true })).toBeVisible()
+    expect(page.getByText('other reason for no')).toBeVisible()
+
+    // TODO Uncomment it during ACT-755 Health and Wellbeing framework
+    // expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
+    expect(page.getByText('Is the location of Test accommodation suitable?')).not.toBeVisible()
+  })
 })
 
 test.describe('Accessibility', () => {

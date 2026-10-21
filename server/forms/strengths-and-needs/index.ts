@@ -26,7 +26,7 @@ const { createRoute } = SANGenerators
 // Where to send the user after accepting privacy, using the mode/uuid from the
 // handover session so they resume where they left off in the accommodation section.
 const privacyScreenRedirectPath = createRoute(
-  [basePath, 'edit', Session('sessionDetails.assessmentIdentifier.uuid'), Section.alcohol_use.sideNavHref],
+  [basePath, 'edit', Session('sessionDetails.assessmentIdentifier.uuid'), Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 

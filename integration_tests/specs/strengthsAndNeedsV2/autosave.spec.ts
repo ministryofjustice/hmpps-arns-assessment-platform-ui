@@ -1,7 +1,7 @@
-// import { expect, Page, Request } from '@playwright/test'
-import { test } from '../../support/fixtures'
-// import { alcohol, navigateToStrengthsAndNeeds, offence, sanFormPath, v2Path } from './sanUtils'
-// import OffenceAnalysisPage from '../../pages/strengthsAndNeeds/offenceAnalysisPage'
+import { expect } from '@playwright/test'
+import { TargetService, test } from '../../support/fixtures'
+import { navigateToStrengthsAndNeeds } from './sanUtils'
+// import OffenceAnalysisPage from '../../pages/strengthsAndNeedsV2/offenceAnalysisPage'
 // import AlcoholUsePage from '../../pages/strengthsAndNeedsV2/alcoholUsePage'
 
 // const AUTOSAVE_TIMEOUT = 30_000
@@ -59,16 +59,15 @@ test.describe('Autosave', () => {
   //     'Walked away from',
   //   )
   // })
-  // TODO Uncomment it during ACT-750 Accommodation framework
-  // test('is off in a read-only session', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
-  //   const { handoverLink } = await createSession({
-  //     targetService: TargetService.STRENGTHS_AND_NEEDS,
-  //     accessMode: 'READ_ONLY',
-  //     planAccessMode: 'READ_WRITE',
-  //   })
-  //   await strengthsAndNeedsBuilder.fresh().save()
-  //   // A read only session is redirected to the section's analysis page.
-  //   await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-analysis')
-  //   await expect(page.getByTestId('main-form')).toHaveAttribute('data-autosave', 'false')
-  // })
+  test('is off in a read-only session', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+      accessMode: 'READ_ONLY',
+      planAccessMode: 'READ_WRITE',
+    })
+    await strengthsAndNeedsBuilder.fresh().save()
+    // A read only session is redirected to the section's analysis page.
+    await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-analysis')
+    await expect(page.getByTestId('main-form')).toHaveAttribute('data-autosave', 'false')
+  })
 })

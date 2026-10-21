@@ -14,7 +14,6 @@ import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants
 export const alcoholUseStoppedOrReducedStep = step({
   path: `/${Step.alcohol_use_stopped_or_reduced.path}`,
   title: sectionPageTitle(Section.alcohol_use),
-  reachability: { entryWhen: true },
   view: {
     locals: {
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),

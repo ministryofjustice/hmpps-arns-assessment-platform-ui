@@ -10,7 +10,7 @@ import {
   redirect,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-// import { accommodationJourney } from './journeys/accommodation'
+import { accommodationJourney } from './journeys/accommodation'
 // import { employmentJourney } from './journeys/employment-and-education'
 // import { financeJourney } from './journeys/finance'
 // import { drugUseJourney } from './journeys/drug-use'
@@ -101,7 +101,7 @@ export const strengthsAndNeedsV2Journey = journey({
     configStep,
   ],
   children: [
-    // accommodationJourney,
+    accommodationJourney,
     // employmentJourney,
     // financeJourney,
     // drugUseJourney,
