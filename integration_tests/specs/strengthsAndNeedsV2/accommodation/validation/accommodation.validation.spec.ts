@@ -8,11 +8,7 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
-  test('validation community_current_accommodation', async ({
-    page,
-    createSession,
-    strengthsAndNeedsBuilder,
-  }) => {
+  test('validation community_current_accommodation', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -52,11 +48,7 @@ test.describe('Validation', () => {
       ])
       .save()
 
-    await navigateToStrengthsAndNeeds(
-      page,
-      handoverLink,
-      Step.community_current_accommodation_settled.path,
-    )
+    await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_current_accommodation_settled.path)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, "Is Test's accommodation settled?")
     const { questions } = accommodationPage
 
@@ -73,11 +65,7 @@ test.describe('Validation', () => {
     await questions.community_current_accommodation_settled.errorLink.click()
     await expect(questions.community_current_accommodation_settled.input).toBeFocused()
   })
-  test('validation community_suitable_housing_location', async ({
-    page,
-    createSession,
-    strengthsAndNeedsBuilder,
-  }) => {
+  test('validation community_suitable_housing_location', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -133,11 +121,7 @@ test.describe('Validation', () => {
       ])
       .save()
 
-    await navigateToStrengthsAndNeeds(
-      page,
-      handoverLink,
-      Step.community_suitable_housing_location_concerns.path,
-    )
+    await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_suitable_housing_location_concerns.path)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What are the concerns with the location?')
     const { questions } = accommodationPage
 
@@ -168,11 +152,7 @@ test.describe('Validation', () => {
     await questions.community_suitable_housing_location_concerns_other_details.errorLink.click()
     await expect(questions.community_suitable_housing_location_concerns_other_details.input).toBeFocused()
   })
-  test('validation community_suitable_housing_concerns', async ({
-    page,
-    createSession,
-    strengthsAndNeedsBuilder,
-  }) => {
+  test('validation community_suitable_housing_concerns', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -318,22 +298,13 @@ test.describe('Validation', () => {
     await questions.accommodation_changes.errorLink.click()
     await expect(questions.accommodation_changes.input).toBeFocused()
   })
-  test('validation community_no_accommodation_reason', async ({
-    page,
-    createSession,
-    strengthsAndNeedsBuilder,
-  }) => {
+  test('validation community_no_accommodation_reason', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.no_accommodation },
-      ])
-      .withUserSubmittedSteps([
-        Step.community_current_accommodation.code,
-        Step.community_no_accommodation_reason.code,
-      ])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.no_accommodation }])
+      .withUserSubmittedSteps([Step.community_current_accommodation.code, Step.community_no_accommodation_reason.code])
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_no_accommodation_reason.path)

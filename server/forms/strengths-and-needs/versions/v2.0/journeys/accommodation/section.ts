@@ -23,9 +23,9 @@ export const hasAccommodation = Answer(Question.community_current_accommodation)
   Condition.Equals(Option.no_accommodation),
 )
 
-export const isNotSuitableHousingLocation = Answer(
-  Question.community_suitable_housing_location,
-).not.match(Condition.Equals(CommonOption.yes))
+export const isNotSuitableHousingLocation = Answer(Question.community_suitable_housing_location).not.match(
+  Condition.Equals(CommonOption.yes),
+)
 
 export const isSuitableAccommodation = Answer(Question.community_suitable_housing).match(
   Condition.Equals(CommonOption.yes),
@@ -81,10 +81,7 @@ const settledAccommodation = question({
   content: {
     code: Question.community_current_accommodation_settled,
     format: QuestionFormat.RADIO,
-    text: contentFor(
-      'question.community_current_accommodation_settled.text',
-      CaseData.ForenamePossessive,
-    ),
+    text: contentFor('question.community_current_accommodation_settled.text', CaseData.ForenamePossessive),
     options: [
       {
         value: CommonOption.yes,
@@ -140,9 +137,7 @@ const suitableHousingLocationConcerns = question({
     options: [
       {
         value: Option.criminal_associates,
-        text: contentFor(
-          'question.community_suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES',
-        ),
+        text: contentFor('question.community_suitable_housing_location_concerns.option.CRIMINAL_ASSOCIATES'),
       },
       {
         value: Option.victimisation,
@@ -154,9 +149,7 @@ const suitableHousingLocationConcerns = question({
       },
       {
         value: Option.neighbour_difficulty,
-        text: contentFor(
-          'question.community_suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY',
-        ),
+        text: contentFor('question.community_suitable_housing_location_concerns.option.NEIGHBOUR_DIFFICULTY'),
       },
       {
         value: Option.area_safety,

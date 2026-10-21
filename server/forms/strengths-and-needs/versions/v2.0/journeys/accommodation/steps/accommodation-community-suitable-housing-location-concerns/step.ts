@@ -39,11 +39,7 @@ export const suitableHousingLocationConcernsStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(
-            Step.community_suitable_housing_location_concerns.code,
-          ),
-        ],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.community_suitable_housing_location_concerns.code)],
       },
       onValid: {
         effects: [

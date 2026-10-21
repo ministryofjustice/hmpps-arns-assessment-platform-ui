@@ -21,11 +21,7 @@ export const suitableHousingLocationStep = step({
   },
   blocks: [accommodationSection.questions.suitableHousingLocation.displayModes.field, saveButton],
   onAccess: [
-    auditPageView(
-      SanAuditEvent.VIEW_QUESTION_PAGE,
-      Section.accommodation,
-      Step.community_suitable_housing_location,
-    ),
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing_location),
   ],
   validWhen: [
     validation({
@@ -39,9 +35,7 @@ export const suitableHousingLocationStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.community_suitable_housing_location.code),
-        ],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.community_suitable_housing_location.code)],
       },
       onValid: {
         effects: [

@@ -21,11 +21,7 @@ export const noAccommodationStep = step({
   },
   blocks: [accommodationSection.questions.noAccommodationReason.displayModes.field, saveButton],
   onAccess: [
-    auditPageView(
-      SanAuditEvent.VIEW_QUESTION_PAGE,
-      Section.accommodation,
-      Step.community_no_accommodation_reason,
-    ),
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.community_no_accommodation_reason),
   ],
   validWhen: [
     validation({

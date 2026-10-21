@@ -39,9 +39,7 @@ export const accommodationSettledStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.community_current_accommodation_settled.code),
-        ],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.community_current_accommodation_settled.code)],
       },
       onValid: {
         effects: [

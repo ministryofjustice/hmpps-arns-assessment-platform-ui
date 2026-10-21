@@ -21,11 +21,7 @@ export const currentAccommodationStep = step({
   },
   blocks: [accommodationSection.questions.currentAccommodation.displayModes.field, saveButton],
   onAccess: [
-    auditPageView(
-      SanAuditEvent.VIEW_QUESTION_PAGE,
-      Section.accommodation,
-      Step.community_current_accommodation,
-    ),
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.community_current_accommodation),
   ],
   validWhen: [
     validation({

@@ -20,13 +20,7 @@ export const suitableHousingStep = step({
     },
   },
   blocks: [accommodationSection.questions.suitableAccommodation.displayModes.field, saveButton],
-  onAccess: [
-    auditPageView(
-      SanAuditEvent.VIEW_QUESTION_PAGE,
-      Section.accommodation,
-      Step.community_suitable_housing,
-    ),
-  ],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing)],
   validWhen: [
     validation({
       condition: isUserSubmittedCondition(Step.community_suitable_housing.code),
@@ -46,11 +40,7 @@ export const suitableHousingStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
-          auditPageAction(
-            SanAuditEvent.SAVE_QUESTION_PAGE,
-            Section.accommodation,
-            Step.community_suitable_housing,
-          ),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing),
         ],
         next: [
           redirect({
@@ -65,11 +55,7 @@ export const suitableHousingStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
-          auditPageAction(
-            SanAuditEvent.SAVE_QUESTION_PAGE,
-            Section.accommodation,
-            Step.community_suitable_housing,
-          ),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing),
         ],
       },
     }),

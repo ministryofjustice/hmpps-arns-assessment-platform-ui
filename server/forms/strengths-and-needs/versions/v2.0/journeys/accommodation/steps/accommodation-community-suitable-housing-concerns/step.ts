@@ -25,11 +25,7 @@ export const suitableHousingConcernsStep = step({
     saveButton,
   ],
   onAccess: [
-    auditPageView(
-      SanAuditEvent.VIEW_QUESTION_PAGE,
-      Section.accommodation,
-      Step.community_suitable_housing_concerns,
-    ),
+    auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing_concerns),
   ],
   validWhen: [
     validation({
@@ -43,9 +39,7 @@ export const suitableHousingConcernsStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [
-          StrengthsAndNeedsEffects.setUserSubmitted(Step.community_suitable_housing_concerns.code),
-        ],
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.community_suitable_housing_concerns.code)],
       },
       onValid: {
         effects: [

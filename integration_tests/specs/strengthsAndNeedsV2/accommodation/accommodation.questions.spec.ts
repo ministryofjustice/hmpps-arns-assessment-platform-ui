@@ -39,11 +39,7 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.community_current_accommodation.code])
       .save()
 
-    await navigateToStrengthsAndNeeds(
-      page,
-      handoverLink,
-      Step.community_current_accommodation_settled.path,
-    )
+    await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_current_accommodation_settled.path)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, "Is Test's accommodation settled?")
 
     await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
@@ -63,9 +59,7 @@ test.describe('Questions', () => {
     })
 
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.no_accommodation },
-      ])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.no_accommodation }])
       .withUserSubmittedSteps([Step.community_current_accommodation.code])
       .save()
 

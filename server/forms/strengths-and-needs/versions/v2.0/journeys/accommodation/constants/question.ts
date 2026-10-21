@@ -3,22 +3,18 @@ export const Question = {
   community_current_accommodation_settled: 'community_current_accommodation_settled',
 
   community_suitable_housing_location: 'community_suitable_housing_location',
-  community_suitable_housing_location_concerns:
-    'community_suitable_housing_location_concerns',
+  community_suitable_housing_location_concerns: 'community_suitable_housing_location_concerns',
   community_suitable_housing_location_concerns_other_details:
     'community_suitable_housing_location_concerns_other_details',
 
   community_suitable_housing: 'community_suitable_housing',
   community_suitable_housing_concerns: 'community_suitable_housing_concerns',
-  community_suitable_housing_concerns_other_details:
-    'community_suitable_housing_concerns_other_details',
+  community_suitable_housing_concerns_other_details: 'community_suitable_housing_concerns_other_details',
   community_unsuitable_housing_concerns: 'community_unsuitable_housing_concerns',
-  community_unsuitable_housing_concerns_other_details:
-    'community_unsuitable_housing_concerns_other_details',
+  community_unsuitable_housing_concerns_other_details: 'community_unsuitable_housing_concerns_other_details',
 
   community_no_accommodation_reason: 'community_no_accommodation_reason',
-  community_no_accommodation_reason_other_details:
-    'community_no_accommodation_reason_other_details',
+  community_no_accommodation_reason_other_details: 'community_no_accommodation_reason_other_details',
 
   accommodation_changes: 'accommodation_changes',
   accommodation_changes_made_changes_details: 'accommodation_changes_made_changes_details',
