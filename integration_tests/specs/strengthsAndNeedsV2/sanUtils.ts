@@ -2,8 +2,8 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/co
 import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
-import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 import { formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
+import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 
 // strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'

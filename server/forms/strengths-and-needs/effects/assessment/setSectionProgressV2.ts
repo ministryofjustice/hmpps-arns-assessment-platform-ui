@@ -21,7 +21,7 @@ export const setSectionProgressV2 =
       user,
       added: wrapAll({ [section.statusKey]: status }),
       removed: [],
-      //TODO Uncomment when all sections are done
-      //hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      // TODO Uncomment when all sections are done
+      // hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

@@ -5,7 +5,6 @@ import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types
 import { Question } from '../../versions/v1.0/journeys/accommodation/constants/question'
 import { sendFormAuditEvent } from '../../../shared'
 import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
-import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
 
 /**
@@ -77,7 +76,7 @@ export const saveCurrentAccommodationStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: clearFields && !isAutosaved ? removed : [],
-      //TODO Uncomment when all sections are done
+      // TODO Uncomment when all sections are done
       // hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
