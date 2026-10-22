@@ -167,7 +167,6 @@ test.describe('Questions', () => {
       - text: What is the victim's ethnicity?
       - combobox "What is the victim's ethnicity?":
         - option "Select the victim's ethnicity" [disabled] [selected]
-        - option "Select the victim’s ethnicity"
         - option "White - English, Welsh, Scottish, Northern Irish or British"
         - option "White - Irish"
         - option "White - Gypsy or Irish Traveller"

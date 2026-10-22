@@ -800,7 +800,6 @@ const victimEthnicitySelectItems = [
     disabled: true,
     selected: true,
   },
-  { text: 'Select the victim’s ethnicity', value: '' },
   {
     text: contentFor(
       'question.offence_analysis_victim_race.option.WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
