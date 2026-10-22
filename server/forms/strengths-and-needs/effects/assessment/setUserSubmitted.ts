@@ -17,6 +17,7 @@ export const setUserSubmitted =
       user,
       added: wrapAll({ [isUserSubmittedCode(stepCode)]: isUserSubmitted }),
       removed: [],
-      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      //TODO Uncomment when all sections are done
+      //hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

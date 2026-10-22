@@ -77,7 +77,8 @@ export const saveCurrentAccommodationStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: clearFields && !isAutosaved ? removed : [],
-      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      //TODO Uncomment when all sections are done
+      // hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 
