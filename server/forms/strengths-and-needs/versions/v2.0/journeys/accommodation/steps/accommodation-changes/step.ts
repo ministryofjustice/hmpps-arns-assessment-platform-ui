@@ -8,11 +8,7 @@ import {
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import {
-  accommodationSection,
-  hasNoAccommodation,
-  isSuitableAccommodation,
-} from '../../section'
+import { accommodationSection, hasNoAccommodation, isSuitableAccommodation } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
