@@ -25,7 +25,7 @@ test.describe('Validation', () => {
           - heading "There is a problem" [level=2]
           - list:
             - listitem:
-              - link "Select the type of accommodation they currently have":
+              - link "Select if they currently have somewhere to live":
                 - /url: "#community_current_accommodation"
       `)
     await questions.community_current_accommodation.errorLink.click()

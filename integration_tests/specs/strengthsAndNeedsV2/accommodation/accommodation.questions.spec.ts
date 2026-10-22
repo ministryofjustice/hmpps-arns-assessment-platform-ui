@@ -1,11 +1,10 @@
 import { Question } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
-import { Option } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeedsV2/accommodationPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { TargetService, test } from '../../../support/fixtures'
 import { buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles } from '../sanUtils'
-import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 
 test.describe('Questions', () => {
   test('shows accommodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
