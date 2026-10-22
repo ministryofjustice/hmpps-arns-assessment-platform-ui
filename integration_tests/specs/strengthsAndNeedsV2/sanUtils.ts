@@ -3,10 +3,11 @@ import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constan
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import { formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 
 // strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
-export const v2Path = '/v2.0'
+export const v2Path = `/${formVersion}`
 export const accommodation = Section.accommodation.path
 export const employment = Section.employment_and_education.path
 export const health = Section.health_and_wellbeing.path

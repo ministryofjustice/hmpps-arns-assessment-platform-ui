@@ -1,6 +1,6 @@
 import { Data, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 
-export const formVersion = 'v2.0'
+export const formVersion = 'v1.0'
 /**
  * Centralised data accessors for case data.
  * Use these throughout the form configuration so if paths change, we only update here.
