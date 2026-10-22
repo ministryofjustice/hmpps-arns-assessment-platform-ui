@@ -24,7 +24,6 @@ import { setUserSubmitted } from './assessment/setUserSubmitted'
 import { resolveEntryRoute } from './session/resolveEntryRoute'
 import { initializeSessionFromAccessV2 } from './session/initializeSessionFromAccessV2'
 import { setSectionProgressV2 } from './assessment/setSectionProgressV2'
-import { generateInitialFormUrlV2 } from './session/generateInitialFormUrlV2'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -54,7 +53,6 @@ export const StrengthsAndNeedsEffects = {
     'validateModeAndVersionUuidFromUrl',
     validateModeAndVersionUuidFromUrl,
   ),
-  generateInitialFormUrlV2: sanEffects.register('generateInitialFormUrlV2', generateInitialFormUrlV2),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
   saveCurrentAccommodationStepAnswers: sanEffects.register(
     'saveCurrentAccommodationStepAnswers',
