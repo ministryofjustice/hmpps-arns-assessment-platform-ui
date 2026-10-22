@@ -2,10 +2,10 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v2.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
+import { basePath } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 import { TargetService, test } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeedsV2/sanUtils'
 import { expectSanAuditEvent, SanAuditEvent } from './helpers'
-import { basePath } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 
 const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
   `${basePath}/edit/${sanAssessmentId}/accommodation/${Step.community_current_accommodation.path}`
