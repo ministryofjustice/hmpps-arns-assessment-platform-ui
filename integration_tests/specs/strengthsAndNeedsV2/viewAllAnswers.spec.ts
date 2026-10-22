@@ -12,7 +12,7 @@ import { test, TargetService } from '../../support/fixtures'
 type Answer = { question: string; value: string | string[] }
 
 const accommodation: Answer[] = [
-  { question: AccommodationQuestion.community_current_accommodation, value: AccommodationOption.settled },
+  { question: AccommodationQuestion.community_current_accommodation, value: CommonOption.yes },
   { question: AccommodationQuestion.community_current_accommodation_settled, value: CommonOption.yes },
   { question: AccommodationQuestion.community_suitable_housing_location, value: CommonOption.no },
   {
@@ -448,7 +448,7 @@ test.describe('View all answers', () => {
       .withAnswers([
         {
           question: AccommodationQuestion.community_current_accommodation,
-          value: AccommodationOption.no_accommodation,
+          value: CommonOption.no,
         },
         {
           question: AccommodationQuestion.community_no_accommodation_reason,
@@ -481,7 +481,7 @@ test.describe('View all answers', () => {
     await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
 
     expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
-    expect(page.getByText('No accommodation', { exact: true })).toBeVisible()
+    expect(page.getByText('Does Test currently have somewhere to live?\nNo', { exact: true }).first()).toBeVisible()
     expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
     expect(page.getByText('Other', { exact: true })).toBeVisible()
     expect(page.getByText('other reason for no')).toBeVisible()

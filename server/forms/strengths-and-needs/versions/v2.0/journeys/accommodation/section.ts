@@ -19,8 +19,8 @@ import {
   yesNo,
 } from '../../constants/questionContent'
 
-export const hasAccommodation = Answer(Question.community_current_accommodation).not.match(
-  Condition.Equals(Option.no_accommodation),
+export const hasAccommodation = Answer(Question.community_current_accommodation).match(
+  Condition.Equals(CommonOption.yes),
 )
 export const hasNoAccommodation = not(hasAccommodation)
 
@@ -45,16 +45,12 @@ const currentAccommodation = question({
     text: contentFor('question.community_current_accommodation.text', CaseData.Forename),
     options: [
       {
-        value: Option.settled,
-        text: contentFor('question.community_current_accommodation.option.SETTLED'),
+        value: CommonOption.yes,
+        text: commonContentFor('option.YES'),
       },
       {
-        value: Option.temporary,
-        text: contentFor('question.community_current_accommodation.option.TEMPORARY'),
-      },
-      {
-        value: Option.no_accommodation,
-        text: contentFor('question.community_current_accommodation.option.NO_ACCOMMODATION'),
+        value: CommonOption.no,
+        text: commonContentFor('option.NO'),
       },
     ],
     validationMessage: contentFor('question.community_current_accommodation.validation'),
@@ -89,7 +85,7 @@ const settledAccommodation = question({
         text: commonContentFor('option.YES'),
       },
       {
-        value: Option.temporary,
+        value: CommonOption.no,
         text: commonContentFor('option.NO'),
       },
     ],

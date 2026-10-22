@@ -5,6 +5,7 @@ import AccommodationPage from 'pages/strengthsAndNeedsV2/accommodationPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
 import { TargetService, test } from '../../../support/fixtures'
 import { buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles } from '../sanUtils'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 
 test.describe('Questions', () => {
   test('shows accommodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
@@ -20,12 +21,10 @@ test.describe('Questions', () => {
     await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
           - group /Does Test currently have somewhere to live?/:
             - text: /Does Test currently have somewhere to live?/
-            - radio "Settled"
-            - text: Settled
-            - radio "Temporary"
-            - text: Temporary
-            - radio "No accommodation"
-            - text: No accommodation
+            - radio "Yes"
+            - text: "Yes"
+            - radio "No"
+            - text: "No"
           - button "Save and continue"
       `)
   })
@@ -35,7 +34,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.settled }])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: CommonOption.yes }])
       .withUserSubmittedSteps([Step.community_current_accommodation.code])
       .save()
 
@@ -59,7 +58,7 @@ test.describe('Questions', () => {
     })
 
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.no_accommodation }])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: CommonOption.no }])
       .withUserSubmittedSteps([Step.community_current_accommodation.code])
       .save()
 

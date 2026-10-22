@@ -14,7 +14,7 @@ import { test } from '../../fixtures'
  */
 
 const answers = [
-  { question: Question.community_current_accommodation, value: Option.settled },
+  { question: Question.community_current_accommodation, value: CommonOption.yes },
   { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
   { question: Question.community_suitable_housing_location, value: CommonOption.no },
   {
@@ -42,7 +42,7 @@ const answers = [
 ]
 
 const noAccommodation = [
-  { question: Question.community_current_accommodation, value: Option.no_accommodation },
+  { question: Question.community_current_accommodation, value: CommonOption.no },
   { question: Question.community_no_accommodation_reason, value: Option.alcohol_problems },
 ]
 

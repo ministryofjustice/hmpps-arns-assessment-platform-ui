@@ -6,11 +6,6 @@ export const english = {
   question: {
     [Question.community_current_accommodation]: {
       text: 'Does %1 currently have somewhere to live?',
-      option: {
-        [Option.settled]: 'Settled',
-        [Option.temporary]: 'Temporary',
-        [Option.no_accommodation]: 'No accommodation',
-      },
       validation: 'Select the type of accommodation they currently have',
     },
     [Question.community_current_accommodation_settled]: {

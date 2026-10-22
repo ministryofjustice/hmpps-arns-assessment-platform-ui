@@ -14,7 +14,7 @@ test.describe('Accessibility', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
         { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {

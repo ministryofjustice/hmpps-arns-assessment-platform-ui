@@ -41,7 +41,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.settled }])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: CommonOption.yes }])
       .withUserSubmittedSteps([
         Step.community_current_accommodation.code,
         Step.community_current_accommodation_settled.code,
@@ -71,7 +71,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.no },
       ])
       .withUserSubmittedSteps([
@@ -110,7 +110,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.no },
         { question: Question.community_suitable_housing_location, value: CommonOption.no },
       ])
@@ -158,7 +158,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.no },
         { question: Question.community_suitable_housing_location, value: CommonOption.yes },
         { question: Question.community_suitable_housing, value: Option.yes_with_concerns },
@@ -215,7 +215,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.no },
         { question: Question.community_suitable_housing_location, value: CommonOption.yes },
         { question: Question.community_suitable_housing, value: CommonOption.no },
@@ -265,7 +265,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.no },
         { question: Question.community_suitable_housing_location, value: CommonOption.yes },
         { question: Question.community_suitable_housing, value: CommonOption.yes },
@@ -303,7 +303,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: Option.no_accommodation }])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_current_accommodation, value: CommonOption.no }])
       .withUserSubmittedSteps([Step.community_current_accommodation.code, Step.community_no_accommodation_reason.code])
       .save()
 

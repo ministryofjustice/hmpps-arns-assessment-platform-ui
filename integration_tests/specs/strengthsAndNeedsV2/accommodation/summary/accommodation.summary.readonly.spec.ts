@@ -17,7 +17,7 @@ test.describe('Summary read-only', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
         { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
@@ -62,7 +62,7 @@ test.describe('Summary read-only', () => {
         - tabpanel "Summary":
           - term: Does Test currently have somewhere to live?
           - definition:
-            - paragraph: Settled
+            - paragraph: Yes
           - term: Is Test's accommodation settled?
           - definition:
             - paragraph: "Yes"
@@ -99,7 +99,7 @@ test.describe('Summary read-only', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
         { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {

@@ -6,11 +6,12 @@ import { basePath } from '@server/forms/strengths-and-needs/versions/v2.0/consta
 import { TargetService, test } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeedsV2/sanUtils'
 import { expectSanAuditEvent, SanAuditEvent } from './helpers'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 
 const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
   `${basePath}/edit/${sanAssessmentId}/accommodation/${Step.community_current_accommodation.path}`
 
-const settledAnswers = [{ question: Question.community_current_accommodation, value: Option.settled }]
+const settledAnswers = [{ question: Question.community_current_accommodation, value: CommonOption.yes }]
 
 test.describe('User changes an answer', () => {
   test('records which fields changed, not their values', async ({

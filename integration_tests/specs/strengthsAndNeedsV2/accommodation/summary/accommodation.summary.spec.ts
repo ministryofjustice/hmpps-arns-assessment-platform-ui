@@ -15,7 +15,7 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
         { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
@@ -60,7 +60,7 @@ test.describe('Summary', () => {
         - tabpanel "Summary":
           - term: Does Test currently have somewhere to live?
           - definition:
-            - paragraph: Settled
+            - paragraph: Yes
           - definition:
             - link "Change Does Test currently have somewhere to live?":
               - /url: accommodation-community-current-accommodation#community_current_accommodation-question
@@ -117,7 +117,7 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.no_accommodation },
+        { question: Question.community_current_accommodation, value: CommonOption.no },
         { question: Question.community_no_accommodation_reason, value: Option.alcohol_problems },
         { question: Question.accommodation_changes, value: CommonOption.made_changes },
         { question: Question.accommodation_changes_made_changes_details, value: 'Some details' },
@@ -143,7 +143,7 @@ test.describe('Summary', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_current_accommodation, value: Option.settled },
+        { question: Question.community_current_accommodation, value: CommonOption.yes },
         { question: Question.community_current_accommodation_settled, value: CommonOption.yes },
         { question: Question.community_suitable_housing_location, value: CommonOption.no },
         {
