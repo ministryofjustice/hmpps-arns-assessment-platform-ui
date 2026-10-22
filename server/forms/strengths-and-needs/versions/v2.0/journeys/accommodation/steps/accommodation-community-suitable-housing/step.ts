@@ -1,6 +1,6 @@
-import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { accommodationSection, isSuitableAccommodation } from '../../section'
+import { accommodationSection, isNotSuitableHousingLocation, isSuitableAccommodation } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
@@ -16,7 +16,9 @@ export const suitableHousingStep = step({
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.accommodation.path]),
+      backlink: when(isNotSuitableHousingLocation)
+        .then(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing_location_concerns.path]),)
+        .else(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing_location.path]),)
     },
   },
   blocks: [accommodationSection.questions.suitableAccommodation.displayModes.field, saveButton],

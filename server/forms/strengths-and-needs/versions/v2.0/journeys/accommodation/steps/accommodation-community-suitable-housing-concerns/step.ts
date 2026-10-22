@@ -16,7 +16,7 @@ export const suitableHousingConcernsStep = step({
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.accommodation.path]),
+      backlink: createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing.path]),
     },
   },
   blocks: [

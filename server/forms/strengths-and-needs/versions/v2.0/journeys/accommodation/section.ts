@@ -22,6 +22,7 @@ import {
 export const hasAccommodation = Answer(Question.community_current_accommodation).not.match(
   Condition.Equals(Option.no_accommodation),
 )
+export const hasNoAccommodation = not(hasAccommodation)
 
 export const isNotSuitableHousingLocation = Answer(Question.community_suitable_housing_location).not.match(
   Condition.Equals(CommonOption.yes),
@@ -354,7 +355,7 @@ const noAccommodationReason = question({
     field: checkboxField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_no_accommodation_reason.path,
-      visibleWhen: not(hasAccommodation),
+      visibleWhen: hasNoAccommodation,
     }),
   },
 })

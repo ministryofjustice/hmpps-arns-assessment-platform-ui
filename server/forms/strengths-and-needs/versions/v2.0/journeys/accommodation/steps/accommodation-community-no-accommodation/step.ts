@@ -16,7 +16,7 @@ export const noAccommodationStep = step({
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.accommodation.path]),
+      backlink: createRoute([...baseSanRoute, Section.accommodation.path, Step.community_current_accommodation.path]),
     },
   },
   blocks: [accommodationSection.questions.noAccommodationReason.displayModes.field, saveButton],

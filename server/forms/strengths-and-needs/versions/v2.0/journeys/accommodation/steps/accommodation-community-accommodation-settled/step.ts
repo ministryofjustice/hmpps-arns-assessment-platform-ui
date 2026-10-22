@@ -16,7 +16,7 @@ export const accommodationSettledStep = step({
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.accommodation.path]),
+      backlink: createRoute([...baseSanRoute, Section.accommodation.path, Step.community_current_accommodation.path]),
     },
   },
   blocks: [accommodationSection.questions.settledAccommodation.displayModes.field, saveButton],
