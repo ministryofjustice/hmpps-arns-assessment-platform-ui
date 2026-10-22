@@ -48,7 +48,8 @@ export const saveCurrentStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: clearRemovals ? removed : [],
-      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      //TODO Uncomment when all sections are done
+      //hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 

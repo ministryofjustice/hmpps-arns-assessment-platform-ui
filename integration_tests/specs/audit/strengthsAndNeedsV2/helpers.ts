@@ -1,6 +1,7 @@
 import { expect, Page } from '@playwright/test'
 import type { AuditMessage } from '../../../support/AuditQueueClient'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
+import { formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 
 export { CommonAuditEvent, SanAuditEvent } from '../auditEvents'
 
@@ -21,7 +22,7 @@ export function expectSanAuditEvent(
   expect(event.service).toBeDefined()
   expect(event.details.form).toBe('strengths-and-needs')
   if (expectFormVersion) {
-    expect(event.details.formVersion).toBe('v2.0')
+    expect(event.details.formVersion).toBe(formVersion)
   }
   if (expectAssessmentUuid) {
     expect(event.details.assessmentUuid).toBeDefined()
