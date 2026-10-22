@@ -16,7 +16,11 @@ export const suitableHousingLocationStep = step({
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.accommodation.path, Step.community_current_accommodation_settled.path]),
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.accommodation.path,
+        Step.community_current_accommodation_settled.path,
+      ]),
     },
   },
   blocks: [accommodationSection.questions.suitableHousingLocation.displayModes.field, saveButton],

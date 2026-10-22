@@ -16,7 +16,11 @@ export const alcoholUseStoppedOrReducedStep = step({
   title: sectionPageTitle(Section.alcohol_use),
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.alcohol_use.path, Step.alcohol_use_excessive_drinking_past_issues.path]),
+      backlink: createRoute([
+        ...baseSanRoute,
+        Section.alcohol_use.path,
+        Step.alcohol_use_excessive_drinking_past_issues.path,
+      ]),
     },
   },
   blocks: [

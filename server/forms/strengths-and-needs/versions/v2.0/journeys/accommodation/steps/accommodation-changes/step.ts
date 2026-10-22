@@ -1,6 +1,18 @@
-import { Condition, Post, redirect, step, submit, validation, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { accommodationSection, hasNoAccommodation, isNotSuitableHousingLocation, isSuitableAccommodation } from '../../section'
+import {
+  accommodationSection,
+  hasNoAccommodation,
+  isSuitableAccommodation,
+} from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
@@ -20,9 +32,11 @@ export const accommodationChangesStep = step({
         .then(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_no_accommodation_reason.path]))
         .else(
           when(isSuitableAccommodation)
-          .then(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing.path]))
-          .else(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing_concerns.path]))
-        )
+            .then(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing.path]))
+            .else(
+              createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing_concerns.path]),
+            ),
+        ),
     },
   },
   blocks: [accommodationSection.questions.changes.displayModes.field, saveButton],
