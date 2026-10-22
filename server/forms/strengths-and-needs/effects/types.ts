@@ -8,6 +8,7 @@ import { HandoverContext } from '../../../interfaces/handover-api/response'
 import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data'
 import AuditService from '../../../services/auditService'
 import { PreviousVersionDisplay } from './assessment/loadPreviousVersions'
+import { VersionDetails } from '../../../interfaces/coordinator-api/previousVersions'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -28,6 +29,7 @@ export interface StrengthsAndNeedsSession {
   uuid?: string
   countersignedVersions: PreviousVersionDisplay[]
   previousVersions?: PreviousVersionDisplay[]
+  unaggregatedVersions?: VersionDetails[]
   patternDrafts?: Record<string, Record<string, unknown>>
 }
 
