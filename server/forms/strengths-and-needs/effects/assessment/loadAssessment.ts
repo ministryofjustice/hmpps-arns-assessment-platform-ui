@@ -68,19 +68,21 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   // Check if viewing a previous version via URL (uuid and mode are set on the session by an effect)
   if (session.uuid && session.mode && ['view-historic'].includes(session.mode)) {
-    if (!session.previousVersions || session.countersignedVersions) {
+    if (!session.unaggregatedVersions) {
       await storePreviousVersionsInSession(deps, session.handoverContext.assessmentContext.assessmentId, session)
     }
 
-    const previousVersions = [...session.previousVersions, ...session.countersignedVersions]
-    const previousVersion = previousVersions.find(it => it.assessmentVersionId === session.uuid)
+    const previousVersion = session.unaggregatedVersions.find(
+      it => it.entityType === 'AAP_SAN' && it.uuid === session.uuid,
+    )
 
     if (!previousVersion) {
-      throw new InternalServerError(`Invalid assessment version ID: ${session.uuid}`)
+      const validUuids = session.unaggregatedVersions.map(it => it.uuid).join(', ')
+      throw new InternalServerError(`Invalid assessment version UUID: ${session.uuid}. Valid UUIDs: ${validUuids}`)
     }
 
-    query.timestamp = DateTime.fromMillis(previousVersion?.assessmentUpdatedDate).toISO({ includeOffset: false })
-    context.setData('previousVersionDate', previousVersion?.assessmentUpdatedDate)
+    query.timestamp = previousVersion.updatedAt
+    context.setData('previousVersionDate', DateTime.fromISO(previousVersion.updatedAt).toMillis())
   }
 
   let assessment = await loadAssessmentQuery(deps, query)

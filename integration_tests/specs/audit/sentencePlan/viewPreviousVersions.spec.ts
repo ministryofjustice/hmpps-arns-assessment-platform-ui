@@ -18,6 +18,7 @@ test.describe('View Previous Versions List Page', () => {
     await coordinatorApi.stubGetEntityVersions(sentencePlanId, {
       allVersions: {},
       countersignedVersions: {},
+      unaggregatedVersions: [],
     })
 
     await navigateToSentencePlan(page, handoverLink)

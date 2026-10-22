@@ -45,6 +45,7 @@ export const storePreviousVersionsInSession = async (
 
   session.countersignedVersions = buildPreviousVersions(previousVersions.countersignedVersions)
   session.previousVersions = buildPreviousVersions(previousVersions.allVersions)
+  session.unaggregatedVersions = previousVersions.unaggregatedVersions
 }
 
 export const loadPreviousVersions =

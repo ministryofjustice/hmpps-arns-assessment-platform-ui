@@ -24,21 +24,21 @@ export const extractModeAndVersionUuidFromHandoverContext =
       return
     }
 
-    if (!session.previousVersions) {
+    if (!session.unaggregatedVersions) {
       await storePreviousVersionsInSession(deps, assessmentUuid, session)
     }
 
-    const previousVersion = session.previousVersions.find(
-      it => it.assessmentUpdatedDate === session.sessionDetails.assessmentVersion,
+    const previousVersion = session.unaggregatedVersions.find(
+      it => it.entityType === 'AAP_SAN' && it.version === session.sessionDetails.assessmentVersion,
     )
 
     if (!previousVersion) {
-      const validTimestamps = session.previousVersions.map(it => it.assessmentUpdatedDate).join(', ')
+      const validTimestamps = session.unaggregatedVersions.map(it => it.version).join(', ')
       throw new InternalServerError(
         `Invalid assessment version timestamp: ${session.sessionDetails.assessmentVersion}. Valid timestamps: ${validTimestamps}`,
       )
     }
 
     session.mode = 'view-historic'
-    session.uuid = previousVersion.assessmentVersionId
+    session.uuid = previousVersion.uuid
   }
