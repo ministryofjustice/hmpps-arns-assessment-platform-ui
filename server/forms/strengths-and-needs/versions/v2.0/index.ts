@@ -6,6 +6,7 @@ import {
   journey,
   not,
   Params,
+  Request,
   redirect,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -76,21 +77,21 @@ export const strengthsAndNeedsV2Journey = journey({
     formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
-    access({
-      effects: [
-        StrengthsAndNeedsEffects.initializeSessionFromAccessV2(),
-        StrengthsAndNeedsEffects.loadSessionData(),
-        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
-        StrengthsAndNeedsEffects.loadAssessment(),
-        // StrengthsAndNeedsEffects.setRiskOfSexualHarm(),
-      ],
-    }),
     // Prevent privilege escalation: check mode against accessMode
     preventPrivilegeEscalation(),
+    access({
+      effects: [StrengthsAndNeedsEffects.setRiskOfSexualHarm()],
+    }),
     // Only redirect to privacy screen for non-read-only users who haven't accepted privacy
     access({
       when: and(notAPlatformPage, Data('privacyAccepted').not.match(Condition.Equals(true)), isEditMode),
       next: [redirect({ goto: `${formRootPath}/privacy` })],
+    }),
+    // Redirect to first page of v2 journey
+    access({
+      // a 4-slug path means we are not in a section e.g. /strengths-and-needs/v1/edit/uuid
+      when: Request.Path().match(Condition.String.MatchesRegex('^/[^/]+/[^/]+/[^/]+/[^/]+$')),
+      next: [redirect({ goto: Section.accommodation.sideNavHref })],
     }),
   ],
   steps: [
