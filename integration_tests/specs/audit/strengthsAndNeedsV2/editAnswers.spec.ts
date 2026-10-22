@@ -5,9 +5,10 @@ import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/a
 import { TargetService, test } from '../../../support/fixtures'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeedsV2/sanUtils'
 import { expectSanAuditEvent, SanAuditEvent } from './helpers'
+import { basePath } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 
 const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
-  `/strengths-and-needs/v2.0/edit/${sanAssessmentId}/accommodation/${Step.community_current_accommodation.path}`
+  `${basePath}/edit/${sanAssessmentId}/accommodation/${Step.community_current_accommodation.path}`
 
 const settledAnswers = [{ question: Question.community_current_accommodation, value: Option.settled }]
 
