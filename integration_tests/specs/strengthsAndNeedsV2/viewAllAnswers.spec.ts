@@ -488,7 +488,7 @@ test.describe('View all answers', () => {
 
     // TODO Uncomment it during ACT-755 Health and Wellbeing framework
     // expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
-    expect(page.getByText('Is the location of Test accommodation suitable?')).not.toBeVisible()
+    expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
   })
 })
 

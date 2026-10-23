@@ -75,7 +75,7 @@ test.describe('Summary read-only', () => {
             - paragraph: Close to someone who has victimised them
             - paragraph: Other
             - paragraph: location concerns other — free text answer.
-          - term: Is Test accommodation suitable?
+          - term: Is Test's accommodation suitable?
           - definition:
             - paragraph: "Yes, with concerns"
           - term: What are your concerns about the location of Test's accommodation?

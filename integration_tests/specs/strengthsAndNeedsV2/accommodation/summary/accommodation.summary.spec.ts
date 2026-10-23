@@ -85,11 +85,11 @@ test.describe('Summary', () => {
           - definition:
             - link "Change What are the concerns with the location?":
               - /url: accommodation-community-suitable-housing-location-concerns#community_suitable_housing_location_concerns-question
-          - term: Is Test accommodation suitable?
+          - term: Is Test's accommodation suitable?
           - definition:
             - paragraph: Yes, with concerns
           - definition:
-            - link "Change Is Test accommodation suitable?":
+            - link "Change Is Test's accommodation suitable?":
               - /url: accommodation-community-suitable-housing#community_suitable_housing-question
           - term: What are your concerns about the location of Test's accommodation?
           - definition:
