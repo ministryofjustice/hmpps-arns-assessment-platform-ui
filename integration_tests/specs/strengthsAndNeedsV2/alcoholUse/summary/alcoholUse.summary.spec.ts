@@ -24,8 +24,8 @@ test.describe('Summary', () => {
         { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_does_stop_or_reduce, value: CommonOption.yes },
-        { question: Question.alcohol_does_stop_or_reduce_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
@@ -68,7 +68,7 @@ test.describe('Summary', () => {
           - paragraph: Cut down last year
         - definition:
           - link "Change Does anything help Test to stop or reduce drinking alcohol?":
-            - /url: alcohol-use-stopped-or-reduced#alcohol_does_stop_or_reduce-question
+            - /url: alcohol-use-stopped-or-reduced#alcohol_stopped_or_reduced-question
         - term: Does Test want to make changes to their alcohol use?
         - definition:
           - paragraph: I have already made positive changes and want to maintain them
@@ -92,10 +92,10 @@ test.describe('Summary', () => {
         { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_some_evidence },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Cut down last year' },
-        { question: Question.alcohol_does_stop_or_reduce, value: CommonOption.yes },
-        { question: Question.alcohol_does_stop_or_reduce_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_stopped_or_reduced_past, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_past_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])
@@ -125,8 +125,8 @@ test.describe('Summary', () => {
         { question: Question.alcohol_current_issues, value: Option.no_current_problems },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },
         { question: Question.alcohol_past_issues_yes_details, value: 'Had issues a few years ago' },
-        { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
-        { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Cut down last year' },
+        { question: Question.alcohol_stopped_or_reduced_past, value: CommonOption.yes },
+        { question: Question.alcohol_stopped_or_reduced_past_yes_details, value: 'Cut down last year' },
         { question: Question.alcohol_use_changes, value: CommonOption.made_changes },
         { question: Question.alcohol_use_changes_made_changes_details, value: 'Stopped drinking spirits' },
       ])

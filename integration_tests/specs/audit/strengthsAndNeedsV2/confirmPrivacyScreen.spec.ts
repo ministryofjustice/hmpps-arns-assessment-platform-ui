@@ -11,9 +11,7 @@ test.describe('Selects tick box and Confirm button on Privacy Screen page', () =
     await page.goto(handoverLink)
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
     await privacyPage.confirmAndContinue()
-    // TODO Uncomment it during ACT-750 Accommodation framework
-    // await expect(page).toHaveURL(/accommodation-status/)
-    await expect(page).toHaveURL(/alcohol-use/)
+    await expect(page).toHaveURL(/accommodation-community-current-accommodation/)
 
     const event = await auditQueue.waitForAuditEvent(crn, CommonAuditEvent.CONFIRM_PRIVACY_SCREEN)
     expectSanAuditEvent(event, { expectAssessmentUuid: false, expectFormVersion: false })
