@@ -3,7 +3,7 @@ import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import AgreePlanPage from '../../../pages/sentencePlan/agreePlanPage'
 import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Agree Plan', () => {
   test('agreeing plan with yes', async ({ page, auditQueue, openSentencePlan }) => {
@@ -18,7 +18,7 @@ test.describe('Agree Plan', () => {
     await agreePlanPage.clickSave()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_PLAN_AGREEMENT)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT)
     expectAuditEvent(event)
     expect(event.details.agreementStatus).toBe('yes')
   })
@@ -36,7 +36,7 @@ test.describe('Agree Plan', () => {
     await agreePlanPage.clickSave()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_PLAN_AGREEMENT)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT)
     expectAuditEvent(event)
     expect(event.details.agreementStatus).toBe('no')
   })
@@ -54,7 +54,7 @@ test.describe('Agree Plan', () => {
     await agreePlanPage.clickSave()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_PLAN_AGREEMENT)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_PLAN_AGREEMENT)
     expectAuditEvent(event)
     expect(event.details.agreementStatus).toBe('could_not_answer')
   })

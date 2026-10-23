@@ -3,8 +3,9 @@
     font-size: 18px;
   }
 
-  .govuk-input, .govuk-textarea {
-    font-family: ui-monospace, menlo, "Cascadia Mono", "Segoe UI Mono", consolas, "Liberation Mono", monospace;
+  .govuk-input,
+  .govuk-textarea {
+    font-family: ui-monospace, menlo, 'Cascadia Mono', 'Segoe UI Mono', consolas, 'Liberation Mono', monospace;
     font-size: 16px;
   }
 
@@ -56,13 +57,13 @@
       width: fit-content;
 
       &.added {
-        background: govuk-colour("green");
-        color: govuk-colour("teal", $variant: "accent");
+        background: govuk-colour('green');
+        color: govuk-colour('teal', $variant: 'accent');
       }
 
       &.removed {
-        background: govuk-colour("red");
-        color: govuk-colour("magenta", $variant: "tint-80");
+        background: govuk-colour('red');
+        color: govuk-colour('magenta', $variant: 'tint-80');
       }
     }
   }
