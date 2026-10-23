@@ -1,0 +1,50 @@
+export const Question = {
+  community_current_accommodation: 'community_current_accommodation',
+  community_current_accommodation_settled: 'community_current_accommodation_settled',
+
+  community_suitable_housing_location: 'community_suitable_housing_location',
+  community_suitable_housing_location_concerns: 'community_suitable_housing_location_concerns',
+  community_suitable_housing_location_concerns_other_details:
+    'community_suitable_housing_location_concerns_other_details',
+
+  community_suitable_housing: 'community_suitable_housing',
+  community_suitable_housing_concerns: 'community_suitable_housing_concerns',
+  community_suitable_housing_concerns_other_details: 'community_suitable_housing_concerns_other_details',
+  community_unsuitable_housing_concerns: 'community_unsuitable_housing_concerns',
+  community_unsuitable_housing_concerns_other_details: 'community_unsuitable_housing_concerns_other_details',
+
+  community_no_accommodation_reason: 'community_no_accommodation_reason',
+  community_no_accommodation_reason_other_details: 'community_no_accommodation_reason_other_details',
+
+  accommodation_changes: 'accommodation_changes',
+  accommodation_changes_made_changes_details: 'accommodation_changes_made_changes_details',
+  accommodation_changes_making_changes_details: 'accommodation_changes_making_changes_details',
+  accommodation_changes_want_to_make_changes_details: 'accommodation_changes_want_to_make_changes_details',
+  accommodation_changes_needs_help_to_make_changes_details: 'accommodation_changes_needs_help_to_make_changes_details',
+  accommodation_changes_thinking_about_making_changes_details:
+    'accommodation_changes_thinking_about_making_changes_details',
+  accommodation_changes_does_not_want_to_make_changes_details:
+    'accommodation_changes_does_not_want_to_make_changes_details',
+  accommodation_changes_does_not_want_to_answer_details: 'accommodation_changes_does_not_want_to_answer_details',
+
+  // Practitioner
+  accommodation_practitioner_analysis_strengths_or_protective_factors:
+    'accommodation_practitioner_analysis_strengths_or_protective_factors',
+  accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details:
+    'accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details',
+  accommodation_practitioner_analysis_strengths_or_protective_factors_no_details:
+    'accommodation_practitioner_analysis_strengths_or_protective_factors_no_details',
+
+  accommodation_practitioner_analysis_risk_of_serious_harm: 'accommodation_practitioner_analysis_risk_of_serious_harm',
+  accommodation_practitioner_analysis_risk_of_serious_harm_yes_details:
+    'accommodation_practitioner_analysis_risk_of_serious_harm_yes_details',
+  accommodation_practitioner_analysis_risk_of_serious_harm_no_details:
+    'accommodation_practitioner_analysis_risk_of_serious_harm_no_details',
+
+  accommodation_practitioner_analysis_risk_of_reoffending: 'accommodation_practitioner_analysis_risk_of_reoffending',
+  accommodation_practitioner_analysis_risk_of_reoffending_yes_details:
+    'accommodation_practitioner_analysis_risk_of_reoffending_yes_details',
+  accommodation_practitioner_analysis_risk_of_reoffending_no_details:
+    'accommodation_practitioner_analysis_risk_of_reoffending_no_details',
+
+} as const

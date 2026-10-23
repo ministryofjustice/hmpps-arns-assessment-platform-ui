@@ -7,7 +7,7 @@ export const Section = {
   accommodation: {
     code: 'accommodation',
     path: '/accommodation',
-    sideNavHref: `accommodation/accommodation-status`,
+    sideNavHref: `accommodation/accommodation-community-current-accommodation`,
     statusKey: 'accommodation_section_complete',
   },
   employment_and_education: {
