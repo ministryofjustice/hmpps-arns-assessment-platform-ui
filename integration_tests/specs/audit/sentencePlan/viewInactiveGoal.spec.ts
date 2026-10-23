@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test } from '../../../support/fixtures'
 import { removedGoals } from '../../../builders/sentencePlanFactories'
 import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { SentencePlanAuditEvent, achievedGoals, expectAuditEvent } from './helpers'
+import { AuditEvent, achievedGoals, expectAuditEvent } from './helpers'
 
 test.describe('View Goal Details', () => {
   test('viewing achieved goal details', async ({ page, auditQueue, openSentencePlan }) => {
