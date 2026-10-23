@@ -2,8 +2,8 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/co
 import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
-import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 import { formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
+import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
 
 // strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
@@ -95,7 +95,7 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  expectedPath: string = 'alcohol-use-current-issues', // TODO Use 'accommodation-status', during ACT-750 Accommodation framework
+  expectedPath: string = 'accommodation-community-current-accommodation',
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
@@ -110,7 +110,7 @@ export const navigateToStrengthsAndNeeds = async (
 export const navigateToStrengthsAndNeedsReadOnly = async (
   page: Page,
   handoverLink: string,
-  expectedPath: string = 'alcohol-use-analysis', // TODO Use 'accommodation-analysis', during ACT-750 Accommodation framework
+  expectedPath: string = 'accommodation-analysis',
 ): Promise<void> => {
   await page.goto(handoverLink)
 

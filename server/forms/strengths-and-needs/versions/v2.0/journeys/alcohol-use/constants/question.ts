@@ -4,10 +4,10 @@ export const Question = {
   alcohol_evidence_of_excess_drinking: 'alcohol_evidence_of_excess_drinking',
   alcohol_past_issues: 'alcohol_past_issues',
   alcohol_past_issues_yes_details: 'alcohol_past_issues_yes_details',
-  alcohol_has_stopped_or_reduced: 'alcohol_has_stopped_or_reduced',
-  alcohol_has_stopped_or_reduced_yes_details: 'alcohol_has_stopped_or_reduced_yes_details',
-  alcohol_does_stop_or_reduce: 'alcohol_does_stop_or_reduce',
-  alcohol_does_stop_or_reduce_yes_details: 'alcohol_does_stop_or_reduce_yes_details',
+  alcohol_stopped_or_reduced_past: 'alcohol_stopped_or_reduced_past',
+  alcohol_stopped_or_reduced_past_yes_details: 'alcohol_stopped_or_reduced_past_yes_details',
+  alcohol_stopped_or_reduced: 'alcohol_stopped_or_reduced',
+  alcohol_stopped_or_reduced_yes_details: 'alcohol_stopped_or_reduced_yes_details',
 
   // Want to make changes
   alcohol_use_changes: 'alcohol_use_changes',
