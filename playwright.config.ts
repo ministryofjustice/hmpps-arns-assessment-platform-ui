@@ -108,6 +108,11 @@ export default defineConfig<PlaywrightExtendedConfig>({
       testDir: './server',
       testMatch: '**/*.ct.ts',
     },
+    {
+      name: 'prev-ver',
+      testDir: './integration_tests/specs/strengthsAndNeeds/previousVersions',
+      grepInvert: /@serial/,
+    },
   ],
   tsconfig: './integration_tests/tsconfig.json',
 })

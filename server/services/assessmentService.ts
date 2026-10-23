@@ -38,7 +38,10 @@ import {
 
 interface CommandMap {
   CreateAssessment: { cmd: CreateAssessmentCommand; res: CreateAssessmentCommandResult }
+<<<<<<< HEAD
+=======
   CreateTimelineItem: { cmd: CreateTimelineItemCommand; res: CommandResult }
+>>>>>>> main
   UpdateAssessmentAnswers: { cmd: UpdateAssessmentAnswersCommand; res: CommandResult }
   Rollback: { cmd: RollbackCommand; res: CommandResult }
   SoftDelete: { cmd: SoftDeleteCommand; res: CommandResult }

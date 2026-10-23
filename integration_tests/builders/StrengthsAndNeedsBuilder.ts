@@ -58,6 +58,10 @@ export class StrengthsAndNeedsBuilderInstance {
     const assessment = await this.assessmentBuilder.save()
     const result = this.mapToCreatedSan(assessment)
 
+    if (this.backdateFrom && this.backdateTo) {
+      await this.client.backdateEvents(assessment.uuid, this.backdateFrom, this.backdateTo)
+    }
+
     return result
   }
 
