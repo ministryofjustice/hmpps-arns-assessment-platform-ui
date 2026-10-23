@@ -26,14 +26,14 @@ test.describe('User changes an answer', () => {
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
     await page.goto(buildCurrentAccommodationUrl(sanAssessmentId))
-    await page.getByLabel('Temporary').check()
+    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await expect(page).toHaveURL(/accommodation-community-current-accommodation-settled/)
+    await expect(page).toHaveURL(/accommodation-community-no-accommodation/)
 
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.EDIT_ANSWERS)
     expectSanAuditEvent(event)
     expect(event.details.changedFields).toContain('community_current_accommodation')
-    expect(JSON.stringify(event.details)).not.toContain('TEMPORARY')
+    expect(JSON.stringify(event.details)).not.toContain('NO')
   })
   test('is not raised when a page is resubmitted unchanged', async ({
     page,

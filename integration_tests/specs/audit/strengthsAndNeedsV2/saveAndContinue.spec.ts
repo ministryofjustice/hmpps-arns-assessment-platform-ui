@@ -8,7 +8,7 @@ test.describe("Selects 'Save and Continue' for each Criminogenic Needs question 
     const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await strengthsAndNeedsBuilder.fresh().save()
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.getByLabel('Settled').check()
+    await page.getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await expect(page).toHaveURL(/accommodation-community-current-accommodation-settled/)
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.SAVE_QUESTION_PAGE, {

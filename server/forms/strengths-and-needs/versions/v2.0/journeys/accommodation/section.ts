@@ -56,10 +56,7 @@ const currentAccommodation = question({
     validationMessage: contentFor('question.community_current_accommodation.validation'),
   },
   displayModes: {
-    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    // Bespoke row: the revealed type radios show their selected label rather
-    // than itemised bodies, and the temporary types append a formatted
-    // "expected end date" line — neither of which a standard row projects.
+    field: radioField(),
     summaryRow: (content): SummaryRow => ({
       key: { text: content.text },
       value: {
@@ -92,7 +89,7 @@ const settledAccommodation = question({
     validationMessage: contentFor('question.community_current_accommodation_settled.validation'),
   },
   displayModes: {
-    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
+    field: radioField(),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_current_accommodation_settled.path,
       visibleWhen: hasAccommodation,
@@ -176,7 +173,7 @@ const suitableAccommodation = question({
   content: {
     code: Question.community_suitable_housing,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.community_suitable_housing.text', CaseData.Forename),
+    text: contentFor('question.community_suitable_housing.text', CaseData.ForenamePossessive),
     hint: contentFor('question.community_suitable_housing.hint'),
     options: [
       { value: CommonOption.yes, text: commonContentFor('option.YES') },
