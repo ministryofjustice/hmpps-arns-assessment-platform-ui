@@ -17,8 +17,8 @@ const answers = [
   { question: Question.alcohol_evidence_of_excess_drinking, value: Option.yes_with_evidence },
   { question: Question.alcohol_past_issues, value: CommonOption.yes },
   { question: Question.alcohol_past_issues_yes_details, value: 'Some details' },
-  { question: Question.alcohol_has_stopped_or_reduced, value: CommonOption.yes },
-  { question: Question.alcohol_has_stopped_or_reduced_yes_details, value: 'Some details' },
+  { question: Question.alcohol_stopped_or_reduced, value: CommonOption.yes },
+  { question: Question.alcohol_stopped_or_reduced_yes_details, value: 'Some details' },
   { question: Question.alcohol_use_changes, value: CommonOption.does_not_want_to_make_changes },
   { question: Question.alcohol_use_changes_does_not_want_to_make_changes_details, value: 'Some details' },
   { question: Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.no },
@@ -48,6 +48,17 @@ test.describe('Alcohol use character counts', () => {
 
     await questions.alcohol_evidence_of_excess_drinking.option(Option.no_evidence).check()
     await questions.alcohol_past_issues.option(CommonOption.yes).check()
+
+    await expectTheLimitsOnThePage(alcoholUsePage)
+  })
+
+  test('alcohol_use_stopped_or_reduced: alcohol_stopped_or_reduced', async ({ page, openSection }) => {
+    const section = await openSection(alcohol, answers, userSubmittedSteps)
+    const alcoholUsePage = new AlcoholUsePage(page)
+    const { questions } = alcoholUsePage
+    await page.goto(`${section}/${Step.alcohol_use_stopped_or_reduced.path}`)
+
+    await questions.alcohol_stopped_or_reduced.option(CommonOption.yes).check()
 
     await expectTheLimitsOnThePage(alcoholUsePage)
   })

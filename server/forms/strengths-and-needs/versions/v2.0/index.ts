@@ -10,7 +10,7 @@ import {
   redirect,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-// import { accommodationJourney } from './journeys/accommodation'
+import { accommodationJourney } from './journeys/accommodation'
 // import { employmentJourney } from './journeys/employment-and-education'
 // import { financeJourney } from './journeys/finance'
 // import { drugUseJourney } from './journeys/drug-use'
@@ -91,8 +91,7 @@ export const strengthsAndNeedsV2Journey = journey({
     access({
       // a 4-slug path means we are not in a section e.g. /strengths-and-needs/v1/edit/uuid
       when: Request.Path().match(Condition.String.MatchesRegex('^/[^/]+/[^/]+/[^/]+/[^/]+$')),
-      //TODO ACT-750 Accommodation Section.accommodation.sideNavHref
-      next: [redirect({ goto: Section.alcohol_use.sideNavHref })],
+      next: [redirect({ goto: Section.accommodation.sideNavHref })],
     }),
   ],
   steps: [
@@ -102,7 +101,7 @@ export const strengthsAndNeedsV2Journey = journey({
     configStep,
   ],
   children: [
-    // accommodationJourney,
+    accommodationJourney,
     // employmentJourney,
     // financeJourney,
     // drugUseJourney,

@@ -21,35 +21,29 @@ test.describe('Strengths and needs privacy screen', () => {
 
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
     await privacyPage.confirmAndContinue()
-    // TODO Uncomment it during ACT-750 Accommodation framework
-    // await expect(page).toHaveURL(/accommodation-status/)
-    //
-    // await page.goto(`${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/accommodation/accommodation-status`)
-    // await expect(page).toHaveURL(/accommodation-status/)
 
-    await expect(page).toHaveURL(/alcohol-use-current-issues/)
+    await expect(page).toHaveURL(/accommodation-community-current-accommodation/)
 
     await page.goto(
-      `${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/alcohol-use/alcohol-use-current-issues`,
+      `${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/accommodation/accommodation-community-current-accommodation`,
     )
-    await expect(page).toHaveURL(/alcohol-use-current-issues/)
+    await expect(page).toHaveURL(/accommodation-community-current-accommodation/)
   })
 
-  // TODO Uncomment it during ACT-750 Accommodation framework (because of entryWhen: isReadOnlyMode)
-  // test('is skipped for a read only assessment (regardless of the plan access mode)', async ({
-  //   page,
-  //   createSession,
-  //   strengthsAndNeedsBuilder,
-  // }) => {
-  //   const { handoverLink } = await createSession({
-  //     targetService: TargetService.STRENGTHS_AND_NEEDS,
-  //     accessMode: 'READ_ONLY',
-  //     planAccessMode: 'READ_WRITE',
-  //   })
-  //   await strengthsAndNeedsBuilder.fresh().save()
+  test('is skipped for a read only assessment (regardless of the plan access mode)', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+  }) => {
+    const { handoverLink } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+      accessMode: 'READ_ONLY',
+      planAccessMode: 'READ_WRITE',
+    })
+    await strengthsAndNeedsBuilder.fresh().save()
 
-  //   await page.goto(handoverLink)
+    await page.goto(handoverLink)
 
-  //   await expect(page).toHaveURL(/accommodation-analysis/)
-  // })
+    await expect(page).toHaveURL(/accommodation-analysis/)
+  })
 })

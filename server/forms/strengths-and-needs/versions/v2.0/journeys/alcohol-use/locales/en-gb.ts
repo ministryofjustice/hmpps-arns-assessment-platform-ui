@@ -36,20 +36,20 @@ export const english = {
     [Question.alcohol_past_issues_yes_details]: {
       validation: 'Enter details',
     },
-    [Question.alcohol_has_stopped_or_reduced]: {
+    [Question.alcohol_stopped_or_reduced_past]: {
       text: 'Has anything helped %1 to stop or reduce drinking alcohol in the past?',
       hint: 'Consider strategies, people or support networks that may have helped.',
       validation: 'Select if anything has helped them to stop or reduce drinking alcohol in the past',
     },
-    [Question.alcohol_has_stopped_or_reduced_yes_details]: {
+    [Question.alcohol_stopped_or_reduced_past_yes_details]: {
       validation: 'Enter details',
     },
-    [Question.alcohol_does_stop_or_reduce]: {
+    [Question.alcohol_stopped_or_reduced]: {
       text: 'Does anything help %1 to stop or reduce drinking alcohol?',
       hint: 'Consider strategies, people or support networks that may have helped.',
       validation: 'Select if anything has helped them to stop or reduce drinking alcohol in the past',
     },
-    [Question.alcohol_does_stop_or_reduce_yes_details]: {
+    [Question.alcohol_stopped_or_reduced_yes_details]: {
       validation: 'Enter details',
     },
     [Question.alcohol_use_changes]: {

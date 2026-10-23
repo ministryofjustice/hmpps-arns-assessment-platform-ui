@@ -90,7 +90,7 @@ export const preventPrivilegeEscalation = () => {
     when: and(isReadWriteMode, not(hasReadWriteAccess)),
     next: [
       redirect({
-        goto: createRoute([basePath, 'view', Params('uuid'), Section.alcohol_use.path]), // TODO During ACT-750 work, replace with accommodation
+        goto: createRoute([basePath, 'view', Params('uuid'), Section.accommodation.path]),
       }),
     ],
   })
