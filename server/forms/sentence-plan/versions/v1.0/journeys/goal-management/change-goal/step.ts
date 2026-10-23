@@ -14,7 +14,7 @@ import {
 import { pageLayout } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
+import { hasPostAgreementStatus, redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Change Goal page
@@ -57,6 +57,7 @@ export const changeGoalStep = step({
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -75,6 +76,7 @@ export const changeGoalStep = step({
             type: 'success',
             message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
+            onlyWhen: Data('activeGoalChanged'),
           }),
         ],
         next: [
@@ -129,6 +131,7 @@ export const changeGoalStep = step({
             type: 'success',
             message: Format('You changed a goal in %1 plan', CaseData.ForenamePossessive),
             target: 'plan-overview',
+            onlyWhen: Data('activeGoalChanged'),
           }),
         ],
         next: [redirect({ goto: Format('../../goal/%1/add-steps', Data('activeGoal.uuid')) })],

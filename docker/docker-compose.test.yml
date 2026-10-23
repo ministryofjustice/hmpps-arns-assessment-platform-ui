@@ -24,7 +24,7 @@ services:
   aap-ui:
     build:
       target: production
-    command: npm run start
+    command: node --run start
     environment:
       NODE_ENV: production
       HMPPS_AUTH_URL: http://wiremock:8080/auth
@@ -43,7 +43,7 @@ services:
       SAN_URL: http://localhost:3000/strengths-and-needs/v1.0
 
   playwright:
-    image: mcr.microsoft.com/playwright:v1.60.0-noble # Must match version in package-lock
+    image: mcr.microsoft.com/playwright:v1.63.0-noble # Must match version in package-lock
     networks:
       - hmpps
     depends_on:

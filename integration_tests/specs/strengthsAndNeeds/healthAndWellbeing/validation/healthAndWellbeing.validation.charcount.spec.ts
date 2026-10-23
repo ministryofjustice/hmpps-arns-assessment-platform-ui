@@ -53,6 +53,8 @@ const answers = [
   { question: Question.health_wellbeing_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
 
+const userSubmittedSteps = [Step.health_wellbeing_status.code, Step.health_wellbeing_details.code]
+
 test.describe('Health and wellbeing character counts', () => {
   // a test per option, because each one reveals its own details field
   for (const option of [Option.yes_ongoing_severe, Option.yes_ongoing, Option.yes_in_the_past]) {
@@ -60,10 +62,10 @@ test.describe('Health and wellbeing character counts', () => {
       page,
       openSection,
     }) => {
-      const section = await openSection(health, answers)
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
-      await page.goto(`${section}/${Step.health_wellbeing.path}`)
+      await page.goto(`${section}/${Step.health_wellbeing_status.path}`)
 
       await questions.health_wellbeing_physical_health_condition.option(CommonOption.yes).check()
       await questions.health_wellbeing_mental_health_condition.option(option).check()
@@ -73,14 +75,14 @@ test.describe('Health and wellbeing character counts', () => {
   }
 
   // prescribed medication for physical and mental conditions is always shown on this page
-  test('physical-mental-health: neurodiverse conditions, self harm, suicidal thoughts and positive factors', async ({
+  test('health-wellbeing-details: neurodiverse conditions, self harm, suicidal thoughts and positive factors', async ({
     page,
     openSection,
   }) => {
-    const section = await openSection(health, answers)
+    const section = await openSection(health, answers, userSubmittedSteps)
     const healthPage = new HealthAndWellbeingPage(page)
     const { questions } = healthPage
-    await page.goto(`${section}/${Step.physical_mental_health.path}`)
+    await page.goto(`${section}/${Step.health_wellbeing_details.path}`)
 
     await questions.health_wellbeing_neurodiverse_conditions.option(CommonOption.yes).check()
     await questions.health_wellbeing_self_harmed.option(CommonOption.yes).check()
@@ -91,11 +93,11 @@ test.describe('Health and wellbeing character counts', () => {
   })
 
   for (const option of [Option.yes_significant_difficulties, Option.yes_some_difficulties]) {
-    test(`physical-mental-health: learning difficulties ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(health, answers)
+    test(`health-wellbeing-details: learning difficulties ${option}`, async ({ page, openSection }) => {
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
-      await page.goto(`${section}/${Step.physical_mental_health.path}`)
+      await page.goto(`${section}/${Step.health_wellbeing_details.path}`)
 
       await questions.health_wellbeing_learning_difficulties.option(option).check()
 
@@ -104,11 +106,11 @@ test.describe('Health and wellbeing character counts', () => {
   }
 
   for (const option of changeOptions) {
-    test(`physical-mental-health: wants to make changes ${option}`, async ({ page, openSection }) => {
-      const section = await openSection(health, answers)
+    test(`health-wellbeing-details: wants to make changes ${option}`, async ({ page, openSection }) => {
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
-      await page.goto(`${section}/${Step.physical_mental_health.path}`)
+      await page.goto(`${section}/${Step.health_wellbeing_details.path}`)
 
       await questions.health_wellbeing_changes.option(option).check()
 
@@ -118,7 +120,7 @@ test.describe('Health and wellbeing character counts', () => {
 
   for (const answer of [CommonOption.yes, CommonOption.no]) {
     test(`health-wellbeing-summary: practitioner analysis ${answer}`, async ({ page, openSection }) => {
-      const section = await openSection(health, answers)
+      const section = await openSection(health, answers, userSubmittedSteps)
       const healthPage = new HealthAndWellbeingPage(page)
       const { questions } = healthPage
       await page.goto(`${section}/${Step.health_wellbeing_summary.path}#practitioner-analysis`)

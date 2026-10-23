@@ -52,7 +52,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
             ),
           ),
       },
-      actions: changeLinkActions(Step.add_drugs.path, drugUseSection.questions.selectMisusedDrugs.content),
+      actions: changeLinkActions(Step.drug_use_types.path, drugUseSection.questions.selectMisusedDrugs.content),
     },
     rows: [
       drugLastUsed.summaryRowOver(drugValueLower),
@@ -107,7 +107,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
             }),
           ],
         },
-        actions: changeLinkActions(Step.drug_details.path, {
+        actions: changeLinkActions(Step.drug_use_details.path, {
           code: Question.drugs_injected,
           text: contentFor('text.injected.text'),
         }),

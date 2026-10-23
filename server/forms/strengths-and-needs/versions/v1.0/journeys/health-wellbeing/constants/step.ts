@@ -1,11 +1,11 @@
 export const Step = {
-  health_wellbeing: {
-    code: 'health_wellbeing',
-    path: 'health-wellbeing',
+  health_wellbeing_status: {
+    code: 'health_wellbeing_status',
+    path: 'health-wellbeing-status',
   },
-  physical_mental_health: {
-    code: 'physical_mental_health',
-    path: 'physical-mental-health',
+  health_wellbeing_details: {
+    code: 'health_wellbeing_details',
+    path: 'health-wellbeing-details',
   },
   health_wellbeing_summary: {
     code: 'health_wellbeing_summary',

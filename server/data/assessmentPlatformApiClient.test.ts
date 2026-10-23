@@ -285,6 +285,7 @@ describe('AssessmentPlatformApiClient', () => {
       const result2: TimelineQueryResult = {
         type: 'TimelineQueryResult',
         timeline: [],
+        pageInfo: { pageNumber: 0, totalPages: 0 },
       }
 
       const response: QueriesResponse = {

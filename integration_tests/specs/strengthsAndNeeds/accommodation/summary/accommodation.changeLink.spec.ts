@@ -1,6 +1,7 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
 import { accommodation } from '../../sanUtils'
 import {
   changeLink,
@@ -45,11 +46,16 @@ const settledAccommodation: Scenario = {
     { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('current-accommodation', 'current_accommodation'),
+    changeLink('accommodation-status', 'current_accommodation'),
     changeLink('accommodation-details', 'living_with'),
     changeLink('accommodation-details', 'suitable_housing_location'),
     changeLink('accommodation-details', 'suitable_housing'),
     changeLink('accommodation-details', 'accommodation_changes'),
+  ],
+  userSubmittedSteps: [
+    Step.accommodation_status.code,
+    Step.accommodation_details.code,
+    Step.accommodation_summary.code,
   ],
 }
 
@@ -75,11 +81,16 @@ const noAccommodation: Scenario = {
     { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('current-accommodation', 'current_accommodation'),
+    changeLink('accommodation-status', 'current_accommodation'),
     changeLink('accommodation-details', 'no_accommodation_reason'),
     changeLink('accommodation-details', 'past_accommodation_details'),
     changeLink('accommodation-details', 'suitable_housing_planned'),
     changeLink('accommodation-details', 'accommodation_changes'),
+  ],
+  userSubmittedSteps: [
+    Step.accommodation_status.code,
+    Step.accommodation_details.code,
+    Step.accommodation_summary.code,
   ],
 }
 
@@ -93,7 +104,11 @@ test.describe('Accommodation change links', () => {
   test.describe('Questions', () => {
     test.describe('in settled accommodation', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, settledAccommodation.answers)
+        const section = await openSection(
+          accommodation,
+          settledAccommodation.answers,
+          settledAccommodation.userSubmittedSteps,
+        )
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -106,7 +121,7 @@ test.describe('Accommodation change links', () => {
 
     test.describe('with no accommodation', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, noAccommodation.answers)
+        const section = await openSection(accommodation, noAccommodation.answers, noAccommodation.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -120,7 +135,11 @@ test.describe('Accommodation change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(accommodation, settledAccommodation.answers)
+      const section = await openSection(
+        accommodation,
+        settledAccommodation.answers,
+        settledAccommodation.userSubmittedSteps,
+      )
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -134,7 +153,11 @@ test.describe('Accommodation change links', () => {
   test.describe('Summary', () => {
     test.describe('in settled accommodation', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, settledAccommodation.answers)
+        const section = await openSection(
+          accommodation,
+          settledAccommodation.answers,
+          settledAccommodation.userSubmittedSteps,
+        )
 
         await expectChangeLinksListed(
           page,
@@ -159,7 +182,7 @@ test.describe('Accommodation change links', () => {
 
     test.describe('with no accommodation', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(accommodation, noAccommodation.answers)
+        const section = await openSection(accommodation, noAccommodation.answers, noAccommodation.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, noAccommodation.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(

@@ -249,7 +249,7 @@ const currentAccommodation = question({
           ),
         ],
       },
-      actions: changeLinkActions(Step.current_accommodation.path, content),
+      actions: changeLinkActions(Step.accommodation_status.path, content),
     }),
   },
 })

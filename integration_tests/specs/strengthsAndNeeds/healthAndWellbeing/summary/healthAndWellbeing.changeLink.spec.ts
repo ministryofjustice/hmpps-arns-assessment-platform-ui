@@ -1,6 +1,7 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/health-wellbeing/constants/step'
 import { health } from '../../sanUtils'
 import {
   changeLink,
@@ -72,21 +73,26 @@ const fullyAnswered: Scenario = {
     },
   ],
   summaryChangeLinks: [
-    changeLink('health-wellbeing', 'health_wellbeing_physical_health_condition'),
-    changeLink('health-wellbeing', 'health_wellbeing_mental_health_condition'),
-    changeLink('physical-mental-health', 'health_wellbeing_prescribed_medication_physical_conditions'),
-    changeLink('physical-mental-health', 'health_wellbeing_prescribed_medication_mental_conditions'),
-    changeLink('physical-mental-health', 'health_wellbeing_psychiatric_treatment'),
-    changeLink('physical-mental-health', 'health_wellbeing_head_injury_or_illness'),
-    changeLink('physical-mental-health', 'health_wellbeing_neurodiverse_conditions'),
-    changeLink('physical-mental-health', 'health_wellbeing_learning_difficulties'),
-    changeLink('physical-mental-health', 'health_wellbeing_coping_day_to_day_life'),
-    changeLink('physical-mental-health', 'health_wellbeing_attitude_towards_self'),
-    changeLink('physical-mental-health', 'health_wellbeing_self_harmed'),
-    changeLink('physical-mental-health', 'health_wellbeing_attempted_suicide_or_suicidal_thoughts'),
-    changeLink('physical-mental-health', 'health_wellbeing_outlook'),
-    changeLink('physical-mental-health', 'health_wellbeing_positive_factors'),
-    changeLink('physical-mental-health', 'health_wellbeing_changes'),
+    changeLink('health-wellbeing-status', 'health_wellbeing_physical_health_condition'),
+    changeLink('health-wellbeing-status', 'health_wellbeing_mental_health_condition'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_prescribed_medication_physical_conditions'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_prescribed_medication_mental_conditions'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_psychiatric_treatment'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_head_injury_or_illness'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_neurodiverse_conditions'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_learning_difficulties'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_coping_day_to_day_life'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_attitude_towards_self'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_self_harmed'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_attempted_suicide_or_suicidal_thoughts'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_outlook'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_positive_factors'),
+    changeLink('health-wellbeing-details', 'health_wellbeing_changes'),
+  ],
+  userSubmittedSteps: [
+    Step.health_wellbeing_status.code,
+    Step.health_wellbeing_details.code,
+    Step.health_wellbeing_summary.code,
   ],
 }
 
@@ -100,7 +106,7 @@ test.describe('Health and wellbeing change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(health, fullyAnswered.answers)
+        const section = await openSection(health, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -114,7 +120,7 @@ test.describe('Health and wellbeing change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(health, fullyAnswered.answers)
+      const section = await openSection(health, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -128,7 +134,7 @@ test.describe('Health and wellbeing change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(health, fullyAnswered.answers)
+        const section = await openSection(health, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

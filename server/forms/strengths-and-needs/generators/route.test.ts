@@ -133,8 +133,8 @@ describe('createRoute', () => {
     })
 
     it('should handle nested section paths', () => {
-      const result = generator(['strengths-and-needs/v1.0', 'edit', 'uuid', 'drug-use/drug-details'], [])
-      expect(result).toBe('/strengths-and-needs/v1.0/edit/uuid/drug-use/drug-details')
+      const result = generator(['strengths-and-needs/v1.0', 'edit', 'uuid', 'drug-use/drug-use-details'], [])
+      expect(result).toBe('/strengths-and-needs/v1.0/edit/uuid/drug-use/drug-use-details')
     })
   })
 

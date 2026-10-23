@@ -1,4 +1,5 @@
 import { EffectFunctionContext } from '@ministryofjustice/hmpps-forge/core'
+import { Resolvable } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { User } from '../../../interfaces/user'
 import { Answers, Properties, TimelineItem } from '../../../interfaces/aap-api/dataModel'
 import { areasOfNeed, AreaOfNeedSlug } from '../versions/v1.0/constants'
@@ -238,11 +239,14 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
  *
  * The frontend-context call bundles the phase, appointment allowance and next
  * appointment in one response, so a single derived type covers the whole
- * supervision package. The method can return null (no package yet), so unwrap it.
+ * supervision package. The method can return null (no package yet) or, for a 500,
+ * an `outcome: 'error'` object — only the success branch is package details.
  */
-export type SupervisionPackageDetails = NonNullable<
+type SupervisionPackageFrontendContextResponse = NonNullable<
   Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
 >
+
+export type SupervisionPackageDetails = Extract<SupervisionPackageFrontendContextResponse, { outcome: 'success' }>
 
 export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
 export type TierCalculation = TierDetailsResponse['calculation']
@@ -311,6 +315,8 @@ export interface PlanNotification {
   message: unknown
   target: string
   clearOtherNotifications?: boolean
+  // When false the notification is not added — for banners that depend on an earlier effect's outcome
+  onlyWhen?: Resolvable<boolean>
 }
 
 /**
@@ -337,6 +343,8 @@ export interface StepChanges {
   toDelete: string[]
   /** UUID of the STEPS collection (if goal already has one) */
   collectionUuid?: string
+  // Draft step order during reorder - applied to steps on save, discarded on cancel
+  reorderedStepsDraft?: string[]
 }
 
 /**
@@ -359,6 +367,8 @@ export interface SentencePlanData extends Record<string, unknown> {
   activeGoalUuid: string
   activeGoalStepsOriginal: StepSession[]
   activeGoalStepsEdited: StepSession[]
+  // Set by updateActiveGoal — false when the submitted edit matched the saved goal
+  activeGoalChanged: boolean
 
   // Plan Agreements
   planAgreements: DerivedPlanAgreement[]

@@ -1,11 +1,12 @@
-import { Condition, Post, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { healthWellbeingSummaryTab } from './fields'
 import { Step } from '../../constants/step'
 import { summaryPageTitle } from '../../../../locales'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { SanAuditEvent, auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const healthWellbeingSummaryStep = step({
   path: `/${Step.health_wellbeing_summary.path}`,
@@ -14,11 +15,20 @@ export const healthWellbeingSummaryStep = step({
   onAccess: [
     auditPageView(SanAuditEvent.VIEW_SECTION_SUMMARY, Section.health_and_wellbeing, Step.health_wellbeing_summary),
   ],
+  validWhen: [
+    validation({
+      condition: isUserSubmittedCondition(Step.health_wellbeing_summary.code),
+      message: 'This step is not user submitted',
+    }),
+  ],
   onSubmission: [
-    autosaveSubmit,
+    autosaveSubmit(Step.health_wellbeing_summary.code, Section.health_and_wellbeing),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
+      onAlways: {
+        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.health_wellbeing_summary.code)],
+      },
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
@@ -30,6 +40,17 @@ export const healthWellbeingSummaryStep = step({
           ),
         ],
         next: [redirect({ goto: `${Step.health_wellbeing_analysis.path}#practitioner-analysis` })],
+      },
+      onInvalid: {
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.health_and_wellbeing, SectionComplete.no),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.health_and_wellbeing,
+            Step.health_wellbeing_summary,
+          ),
+        ],
       },
     }),
   ],

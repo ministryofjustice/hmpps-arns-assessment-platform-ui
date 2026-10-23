@@ -40,7 +40,7 @@ describe('sendAuditEvent', () => {
   it('sends the event with the common SAN context', async () => {
     await sendAuditEvent(deps)(createMockContext(), SanAuditEvent.VIEW_QUESTION_PAGE, {
       section: 'accommodation',
-      page: 'current_accommodation',
+      page: 'accommodation_status',
     })
 
     expect(deps.auditService.send).toHaveBeenCalledWith({
@@ -54,7 +54,7 @@ describe('sendAuditEvent', () => {
         assessmentUuid: 'assessment-456',
         formVersion: 'v1.0',
         section: 'accommodation',
-        page: 'current_accommodation',
+        page: 'accommodation_status',
       },
     })
   })

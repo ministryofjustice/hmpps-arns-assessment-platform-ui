@@ -7,13 +7,13 @@ export const Section = {
   accommodation: {
     code: 'accommodation',
     path: '/accommodation',
-    sideNavHref: `accommodation/current-accommodation`,
+    sideNavHref: `accommodation/accommodation-status`,
     statusKey: 'accommodation_section_complete',
   },
   employment_and_education: {
     code: 'employment-and-education',
     path: '/employment-and-education',
-    sideNavHref: `employment-and-education/current-employment`,
+    sideNavHref: `employment-and-education/employment-status`,
     statusKey: 'employment_education_section_complete',
   },
   finance: {
@@ -25,19 +25,19 @@ export const Section = {
   drug_use: {
     code: 'drug-use',
     path: '/drug-use',
-    sideNavHref: `drug-use/drug-use`,
+    sideNavHref: `drug-use/drug-use-status`,
     statusKey: 'drug_use_section_complete',
   },
   alcohol_use: {
     code: 'alcohol-use',
     path: '/alcohol-use',
-    sideNavHref: `alcohol-use/alcohol-use`,
+    sideNavHref: `alcohol-use/alcohol-use-status`,
     statusKey: 'alcohol_use_section_complete',
   },
   health_and_wellbeing: {
     code: 'health-and-wellbeing',
     path: '/health-and-wellbeing',
-    sideNavHref: `health-and-wellbeing/health-wellbeing`,
+    sideNavHref: `health-and-wellbeing/health-wellbeing-status`,
     statusKey: 'health_wellbeing_section_complete',
   },
   personal_relationships_and_community: {
@@ -49,7 +49,7 @@ export const Section = {
   thinking_behaviours_and_attitudes: {
     code: 'thinking-behaviours-and-attitudes',
     path: '/thinking-behaviours-and-attitudes',
-    sideNavHref: `thinking-behaviours-and-attitudes/thinking-behaviours`,
+    sideNavHref: `thinking-behaviours-and-attitudes/thinking-behaviours-attitudes`,
     statusKey: 'thinking_behaviours_attitudes_section_complete',
   },
   offence_analysis: {

@@ -3,7 +3,7 @@ FROM node:24-alpine AS base
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN apk --update-cache upgrade --available \
-  && apk --no-cache add tzdata \
+  && apk --no-cache add tzdata tini \
   && rm -rf /var/cache/apk/*
 
 ENV TZ=Europe/London
@@ -54,7 +54,14 @@ COPY --from=build --chown=appuser:appgroup /app/package.json /app/package-lock.j
 COPY --from=build --chown=appuser:appgroup /app/dist ./dist
 COPY --from=prod-deps --chown=appuser:appgroup /app/node_modules ./node_modules
 
+# npm and corepack are not needed at runtime; removing them drops their bundled
+# dependencies (undici, brace-expansion, http-cache-semantics) from the image.
+RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
+
 EXPOSE 3000
 USER 2000
 
-CMD [ "npm", "start" ]
+# tini forwards SIGTERM to the whole process group (npm used to do this for us)
+ENTRYPOINT [ "/sbin/tini", "-g", "--" ]
+CMD [ "node", "--run", "start" ]

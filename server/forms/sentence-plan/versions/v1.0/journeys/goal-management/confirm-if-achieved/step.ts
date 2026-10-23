@@ -26,7 +26,7 @@ export const confirmIfAchievedStep = step({
   view: {
     locals: {
       backlink: match(Data('navigationReferrer'))
-        .branch(Condition.Equals('add-steps'), Format('../../goal/%1/add-steps', Data('activeGoal.uuid')))
+        .case('add-steps', Format('../../goal/%1/add-steps', Data('activeGoal.uuid')))
         .otherwise(Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid'))),
     },
   },

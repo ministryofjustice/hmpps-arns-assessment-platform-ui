@@ -41,7 +41,7 @@
 
       {% set assessmentVersionLink %}
         {% if version.assessmentVersion %}
-          <a href="{{ params.sanUrl }}/view-historic/{{ version.assessmentVersion.uuid }}/accommodation" class="govuk-link" rel="noreferrer noopener" target="_blank" data-qa="assessment-link">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
+          <a href="{{ params.sanUrl }}/view-historic/{{ version.assessmentVersion.uuid }}/accommodation" class="govuk-link" rel="noreferrer noopener" target="_blank" data-ai-id="view-assessment-link" data-qa="assessment-link">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
         {% endif %}
       {% endset %}
 

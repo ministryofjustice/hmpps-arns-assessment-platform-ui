@@ -54,6 +54,8 @@ import {
   yesNo,
 } from '../../constants/questionContent'
 import { isEditMode } from '../../guards'
+import { StrengthsAndNeedsTransformers } from '../../../../transformers'
+import { StrengthsAndNeedsConditions } from '../../../../conditions'
 
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
@@ -104,7 +106,10 @@ export const drugLastUsed = questionTemplate({
       value: {
         text: SANGenerators.getTextFromListDefinition(lastUsedSummaryLabels, Answer(content.code)),
       },
-      actions: changeLinkActions(Step.add_drugs.path, { code: content.code, text: contentFor('text.lastUsed.text') }),
+      actions: changeLinkActions(Step.drug_use_types.path, {
+        code: content.code,
+        text: contentFor('text.lastUsed.text'),
+      }),
     }),
   },
 })
@@ -144,7 +149,7 @@ export const drugHowOftenUsed = questionTemplate({
         text: SANGenerators.getTextFromListDefinition(content.options, Answer(content.code)),
       },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
-      actions: changeLinkActions(Step.drug_details.path, {
+      actions: changeLinkActions(Step.drug_use_details.path, {
         code: content.code,
         text: contentFor('text.howOften.text'),
       }),
@@ -168,10 +173,12 @@ export const drugHowOftenUsedDetails = questionTemplate({
         maxLength: CharacterLimit.c2000,
         validWhen: [
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c2000)),
+            condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
             message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
+        parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     collectionSummaryRow: content => ({
       key: { text: content.text },
@@ -179,7 +186,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         text: Answer(content.code),
       },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
-      actions: changeLinkActions(Step.drug_details.path, content),
+      actions: changeLinkActions(Step.drug_use_details.path, content),
     }),
   },
 })
@@ -277,7 +284,7 @@ const drugUse = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: summaryRow({ changeHref: Step.drug_use.path }),
+    summaryRow: summaryRow({ changeHref: Step.drug_use_status.path }),
   },
 })
 
@@ -422,7 +429,7 @@ const moreThanSixMonthsDetails = question({
       dependentWhen: anyDrugUsedMoreThanSix,
     }),
     summaryRow: textSummaryRow({
-      changeHref: Step.drug_details.path,
+      changeHref: Step.drug_use_details.path,
       visibleWhen: Answer(Question.not_used_in_last_six_months_details).match(Condition.IsRequired()),
     }),
   },
@@ -476,7 +483,7 @@ const receivingTreatment = question({
   displayModes: {
     field: radioField(),
     summaryRow: summaryRow({
-      changeHref: Step.drug_details.path,
+      changeHref: Step.drug_use_details.path,
       visibleWhen: and(isEditMode, Answer(Question.drugs_reasons_for_use).match(Condition.IsRequired())),
     }),
   },

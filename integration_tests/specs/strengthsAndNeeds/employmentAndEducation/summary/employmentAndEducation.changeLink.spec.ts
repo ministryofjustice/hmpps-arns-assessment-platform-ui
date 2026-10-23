@@ -1,6 +1,7 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/employment-and-education/constants/step'
 import { employment } from '../../sanUtils'
 import {
   changeLink,
@@ -67,17 +68,22 @@ const fullyAnswered: Scenario = {
     },
   ],
   summaryChangeLinks: [
-    changeLink('current-employment', 'employment_status'),
-    changeLink('employed', 'employment_area'),
-    changeLink('employed', 'employment_history'),
-    changeLink('employed', 'employment_other_responsibilities'),
-    changeLink('employed', 'education_highest_level_completed'),
-    changeLink('employed', 'education_professional_or_vocational_qualifications'),
-    changeLink('employed', 'education_transferable_skills'),
-    changeLink('employed', 'education_difficulties'),
-    changeLink('employed', 'employment_experience'),
-    changeLink('employed', 'education_experience'),
-    changeLink('employed', 'employment_education_changes'),
+    changeLink('employment-status', 'employment_status'),
+    changeLink('employment-education-details', 'employment_area'),
+    changeLink('employment-education-details', 'employment_history'),
+    changeLink('employment-education-details', 'employment_other_responsibilities'),
+    changeLink('employment-education-details', 'education_highest_level_completed'),
+    changeLink('employment-education-details', 'education_professional_or_vocational_qualifications'),
+    changeLink('employment-education-details', 'education_transferable_skills'),
+    changeLink('employment-education-details', 'education_difficulties'),
+    changeLink('employment-education-details', 'employment_experience'),
+    changeLink('employment-education-details', 'education_experience'),
+    changeLink('employment-education-details', 'employment_education_changes'),
+  ],
+  userSubmittedSteps: [
+    Step.employment_status.code,
+    Step.employment_education_details.code,
+    Step.employment_education_summary.code,
   ],
 }
 
@@ -94,7 +100,7 @@ test.describe('Employment and education change links', () => {
   test.describe('Questions', () => {
     test.describe('fully answered', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(employment, fullyAnswered.answers)
+        const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -108,7 +114,7 @@ test.describe('Employment and education change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(employment, fullyAnswered.answers)
+      const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -122,7 +128,7 @@ test.describe('Employment and education change links', () => {
   test.describe('Summary', () => {
     test.describe('fully answered', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(employment, fullyAnswered.answers)
+        const section = await openSection(employment, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
 
         await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
         await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)

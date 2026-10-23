@@ -2,6 +2,7 @@ import {
   collectionsOf,
   isOptioned,
   isQuestionOption,
+  QuestionContent,
   QuestionFormat,
   SectionDefinition,
   stableQuestionsOf,
@@ -23,48 +24,55 @@ interface FormConfigField {
   collection?: string
 }
 
-export class FormConfig {
+export interface FormConfig {
   version: string
-
   fields: Record<string, FormConfigField>
+}
 
-  constructor(version: string, sections: SectionDefinition[], sectionStatusKeys: string[]) {
-    this.version = version
-    this.fields = {}
+const fieldOptionsOf = (content: QuestionContent): Pick<FormConfigField, 'options'> =>
+  isOptioned(content) ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) } : {}
 
-    sections.forEach(section => {
-      stableQuestionsOf(section).forEach(content => {
-        this.fields[content.code] = {
+/**
+ * Built as a plain object (not a class instance) because it is passed to the
+ * form as `data`, which forge requires to be JSON-serialisable.
+ */
+export const buildFormConfig = (
+  version: string,
+  sections: SectionDefinition[],
+  sectionStatusKeys: string[],
+): FormConfig => {
+  const fields: Record<string, FormConfigField> = {}
+
+  sections.forEach(section => {
+    stableQuestionsOf(section).forEach(content => {
+      fields[content.code] = {
+        code: content.code,
+        type: content.format,
+        section: section.code,
+        ...fieldOptionsOf(content),
+      }
+    })
+
+    collectionsOf(section).forEach(collectionDef => {
+      collectionDef.questions.forEach(content => {
+        fields[content.code] = {
           code: content.code,
           type: content.format,
           section: section.code,
-          ...(isOptioned(content)
-            ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) }
-            : {}),
+          collection: collectionDef.name,
+          ...fieldOptionsOf(content),
         }
       })
-
-      collectionsOf(section).forEach(collectionDef => {
-        collectionDef.questions.forEach(content => {
-          this.fields[content.code] = {
-            code: content.code,
-            type: content.format,
-            section: section.code,
-            collection: collectionDef.name,
-            ...(isOptioned(content)
-              ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) }
-              : {}),
-          }
-        })
-      })
     })
+  })
 
-    sectionStatusKeys.forEach(sectionStatusKey => {
-      this.fields[sectionStatusKey] = {
-        code: sectionStatusKey,
-        type: QuestionFormat.RADIO,
-        options: Object.values(SectionComplete).map(value => ({ value })),
-      }
-    })
-  }
+  sectionStatusKeys.forEach(sectionStatusKey => {
+    fields[sectionStatusKey] = {
+      code: sectionStatusKey,
+      type: QuestionFormat.RADIO,
+      options: Object.values(SectionComplete).map(value => ({ value })),
+    }
+  })
+
+  return { version, fields }
 }

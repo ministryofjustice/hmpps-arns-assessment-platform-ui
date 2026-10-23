@@ -3,6 +3,7 @@ import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journe
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
 import { buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -189,6 +190,10 @@ test.describe('Questions', () => {
         { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
         { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
       ])
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours_attitudes.code,
+        Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+      ])
       .save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(
@@ -196,7 +201,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-risk-of-sexual-harm',
+      'thinking-behaviours-attitudes-risk-of-sexual-harm',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
@@ -249,6 +254,10 @@ test.describe('Questions', () => {
         { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.no_violence },
         { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
       ])
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours_attitudes.code,
+        Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+      ])
       .save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(
@@ -256,7 +265,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-risk-of-sexual-harm',
+      'thinking-behaviours-attitudes-risk-of-sexual-harm',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(
@@ -311,6 +320,10 @@ test.describe('Questions', () => {
         { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: CommonOption.no },
         { question: Question.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
       ])
+      .withUserSubmittedSteps([
+        Step.thinking_behaviours_attitudes.code,
+        Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+      ])
       .save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(
@@ -318,7 +331,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'thinking-behaviours-sexual-harm',
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
     )
 
     const thinkingBehavioursAndAttitudesPage = await ThinkingBehavioursAndAttitudesPage.verifyOnPage(

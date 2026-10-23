@@ -10,12 +10,18 @@ export default class PlanHistoryPage extends SentencePlanPage {
 
   readonly viewGoalLink: Locator
 
+  readonly createGoalButton: Locator
+
+  readonly goalSummaryCards: Locator
+
   private constructor(page: Page) {
     super(page)
     this.pageHeading = page.locator('h1')
     this.mainContent = page.getByTestId('main-form')
     this.showAllSectionsButton = page.getByRole('button', { name: 'Show all sections' })
     this.viewGoalLink = page.getByRole('link', { name: 'View goal' })
+    this.createGoalButton = page.getByRole('button', { name: 'Create goal' })
+    this.goalSummaryCards = this.mainContent.locator('[data-qa="goal-summary-card-history"]')
   }
 
   static async verifyOnPage(page: Page): Promise<PlanHistoryPage> {
@@ -30,6 +36,12 @@ export default class PlanHistoryPage extends SentencePlanPage {
 
   async clickViewGoalLink(): Promise<void> {
     await this.viewGoalLink.first().click()
+  }
+
+  async getStepDescription(cardIndex: number, stepIndex: number): Promise<string> {
+    const descriptions = this.goalSummaryCards.nth(cardIndex).locator('[data-qa="step-description"]')
+
+    return (await descriptions.nth(stepIndex).textContent())?.trim() ?? ''
   }
 
 }

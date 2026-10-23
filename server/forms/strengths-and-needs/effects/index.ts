@@ -2,15 +2,13 @@ import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { deriveDrugCategories } from './assessment/deriveDrugCategories'
 import { loadAssessment } from './assessment/loadAssessment'
 import { loadPreviousVersions } from './assessment/loadPreviousVersions'
-import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
-import { autosaveCurrentStepAnswers } from './assessment/autosaveCurrentStepAnswers'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { setPrivacyAccepted } from './session/setPrivacyAccepted'
 import { setDynamicBacklink } from './session/setDynamicBacklink'
 import { StrengthsAndNeedsEffectsDeps } from './types'
 import { setSectionProgress } from './assessment/setSectionProgress'
-import { saveAndClearStaleAnswers } from './assessment/saveAndClearStaleAnswers'
+import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
 import { addItemToCollection } from './assessment/addItemToCollection'
 import { loadAnswersFromCollection } from './assessment/loadAnswersFromCollection'
 import { loadItemFromCollection } from './assessment/loadItemFromCollection'
@@ -21,7 +19,8 @@ import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
 import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
-import { generateInitialFormUrl } from './session/generateInitialFormUrl'
+import { setUserSubmitted } from './assessment/setUserSubmitted'
+import { extractModeAndVersionUuidFromHandoverContext } from './session/extractModeAndVersionUuidFromHandoverContext'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -33,8 +32,6 @@ export const StrengthsAndNeedsEffects = {
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
   loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
-  autosaveCurrentStepAnswers: sanEffects.register('autosaveCurrentStepAnswers', autosaveCurrentStepAnswers),
-  saveAndClearStaleAnswers: sanEffects.register('saveAndClearStaleAnswers', saveAndClearStaleAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   addItemToCollection: sanEffects.register('addItemToCollection', addItemToCollection),
@@ -44,11 +41,15 @@ export const StrengthsAndNeedsEffects = {
   loadItemFromCollection: sanEffects.register('loadItemFromCollection', loadItemFromCollection),
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
+  setUserSubmitted: sanEffects.register('setUserSubmitted', setUserSubmitted),
+  extractModeAndVersionUuidFromHandoverContext: sanEffects.register(
+    'extractModeAndVersionUuidFromHandoverContext',
+    extractModeAndVersionUuidFromHandoverContext,
+  ),
   extractModeAndVersionUuidFromUrl: sanEffects.register(
     'extractModeAndVersionUuidFromUrl',
     extractModeAndVersionUuidFromUrl,
   ),
-  generateInitialFormUrl: sanEffects.register('generateInitialFormUrl', generateInitialFormUrl),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
   saveCurrentAccommodationStepAnswers: sanEffects.register(
     'saveCurrentAccommodationStepAnswers',

@@ -33,8 +33,4 @@ export const Step = {
     code: 'offence_analysis_victim_summary',
     path: 'offence-analysis-victim-summary',
   },
-  offence_analysis_analysis: {
-    code: 'offence_analysis_analysis',
-    path: 'offence-analysis-analysis',
-  },
 } as const

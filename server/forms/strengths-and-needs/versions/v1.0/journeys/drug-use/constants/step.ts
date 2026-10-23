@@ -1,19 +1,19 @@
 export const Step = {
-  drug_use: {
-    code: 'drug_use',
-    path: 'drug-use',
+  drug_use_status: {
+    code: 'drug_use_status',
+    path: 'drug-use-status',
   },
-  drug_details: {
-    code: 'drug_details',
-    path: 'drug-details',
+  drug_use_details: {
+    code: 'drug_use_details',
+    path: 'drug-use-details',
   },
   drug_use_history: {
     code: 'drug_use_history',
     path: 'drug-use-history',
   },
-  add_drugs: {
-    code: 'add_drugs',
-    path: 'add-drugs',
+  drug_use_types: {
+    code: 'drug_use_types',
+    path: 'drug-use-types',
   },
   drug_use_summary: {
     code: 'drug_use_summary',

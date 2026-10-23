@@ -1,5 +1,6 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
@@ -20,7 +21,9 @@ test.describe('Summary', () => {
         { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
         { question: Question.finance_debt, value: [CommonOption.no] },
         { question: Question.finance_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
+      .save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
 
@@ -82,7 +85,9 @@ test.describe('Summary', () => {
         { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
         { question: Question.finance_debt, value: [CommonOption.no] },
         { question: Question.finance_changes, value: CommonOption.not_present },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
+      .save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
     const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
@@ -109,7 +114,9 @@ test.describe('Summary', () => {
         { question: Question.finance_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },
         { question: Question.finance_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
         { question: Question.finance_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
+      .save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary#practitioner-analysis')
     const financesPage = await FinancesPage.verifyOnPage(page, 'strengths or protective factors')

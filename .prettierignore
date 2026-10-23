@@ -1,0 +1,2 @@
+# Helm templates contain Go template syntax ({{ }}) and are not valid YAML on their own
+helm_deploy/**/templates/

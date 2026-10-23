@@ -139,55 +139,41 @@ test.describe('Print preview', () => {
   })
 
   test.describe('Print all goals button', () => {
-    test('is hidden when a draft plan has no goals', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
-      })
-      await sentencePlanBuilder.extend(sentencePlanId).save()
+    test('is hidden when a draft plan has no goals', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.printAllGoalsButton).toHaveCount(0)
     })
 
-    test('is shown when a draft plan only has future goals', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
+    test('is shown when a draft plan only has future goals', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder => builder.withGoals(futureGoals(1)),
       })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(futureGoals(1)).save()
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.printAllGoalsButton).toBeVisible()
     })
 
-    test('is shown when a draft plan only has achieved goals', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
+    test('is shown when a draft plan only has achieved goals', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoals([{ title: 'Achieved goal', areaOfNeed: 'accommodation', status: 'ACHIEVED' }]),
       })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoals([{ title: 'Achieved goal', areaOfNeed: 'accommodation', status: 'ACHIEVED' }])
-        .save()
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.printAllGoalsButton).toBeVisible()
     })
 
-    test('is shown when an agreed plan has no goals', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({
-        targetService: TargetService.SENTENCE_PLAN,
+    test('is shown when an agreed plan has no goals', async ({ page, openSentencePlan }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder.withPlanAgreements([{ status: 'AGREED', dateOffset: -oneDay, createdBy: 'Jane Smith' }]),
       })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withPlanAgreements([{ status: 'AGREED', dateOffset: -oneDay, createdBy: 'Jane Smith' }])
-        .save()
 
-      await navigateToSentencePlan(page, handoverLink)
       const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
 
       await expect(planOverviewPage.printAllGoalsButton).toBeVisible()

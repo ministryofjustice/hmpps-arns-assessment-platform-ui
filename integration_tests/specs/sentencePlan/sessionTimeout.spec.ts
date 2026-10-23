@@ -1,8 +1,8 @@
 import { expect, Page } from '@playwright/test'
-import { test, TargetService } from '../../support/fixtures'
+import { test } from '../../support/fixtures'
 import SessionTimeoutModalPage from '../../pages/sentencePlan/sessionTimeoutModalPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
-import { navigateToSentencePlan } from './sentencePlanUtils'
+import {} from './sentencePlanUtils'
 
 async function forceShowSessionTimeoutModal(page: Page) {
   await page.waitForFunction(() => {
@@ -13,19 +13,12 @@ async function forceShowSessionTimeoutModal(page: Page) {
     const modal = document.querySelector('moj-session-timeout-modal') as any
     modal.showModal()
   })
-  await page.waitForTimeout(100)
+  await expect(SessionTimeoutModalPage.getInstance(page).modal).toBeVisible()
 }
 
 test.describe('Session Timeout Modal', () => {
-  test('Delete action redirects to unsaved-information-deleted page', async ({
-    page,
-    createSession,
-    sentencePlanBuilder,
-  }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder.extend(sentencePlanId).save()
-
-    await navigateToSentencePlan(page, handoverLink)
+  test('Delete action redirects to unsaved-information-deleted page', async ({ page, openSentencePlan }) => {
+    await openSentencePlan()
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
     await expect(modalPage.modal).toBeHidden()
@@ -45,16 +38,8 @@ test.describe('Session Timeout Modal', () => {
     await expect(page.getByRole('button', { name: 'Go to the plan' })).toBeVisible()
   })
 
-  test('Continue button extends session and closes modal', async ({
-    page,
-    createSession,
-    makeAxeBuilder,
-    sentencePlanBuilder,
-  }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder.extend(sentencePlanId).save()
-
-    await navigateToSentencePlan(page, handoverLink)
+  test('Continue button extends session and closes modal', async ({ page, makeAxeBuilder, openSentencePlan }) => {
+    await openSentencePlan()
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
     await forceShowSessionTimeoutModal(page)
@@ -80,14 +65,10 @@ test.describe('Session Timeout Modal', () => {
 
   test('countdown expires and automatically redirects to unsaved-information-deleted page', async ({
     page,
-    createSession,
     makeAxeBuilder,
-    sentencePlanBuilder,
+    openSentencePlan,
   }) => {
-    const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-    await sentencePlanBuilder.extend(sentencePlanId).save()
-
-    await navigateToSentencePlan(page, handoverLink)
+    await openSentencePlan()
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
     await forceShowSessionTimeoutModal(page)

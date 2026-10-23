@@ -162,6 +162,7 @@ export default {
     },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000/strengths-and-needs/v1.0', requiredInProduction),
+  sanLegacyUrl: get('SAN_LEGACY_URL', ''),
   sqs: {
     audit: auditConfig(),
   },
@@ -212,6 +213,11 @@ export default {
   nationalRolloutFeedbackUrl: get('NATIONAL_ROLLOUT_FEEDBACK_URL', '#'),
   serviceNowFormUrl: get('SERVICE_NOW_FORM_URL', '#service-now-link', requiredInProduction),
   oasysUrl: get('OASYS_URL', 'http://localhost:3000/training-session-launcher/sessions', requiredInProduction),
+  oasysReviewUrl: get(
+    'OASYS_REVIEW_URL',
+    'http://localhost:3000/training-session-launcher/sessions',
+    requiredInProduction,
+  ),
   mpopUrl: get('MPOP_URL', 'http://localhost:3000/sign-in', requiredInProduction),
   smartSurveyPopupCode: get('SMART_SURVEY_POPUP_CODE', ''),
   featureFlagUrl: get('FEATURE_FLAG_URL', ''),

@@ -26,7 +26,7 @@ export const summary = GovUKSummaryList({
   ],
 })
 
-const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.financeSummary.path)]
+const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.finance_summary.path)]
 
 export const summaryTab = HtmlBlock({
   content: [

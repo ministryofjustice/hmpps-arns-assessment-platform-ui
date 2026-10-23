@@ -6,7 +6,7 @@ import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
 import { expectSanAuditEvent, SanAuditEvent } from './helpers'
 
 const buildCurrentAccommodationUrl = (sanAssessmentId: string) =>
-  `/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/current-accommodation`
+  `/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/accommodation-status`
 
 const settledAnswers = [
   { question: Question.current_accommodation, value: Option.settled },

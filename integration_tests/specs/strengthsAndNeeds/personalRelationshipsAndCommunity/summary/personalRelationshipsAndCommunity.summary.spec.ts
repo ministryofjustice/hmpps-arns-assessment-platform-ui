@@ -1,5 +1,6 @@
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
@@ -53,7 +54,14 @@ test.describe('Summary', () => {
           question: Question.personal_relationships_community_intimate_relationship_stable_relationships_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.personal_relationships_children_information.code,
+        Step.personal_relationships.code,
+        Step.personal_relationships_community.code,
+        Step.personal_relationships_community_summary.code,
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
@@ -177,7 +185,14 @@ test.describe('Summary', () => {
           question: Question.personal_relationships_community_intimate_relationship_stable_relationships_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.personal_relationships_children_information.code,
+        Step.personal_relationships.code,
+        Step.personal_relationships_community.code,
+        Step.personal_relationships_community_summary.code,
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
@@ -260,7 +275,14 @@ test.describe('Summary', () => {
           question: Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([
+        Step.personal_relationships_children_information.code,
+        Step.personal_relationships.code,
+        Step.personal_relationships_community.code,
+        Step.personal_relationships_community_summary.code,
+      ])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,

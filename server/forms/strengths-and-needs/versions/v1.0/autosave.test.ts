@@ -10,7 +10,7 @@ import {
   StrengthsAndNeedsEffectsDeps,
   StrengthsAndNeedsSessionDetails,
 } from '../../effects/types'
-import { alcoholUseStep } from './journeys/alcohol-use/steps/alcohol-use/step'
+import { alcoholUseStatusStep } from './journeys/alcohol-use/steps/alcohol-use-status/step'
 import { Step } from './journeys/alcohol-use/constants/step'
 import { basePath, formVersion } from './constants/formVersion'
 import { autosaveAction } from './autosave'
@@ -43,13 +43,13 @@ const post = async (body: Record<string, unknown>) => {
         title: 'Strengths and needs',
         path: basePath,
         onAccess: [access({ effects: [seed()] })],
-        steps: [alcoholUseStep],
+        steps: [alcoholUseStatusStep],
       }),
       forgePackage: true,
     })
     .createClient()
 
-  const result: TestResult = await client.post(`${basePath}/${Step.alcohol_use.path}`, {
+  const result: TestResult = await client.post(`${basePath}/${Step.alcohol_use_status.path}`, {
     body,
     state: { user },
     params: { mode: 'edit' },

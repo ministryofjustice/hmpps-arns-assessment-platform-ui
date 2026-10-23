@@ -30,20 +30,25 @@ import {
 } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
+import {
+  hasAtLeastOneActiveGoal,
+  hasPostAgreementStatus,
+  isOasysAccess,
+  isPrintAndShareEnabled,
+  isReadOnlyAccess,
+} from '../../../../guards'
 
 /**
  * True when at least one goal appears in a tab a draft plan can show.
  * REMOVED is left out because the removed tab only appears after agreement.
  */
-const hasGoalsInDisplayedTabs = Data('goals')
-  .each(
-    Iterator.Filter(
-      Item().path('status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE', 'ACHIEVED'])),
-    ),
-  )
-  .pipe(Transformer.Array.Length())
-  .match(Condition.Number.GreaterThan(0))
+const hasGoalsInDisplayedTabs = Data('goals').each(
+  Iterator.Some(
+    Item()
+      .path('status')
+      .match(Condition.Array.IsIn(['ACTIVE', 'FUTURE', 'ACHIEVED'])),
+  ),
+)
 
 /**
  * A draft plan with no goals on show has nothing to print, so the button is hidden.
@@ -54,6 +59,7 @@ const showPrintAllGoalsButton = and(isPrintAndShareEnabled, or(hasPostAgreementS
 export const planStep = step({
   path: '/overview',
   title: 'Plan',
+  code: 'plan-overview',
   view: {
     locals: {
       headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
@@ -69,10 +75,7 @@ export const planStep = step({
   },
   validWhen: [
     validation({
-      condition: Data('goals')
-        .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-        .pipe(Transformer.Array.Length())
-        .match(Condition.Number.GreaterThan(0)),
+      condition: hasAtLeastOneActiveGoal,
       message: 'To agree the plan, create a goal to work on now',
       details: { href: '#blank-plan-content' },
     }),
@@ -116,17 +119,20 @@ export const planStep = step({
       ],
     }),
     access({
-      effects: [
-        SentencePlanEffects.loadPlanTimeline(),
-        SentencePlanEffects.derivePlanLastUpdated(),
-        SentencePlanEffects.loadNotifications('plan-overview'),
-        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
-      ],
+      effects: [SentencePlanEffects.loadPlanTimeline(), SentencePlanEffects.derivePlanLastUpdated()],
       next: [
         redirect({
           when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
           goto: 'overview?goalStatusTab=current',
         }),
+      ],
+    }),
+    // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
+    // Load notification to final render req to ensure the redirect above doesn't consume and clear notification before it could be seen
+    access({
+      effects: [
+        SentencePlanEffects.loadNotifications('plan-overview'),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
       ],
     }),
   ],

@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent, navigateToSentencePlan } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, oneDayAgoMs } from '../sentencePlanUtils'
 
 test.describe('Plan History - Agreement event expanded content', () => {
   async function navigateToPlanHistory(page, handoverLink) {
@@ -98,7 +98,7 @@ test.describe('Plan History - Agreement event expanded content', () => {
         .extend(sentencePlanId)
         .withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
         .withPlanAgreements([
-          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: -86400000 },
+          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: oneDayAgoMs },
           { status: 'UPDATED_AGREED', createdBy: 'Test Practitioner', dateOffset: 0 },
         ])
         .save()
@@ -178,7 +178,7 @@ test.describe('Plan History - Agreement event expanded content', () => {
         .extend(sentencePlanId)
         .withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
         .withPlanAgreements([
-          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: -86400000 },
+          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: oneDayAgoMs },
           {
             status: 'UPDATED_DO_NOT_AGREE',
             detailsNo: `Person doesn't agree`,
@@ -203,25 +203,22 @@ test.describe('Plan History - Agreement event expanded content', () => {
   test.describe('COULD_NOT_ANSWER - notes present ', () => {
     test('should display details and notes in expanded content when plan agreement status is COULD_NOT_ANSWER with notes', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
-        .withPlanAgreements([
-          {
-            status: 'COULD_NOT_ANSWER',
-            createdBy: 'Test Practitioner',
-            detailsCouldNotAnswer: `Person wasn't present`,
-            notes: `Person didn't attend appointment`,
-            dateOffset: 0,
-          },
-        ])
-        .save()
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
+            .withPlanAgreements([
+              {
+                status: 'COULD_NOT_ANSWER',
+                createdBy: 'Test Practitioner',
+                detailsCouldNotAnswer: `Person wasn't present`,
+                notes: `Person didn't attend appointment`,
+                dateOffset: 0,
+              },
+            ]),
+      })
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('link', { name: 'Plan history' }).click()
       await expandSection(page, /Plan created/)
 
@@ -234,24 +231,21 @@ test.describe('Plan History - Agreement event expanded content', () => {
   test.describe('COULD_NOT_ANSWER - "No additional notes" not shown', () => {
     test('should display "No additional notes" in expanded content when plan is not agreed and no notes added ', async ({
       page,
-      createSession,
-      sentencePlanBuilder,
+      openSentencePlan,
     }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder
-        .extend(sentencePlanId)
-        .withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
-        .withPlanAgreements([
-          {
-            status: 'COULD_NOT_ANSWER',
-            createdBy: 'Test Practitioner',
-            detailsCouldNotAnswer: `Person wasn't present`,
-            dateOffset: 0,
-          },
-        ])
-        .save()
+      await openSentencePlan({
+        plan: builder =>
+          builder.withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
+            .withPlanAgreements([
+              {
+                status: 'COULD_NOT_ANSWER',
+                createdBy: 'Test Practitioner',
+                detailsCouldNotAnswer: `Person wasn't present`,
+                dateOffset: 0,
+              },
+            ]),
+      })
 
-      await navigateToSentencePlan(page, handoverLink)
       await page.getByRole('link', { name: 'Plan history' }).click()
       await expandSection(page, /Plan created/)
 

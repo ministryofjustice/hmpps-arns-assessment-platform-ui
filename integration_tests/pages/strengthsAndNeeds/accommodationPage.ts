@@ -5,7 +5,7 @@ import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 export default class AccommodationPage extends StrengthsAndNeedsPage {
   static readonly section = accommodation
 
-  static readonly firstStep = 'current-accommodation'
+  static readonly firstStep = 'accommodation-status'
 
   readonly questions = this.questionsOf(AccommodationQuestions)
 }

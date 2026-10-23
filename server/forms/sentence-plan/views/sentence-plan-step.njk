@@ -7,6 +7,10 @@
 {% set showSmartSurveyForNationalRollout = data.featureFlags.smartSurveyInNationalRolloutEnabled and not isPrivateBetaUser %}
 {% set userFeedbackUrl = feedbackFormUrl if isPrivateBetaUser else nationalRolloutFeedbackUrl %}
 
+{% if step.code in ['reorder-steps', 'plan-overview'] %}
+  {% set bodyAttributes = { 'data-scroll-restore': '' } %}
+{% endif %}
+
 {# ancestor[0].title is root journey title, in this case it's 'Sentence Plan' #}
 {# step.title is current step(page) of the journey #}
 {% set fullPageTitle = (dynamicTitle or step.title) + ' - ' + ancestors[0].title %}
@@ -146,7 +150,7 @@
     {% set reportProblemHtml %}
       <p class="govuk-body">
         Copy this information and paste it into the
-        <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+        <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" data-ai-id="service-now-form-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
       </p>
       <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
       <div class="app-report-problem__info">

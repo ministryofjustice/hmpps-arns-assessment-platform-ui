@@ -10,6 +10,7 @@ import {
   determineGoalStatus,
   buildGoalProperties,
   buildGoalAnswers,
+  hasGoalChanged,
 } from './goalUtils'
 import { snapshotFromGoal } from './goalSnapshot'
 import { hashGoalText, matchSuggestedGoal } from '../../../../utils/goalTelemetry'
@@ -23,6 +24,9 @@ import { areasOfNeed } from '../../versions/v1.0/constants'
  *
  * If the goal is changed to a future goal (can_start_now = 'no'),
  * the target_date is cleared to prevent stale data being displayed.
+ *
+ * If nothing has changed, nothing is saved (so no GOAL_UPDATED timeline entry).
+ * Sets Data('activeGoalChanged') so the step only shows the "goal changed" banner after a real change.
  *
  * Form fields used:
  * - goal_title: Goal title
@@ -65,6 +69,16 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
   // Calculate target date and status
   const targetDate = calculateTargetDate(canStartNow, targetDateOption, customDate)
   const status = determineGoalStatus(canStartNow)
+
+  const goalChanged = hasGoalChanged(activeGoal, {
+    title: goalTitle,
+    areaOfNeed,
+    relatedAreasOfNeed: relatedAreas,
+    status,
+    targetDate,
+  })
+
+  context.setData('activeGoalChanged', goalChanged)
 
   const properties = buildGoalProperties(status)
   const answers = buildGoalAnswers(goalTitle, areaOfNeed, relatedAreas, targetDate)
@@ -110,7 +124,9 @@ export const updateActiveGoal = (deps: SentencePlanEffectsDeps) => async (contex
     },
   ]
 
-  await deps.api.executeCommands(...commands)
+  if (goalChanged) {
+    await deps.api.executeCommands(...commands)
+  }
 
   const selectedArea = areasOfNeed.find(area => area.slug === activeGoal.areaOfNeed)
   const goalMatch = matchSuggestedGoal(goalTitle as string, selectedArea?.goals ?? [])

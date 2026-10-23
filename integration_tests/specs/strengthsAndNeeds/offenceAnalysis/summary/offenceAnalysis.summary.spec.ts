@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
 import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { test, TargetService } from '../../../../support/fixtures'
 
@@ -120,6 +121,13 @@ test.describe('Summary', () => {
           value: 'WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH',
         },
       ])
+      .withUserSubmittedSteps([
+        Step.offence_analysis.code,
+        Step.offence_analysis_involved_parties.code,
+        Step.offence_analysis_victim_summary.code,
+        Step.offence_analysis_impact.code,
+        Step.offence_analysis_summary.code,
+      ])
       .save()
 
     await OffenceAnalysisPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'offence-analysis-summary')
@@ -217,7 +225,7 @@ test.describe('Summary', () => {
           - list:
             - listitem:
               - link "Change (First victim)":
-                - /url: offence-analysis-victim/edit/0
+                - /url: offence-analysis-victim/edit/0#offence_analysis_victim_relationship-question
             - listitem:
               - link "Delete (First victim)":
                 - /url: "#"

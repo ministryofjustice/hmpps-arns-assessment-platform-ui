@@ -1,4 +1,5 @@
 import {
+  access,
   redirect,
   step,
   submit,
@@ -10,7 +11,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
-import { redirectToOverviewIfReadOnly } from '../../../../guards'
+import { redirectToOverviewIfReadOnly, redirectUnlessAllActiveGoalsHaveSteps } from '../../../../guards'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
@@ -24,7 +25,13 @@ export const agreePlanStep = step({
         .else('overview?goalStatusTab=current'),
     },
   },
-  onAccess: [redirectToOverviewIfReadOnly()],
+  onAccess: [
+    redirectToOverviewIfReadOnly(),
+    redirectUnlessAllActiveGoalsHaveSteps('overview'),
+    access({
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_PLAN_AGREEMENT)],
+    }),
+  ],
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('save')),

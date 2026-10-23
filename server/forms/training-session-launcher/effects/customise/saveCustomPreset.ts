@@ -41,6 +41,12 @@ function collectCustomisationData(context: TrainingSessionLauncherContext): {
     }
   }
 
+  const stubbedCrn = context.getAnswer('stubbedCrn')
+
+  if (typeof stubbedCrn === 'string' && stubbedCrn !== '') {
+    fixedValues.crn = stubbedCrn
+  }
+
   return {
     scenarioName,
     scenarioId: scenarioId || 'custom',

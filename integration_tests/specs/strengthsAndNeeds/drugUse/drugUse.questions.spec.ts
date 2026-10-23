@@ -3,6 +3,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
 import { expect } from '@playwright/test'
 import DrugUsePage from 'pages/strengthsAndNeeds/drugUsePage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
 import { forDrug, buildPageTitle, sanPageTitles } from '../sanUtils'
 
@@ -35,9 +36,12 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.yes }]).save()
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
+      .withUserSubmittedSteps([Step.drug_use_status.code])
+      .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'add-drugs')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-types')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
@@ -88,7 +92,9 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
+      .withUserSubmittedSteps([Step.drug_use_status.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
 
@@ -101,7 +107,7 @@ test.describe('Questions', () => {
           - paragraph: "No"
         - definition:
           - link "Change Has Test ever misused drugs?":
-            - /url: drug-use#drug_use-question
+            - /url: drug-use-status#drug_use-question
         - heading [level=2]
         - heading [level=2]
         - button "Go to practitioner analysis"
@@ -115,12 +121,15 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.drug_use, value: CommonOption.yes },
-        { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.benzodiazepines] },
+        { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.other_drug] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
-        { question: forDrug(Question.drug_last_used_value, Option.benzodiazepines), value: Option.more_than_six },
-      ]).save()
+        { question: Question.other_drug_name, value: 'calpol' },
+        { question: forDrug(Question.drug_last_used_value, Option.other_drug), value: Option.more_than_six },
+      ])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
+      .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-details')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-details')
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Not used in the last 6 months')
 
@@ -143,7 +152,7 @@ test.describe('Questions', () => {
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
       - separator
       - heading "Not used in the last 6 months" [level=2]
-      - text: Test used benzodiazepines (including diazepam, temazepam) more than 6 months ago. Give details about Test's use of these drugs For example, how often they used these drugs, when they stopped using, and if their use was an issue.
+      - text: Test used calpol more than 6 months ago. Give details about Test's use of these drugs For example, how often they used these drugs, when they stopped using, and if their use was an issue.
       - textbox "Give details about Test's use of these drugs"
       - text: You can enter up to 2000 characters You have 2,000 characters remaining
       - group "Which drugs has Test injected?":
@@ -152,8 +161,8 @@ test.describe('Questions', () => {
         - text: None or
         - checkbox "Amphetamines (including speed, methamphetamine)"
         - text: Amphetamines (including speed, methamphetamine)
-        - checkbox "Benzodiazepines (including diazepam, temazepam)"
-        - text: Benzodiazepines (including diazepam, temazepam)
+        - checkbox "calpol"
+        - text: calpol
       - group "Is Test receiving treatment for their drug use?":
         - text: Is Test receiving treatment for their drug use?
         - radio "Yes"
@@ -181,7 +190,9 @@ test.describe('Questions', () => {
         { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'test' },
         { question: Question.not_used_in_last_six_months_details, value: 'test' },
         { question: Question.drugs_is_receiving_treatment_yes_details, value: 'test' },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code, Step.drug_use_details.code])
+      .save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-history')
 

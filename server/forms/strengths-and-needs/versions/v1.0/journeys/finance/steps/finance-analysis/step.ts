@@ -7,9 +7,9 @@ import { SanAuditEvent, auditPageView } from '../../../../audit'
 import { isReadOnlyMode } from '../../../../guards'
 
 export const financeAnalysisStep = step({
-  path: `/${Step.financeAnalysis.path}`,
+  path: `/${Step.finance_analysis.path}`,
   title: analysisPageTitle(Section.finance),
   blocks: [financePractitionerAnalysisSummaryTab],
   reachability: { entryWhen: isReadOnlyMode },
-  onAccess: [auditPageView(SanAuditEvent.VIEW_PRACTITIONER_ANALYSIS, Section.finance, Step.financeAnalysis)],
+  onAccess: [auditPageView(SanAuditEvent.VIEW_PRACTITIONER_ANALYSIS, Section.finance, Step.finance_analysis)],
 })

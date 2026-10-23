@@ -40,13 +40,14 @@ import { StrengthsAndNeedsTransformers } from '../../../transformers'
 import { getDisplayTextForItems } from '../../../i18n'
 import { SANGenerators } from '../../../generators'
 import { isEditMode } from '../guards'
+import { StrengthsAndNeedsConditions } from '../../../conditions'
 
 const isPresent = <T>(value: T | null | undefined): value is T => value != null
 
 const characterCountValidationsOf = (content: QuestionContent, maxLength: number) => [
   ...(requiredValidationOf(content) ?? []),
   validation({
-    condition: Self().match(Condition.String.HasMaxLength(maxLength)),
+    condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(maxLength)),
     message: commonContentFor('validation.details_must_be_less_than', maxLength),
   }),
 ]
@@ -69,6 +70,8 @@ export const characterCountField =
         dependentWhen: placement.dependentWhen,
         visibleWhen: placement.visibleWhen,
         validWhen: characterCountValidationsOf(content, placement.maxLength),
+        parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     )
 
@@ -88,15 +91,14 @@ export const characterCountDetails =
         maxLength: options.maxLength,
         dependentWhen: parent.selectedWhen,
         validWhen: characterCountValidationsOf(content, options.maxLength),
+        parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
+        formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
       }),
     )
 
 /** A step path anchored to one of its questions */
-const changeHrefOf = (stepPath: string, code: ResolvableString): ResolvableString => {
-  const questionId = questionIdOf(code)
-
-  return typeof questionId === 'string' ? `${stepPath}#${questionId}` : Format(`${stepPath}#%1`, questionId)
-}
+export const changeHrefOf = (stepPath: ResolvableString, code: ResolvableString): ResolvableString =>
+  Format('%1#%2', stepPath, questionIdOf(code))
 
 /**
  * The "Change" action for a summary row, shown in edit mode only

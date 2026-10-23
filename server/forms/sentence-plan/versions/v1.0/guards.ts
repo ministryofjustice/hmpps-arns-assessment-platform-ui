@@ -34,15 +34,22 @@ export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').
 export const isSupervisionPackageEnabled = Data('featureFlags.supervisionPackageEnabled').match(Condition.Equals(true))
 
 /**
- * MPoP only displays the supervision package component for three supervision phases:
- * INIT (Early Engagement), STD (Standard Supervision) and FTHRD (Final Third). All other
- * phases — in custody (SENT), SPNA, no package yet, etc. — render nothing, so we hide the
- * tab for them too (an allowlist, so new non-renderable phases need no change here).
- * TODO: add the 4th "In flight" phase code once MPoP finalise it.
+ * MPoP renders the supervision package component for the phases in its template's
+ * showPhaseColumn: INIT (Early Engagement), STD (Standard Supervision), FTHRD (Final
+ * Third), IOM (IOM Tier A Alignment), OPD (In OPD Treatment) and SPNS (in-flight —an OASys
+ *  review is under way but not finished). It also renders for an in-flight case with no
+ * phase set yet (currentPhase null — the "Start an OASys review" prompt).
  */
-export const isSupervisionPackageDisplayable = Data('supervisionPackageDetails.currentPhase.phase.code').match(
-  Condition.Array.IsIn(['INIT', 'STD', 'FTHRD']),
+const isRenderableSupervisionPhase = Data('supervisionPackageDetails.currentPhase.phase.code').match(
+  Condition.Array.IsIn(['INIT', 'STD', 'FTHRD', 'IOM', 'OPD', 'SPNS']),
 )
+
+const isAwaitingOasysReview = and(
+  Data('supervisionPackageDetails').match(Condition.IsRequired()),
+  Data('supervisionPackageDetails.currentPhase').not.match(Condition.IsRequired()),
+)
+
+export const isSupervisionPackageDisplayable = or(isRenderableSupervisionPhase, isAwaitingOasysReview)
 
 /**
  * True when the feature is enabled AND the case is in a phase MPoP renders the component for.
@@ -65,8 +72,6 @@ export const canAccessSupervisionPackage = and(
   isSupervisionPackageEnabled,
   or(isSupervisionPackageDisplayable, hasSupervisionPackageError),
 )
-
-export const isMpopAssessmentInfoEnabled = Data('featureFlags.mpopAssessmentInfoEnabled').match(Condition.Equals(true))
 
 /**
  * True when Gotenberg is loading this page to build a PDF, rather than a person viewing it.
@@ -131,16 +136,33 @@ export const redirectIfGoalNotFound = (goto: string) =>
     next: [redirect({ goto })],
   })
 
+// Redirects users if goal has less than 2 steps
+// used for reorder page (nothing to reorder)
+export const redirectIfGoalHasLessThanTwoSteps = (goto: string) =>
+  access({
+    when: Data('activeGoal.steps').pipe(Transformer.Array.Length())
+      .match(Condition.Number.LessThan(2)),
+    next: [redirect({ goto })],
+  })
+
+export const isGoalActiveOrFuture = Data('activeGoal.status').match(Condition.Array.IsIn(['ACTIVE', 'FUTURE']))
+
+/**
+ * Redirect users away from achieved and removed goals, which are view-only.
+ */
+export const redirectUnlessGoalIsActiveOrFuture = (goto: string) =>
+  access({
+    when: not(isGoalActiveOrFuture),
+    next: [redirect({ goto })],
+  })
+
 /**
  * True when the active goal has at least one step and every step is COMPLETED.
  * Derived from the saved goal (not form answers), so it also holds on a direct page load.
  */
 export const allActiveGoalStepsCompleted = and(
   Data('activeGoal.steps').match(Condition.IsRequired()),
-  Data('activeGoal.steps')
-    .each(Iterator.Filter(Item().path('status').not.match(Condition.Equals('COMPLETED'))))
-    .pipe(Transformer.Array.Length())
-    .match(Condition.Equals(0)),
+  Data('activeGoal.steps').each(Iterator.Every(Item().path('status').match(Condition.Equals('COMPLETED')))),
 )
 
 /**
@@ -181,7 +203,7 @@ export const hasCrn = Data('caseData.crn').match(Condition.IsRequired())
 /**
  * True when the user can access SAN-specific content.
  */
-export const canAccessSanContent = and(isSanSpAssessment, hasCrn, or(not(isMpopAccess), isMpopAssessmentInfoEnabled))
+export const canAccessSanContent = and(isSanSpAssessment, hasCrn)
 
 /**
  * Redirect users who cannot access SAN content (see canAccessSanContent).
@@ -197,6 +219,20 @@ export const redirectUnlessSanSp = (goto: string) =>
  * The coordinator sets assessment.properties.MERGED when an OASys offender record has been merged.
  */
 export const isMergedPlan = Data('assessment.properties.MERGED').match(Condition.IsRequired())
+
+const activeGoals = Data('goals').each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
+const goalHasSteps = Item().path('steps').match(Condition.IsRequired())
+
+const allActiveGoalsHaveAtLeastOneStep = activeGoals.each(Iterator.Every(goalHasSteps))
+export const hasAtLeastOneActiveGoal = Data('goals').each(
+  Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE'))),
+)
+
+export const redirectUnlessAllActiveGoalsHaveSteps = (goto: string) =>
+  access({
+    when: not(and(hasAtLeastOneActiveGoal, allActiveGoalsHaveAtLeastOneStep)),
+    next: [redirect({ goto })],
+  })
 
 /**
  * Redirect MPoP users with a merged plan to the warning page.

@@ -3,6 +3,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/question'
 import { expect } from '@playwright/test'
 import PersonalRelationshipsAndCommunityPage from 'pages/strengthsAndNeeds/personalRelationshipsAndCommunityPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/personal-relationships-and-community/constants/step'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
@@ -20,7 +21,9 @@ test.describe('Validation', () => {
             Option.yes_children_visiting,
           ],
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -77,7 +80,9 @@ test.describe('Validation', () => {
           value: 'test',
         },
         { question: Question.personal_relationships_community_important_people, value: [CommonOption.other] },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code, Step.personal_relationships_children_information.code])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,
@@ -137,7 +142,9 @@ test.describe('Validation', () => {
           question: Question.personal_relationships_community_important_people_partner_intimate_relationship_details,
           value: '',
         },
-      ]).save()
+      ])
+      .withUserSubmittedSteps([Step.personal_relationships.code, Step.personal_relationships_children_information.code])
+      .save()
 
     await PersonalRelationshipsAndCommunityPage.navigateTo(
       page,

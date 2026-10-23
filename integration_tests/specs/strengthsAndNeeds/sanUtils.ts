@@ -102,7 +102,7 @@ export const handlePrivacyScreenIfPresent = async (page: Page): Promise<void> =>
 export const navigateToStrengthsAndNeeds = async (
   page: Page,
   handoverLink: string,
-  expectedPath: string = 'current-accommodation',
+  expectedPath: string = 'accommodation-status',
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)

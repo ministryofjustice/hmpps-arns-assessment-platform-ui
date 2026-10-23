@@ -1,7 +1,7 @@
 export const Step = {
-  current_accommodation: {
-    code: 'current_accommodation',
-    path: 'current-accommodation',
+  accommodation_status: {
+    code: 'accommodation_status',
+    path: 'accommodation-status',
   },
   accommodation_details: {
     code: 'accommodation_details',

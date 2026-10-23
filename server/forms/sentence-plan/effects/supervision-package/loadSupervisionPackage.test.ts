@@ -34,6 +34,7 @@ const supervisionPackageDetails = {
   createdAt: '2026-01-05T09:00:00Z',
   updatedAt: '2026-08-01T09:00:00Z',
   context: {},
+  outcome: 'success',
 } as unknown as SupervisionPackageDetails
 
 const tierCalculation = {
@@ -80,13 +81,10 @@ describe('loadSupervisionPackage', () => {
   })
 
   it('should set package and tier data when both APIs succeed', async () => {
-    // Arrange
     const context = createMockContext()
 
-    // Act
     await loadSupervisionPackage(deps)(context)
 
-    // Assert
     expect(deps.mpopComponents.getSupervisionPackageFrontendContext).toHaveBeenCalledWith(expect.anything(), 'X123456')
     expect(deps.mpopComponents.getTierDetails).toHaveBeenCalledWith(expect.anything(), 'X123456')
     expect(context.setData).toHaveBeenCalledWith('supervisionPackageDetails', supervisionPackageDetails)
@@ -94,22 +92,29 @@ describe('loadSupervisionPackage', () => {
   })
 
   it('should leave package details unset and log at info when the person has no package yet', async () => {
-    // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(null)
 
-    // Act
     await loadSupervisionPackage(deps)(context)
 
-    // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageError', expect.anything())
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
     expect(mockLogger.info).toHaveBeenCalledWith({ crn: 'X123456' }, 'No supervision package for this person yet')
   })
 
+  it('should store the context when it comes back with no phase yet (in-flight, OASys review outstanding)', async () => {
+    const context = createMockContext()
+    const inFlightContext = { ...supervisionPackageDetails, currentPhase: null } as unknown as SupervisionPackageDetails
+    ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(inFlightContext)
+
+    await loadSupervisionPackage(deps)(context)
+
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageDetails', inFlightContext)
+    expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageError', expect.anything())
+  })
+
   it('should still set the unavailable tier calculation when the tier API fails', async () => {
-    // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getTierDetails as jest.Mock).mockResolvedValue({
       calculation: unavailableTierCalculation,
@@ -117,10 +122,8 @@ describe('loadSupervisionPackage', () => {
       error: new Error('500 Internal Server Error'),
     })
 
-    // Act
     await loadSupervisionPackage(deps)(context)
 
-    // Assert
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', unavailableTierCalculation)
     expect(mockLogger.error).toHaveBeenCalledWith(
       { crn: 'X123456', httpStatus: 500 },
@@ -129,24 +132,37 @@ describe('loadSupervisionPackage', () => {
   })
 
   it('should set an error status (and not throw) when the package client rejects', async () => {
-    // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockRejectedValue(
       new Error('connection refused'),
     )
 
-    // Act
     await loadSupervisionPackage(deps)(context)
 
-    // Assert
     expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
     expect(context.setData).toHaveBeenCalledWith('supervisionPackageError', true)
     // Tier is settled independently, so a package failure does not lose the tier
     expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
   })
 
+  it('should set an error status when the package client resolves a 500 error outcome', async () => {
+    const context = createMockContext()
+    ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue({
+      outcome: 'error',
+      status: 500,
+      error: 'Internal Server Error',
+      timestamp: '2026-10-13T09:00:00Z',
+      path: '/frontend-context/X123456',
+    })
+
+    await loadSupervisionPackage(deps)(context)
+
+    expect(context.setData).not.toHaveBeenCalledWith('supervisionPackageDetails', expect.anything())
+    expect(context.setData).toHaveBeenCalledWith('supervisionPackageError', true)
+    expect(context.setData).toHaveBeenCalledWith('tierCalculation', tierCalculation)
+  })
+
   it('should log at info rather than error when the person has no tier or package', async () => {
-    // Arrange
     const context = createMockContext()
     ;(deps.mpopComponents.getSupervisionPackageFrontendContext as jest.Mock).mockResolvedValue(null)
     ;(deps.mpopComponents.getTierDetails as jest.Mock).mockResolvedValue({
@@ -155,22 +171,17 @@ describe('loadSupervisionPackage', () => {
       error: null,
     })
 
-    // Act
     await loadSupervisionPackage(deps)(context)
 
-    // Assert
     expect(mockLogger.error).not.toHaveBeenCalled()
     expect(mockLogger.info).toHaveBeenCalledTimes(2)
   })
 
   it('should not call the APIs when CRN is missing from the session', async () => {
-    // Arrange
     const context = createMockContext(null)
 
-    // Act
     await loadSupervisionPackage(deps)(context)
 
-    // Assert
     expect(deps.mpopComponents.getSupervisionPackageFrontendContext).not.toHaveBeenCalled()
   })
 })

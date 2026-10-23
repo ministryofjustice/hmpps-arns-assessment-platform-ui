@@ -7,6 +7,7 @@ import {
   match,
   Post,
   redirect,
+  Request,
   step,
   submit,
   when,
@@ -15,7 +16,7 @@ import {
 import { pageLayout } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { redirectIfGoalNotFound } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Add Steps page
@@ -48,11 +49,8 @@ export const addStepsStep = step({
       // 2. If navigationReferrer='update-goal-steps', navigate back to update-goal-steps page
       // 3. Default: navigate back to plan overview on correct tab based on goal status (current/future)
       backlink: match(Data('navigationReferrer'))
-        .branch(Condition.Equals('add-goal'), Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
-        .branch(
-          Condition.Equals('update-goal-steps'),
-          Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')),
-        )
+        .case('add-goal', Format('../../goal/%1/change-goal', Data('activeGoal.uuid')))
+        .case('update-goal-steps', Format('../../goal/%1/update-goal-steps', Data('activeGoal.uuid')))
         .otherwise(
           when(Data('activeGoal.status').match(Condition.Equals('ACTIVE')))
             .then('../../plan/overview?goalStatusTab=current')
@@ -69,11 +67,22 @@ export const addStepsStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.initializeStepEditSession(),
+      ],
+    }),
+
+    // Fresh visits only (GET) — add, remove and validation reloads are POSTs.
+    access({
+      when: Request.Method().match(Condition.Equals('GET')),
+      effects: [
+        SentencePlanEffects.discardStepEditSession(),
         SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_ADD_STEPS),
       ],
     }),
+    access({
+      effects: [SentencePlanEffects.initializeStepEditSession()],
+    }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -92,6 +101,41 @@ export const addStepsStep = step({
       validate: false,
       onAlways: {
         effects: [SentencePlanEffects.removeStepFromStepEditSession()],
+      },
+    }),
+
+    // Handle "Reorder steps" button after creating a new goal - save and show notification
+    submit({
+      when: and(
+        Post('action').match(Condition.Equals('reorderSteps')),
+        Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      ),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.ADD_STEPS),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+            clearOtherNotifications: true,
+          }),
+        ],
+        next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
+
+    // Handle "Reorder steps" button for an existing goal - save and redirect
+    submit({
+      when: Post('action').match(Condition.Equals('reorderSteps')),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEPS),
+        ],
+        next: [redirect({ goto: 'reorder-steps' })],
       },
     }),
 

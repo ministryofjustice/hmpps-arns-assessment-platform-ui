@@ -1,5 +1,5 @@
 import { access, and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { currentAccommodationStep } from './steps/current-accommodation/step'
+import { accommodationStatusStep } from './steps/accommodation-status/step'
 import { accommodationSummaryStep } from './steps/accommodation-summary/step'
 import { accommodationAnalysisStep } from './steps/accommodation-analysis/step'
 import { Section } from '../../constants/section'
@@ -13,12 +13,7 @@ import { Step } from './constants/step'
  * Accommodation Journey
  *
  * Flow:
- * current-accommodation → (branching based on type)
- *   ├── settled-accommodation        → accommodation-summary
- *   ├── temporary-accommodation      → accommodation-summary
- *   ├── temporary-accommodation-cas-ap → accommodation-summary
- *   └── no-accommodation             → accommodation-summary
- *                                         → accommodation-analysis
+ * accommodation-status → accommodation-details → accommodation-summary → accommodation-analysis
  */
 export const accommodationJourney = journey({
   code: Section.accommodation.code,
@@ -37,5 +32,5 @@ export const accommodationJourney = journey({
       sectionStatusTag: sectionStatusTag(Section.accommodation),
     },
   },
-  steps: [currentAccommodationStep, accommodationDetailsStep, accommodationSummaryStep, accommodationAnalysisStep],
+  steps: [accommodationStatusStep, accommodationDetailsStep, accommodationSummaryStep, accommodationAnalysisStep],
 })

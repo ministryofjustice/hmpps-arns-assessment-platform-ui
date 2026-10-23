@@ -54,6 +54,13 @@ const persistedValue = (history: AnswerHistory): unknown => {
   return persistedMutations[persistedMutations.length - 1]?.value
 }
 
+/**
+ * The value the assessment record currently holds for an answer: the last
+ * mutation that did not come from this submission.
+ */
+export const storedAnswerOf = (history: AnswerHistory | undefined): unknown =>
+  history === undefined ? undefined : persistedValue(history)
+
 const isSameAnswer = (a: unknown, b: unknown): boolean => {
   if (Array.isArray(a) && Array.isArray(b)) {
     return a.length === b.length && a.every((item, index) => item === b[index])

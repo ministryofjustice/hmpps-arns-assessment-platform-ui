@@ -1,18 +1,25 @@
 import {
-  or,
   Answer,
+  Condition,
   Data,
   Format,
+  Generator,
   Item,
   Iterator,
+  or,
   Self,
-  validation,
-  Condition,
   Transformer,
-  Generator,
+  validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKRadioInput, GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  GovUKCheckboxInput,
+  GovUKInsetText,
+  GovUKRadioInput,
+  GovUKTag,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { MOJDatePicker } from '@ministryofjustice/hmpps-forge/moj-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { CaseData } from '../../constants'
 
 export const relatedAreasOfNeed = GovUKCheckboxInput({
@@ -79,13 +86,11 @@ export const customTargetDate = MOJDatePicker({
   label: {
     text: 'Select a date',
   },
-  hint: 'For example, 31/3/2023.',
+  hint: 'For example, 31/3/2028.',
   // Set a minimum date of today in the DD/MM/YYYY format
   minDate: Generator.Date.Today().pipe(Transformer.Date.Format('DD/MM/YYYY')),
+  maxDate: Generator.Date.Today().pipe(Transformer.Date.AddYears(5), Transformer.Date.Format('DD/MM/YYYY')),
   formatters: [Transformer.String.ToISODate()],
-  attributes: {
-    'data-ai-id': 'custom-target-date-selection',
-  },
   validWhen: [
     validation({
       condition: Self().match(Condition.IsRequired()),
@@ -94,7 +99,7 @@ export const customTargetDate = MOJDatePicker({
     validation({
       // Skip when empty so the IsRequired rule above is the only error shown for a blank field.
       condition: or(Self().not.match(Condition.IsRequired()), Self().match(Condition.Date.IsValid())),
-      message: 'Select a valid date',
+      message: 'Enter a date in the correct format, for example 31/3/2028',
     }),
     validation({
       // Only range-check once we have a valid date — IsToday/IsFutureDate throw on an empty or
@@ -104,7 +109,22 @@ export const customTargetDate = MOJDatePicker({
         Self().match(Condition.Date.IsToday()),
         Self().match(Condition.Date.IsFutureDate()),
       ),
-      message: 'Date must be today or in the future',
+      message: 'The date must be today or in the future',
+    }),
+    validation({
+      condition: or(
+        Self().not.match(Condition.Date.IsValid()),
+        Self().match(
+          Condition.Date.IsBefore(
+            Generator.Date.Today().pipe(
+              Transformer.Date.AddYears(5),
+              Transformer.Date.AddDays(1),
+              Transformer.Date.Format('YYYY-MM-DD'),
+            ),
+          ),
+        ),
+      ),
+      message: 'The date must be within the next 5 years',
     }),
   ],
   dependentWhen: Answer('target_date_option').match(Condition.Equals('set_another_date')),
@@ -198,4 +218,71 @@ export const canStartNow = GovUKRadioInput({
       message: 'Select yes if they can start working on this goal now',
     }),
   ],
+})
+
+// Step status tags
+export const statusTag = [
+  GovUKTag({
+    text: 'Not started',
+    classes: 'govuk-tag--grey',
+    visibleWhen: Item().path('status').match(Condition.Equals('NOT_STARTED')),
+  }),
+  GovUKTag({
+    text: 'In progress',
+    visibleWhen: Item().path('status').match(Condition.Equals('IN_PROGRESS')),
+  }),
+  GovUKTag({
+    text: 'Completed',
+    classes: 'govuk-tag--green',
+    visibleWhen: Item().path('status').match(Condition.Equals('COMPLETED')),
+  }),
+  GovUKTag({
+    text: 'Cannot be done yet',
+    classes: 'govuk-tag--pink',
+    visibleWhen: Item().path('status').match(Condition.Equals('CANNOT_BE_DONE_YET')),
+  }),
+  GovUKTag({
+    text: 'No longer needed',
+    classes: 'govuk-tag--yellow',
+    visibleWhen: Item().path('status').match(Condition.Equals('NO_LONGER_NEEDED')),
+  }),
+]
+
+/**
+ * Inset text block summarising the goal context
+ *
+ * Shows:
+ * - Area of need (in bold)
+ * - Also relates to (only when the goal is related to other areas)
+ * - Goal text
+ *
+ * Area of need and "Also relates to" share a single paragraph (with a <br>)
+ * so the lines are adjacent — only "Goal" sits in its own paragraph below.
+ */
+export const areaOfNeedText = Data('activeGoal.areaOfNeedLabel').pipe(
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+export const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join(', '),
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+export const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
+  .then(
+    Format('<p>Area of need: <strong>%1</strong><br>Also relates to: %2</p>', areaOfNeedText, relatedAreasOfNeedText),
+  )
+  .else(Format('<p>Area of need: <strong>%1</strong></p>', areaOfNeedText))
+
+export const goalBlockContent = Format(
+  '<p>Goal: %1</p>',
+  Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
+)
+
+export const goalContextInsetText = GovUKInsetText({
+  classes: 'govuk-!-margin-top-2',
+  blocks: [HtmlBlock({ content: areaBlockContent }), HtmlBlock({ content: goalBlockContent })],
 })

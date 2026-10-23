@@ -21,7 +21,7 @@ export const financeJourney = journey({
   path: Section.finance.path,
   title: sectionPageTitle(Section.finance),
   reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
-  onAccess: [redirectToAnalysisIfReadOnly(Section.finance.path, Step.financeAnalysis.path)],
+  onAccess: [redirectToAnalysisIfReadOnly(Section.finance.path, Step.finance_analysis.path)],
   view: {
     locals: {
       sectionTitle: sectionPageTitle(Section.finance),

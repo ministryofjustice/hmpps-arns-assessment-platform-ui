@@ -4,7 +4,12 @@ import { Answer, test } from './fixtures'
 export type ChangeLink = { step: string; question: string }
 export const changeLink = (step: string, question: string): ChangeLink => ({ step, question })
 
-export type Scenario = { answers: Answer[]; summaryChangeLinks: ChangeLink[] }
+export type Scenario = {
+  answers: Answer[]
+  summaryChangeLinks: ChangeLink[]
+  userSubmittedSteps?: string[]
+  collections?: Answer[]
+}
 
 const hrefOf = ({ step, question }: ChangeLink) => `${step}#${question}-question`
 
@@ -52,7 +57,9 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
     // eslint-disable-next-line no-await-in-loop
     await test.step(`Change → ${hrefOf(link)}`, async () => {
       await openPage(page, url)
-      await showTab(page, tab)
+      if (tab !== 'victim-summary') {
+        await showTab(page, tab)
+      }
       const change = page.locator(`main a[href="${hrefOf(link)}"]`).first()
       await expect(change, 'says what it changes, as visually hidden text').toHaveAccessibleName(/^Change\s+\S/)
       await change.click()

@@ -1,11 +1,11 @@
 export const Step = {
-  current_employment: {
-    code: 'current_employment',
-    path: 'current-employment',
+  employment_status: {
+    code: 'employment_status',
+    path: 'employment-status',
   },
-  employed: {
-    code: 'employed',
-    path: 'employed',
+  employment_education_details: {
+    code: 'employment_education_details',
+    path: 'employment-education-details',
   },
   employment_education_summary: {
     code: 'employment_education_summary',

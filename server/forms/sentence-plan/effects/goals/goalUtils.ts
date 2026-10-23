@@ -97,6 +97,38 @@ export const buildGoalAnswers = (
   }
 }
 
+/**
+ * Goal values submitted from the change goal page, ready to save.
+ */
+export interface GoalEdit {
+  title: string
+  areaOfNeed: string
+  relatedAreasOfNeed: string[]
+  status: GoalStatus
+  targetDate: string | null
+}
+
+/**
+ * Whether saving the edit would change the stored goal.
+ *
+ * Target dates compare by calendar day: relative options ("in 3 months") are
+ * recalculated from the current time on every save, so the exact timestamp always differs.
+ */
+export const hasGoalChanged = (goal: DerivedGoal, edit: GoalEdit): boolean => {
+  const savedRelatedAreas = [...(goal.relatedAreasOfNeed ?? [])].sort().join()
+  const editedRelatedAreas = [...edit.relatedAreasOfNeed].sort().join()
+  const targetDateChanged =
+    goal.targetDate && edit.targetDate
+      ? !isSameDay(new Date(goal.targetDate), new Date(edit.targetDate))
+      : Boolean(goal.targetDate) !== Boolean(edit.targetDate)
+
+  return goal.title !== edit.title ||
+    goal.areaOfNeed !== edit.areaOfNeed ||
+    goal.status !== edit.status ||
+    savedRelatedAreas !== editedRelatedAreas ||
+    targetDateChanged
+}
+
 // ============================================================================
 // Context Assertion Helpers
 // ============================================================================

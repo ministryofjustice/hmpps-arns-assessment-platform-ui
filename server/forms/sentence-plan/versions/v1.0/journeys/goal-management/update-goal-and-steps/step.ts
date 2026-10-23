@@ -8,20 +8,21 @@ import {
   submit,
   when,
   Condition,
+  or,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   pageHeading,
   reviewStepsHeading,
   reviewStepsTable,
-  addOrChangeStepsLink,
   noStepsMessage,
   progressNotesSection,
   viewAllNotesSection,
   actionButtons,
   goalContextInsetText,
+  stepActionButtonsGroup,
 } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfGoalNotFound, redirectIfNotPostAgreement } from '../../../guards'
+import { redirectIfGoalNotFound, redirectIfNotPostAgreement, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Update goal and steps
@@ -43,7 +44,7 @@ export const updateGoalAndStepsStep = step({
     goalContextInsetText,
     reviewStepsHeading,
     reviewStepsTable,
-    addOrChangeStepsLink,
+    stepActionButtonsGroup,
     noStepsMessage,
     progressNotesSection,
     viewAllNotesSection,
@@ -60,9 +61,43 @@ export const updateGoalAndStepsStep = step({
     // Redirect if plan has not been agreed (DRAFT plans cannot access this page)
     redirectIfNotPostAgreement('../../plan/overview'),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
+    submit({
+      when: Post('action').match(Condition.Equals('reorderSteps')),
+      validate: false,
+      onAlways: {
+        effects: [
+          SentencePlanEffects.updateGoalProgress(),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEP_PROGRESS, {
+            goalStatus: Data('activeGoal.status'),
+            action: 'reorderSteps',
+          }),
+        ],
+        next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
+    submit({
+      when: or(
+        Post('action').match(Condition.Equals('addSteps')),
+        Post('action').match(Condition.Equals('addOrUpdateSteps')),
+      ),
+      validate: false,
+      onAlways: {
+        effects: [
+          SentencePlanEffects.updateGoalProgress(),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_STEP_PROGRESS, {
+            goalStatus: Data('activeGoal.status'),
+            action: when(Post('action').match(Condition.Equals('addSteps')))
+              .then('addSteps')
+              .else('addOrUpdateSteps'),
+          }),
+        ],
+        next: [redirect({ goto: 'add-steps' })],
+      },
+    }),
     submit({
       when: Post('action').match(Condition.Equals('save')),
       validate: false,

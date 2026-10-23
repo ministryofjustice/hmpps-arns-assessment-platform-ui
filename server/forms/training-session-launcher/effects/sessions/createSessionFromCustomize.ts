@@ -44,6 +44,12 @@ function collectSessionData(context: TrainingSessionLauncherContext): {
     }
   }
 
+  const stubbedCrn = context.getAnswer('stubbedCrn')
+
+  if (typeof stubbedCrn === 'string' && stubbedCrn !== '') {
+    values.crn = stubbedCrn
+  }
+
   return {
     scenarioName,
     values: values as ScenarioValues,

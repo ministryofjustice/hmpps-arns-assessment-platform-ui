@@ -1,6 +1,7 @@
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/option'
 import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/drug-use/constants/step'
 import { forDrug, drugUse } from '../../sanUtils'
 import {
   changeLink,
@@ -64,26 +65,33 @@ const usedInTheLastSixMonths: Scenario = {
     { question: forDrug(Question.how_often_used_details, Option.cocaine), value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('drug-use', 'drug_use'),
-    changeLink('add-drugs', 'select_misused_drugs'),
-    changeLink('add-drugs', 'drug_last_used_cannabis'),
-    changeLink('drug-details', 'how_often_used_last_six_months_cannabis'),
-    changeLink('drug-details', 'how_often_used_last_six_months_cannabis_details'),
-    changeLink('add-drugs', 'select_misused_drugs'),
-    changeLink('add-drugs', 'drug_last_used_cocaine'),
-    changeLink('drug-details', 'how_often_used_last_six_months_cocaine'),
-    changeLink('drug-details', 'how_often_used_last_six_months_cocaine_details'),
-    changeLink('add-drugs', 'select_misused_drugs'),
-    changeLink('add-drugs', 'drug_last_used_heroin'),
-    changeLink('drug-details', 'drugs_injected'),
-    changeLink('drug-details', 'not_used_in_last_six_months_details'),
-    changeLink('drug-details', 'drugs_is_receiving_treatment'),
+    changeLink('drug-use-status', 'drug_use'),
+    changeLink('drug-use-types', 'select_misused_drugs'),
+    changeLink('drug-use-types', 'drug_last_used_cannabis'),
+    changeLink('drug-use-details', 'how_often_used_last_six_months_cannabis'),
+    changeLink('drug-use-details', 'how_often_used_last_six_months_cannabis_details'),
+    changeLink('drug-use-types', 'select_misused_drugs'),
+    changeLink('drug-use-types', 'drug_last_used_cocaine'),
+    changeLink('drug-use-details', 'how_often_used_last_six_months_cocaine'),
+    changeLink('drug-use-details', 'how_often_used_last_six_months_cocaine_details'),
+    changeLink('drug-use-types', 'select_misused_drugs'),
+    changeLink('drug-use-types', 'drug_last_used_heroin'),
+    changeLink('drug-use-details', 'drugs_injected'),
+    changeLink('drug-use-details', 'not_used_in_last_six_months_details'),
+    changeLink('drug-use-details', 'drugs_is_receiving_treatment'),
     changeLink('drug-use-history', 'drugs_reasons_for_use'),
     changeLink('drug-use-history', 'drugs_reasons_for_use_details'),
     changeLink('drug-use-history', 'drugs_affected_their_life'),
     changeLink('drug-use-history', 'drugs_affected_their_life_details'),
     changeLink('drug-use-history', 'drugs_anything_helped_stop_or_reduce_use'),
     changeLink('drug-use-history', 'drug_use_changes'),
+  ],
+  userSubmittedSteps: [
+    Step.drug_use_types.code,
+    Step.drug_use_status.code,
+    Step.drug_use_history.code,
+    Step.drug_use_details.code,
+    Step.drug_use_summary.code,
   ],
 }
 
@@ -115,18 +123,25 @@ const usedMoreThanSixMonthsAgo: Scenario = {
     { question: Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('drug-use', 'drug_use'),
-    changeLink('add-drugs', 'select_misused_drugs'),
-    changeLink('add-drugs', 'drug_last_used_heroin'),
-    changeLink('drug-details', 'drugs_injected'),
-    changeLink('drug-details', 'not_used_in_last_six_months_details'),
-    changeLink('drug-details', 'drugs_is_receiving_treatment'),
+    changeLink('drug-use-status', 'drug_use'),
+    changeLink('drug-use-types', 'select_misused_drugs'),
+    changeLink('drug-use-types', 'drug_last_used_heroin'),
+    changeLink('drug-use-details', 'drugs_injected'),
+    changeLink('drug-use-details', 'not_used_in_last_six_months_details'),
+    changeLink('drug-use-details', 'drugs_is_receiving_treatment'),
     changeLink('drug-use-history', 'drugs_reasons_for_use'),
     changeLink('drug-use-history', 'drugs_reasons_for_use_details'),
     changeLink('drug-use-history', 'drugs_affected_their_life'),
     changeLink('drug-use-history', 'drugs_affected_their_life_details'),
     changeLink('drug-use-history', 'drugs_what_could_help_not_use_drugs_in_future'),
     changeLink('drug-use-history', 'drug_use_changes'),
+  ],
+  userSubmittedSteps: [
+    Step.drug_use_types.code,
+    Step.drug_use_status.code,
+    Step.drug_use_history.code,
+    Step.drug_use_details.code,
+    Step.drug_use_summary.code,
   ],
 }
 
@@ -141,7 +156,11 @@ test.describe('Drug use change links', () => {
   test.describe('Questions', () => {
     test.describe('having used drugs in the last 6 months', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedInTheLastSixMonths.answers)
+        const section = await openSection(
+          drugUse,
+          usedInTheLastSixMonths.answers,
+          usedInTheLastSixMonths.userSubmittedSteps,
+        )
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -154,7 +173,11 @@ test.describe('Drug use change links', () => {
 
     test.describe('having only used drugs more than 6 months ago', () => {
       test('each change link lands on its question', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedMoreThanSixMonthsAgo.answers)
+        const section = await openSection(
+          drugUse,
+          usedMoreThanSixMonthsAgo.answers,
+          usedMoreThanSixMonthsAgo.userSubmittedSteps,
+        )
 
         await expectEachChangeLinkToLandOnItsQuestion(
           page,
@@ -168,7 +191,11 @@ test.describe('Drug use change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(drugUse, usedInTheLastSixMonths.answers)
+      const section = await openSection(
+        drugUse,
+        usedInTheLastSixMonths.answers,
+        usedInTheLastSixMonths.userSubmittedSteps,
+      )
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,
@@ -182,7 +209,11 @@ test.describe('Drug use change links', () => {
   test.describe('Summary', () => {
     test.describe('having used drugs in the last 6 months', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedInTheLastSixMonths.answers)
+        const section = await openSection(
+          drugUse,
+          usedInTheLastSixMonths.answers,
+          usedInTheLastSixMonths.userSubmittedSteps,
+        )
 
         await expectChangeLinksListed(
           page,
@@ -207,7 +238,11 @@ test.describe('Drug use change links', () => {
 
     test.describe('having only used drugs more than 6 months ago', () => {
       test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
-        const section = await openSection(drugUse, usedMoreThanSixMonthsAgo.answers)
+        const section = await openSection(
+          drugUse,
+          usedMoreThanSixMonthsAgo.answers,
+          usedMoreThanSixMonthsAgo.userSubmittedSteps,
+        )
 
         await expectChangeLinksListed(
           page,

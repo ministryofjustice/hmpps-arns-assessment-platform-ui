@@ -1,0 +1,13 @@
+{{- if .Values.wiremock.enabled }}
+# Every JSON file in wiremock/mappings becomes one key, mounted into the Wiremock pod as
+# /home/wiremock/mappings. Keys are file basenames, so names must be unique across the directory.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ index .Values.wiremock.volumes 0 "configMap" "name" }}
+  labels:
+    app: wiremock
+    release: {{ .Release.Name }}
+data:
+{{ (.Files.Glob "wiremock/mappings/*.json").AsConfig | indent 2 }}
+{{- end }}

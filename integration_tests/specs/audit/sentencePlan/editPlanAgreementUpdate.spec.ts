@@ -1,22 +1,18 @@
 import { expect } from '@playwright/test'
-import { test, TargetService } from '../../../support/fixtures'
+import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import UpdateAgreePlanPage from '../../../pages/sentencePlan/updateAgreePlanPage'
-import { navigateToSentencePlan, sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
+import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
 import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Update Agreement', () => {
-  test('updating agreement with yes', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('updating agreement with yes', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(currentGoalsWithCompletedSteps(1))
+          .withAgreementStatus('COULD_NOT_ANSWER'),
     })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(currentGoalsWithCompletedSteps(1))
-      .withAgreementStatus('COULD_NOT_ANSWER')
-      .save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1URLs.PLAN_UPDATE_AGREE)
 
     const updatePage = await UpdateAgreePlanPage.verifyOnPage(page)
@@ -29,17 +25,13 @@ test.describe('Update Agreement', () => {
     expect(event.details.agreementStatus).toBe('yes')
   })
 
-  test('updating agreement with no', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
-    const { sentencePlanId, crn, handoverLink } = await createSession({
-      targetService: TargetService.SENTENCE_PLAN,
+  test('updating agreement with no', async ({ page, auditQueue, openSentencePlan }) => {
+    const { crn } = await openSentencePlan({
+      plan: builder =>
+        builder.withGoals(currentGoalsWithCompletedSteps(1))
+          .withAgreementStatus('COULD_NOT_ANSWER'),
     })
-    await sentencePlanBuilder
-      .extend(sentencePlanId)
-      .withGoals(currentGoalsWithCompletedSteps(1))
-      .withAgreementStatus('COULD_NOT_ANSWER')
-      .save()
 
-    await navigateToSentencePlan(page, handoverLink)
     await page.goto(sentencePlanV1URLs.PLAN_UPDATE_AGREE)
 
     const updatePage = await UpdateAgreePlanPage.verifyOnPage(page)
