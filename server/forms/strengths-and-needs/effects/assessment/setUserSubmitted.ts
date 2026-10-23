@@ -1,6 +1,5 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 import { IsUserSubmitted, isUserSubmittedCode } from '../../versions/v1.0/constants/userSubmitted'
 
 export const setUserSubmitted =
@@ -17,7 +16,7 @@ export const setUserSubmitted =
       user,
       added: wrapAll({ [isUserSubmittedCode(stepCode)]: isUserSubmitted }),
       removed: [],
-      //TODO Uncomment when all sections are done
-      //hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      // TODO Uncomment when all sections are done
+      // hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
     })
   }

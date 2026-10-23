@@ -4,7 +4,6 @@ import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
 import { sendFormAuditEvent } from '../../../shared'
 import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
 
 export const saveCurrentStepAnswers =
@@ -48,8 +47,8 @@ export const saveCurrentStepAnswers =
       user,
       added: wrapAll(delta.added),
       removed: clearRemovals ? removed : [],
-      //TODO Uncomment when all sections are done
-      //hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+      // TODO Uncomment when all sections are done
+      // hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
     })
 
