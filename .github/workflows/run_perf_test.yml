@@ -1,9 +1,6 @@
 name: Trigger Perf Test
 
 on:
-  push:
-    branches:
-      - 'ci/perf-smoke-test'
   workflow_dispatch:
     inputs:
       environment:
