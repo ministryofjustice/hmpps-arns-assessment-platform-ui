@@ -302,9 +302,7 @@ const hideBlankPlanOverviewContent = or(
   Query('goalStatusTab').match(Condition.Equals('future')),
   Query('goalStatusTab').match(Condition.Equals('achieved')),
   Query('goalStatusTab').match(Condition.Equals('removed')),
-  Data('historic.goals')
-    .each(Iterator.Filter(Item().path('status').match(Condition.Equals('ACTIVE'))))
-    .match(Condition.IsRequired()),
+  Data('historic.goals').each(Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE')))),
 )
 
 export const blankPlanOverviewContentReadOnly = HtmlBlock({
@@ -321,9 +319,7 @@ export const futureGoalsContent = GovUKBody({
   visibleWhen: not(
     or(
       Query('goalStatusTab').not.match(Condition.Equals('future')),
-      Data('historic.goals')
-        .each(Iterator.Filter(Item().path('status').match(Condition.Equals('FUTURE'))))
-        .match(Condition.IsRequired()),
+      Data('historic.goals').each(Iterator.Some(Item().path('status').match(Condition.Equals('FUTURE')))),
     ),
   ),
   text: Format('%1 does not have any future goals in their plan.', CaseData.Forename),
