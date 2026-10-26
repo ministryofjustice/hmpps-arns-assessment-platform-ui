@@ -63,8 +63,8 @@ jobs:
         uses: grafana/run-k6-action@4082a08c7e40cf6d65863911077dfb60ae0a4f04
         with:
           path: ./perf-tests/performance/tests/${{ inputs.ui_name }}-ui-smoke.js
-          env:
-            BASE_URL: ${{ env[inputs.environment] }}
+        env:
+          BASE_URL: ${{ env[inputs.environment] }}
 
       - uses: ./perf-tests/.github/actions/k6_artefacts
         if: always()
