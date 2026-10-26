@@ -358,9 +358,7 @@ export const goalsSection = TemplateWrapper({
 })
 
 const hideBlankPlanOverviewContent = or(
-  Query('goalStatusTab').match(Condition.Equals('future')),
-  Query('goalStatusTab').match(Condition.Equals('achieved')),
-  Query('goalStatusTab').match(Condition.Equals('removed')),
+  Query('goalStatusTab').match(Condition.Array.IsIn(['future', 'achieved', 'removed'])),
   hasAtLeastOneActiveGoal,
 )
 
