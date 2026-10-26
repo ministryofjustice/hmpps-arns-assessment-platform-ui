@@ -3,7 +3,7 @@ import { test } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import AddStepsPage from '../../../pages/sentencePlan/addStepsPage'
 import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Add or Change Steps', () => {
   test('visiting add steps page', async ({ page, auditQueue, openSentencePlan }) => {
@@ -15,7 +15,7 @@ test.describe('View Add or Change Steps', () => {
     await page.goto(sentencePlanV1UrlBuilders.goalAddSteps(goalUuid))
     await AddStepsPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_ADD_STEPS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_ADD_STEPS)
     expectAuditEvent(event, goalUuid)
   })
 
@@ -41,9 +41,9 @@ test.describe('View Add or Change Steps', () => {
     await expect(page).toHaveURL(/\/plan\/overview/)
 
     // The save event is sent last, so every view event has arrived by the time it is seen.
-    await auditQueue.waitForAuditEvent(crn, AuditEvent.EDIT_STEPS)
+    await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.EDIT_STEPS)
     // waitForAuditEvent fails when it finds more than one matching event.
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_ADD_STEPS)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_ADD_STEPS)
     expectAuditEvent(event, goalUuid)
   })
 })

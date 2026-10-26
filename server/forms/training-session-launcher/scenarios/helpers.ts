@@ -1,5 +1,6 @@
 import { fakerEN_GB as faker } from '@faker-js/faker'
 import { AccessMode, Location, YesNoNull } from '../../../interfaces/handover-api/shared'
+import { handoverGenderCodes, HandoverGenderCode } from '../../shared/constants/gender'
 
 /**
  * Generate a seed for reproducible randomization.
@@ -105,8 +106,8 @@ export function randomLastName(): string {
 /**
  * Random gender code (NOMIS standard)
  */
-export function randomGender(): string {
-  return faker.helpers.arrayElement(['0', '1', '2', '9'])
+export function randomGender(): HandoverGenderCode {
+  return faker.helpers.arrayElement(handoverGenderCodes)
 }
 
 /**

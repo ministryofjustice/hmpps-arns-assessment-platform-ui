@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 import { ValidationHelper } from '../helpers'
 
-export default class ConfirmRemoveGoalPage extends AbstractPage {
+export default class ConfirmRemoveGoalPage extends SentencePlanPage {
   readonly header: Locator
 
   readonly removalNoteTextarea: Locator

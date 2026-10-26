@@ -40,7 +40,7 @@ export interface Collection {
   createdAt: string
   updatedAt: string
   name: string
-  items: CollectionItem[]
+  items: any[]
 }
 
 export interface TimelineItem {

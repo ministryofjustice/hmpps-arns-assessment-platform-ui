@@ -1,0 +1,168 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { expect } from '@playwright/test'
+import AccommodationPage from 'pages/strengthsAndNeeds/accommodationPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/accommodation/constants/step'
+import { test, TargetService } from '../../../../support/fixtures'
+import { navigateToStrengthsAndNeeds } from '../../sanUtils'
+
+test.describe('Summary', () => {
+  test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+        { question: Question.living_with, value: [Option.family] },
+        { question: Question.suitable_housing_location, value: CommonOption.no },
+        { question: Question.suitable_housing_location_concerns, value: [] },
+        { question: Question.suitable_housing, value: CommonOption.no },
+        { question: Question.unsuitable_housing_concerns, value: [] },
+        { question: Question.accommodation_changes, value: CommonOption.not_present },
+      ])
+      .withUserSubmittedSteps([
+        Step.accommodation_status.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
+      ])
+      .save()
+
+    await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
+    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
+
+    await expect(accommodationPage.summary).toMatchAriaSnapshot(`
+        - tabpanel "Summary":
+          - term: What type of accommodation does Test currently have?
+          - definition:
+            - paragraph: Settled
+            - paragraph: Homeowner
+          - definition:
+            - link "Change What type of accommodation does Test currently have?":
+              - /url: accommodation-status#current_accommodation-question
+          - term: Who is Test living with?
+          - definition:
+            - paragraph: Family
+          - definition:
+            - link "Change Who is Test living with?":
+              - /url: accommodation-details#living_with-question
+          - term: Is the location of Test's accommodation suitable?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change Is the location of Test's accommodation suitable?":
+              - /url: accommodation-details#suitable_housing_location-question
+          - term: Is Test's accommodation suitable?
+          - definition:
+            - paragraph: "No"
+          - definition:
+            - link "Change Is Test's accommodation suitable?":
+              - /url: accommodation-details#suitable_housing-question
+          - term: Does Test want to make changes to their accommodation?
+          - definition:
+            - paragraph: Test is not present
+          - definition:
+            - link "Change Does Test want to make changes to their accommodation?":
+              - /url: accommodation-details#accommodation_changes-question
+          - button "Go to practitioner analysis"
+      `)
+  })
+
+  test('practitioner analysis', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+        { question: Question.living_with, value: [Option.family] },
+        { question: Question.suitable_housing_location, value: CommonOption.no },
+        { question: Question.suitable_housing_location_concerns, value: [] },
+        { question: Question.suitable_housing, value: CommonOption.no },
+        { question: Question.unsuitable_housing_concerns, value: [] },
+        { question: Question.accommodation_changes, value: CommonOption.not_present },
+      ])
+      .withUserSubmittedSteps([
+        Step.accommodation_status.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
+      ])
+      .save()
+
+    await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
+    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
+
+    await accommodationPage.goToPractitionerAnalysis.click()
+    await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+  })
+
+  test('mark complete', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId)
+      .withAnswers([
+        { question: Question.current_accommodation, value: Option.settled },
+        { question: Question.type_of_settled_accommodation, value: Option.homeowner },
+        { question: Question.living_with, value: [Option.family] },
+        { question: Question.suitable_housing_location, value: CommonOption.no },
+        { question: Question.suitable_housing_location_concerns, value: [] },
+        { question: Question.suitable_housing, value: CommonOption.no },
+        { question: Question.unsuitable_housing_concerns, value: [] },
+        { question: Question.accommodation_changes, value: CommonOption.not_present },
+        {
+          question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors,
+          value: CommonOption.no,
+        },
+        {
+          question: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_no_details,
+          value: '',
+        },
+        { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.accommodation_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
+      ])
+      .withUserSubmittedSteps([
+        Step.accommodation_status.code,
+        Step.accommodation_details.code,
+        Step.accommodation_summary.code,
+      ])
+      .save()
+
+    await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
+    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
+
+    await accommodationPage.goToPractitionerAnalysis.click()
+    await accommodationPage.questions.accommodation_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
+      .click()
+
+    await accommodationPage.markComplete.click()
+    await expect(accommodationPage.complete).toBeVisible()
+    expect(page.url()).toContain('accommodation-analysis')
+
+    await expect(accommodationPage.practitionerAnalysis).toMatchAriaSnapshot(`
+      - tabpanel "Practitioner analysis":
+        - term: Are there any strengths or protective factors related to Test's accommodation?
+        - definition:
+          - paragraph: "No"
+        - definition:
+          - link "Change Are there any strengths or protective factors related to Test's accommodation?":
+            - /url: accommodation-summary#accommodation_practitioner_analysis_strengths_or_protective_factors-question
+        - term: Is Test's accommodation linked to risk of serious harm?
+        - definition:
+          - paragraph: "No"
+        - definition:
+          - link "Change Is Test's accommodation linked to risk of serious harm?":
+            - /url: accommodation-summary#accommodation_practitioner_analysis_risk_of_serious_harm-question
+        - term: Is Test's accommodation linked to risk of reoffending?
+        - definition:
+          - paragraph: "No"
+        - definition:
+          - link "Change Is Test's accommodation linked to risk of reoffending?":
+            - /url: accommodation-summary#accommodation_practitioner_analysis_risk_of_reoffending-question
+    `)
+  })
+})
