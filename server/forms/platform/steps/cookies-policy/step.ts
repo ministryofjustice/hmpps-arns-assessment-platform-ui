@@ -11,5 +11,5 @@ export const cookiesPolicyStep = step({
       hideSessionTimeoutModal: true,
     },
   },
-  blocks: [pageHeading, pageContent],
+  blocks: [pageHeading, ...pageContent],
 })
