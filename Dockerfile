@@ -1,18 +1,6 @@
-FROM node:24-alpine AS base
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS base
 
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
-
-RUN apk --update-cache upgrade --available \
-  && apk --no-cache add tzdata tini \
-  && rm -rf /var/cache/apk/*
-
-ENV TZ=Europe/London
-RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
-
-RUN addgroup --gid 2000 --system appgroup && \
-    adduser --uid 2000 --system appuser --ingroup appgroup
-
-WORKDIR /app
 
 FROM base AS development
 ENV NODE_ENV=development
@@ -35,7 +23,11 @@ COPY . .
 RUN npm run build
 
 # Production stage - combines built assets with prod-only deps
-FROM base AS production
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine-runtime AS production
+
+LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
+
+RUN apk --no-cache add tini
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -53,11 +45,6 @@ ENV NODE_ENV=production \
 COPY --from=build --chown=appuser:appgroup /app/package.json /app/package-lock.json ./
 COPY --from=build --chown=appuser:appgroup /app/dist ./dist
 COPY --from=prod-deps --chown=appuser:appgroup /app/node_modules ./node_modules
-
-# npm and corepack are not needed at runtime; removing them drops their bundled
-# dependencies (undici, brace-expansion, http-cache-semantics) from the image.
-RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack \
-    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack
 
 EXPOSE 3000
 USER 2000
