@@ -4,7 +4,6 @@ import {
   step,
   submit,
   Post,
-  when,
   Query,
   Format,
   Condition,
@@ -20,9 +19,7 @@ export const agreePlanStep = step({
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
-      backlink: when(Query('goalStatusTab').match(Condition.IsRequired()))
-        .then(Format('overview?goalStatusTab=%1', Query('goalStatusTab')))
-        .else('overview?goalStatusTab=current'),
+      backlink: Format('overview?goalStatusTab=%1', Query('goalStatusTab').nullish('current')),
     },
   },
   onAccess: [

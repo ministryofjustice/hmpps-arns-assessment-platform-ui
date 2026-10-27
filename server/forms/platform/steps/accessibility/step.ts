@@ -11,5 +11,5 @@ export const accessibilityStep = step({
       hideSessionTimeoutModal: true,
     },
   },
-  blocks: [pageHeading, pageContent],
+  blocks: [pageHeading, ...pageContent],
 })
