@@ -78,7 +78,7 @@ export const viewHistoricStep = step({
     // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
     access({
       effects: [
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_HISTORIC_PLAN, {
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_HISTORIC_PLAN, {
           planVersionTimestamp: Params('timestamp'),
         }),
       ],
