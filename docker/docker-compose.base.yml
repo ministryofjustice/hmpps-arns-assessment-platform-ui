@@ -70,7 +70,7 @@ services:
     networks:
       - hmpps
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://coordinator-api:8080/health/ping']
+      test: ['CMD', 'bash', '-c', 'exec 3<>/dev/tcp/coordinator-api/8080 && printf "GET /health/ping HTTP/1.0\r\n\r\n" >&3 && head -1 <&3 | grep -qw 200']
       interval: 5s
       retries: 20
     environment:
@@ -95,7 +95,7 @@ services:
       - redis
       - localstack
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://arns-handover:7070/health/ping']
+      test: ['CMD', 'bash', '-c', 'exec 3<>/dev/tcp/arns-handover/7070 && printf "GET /health/ping HTTP/1.0\r\n\r\n" >&3 && head -1 <&3 | grep -qw 200']
       interval: 5s
       retries: 20
     networks:
@@ -220,7 +220,7 @@ services:
       - postgres
       - localstack
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:8080/health/ping']
+      test: ['CMD', 'bash', '-c', 'exec 3<>/dev/tcp/localhost/8080 && printf "GET /health/ping HTTP/1.0\r\n\r\n" >&3 && head -1 <&3 | grep -qw 200']
       interval: 5s
       retries: 20
     environment:
