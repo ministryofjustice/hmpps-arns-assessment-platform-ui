@@ -93,7 +93,7 @@ services:
       HMPPS_SQS_LOCALSTACK_URL: http://localstack:4566
 
   arns-handover:
-    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:latest
+    image: ghcr.io/ministryofjustice/hmpps-assess-risks-and-needs-handover-service:aap-san
     depends_on:
       - redis
       - localstack
