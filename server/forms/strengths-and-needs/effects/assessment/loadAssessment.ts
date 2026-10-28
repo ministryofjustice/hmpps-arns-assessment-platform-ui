@@ -1,5 +1,5 @@
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { BadRequest, InternalServerError } from 'http-errors'
+import { BadRequest, InternalServerError, NotFound } from 'http-errors'
 import { DateTime } from 'luxon'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
@@ -66,24 +66,37 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     assessmentIdentifier: sessionDetails.assessmentIdentifier,
   }
 
-  // Check if viewing a previous version via URL (uuid and mode are set on the session by an effect)
-  if (session.uuid && session.mode && ['view-historic'].includes(session.mode)) {
-    if (!session.previousVersions || session.countersignedVersions) {
-      await storePreviousVersionsInSession(deps, session.handoverContext.assessmentContext.assessmentId, session)
+  // Only the URL selects a previous version. A version requested by the handover is turned into a
+  // view-historic URL on entry (extractModeAndVersionUuidFromHandoverContext), so edit and view
+  // URLs always load the current assessment.
+  const mode = context.getRequestParam('mode')
+  const uuid = context.getRequestParam('uuid')
+
+  if (uuid && mode && ['view-historic'].includes(mode)) {
+    if (!session.unaggregatedVersions) {
+      // session.uuid holds a version UUID after a historic handover, so prefer the handover's assessment ID
+      const assessmentUuid = session.handoverContext?.assessmentContext?.assessmentId ?? session.uuid
+      await storePreviousVersionsInSession(deps, assessmentUuid, session)
     }
 
-    const previousVersions = [...session.previousVersions, ...session.countersignedVersions]
-    const previousVersion = previousVersions.find(it => it.assessmentVersionId === session.uuid)
+    const previousVersion = session.unaggregatedVersions.find(it => it.entityType === 'AAP_SAN' && it.uuid === uuid)
 
     if (!previousVersion) {
-      throw new InternalServerError(`Invalid assessment version ID: ${session.uuid}`)
+      const validUuids = session.unaggregatedVersions.map(it => it.uuid).join(', ')
+      throw new NotFound(`Invalid assessment version UUID: ${uuid}. Valid UUIDs: ${validUuids}`)
     }
 
-    query.timestamp = DateTime.fromMillis(previousVersion?.assessmentUpdatedDate).toISO({ includeOffset: false })
-    context.setData('previousVersionDate', previousVersion?.assessmentUpdatedDate)
+    query.timestamp = previousVersion.updatedAt
+    // Coordinator timestamps are UTC; don't let an offset-less value be read in the server's time zone.
+    context.setData('previousVersionDate', DateTime.fromISO(previousVersion.updatedAt, { zone: 'utc' }).toMillis())
   }
 
   let assessment = await loadAssessmentQuery(deps, query)
+
+  if (!assessment && query.timestamp) {
+    // Never fall back to the current assessment when a previous version was asked for.
+    throw new NotFound(`No assessment found at version timestamp ${query.timestamp}`)
+  }
 
   if (!assessment) {
     if (!caseDetails?.crn) {
@@ -114,6 +127,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
   context.setData('assessment', assessment)
   context.setData('assessmentUuid', assessment.assessmentUuid)
   context.setData('sessionDetails', session.sessionDetails)
+  session.uuid = assessment.assessmentUuid
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
   const properties = unwrapAll<Record<string, unknown>>(assessment.properties)

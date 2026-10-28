@@ -1,44 +1,46 @@
-import { InternalServerError } from 'http-errors'
+import { NotFound } from 'http-errors'
+import { DateTime } from 'luxon'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { storePreviousVersionsInSession } from '../assessment/loadPreviousVersions'
+import { findVersionCreatedAt, storePreviousVersionsInSession } from '../assessment/loadPreviousVersions'
 
 /**
  * Extracts mode and UUID from the Handover Context
  * - In edit or view mode: uuid is the assessmentUuid
  * - In view-historic mode: uuid is the versionUuid
+ *
+ * A requested version wins over the access mode: initializeSessionFromAccess already makes
+ * the session READ_ONLY when the handover carries one.
  */
 export const extractModeAndVersionUuidFromHandoverContext =
   (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
     const session = context.getSession()
     const assessmentUuid = context.getData('assessmentUuid')
+    const { accessMode, assessmentVersion } = session.sessionDetails
 
-    if (session.accessDetails.accessMode === 'READ_WRITE') {
-      session.mode = 'edit'
+    if (!assessmentVersion) {
+      session.mode = accessMode === 'READ_WRITE' ? 'edit' : 'view'
       session.uuid = assessmentUuid
       return
     }
 
-    if (!session.sessionDetails.assessmentVersion) {
-      session.mode = 'view'
-      session.uuid = assessmentUuid
-      return
-    }
-
-    if (!session.previousVersions) {
+    if (!session.unaggregatedVersions) {
       await storePreviousVersionsInSession(deps, assessmentUuid, session)
     }
 
-    const previousVersion = session.previousVersions.find(
-      it => it.assessmentUpdatedDate === session.sessionDetails.assessmentVersion,
-    )
+    let previousVersion = findVersionCreatedAt(session.unaggregatedVersions, assessmentVersion)
 
     if (!previousVersion) {
-      const validTimestamps = session.previousVersions.map(it => it.assessmentUpdatedDate).join(', ')
-      throw new InternalServerError(
-        `Invalid assessment version timestamp: ${session.sessionDetails.assessmentVersion}. Valid timestamps: ${validTimestamps}`,
+      // The cached list may predate the requested version, so refresh once before giving up.
+      await storePreviousVersionsInSession(deps, assessmentUuid, session)
+      previousVersion = findVersionCreatedAt(session.unaggregatedVersions, assessmentVersion)
+    }
+
+    if (!previousVersion) {
+      throw new NotFound(
+        `No assessment version created at ${DateTime.fromMillis(assessmentVersion, { zone: 'utc' }).toISO()} (${assessmentVersion})`,
       )
     }
 
     session.mode = 'view-historic'
-    session.uuid = previousVersion.assessmentVersionId
+    session.uuid = previousVersion.uuid
   }

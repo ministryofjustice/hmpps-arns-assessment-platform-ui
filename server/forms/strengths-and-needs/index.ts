@@ -23,10 +23,11 @@ import { modalComponent } from './components/modal/modalComponent'
 
 const { createRoute } = SANGenerators
 
-// Where to send the user after accepting privacy, using the mode/uuid from the
-// handover session so they resume where they left off in the accommodation section.
+// Where to send the user after accepting privacy, so they resume where they left off in the
+// accommodation section. Uses the loaded assessment's UUID: the session identifier only has one for
+// OASys access (MPoP access identifies the assessment by CRN).
 const privacyScreenRedirectPath = createRoute(
-  [basePath, 'edit', Session('sessionDetails.assessmentIdentifier.uuid'), Section.accommodation.sideNavHref],
+  [basePath, 'edit', Data('assessmentUuid'), Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 
@@ -74,7 +75,7 @@ export const strengthsAndNeedsRootJourney = journey({
       effects: [
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
-        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
+        StrengthsAndNeedsEffects.validateModeAndVersionUuidFromUrl(),
         StrengthsAndNeedsEffects.loadAssessment(),
         StrengthsAndNeedsEffects.extractModeAndVersionUuidFromHandoverContext(),
       ],
