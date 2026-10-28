@@ -12,7 +12,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
 // import { employmentJourney } from './journeys/employment-and-education'
-// import { financeJourney } from './journeys/finance'
+import { financeJourney } from './journeys/finance'
 // import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
@@ -103,7 +103,7 @@ export const strengthsAndNeedsV2Journey = journey({
   children: [
     accommodationJourney,
     // employmentJourney,
-    // financeJourney,
+    financeJourney,
     // drugUseJourney,
     alcoholUseJourney,
     // healthWellbeingJourney,
