@@ -31,7 +31,12 @@ test.describe('Previous Versions - Navigation', () => {
       "Check versions of Test's current assessment. The links will open in a new tab.",
     )
 
-    // Verify no previous versions tables are shown
-    await expect(previousVersionsPage.table).toHaveCount(0)
+    // Verify no previous versions rows are shown
+    const countersignedRows = previousVersionsPage.table.first().locator('tbody').getByRole('row')
+    const allVersionsRows = previousVersionsPage.table.last().locator('tbody').getByRole('row')
+
+    await expect(countersignedRows).toHaveCount(0)
+    await expect(allVersionsRows).toHaveCount(0)
+
   })
 })

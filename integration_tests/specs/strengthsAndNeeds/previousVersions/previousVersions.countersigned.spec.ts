@@ -101,14 +101,12 @@ test.describe('Previous Versions - Countersigned', () => {
 
     // Table headers
     for (const table of [countersignedTable, allVersionsTable]) {
-      expect(table.getByRole('columnheader')).toHaveCount(4)
+      expect(table.getByRole('columnheader')).toHaveCount(3)
       expect(table.getByRole('columnheader', { name: 'Date' })).toBeVisible()
       expect(table.getByRole('columnheader', { name: 'Assessment' })).toBeVisible()
       expect(table.getByRole('columnheader', { name: 'Plan' })).toBeVisible()
-      expect(table.getByRole('columnheader', { name: 'Status' })).toBeVisible()
     }
 
-    // Countersigned table: today's entry trimmed, only yesterday remains
     const countersignedRows = countersignedTable.locator('tbody').getByRole('row')
     await expect(countersignedRows).toHaveCount(2)
 
@@ -116,14 +114,12 @@ test.describe('Previous Versions - Countersigned', () => {
 
     await expect(countersignedRows.first().getByRole('cell', { name: expectedCountersignedDate }).first()).toBeVisible()
     await expect(countersignedRows.first().getByRole('cell', { name: 'Assessment and plan updated' })).toBeVisible()
-    await expect(countersignedRows.first().getByRole('cell', { name: 'Countersigned' })).toBeVisible()
 
     const viewLinks = countersignedRows.first().getByRole('link', { name: 'View' })
     await expect(viewLinks).toHaveCount(2)
     await expect(viewLinks.first()).toHaveAttribute('target', '_blank')
     await expect(viewLinks.last()).toHaveAttribute('target', '_blank')
 
-    // All Versions table: today's entry trimmed, only yesterday remains
     const allVersionsRows = allVersionsTable.locator('tbody').getByRole('row')
     await expect(allVersionsRows).toHaveCount(2)
 

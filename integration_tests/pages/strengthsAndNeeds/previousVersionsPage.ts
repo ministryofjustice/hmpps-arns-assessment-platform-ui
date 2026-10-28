@@ -19,6 +19,6 @@ export default class PreviousVersionsPage extends StrengthsAndNeedsPage {
   }
 
   async clickViewVersionOnDate(date: string): Promise<void> {
-    await this.table.first().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first().click()
+    await this.table.last().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first().click()
   }
 }

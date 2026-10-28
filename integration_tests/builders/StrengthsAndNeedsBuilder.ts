@@ -44,6 +44,10 @@ export class StrengthsAndNeedsBuilderInstance {
 
   private readonly data: DataConfig[] = []
 
+  private backdateFrom?: Date
+
+  private backdateTo?: Date
+
   constructor(client: TestAapApiClient, assessmentBuilder: AssessmentBuilderInstance) {
     this.client = client
     this.assessmentBuilder = assessmentBuilder
@@ -91,6 +95,18 @@ export class StrengthsAndNeedsBuilderInstance {
    */
   withData(data: DataConfig[]): this {
     data.forEach(a => this.data.push(a))
+
+    return this
+  }
+
+  /**
+   * Backdates events and timeline items, distributing them evenly across the provided time period.
+   * Backdating is deferred until after all timeline events are emitted in save(),
+   * so that the aggregate table is still intact when lifecycle events are created.
+   */
+  withEventsBackdated(from: Date, to: Date): this {
+    this.backdateFrom = from
+    this.backdateTo = to
 
     return this
   }
