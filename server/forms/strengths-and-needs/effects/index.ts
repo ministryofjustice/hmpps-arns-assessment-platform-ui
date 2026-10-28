@@ -2,6 +2,7 @@ import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { deriveDrugCategories } from './assessment/deriveDrugCategories'
 import { loadAssessment } from './assessment/loadAssessment'
 import { loadPreviousVersions } from './assessment/loadPreviousVersions'
+import { resolveHistoricVersion } from './assessment/resolveHistoricVersion'
 import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
 import { loadSessionData } from './session/loadSessionData'
 import { setPrivacyAccepted } from './session/setPrivacyAccepted'
@@ -29,6 +30,7 @@ export const StrengthsAndNeedsEffects = {
   loadSessionData: sanEffects.register('loadSessionData', loadSessionData),
   setPrivacyAccepted: sanEffects.register('setPrivacyAccepted', setPrivacyAccepted),
   setDynamicBacklink: sanEffects.register('setDynamicBacklink', setDynamicBacklink),
+  resolveHistoricVersion: sanEffects.register('resolveHistoricVersion', resolveHistoricVersion),
   loadAssessment: sanEffects.register('loadAssessment', loadAssessment),
   loadPreviousVersions: sanEffects.register('loadPreviousVersions', loadPreviousVersions),
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),

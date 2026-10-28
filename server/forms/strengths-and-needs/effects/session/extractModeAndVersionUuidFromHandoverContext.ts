@@ -1,7 +1,7 @@
 import { NotFound } from 'http-errors'
 import { DateTime } from 'luxon'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { findVersionCreatedAt, storePreviousVersionsInSession } from '../assessment/loadPreviousVersions'
+import { findAssessmentVersion, findVersionCreatedAt } from '../assessment/loadPreviousVersions'
 
 /**
  * Extracts mode and UUID from the Handover Context
@@ -23,17 +23,9 @@ export const extractModeAndVersionUuidFromHandoverContext =
       return
     }
 
-    if (!session.unaggregatedVersions) {
-      await storePreviousVersionsInSession(deps, assessmentUuid, session)
-    }
-
-    let previousVersion = findVersionCreatedAt(session.unaggregatedVersions, assessmentVersion)
-
-    if (!previousVersion) {
-      // The cached list may predate the requested version, so refresh once before giving up.
-      await storePreviousVersionsInSession(deps, assessmentUuid, session)
-      previousVersion = findVersionCreatedAt(session.unaggregatedVersions, assessmentVersion)
-    }
+    const previousVersion = await findAssessmentVersion(deps, session, versions =>
+      findVersionCreatedAt(versions, assessmentVersion),
+    )
 
     if (!previousVersion) {
       throw new NotFound(

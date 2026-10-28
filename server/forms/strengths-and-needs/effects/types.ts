@@ -25,6 +25,7 @@ export interface StrengthsAndNeedsSession {
   sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
   privacyAccepted?: boolean
+  assessmentUuid?: string
   mode?: 'edit' | 'view' | 'view-historic'
   uuid?: string
   countersignedVersions?: PreviousVersionDisplay[]
@@ -43,6 +44,7 @@ export interface StrengthsAndNeedsData {
   privacyAccepted?: boolean
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
+  historicVersion?: VersionDetails
   collectionUuids?: Record<string, string>
   [key: string]: unknown
 }

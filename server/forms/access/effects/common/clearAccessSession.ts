@@ -19,6 +19,7 @@ export const clearAccessSession = () => (context: AccessContext) => {
   delete session.practitionerDetails
   delete session.accessDetails
 
+  delete session.assessmentUuid
   delete session.mode
   delete session.uuid
   delete session.previousVersions

@@ -1,9 +1,12 @@
 import {
   access,
+  and,
+  Condition,
   createForgePackage,
   Data,
   Format,
   journey,
+  not,
   redirect,
   Session,
   step,
@@ -20,6 +23,7 @@ import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/form
 import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
+import { isHistoricView } from './versions/v1.0/guards'
 
 const { createRoute } = SANGenerators
 
@@ -76,6 +80,20 @@ export const strengthsAndNeedsRootJourney = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.validateModeAndVersionUuidFromUrl(),
+      ],
+    }),
+    // Previous versions are looked up by the assessment's UUID, which is only known once the entry step
+    // has loaded the assessment for this access (e.g. not for a bookmarked view-historic URL)
+    access({
+      when: and(isHistoricView, not(Session('assessmentUuid').match(Condition.IsRequired()))),
+      next: [redirect({ goto: `${formRootPath}/` })],
+    }),
+    access({
+      when: isHistoricView,
+      effects: [StrengthsAndNeedsEffects.resolveHistoricVersion()],
+    }),
+    access({
+      effects: [
         StrengthsAndNeedsEffects.loadAssessment(),
         StrengthsAndNeedsEffects.extractModeAndVersionUuidFromHandoverContext(),
       ],
