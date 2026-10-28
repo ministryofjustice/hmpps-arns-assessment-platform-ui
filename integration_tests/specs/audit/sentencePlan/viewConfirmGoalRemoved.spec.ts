@@ -1,7 +1,7 @@
 import { test } from '../../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../../pages/sentencePlan/confirmRemoveGoalPage'
 import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('View Remove a Goal confirmation', () => {
   test('visiting confirm remove page', async ({ page, auditQueue, openSentencePlan }) => {
