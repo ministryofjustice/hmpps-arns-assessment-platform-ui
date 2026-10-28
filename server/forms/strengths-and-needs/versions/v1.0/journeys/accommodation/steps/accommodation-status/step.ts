@@ -40,6 +40,7 @@ export const accommodationStatusStep = step({
           StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_details.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.accommodation_status),
         ],
         next: [
