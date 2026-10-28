@@ -79,7 +79,9 @@ export const strengthsAndNeedsV1Journey = journey({
   onAccess: [
     // Prevent privilege escalation: check mode against accessMode
     preventPrivilegeEscalation(),
+    // Writes to the assessment, so only when the user is editing the current version
     access({
+      when: isEditMode,
       effects: [StrengthsAndNeedsEffects.setRiskOfSexualHarm()],
     }),
     // Only redirect to privacy screen for non-read-only users who haven't accepted privacy

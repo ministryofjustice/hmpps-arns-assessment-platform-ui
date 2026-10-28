@@ -18,7 +18,7 @@ import { emptyCollection } from './assessment/emptyCollection'
 import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
 import { sendAuditEvent } from './audit/sendAuditEvent'
 import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
-import { extractModeAndVersionUuidFromUrl } from './session/extractModeAndVersionUuidFromUrl'
+import { validateModeAndVersionUuidFromUrl } from './session/validateModeAndVersionUuidFromUrl'
 import { setUserSubmitted } from './assessment/setUserSubmitted'
 import { extractModeAndVersionUuidFromHandoverContext } from './session/extractModeAndVersionUuidFromHandoverContext'
 
@@ -46,9 +46,9 @@ export const StrengthsAndNeedsEffects = {
     'extractModeAndVersionUuidFromHandoverContext',
     extractModeAndVersionUuidFromHandoverContext,
   ),
-  extractModeAndVersionUuidFromUrl: sanEffects.register(
-    'extractModeAndVersionUuidFromUrl',
-    extractModeAndVersionUuidFromUrl,
+  validateModeAndVersionUuidFromUrl: sanEffects.register(
+    'validateModeAndVersionUuidFromUrl',
+    validateModeAndVersionUuidFromUrl,
   ),
   sendAuditEvent: sanEffects.register('sendAuditEvent', sendAuditEvent),
   saveCurrentAccommodationStepAnswers: sanEffects.register(
