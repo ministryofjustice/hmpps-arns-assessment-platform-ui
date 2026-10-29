@@ -30,7 +30,7 @@ export const financeSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.yes),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.finance_summary),
         ],
         next: [redirect({ goto: `${Step.finance_analysis.path}#practitioner-analysis` })],
@@ -38,7 +38,7 @@ export const financeSummaryStep = step({
       onInvalid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.finance, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.no),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance_summary),
         ],
       },
