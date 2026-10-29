@@ -1,0 +1,130 @@
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/step'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { expect } from '@playwright/test'
+import FinancesPage from 'pages/strengthsAndNeeds/financesPage'
+import { test, TargetService } from '../../../../support/fixtures'
+
+test.describe('Summary', () => {
+  test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        { question: Question.finance_income, value: [Option.carers_allowance] },
+        { question: Question.finance_bank_account, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_money_management_good_details, value: '' },
+        { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+        { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
+        { question: Question.finance_debt, value: [CommonOption.no] },
+        { question: Question.finance_changes, value: CommonOption.not_present },
+      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
+      .save()
+
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
+
+    const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
+
+    await expect(financesPage.summary).toMatchAriaSnapshot(`
+      - tabpanel "Summary":
+        - term: Where does Test currently get their money from?
+        - definition:
+          - paragraph: Carer’s allowance
+        - definition:
+          - link "Change Where does Test currently get their money from?":
+            - /url: finance#finance_income-question
+        - term: Does Test have their own bank account?
+        - definition:
+          - paragraph: "Yes"
+        - definition:
+          - link "Change Does Test have their own bank account?":
+            - /url: finance#finance_bank_account-question
+        - term: How good is Test at managing their money?
+        - definition:
+          - paragraph: Able to manage their money well and is a strength
+        - definition:
+          - link "Change How good is Test at managing their money?":
+            - /url: finance#finance_money_management-question
+        - term: Is Test affected by gambling?
+        - definition:
+          - paragraph: Yes, their own gambling
+        - definition:
+          - link "Change Is Test affected by gambling?":
+            - /url: finance#finance_gambling-question
+        - term: Is Test affected by debt?
+        - definition:
+          - paragraph: "No"
+        - definition:
+          - link "Change Is Test affected by debt?":
+            - /url: finance#finance_debt-question
+        - term: Does Test want to make changes to their finances?
+        - definition:
+          - paragraph: Test is not present
+        - definition:
+          - link "Change Does Test want to make changes to their finances?":
+            - /url: finance#finance_changes-question
+        - button "Go to practitioner analysis"
+    `)
+  })
+
+  test('practitioner analysis', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        { question: Question.finance_income, value: [Option.carers_allowance] },
+        { question: Question.finance_bank_account, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_money_management_good_details, value: '' },
+        { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+        { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
+        { question: Question.finance_debt, value: [CommonOption.no] },
+        { question: Question.finance_changes, value: CommonOption.not_present },
+      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
+      .save()
+
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary')
+    const financesPage = await FinancesPage.verifyOnPage(page, 'Summary')
+
+    await financesPage.goToPractitionerAnalysis.click()
+    await expect(page.getByText('Are there any strengths or protective factors')).toBeVisible()
+  })
+
+  test('mark complete', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        { question: Question.finance_income, value: [Option.carers_allowance] },
+        { question: Question.finance_bank_account, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_money_management_good_details, value: '' },
+        { question: Question.finance_gambling, value: [Option.yes_their_gambling] },
+        { question: Question.finance_gambling_yes_their_gambling_details, value: '' },
+        { question: Question.finance_debt, value: [CommonOption.no] },
+        { question: Question.finance_changes, value: CommonOption.not_present },
+        { question: Question.finance_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.no },
+        { question: Question.finance_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },
+        { question: Question.finance_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
+        { question: Question.finance_practitioner_analysis_risk_of_serious_harm_no_details, value: '' },
+      ])
+      .withUserSubmittedSteps([Step.finance.code, Step.finance_summary.code])
+      .save()
+
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'finance-summary#practitioner-analysis')
+    const financesPage = await FinancesPage.verifyOnPage(page, 'strengths or protective factors')
+
+    await financesPage.questions.finance_practitioner_analysis_risk_of_reoffending.option(CommonOption.no)
+      .click()
+    await financesPage.markComplete.click()
+    await expect(financesPage.complete).toBeVisible()
+    expect(page.url()).toContain('finance-analysis')
+  })
+})

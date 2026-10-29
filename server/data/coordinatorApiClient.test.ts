@@ -164,7 +164,7 @@ describe('CoordinatorApiClient', () => {
               updatedAt: '2024-01-01T10:00:00Z',
               status: 'UNSIGNED',
               planAgreementStatus: null,
-              entityType: 'ASSESSMENT',
+              entityType: 'AAP_SAN',
             },
             planVersion: {
               uuid: 'sp-version-uuid',
@@ -178,6 +178,26 @@ describe('CoordinatorApiClient', () => {
           },
         },
         countersignedVersions: {},
+        unaggregatedVersions: [
+          {
+            uuid: 'san-version-uuid',
+            version: 0,
+            createdAt: '2024-01-01T10:00:00Z',
+            updatedAt: '2024-01-01T10:00:00Z',
+            status: 'UNSIGNED',
+            planAgreementStatus: null,
+            entityType: 'AAP_SAN',
+          },
+          {
+            uuid: 'sp-version-uuid',
+            version: 123456789,
+            createdAt: '2024-01-01T10:00:00Z',
+            updatedAt: '2024-01-01T10:00:00Z',
+            status: 'UNSIGNED',
+            planAgreementStatus: 'AGREED',
+            entityType: 'AAP_PLAN',
+          },
+        ],
       }
 
       mockGet.mockResolvedValue(expectedResponse)

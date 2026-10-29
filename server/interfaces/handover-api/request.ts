@@ -1,4 +1,4 @@
-import { HandoverPrincipalDetails, HandoverSubjectDetails, CriminogenicNeedsData } from './shared'
+import { HandoverPrincipalDetails, HandoverSubjectDetails, CriminogenicNeedsData, YesNoNull } from './shared'
 
 export interface CreateHandoverLinkRequest {
   user: HandoverPrincipalDetails
@@ -8,6 +8,7 @@ export interface CreateHandoverLinkRequest {
   sentencePlanVersion?: number | null
   tieringAssessmentVersion?: number | null
   criminogenicNeedsData?: CriminogenicNeedsData
+  sexuallyMotivatedOffenceHistory?: YesNoNull
 }
 
 export interface UpdateHandoverContextRequest {

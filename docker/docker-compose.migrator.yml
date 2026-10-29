@@ -1,0 +1,53 @@
+# docker-compose.migrator.yml is used to spin up the app in dev mode within a migrator stack of containers.
+# It stacks on top of `docker-compose.local.yml`, setting the appropriate env vars for a migrator environment.
+# NOTE: this can be removed once SAN is migrated to the AAP
+
+services:
+  aap-ui:
+    environment:
+      PRODUCT_ID: 'UNASSIGNED'
+      REDIS_ENABLED: true
+      REDIS_HOST: redis
+      SESSION_SECRET: somesecretvalue
+      INGRESS_URL: http://localhost:3000
+      GOTENBERG_API_URL: http://gotenberg:3000
+      GOTENBERG_RENDER_URL: http://aap-ui:3000
+      NO_HTTPS: true
+      AUTH_CODE_CLIENT_ID: hmpps-arns-assessment-platform-ui
+      AUTH_CODE_CLIENT_SECRET: clientsecret
+      CLIENT_CREDS_CLIENT_ID: hmpps-arns-assessment-platform-ui-system
+      CLIENT_CREDS_CLIENT_SECRET: clientsecret
+      TOKEN_VERIFICATION_ENABLED: false
+      TOKEN_VERIFICATION_API_URL: http://localhost:9090/verification
+      HMPPS_AUTH_URL: http://wiremock:8080/auth
+      HMPPS_AUTH_EXTERNAL_URL: http://localhost:9090/auth
+      AAP_API_URL: http://wiremock:8080/aap-api
+      COORDINATOR_API_URL: http://wiremock:8080/coordinator-api
+      DELIUS_API_URL: http://wiremock:8080/delius
+      ARNS_API_URL: http://wiremock:8080/arns-api
+      TIER_API_URL: http://wiremock:8080/tier-api
+      SUPERVISION_PACKAGE_API_URL: http://wiremock:8080/supervision-package-api
+      FEATURE_FLAG_URL: http://wiremock:8080/flipt
+      SAN_URL: http://localhost:3000/strengths-and-needs/v1.0
+      SAN_LEGACY_URL: http://localhost:3002
+      HMPPS_ARNS_HANDOVER_URL: http://wiremock:8080/handover
+      HMPPS_ARNS_HANDOVER_EXTERNAL_URL: http://localhost:9091/handover
+      HMPPS_ARNS_HANDOVER_CLIENT_ID: sentence-plan
+      HMPPS_ARNS_HANDOVER_CLIENT_SECRET: sp-secret
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AUDIT_ENABLED: true
+      AUDIT_SQS_QUEUE_URL: http://localstack:4566/000000000000/audit-queue
+      AUDIT_SQS_REGION: eu-west-2
+      AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
+      NODE_CLUSTER_ENABLED: true
+      FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
+      FORM_DATA_DELETION_TOOL_ENABLED: true
+      CACHE_REDIS_HOST: redis
+      SERVICE_NOW_FORM_URL: '#service-now-link'
+      NATIONAL_ROLLOUT_FEEDBACK_URL: '#national-rollout-feedback-url'
+      PRIVATE_BETA_FEEDBACK_URL: '#private-beta-feedback-url'
+      OASYS_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      OASYS_REVIEW_URL: 'http://aap-ui:3000/training-session-launcher/sessions'
+      MPOP_URL: 'http://aap-ui:3000/sign-in'
