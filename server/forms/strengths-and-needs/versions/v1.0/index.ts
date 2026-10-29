@@ -22,7 +22,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isEditMode, isHistoricView, isOasysAccess, preventPrivilegeEscalation } from './guards'
+import { isEditMode, isHistoricView, isOasysAccess, routeGuards } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
@@ -77,8 +77,8 @@ export const strengthsAndNeedsV1Journey = journey({
     formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
-    // Prevent privilege escalation: check mode against accessMode
-    preventPrivilegeEscalation(),
+    // The URL mode and UUID must match the access
+    ...routeGuards(),
     // Writes to the assessment, so only when the user is editing the current version
     access({
       when: isEditMode,

@@ -24,19 +24,19 @@ import { formRootPath } from './constants/formVersion'
 export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.Equals('OASYS'))
 
 /**
- * True when viewing a previous version (read-only mode based on URL mode parameter).
- * Viewing a historic assessment version is always read-only, regardless of accessMode.
- * Used to conditionally hide editable controls (save buttons, change links)
- * and prevent navigation to editable steps.
+ * True when viewing the current assessment read-only (URL mode `view`).
  */
 export const isViewMode = Params('mode').match(Condition.Equals('view'))
 
+/**
+ * True when viewing a previous version (URL mode `view-historic`), which is always read-only.
+ */
 export const isHistoricView = Params('mode').match(Condition.Equals('view-historic'))
 
+const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
+
 /**
- * True when the session was opened in READ_ONLY access mode, or when viewing
- * a specific assessment version (mode === 'view').
- * Viewing a historic assessment version is always read-only, regardless of accessMode.
+ * True when the session has READ_ONLY access, or the URL is in a read-only mode (`view` or `view-historic`).
  * Used to conditionally hide editable controls (save buttons, change links)
  * and prevent navigation to editable steps.
  */
@@ -47,14 +47,10 @@ export const isReadOnlyMode = or(
 )
 
 /**
- * True when the session is NOT in READ_ONLY mode (i.e. the user can edit).
- * Convenience inverse of {@link isReadOnlyMode}.
+ * True when the user can edit: READ_WRITE access and URL mode `edit`.
+ * Not quite the inverse of {@link isReadOnlyMode}: both are false when the access mode is missing.
  */
-export const isEditMode = and(
-  Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE')),
-  not(isViewMode),
-  not(isHistoricView),
-)
+export const isEditMode = and(hasReadWriteAccess, not(isViewMode), not(isHistoricView))
 
 /**
  * Redirects read-only users away from editable steps to the analysis step.
@@ -73,25 +69,23 @@ export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPa
 }
 
 /**
- * Prevents privilege escalation by validating the mode parameter against the accessMode.
- *
- * Rules:
- * - READ_ONLY accessMode: only allows 'view' or 'view-historic' mode
- * - READ_WRITE accessMode: allows 'view', 'edit', or 'view-historic' mode
- *
- * Redirects users attempting to access unauthorised modes to the entry step, which sends them to
- * where their access lands (e.g. view mode).
+ * Keeps the URL in line with the access. Anything else is sent to the entry step, which redirects
+ * to where the access lands (see resolveEntryRoute):
+ * - `edit` needs READ_WRITE access. A handover that asks for a version is READ_ONLY (see initializeSessionFromAccess)
+ * - `edit` and `view` must name the assessment loaded for this access. `view-historic` URLs name a version
+ *   instead, which resolveHistoricVersion checks belongs to that assessment
  */
-export const preventPrivilegeEscalation = () => {
-  const isReadWriteMode = Params('mode').match(Condition.Equals('edit'))
-  const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
+export const routeGuards = () => {
+  const toEntryRoute = () => redirect({ goto: `${formRootPath}/` })
 
-  return access({
-    when: and(isReadWriteMode, not(hasReadWriteAccess)),
-    next: [
-      redirect({
-        goto: `${formRootPath}/`,
-      }),
-    ],
-  })
+  return [
+    access({
+      when: and(Params('mode').match(Condition.Equals('edit')), not(hasReadWriteAccess)),
+      next: [toEntryRoute()],
+    }),
+    access({
+      when: and(not(isHistoricView), not(Params('uuid').match(Condition.Equals(Data('assessmentUuid'))))),
+      next: [toEntryRoute()],
+    }),
+  ]
 }
