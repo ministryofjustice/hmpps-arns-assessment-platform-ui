@@ -9,7 +9,7 @@ import {
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsSessionDetails } from '../../effects/types'
 import { basePath, formRootPath } from './constants/formVersion'
-import { isEditMode, isReadOnlyMode, routeGuards, showReturnToOasys } from './guards'
+import { isEditMode, isReadOnlyMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
 
 const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
 const versionUuid = 'e8f1a0a4-0000-4000-8000-000000000002'
@@ -105,20 +105,21 @@ describe('mode predicates', () => {
   }
 
   it.each([
-    { mode: 'edit', version: 'current', editable: true, returnButton: true },
-    { mode: 'view', version: 'current', editable: false, returnButton: true },
+    { mode: 'edit', version: 'current', editable: true, returnButton: true, previousVersions: true },
+    { mode: 'view', version: 'current', editable: false, returnButton: true, previousVersions: true },
     // what OASys asked for
-    { mode: 'view', version: versionUuid, editable: false, returnButton: true },
+    { mode: 'view', version: versionUuid, editable: false, returnButton: true, previousVersions: false },
     // opened from the previous versions page, in a new window
-    { mode: 'view-historic', version: versionUuid, editable: false, returnButton: false },
+    { mode: 'view-historic', version: versionUuid, editable: false, returnButton: false, previousVersions: false },
   ])(
-    '$mode/$version: editable $editable, Return to OASys $returnButton',
-    async ({ mode, version, editable, returnButton }) => {
+    '$mode/$version: editable $editable, Return to OASys $returnButton, previous versions $previousVersions',
+    async ({ mode, version, editable, returnButton, previousVersions }) => {
       const request = { accessMode: 'READ_WRITE', mode, assessment: assessmentUuid, version }
 
       expect(await holds(isEditMode, request)).toBe(editable)
       expect(await holds(isReadOnlyMode, request)).toBe(!editable)
       expect(await holds(showReturnToOasys, request)).toBe(returnButton)
+      expect(await holds(showPreviousVersionsLink, request)).toBe(previousVersions)
     },
   )
 })

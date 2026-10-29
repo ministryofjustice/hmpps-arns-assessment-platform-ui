@@ -21,7 +21,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isEditMode, routeGuards, showReturnToOasys } from './guards'
+import { isEditMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
@@ -63,6 +63,7 @@ export const strengthsAndNeedsV1Journey = journey({
       })),
       viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
       viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
+      showPreviousVersionsLink,
       buttons: {
         showReturnToOasysButton: showReturnToOasys,
       },

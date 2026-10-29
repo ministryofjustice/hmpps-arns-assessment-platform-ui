@@ -48,6 +48,11 @@ export const isHistoricVersion = and(
   not(Params('versionUuid').match(Condition.Equals(currentVersion))),
 )
 
+/**
+ * Show "View previous versions" only on the current version.
+ */
+export const showPreviousVersionsLink = Params('versionUuid').match(Condition.Equals(currentVersion))
+
 const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
 
 /**
