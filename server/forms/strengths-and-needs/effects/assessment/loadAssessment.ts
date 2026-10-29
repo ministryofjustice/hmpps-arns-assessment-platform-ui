@@ -66,7 +66,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   // Only a view-historic URL selects a previous version (resolved by resolveHistoricVersion). A version
   // requested by the handover is turned into a view-historic URL on entry
-  // (extractModeAndVersionUuidFromHandoverContext), so edit and view URLs always load the current assessment.
+  // (resolveEntryRoute), so edit and view URLs always load the current assessment.
   const historicVersion = context.getData('historicVersion')
 
   if (historicVersion) {

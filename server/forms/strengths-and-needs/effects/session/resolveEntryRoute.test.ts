@@ -1,6 +1,6 @@
 import { createTestEffectContext } from '@ministryofjustice/hmpps-forge/core/testing'
 import { NotFound } from 'http-errors'
-import { extractModeAndVersionUuidFromHandoverContext } from './extractModeAndVersionUuidFromHandoverContext'
+import { resolveEntryRoute } from './resolveEntryRoute'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { VersionDetails } from '../../../../interfaces/coordinator-api/previousVersions'
 
@@ -21,14 +21,13 @@ const sanVersion: VersionDetails = {
 
 const contextFor = (sessionDetails: Record<string, unknown>, unaggregatedVersions?: VersionDetails[]) => {
   const context = createTestEffectContext({
-    data: { assessmentUuid },
     session: { sessionDetails, assessmentUuid, unaggregatedVersions },
   }) as unknown as StrengthsAndNeedsContext
 
-  return { context, session: context.getSession() }
+  return context
 }
 
-describe('extractModeAndVersionUuidFromHandoverContext', () => {
+describe('resolveEntryRoute', () => {
   const getVersionsByEntityId = jest.fn()
   const deps = { coordinatorApi: { getVersionsByEntityId } } as unknown as StrengthsAndNeedsEffectsDeps
 
@@ -43,38 +42,36 @@ describe('extractModeAndVersionUuidFromHandoverContext', () => {
   it.each([
     { accessMode: 'READ_WRITE', mode: 'edit' },
     { accessMode: 'READ_ONLY', mode: 'view' },
-  ])('uses $mode for the current assessment with $accessMode access', async ({ accessMode, mode }) => {
-    const { context, session } = contextFor({ accessMode })
+  ])('lands on $mode of the current assessment with $accessMode access', async ({ accessMode, mode }) => {
+    const context = contextFor({ accessMode })
 
-    await extractModeAndVersionUuidFromHandoverContext(deps)(context)
+    await resolveEntryRoute(deps)(context)
 
-    expect(session.mode).toBe(mode)
-    expect(session.uuid).toBe(assessmentUuid)
+    expect(context.getData('entryRoute')).toEqual({ mode, uuid: assessmentUuid })
     expect(getVersionsByEntityId).not.toHaveBeenCalled()
   })
 
-  it('uses view-historic for the version created at the handover timestamp', async () => {
-    const { context, session } = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis })
+  it('lands on view-historic of the version created at the handover timestamp', async () => {
+    const context = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis })
 
-    await extractModeAndVersionUuidFromHandoverContext(deps)(context)
+    await resolveEntryRoute(deps)(context)
 
-    expect(session.mode).toBe('view-historic')
-    expect(session.uuid).toBe(versionUuid)
+    expect(context.getData('entryRoute')).toEqual({ mode: 'view-historic', uuid: versionUuid })
     expect(getVersionsByEntityId).toHaveBeenCalledWith(assessmentUuid)
   })
 
   it('refreshes cached versions that predate the requested version', async () => {
-    const { context, session } = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis }, [])
+    const context = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis }, [])
 
-    await extractModeAndVersionUuidFromHandoverContext(deps)(context)
+    await resolveEntryRoute(deps)(context)
 
     expect(getVersionsByEntityId).toHaveBeenCalledTimes(1)
-    expect(session.uuid).toBe(versionUuid)
+    expect(context.getData('entryRoute')).toEqual({ mode: 'view-historic', uuid: versionUuid })
   })
 
   it('throws NotFound when no version was created at the handover timestamp', async () => {
-    const { context } = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis + 1 })
+    const context = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis + 1 })
 
-    await expect(extractModeAndVersionUuidFromHandoverContext(deps)(context)).rejects.toThrow(NotFound)
+    await expect(resolveEntryRoute(deps)(context)).rejects.toThrow(NotFound)
   })
 })

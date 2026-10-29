@@ -8,11 +8,10 @@ import {
   Params,
   redirect,
   Request,
-  Session,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
-import { basePath } from './constants/formVersion'
+import { formRootPath } from './constants/formVersion'
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -80,7 +79,8 @@ export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPa
  * - READ_ONLY accessMode: only allows 'view' or 'view-historic' mode
  * - READ_WRITE accessMode: allows 'view', 'edit', or 'view-historic' mode
  *
- * Redirects users attempting to access unauthorized modes to the accommodation section in view mode.
+ * Redirects users attempting to access unauthorised modes to the entry step, which sends them to
+ * where their access lands (e.g. view mode).
  */
 export const preventPrivilegeEscalation = () => {
   const isReadWriteMode = Params('mode').match(Condition.Equals('edit'))
@@ -90,7 +90,7 @@ export const preventPrivilegeEscalation = () => {
     when: and(isReadWriteMode, not(hasReadWriteAccess)),
     next: [
       redirect({
-        goto: createRoute([basePath, Session('mode'), Session('uuid'), 'accommodation']),
+        goto: `${formRootPath}/`,
       }),
     ],
   })

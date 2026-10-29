@@ -9,6 +9,7 @@ import { AssessmentPlatformApiClient, CoordinatorApiClient } from '../../../data
 import AuditService from '../../../services/auditService'
 import { PreviousVersionDisplay } from './assessment/loadPreviousVersions'
 import { VersionDetails } from '../../../interfaces/coordinator-api/previousVersions'
+import type { EntryRoute } from './session/resolveEntryRoute'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -26,8 +27,6 @@ export interface StrengthsAndNeedsSession {
   handoverContext?: HandoverContext
   privacyAccepted?: boolean
   assessmentUuid?: string
-  mode?: 'edit' | 'view' | 'view-historic'
-  uuid?: string
   countersignedVersions?: PreviousVersionDisplay[]
   previousVersions?: PreviousVersionDisplay[]
   unaggregatedVersions?: VersionDetails[]
@@ -45,6 +44,7 @@ export interface StrengthsAndNeedsData {
   assessment?: AssessmentVersionQueryResult
   assessmentUuid?: string
   historicVersion?: VersionDetails
+  entryRoute?: EntryRoute
   collectionUuids?: Record<string, string>
   [key: string]: unknown
 }

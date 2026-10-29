@@ -56,13 +56,14 @@ const versionRedirectStep = step({
   title: commonContentFor('strengths_and_needs'),
   onAccess: [
     access({
+      effects: [StrengthsAndNeedsEffects.resolveEntryRoute()],
       next: [
         redirect({
           goto: Format(
-            `/strengths-and-needs/%1/%2/%3`,
+            `${formRootPath}/%1/%2/%3`,
             Data('assessment.formVersion'),
-            Session('mode'),
-            Session('uuid'),
+            Data('entryRoute.mode'),
+            Data('entryRoute.uuid'),
           ),
         }),
       ],
@@ -93,10 +94,7 @@ export const strengthsAndNeedsRootJourney = journey({
       effects: [StrengthsAndNeedsEffects.resolveHistoricVersion()],
     }),
     access({
-      effects: [
-        StrengthsAndNeedsEffects.loadAssessment(),
-        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromHandoverContext(),
-      ],
+      effects: [StrengthsAndNeedsEffects.loadAssessment()],
     }),
   ],
   steps: [versionRedirectStep, privacyScreenStep],
