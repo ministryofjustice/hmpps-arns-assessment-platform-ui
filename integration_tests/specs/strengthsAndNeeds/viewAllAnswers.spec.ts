@@ -338,7 +338,7 @@ test.describe('View all answers', () => {
     await withStatuses.save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, '/strengths-and-needs/')
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
 
     // Every section, and a status against each.
     expect(page.getByText('Accommodation\nIncomplete', { exact: true })).toBeVisible()
@@ -388,7 +388,7 @@ test.describe('View all answers', () => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
 
     // Nothing answered: the sections, their statuses, and nothing else.
     expect(await pageText(page)).toContain('Accommodation\nIncomplete\nEmployment and education')
@@ -405,7 +405,7 @@ test.describe('View all answers', () => {
       ])
       .save()
 
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
 
     expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
     expect(page.getByText('No accommodation', { exact: true })).toBeVisible()
@@ -421,7 +421,7 @@ test.describe('Accessibility', () => {
   test('should be accessible', async ({ baseURL, createSession, page }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
     await checkAccessibility(page, {
       // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
       disableRules: ['aria-allowed-attr'],
@@ -433,7 +433,7 @@ test.describe('Accessibility', () => {
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
 
     // Unfortunately this is not reflected in the Playwright UI
     await page.emulateMedia({ media: 'print' })
@@ -456,7 +456,7 @@ test.describe('View all answers print view', () => {
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${viewAllAnswers}`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
 
     const coverPage = page.locator('.pdf-cover-page')
     const printHeader = page.locator('.pdf-header')

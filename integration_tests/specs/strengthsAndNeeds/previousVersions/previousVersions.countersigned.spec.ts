@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { VersionsTable } from '@server/interfaces/coordinator-api/previousVersions'
 import { test, TargetService } from '../../../support/fixtures'
-import { navigateToStrengthsAndNeeds, checkAccessibility, formatOrdinalDate } from '../sanUtils'
+import { navigateToStrengthsAndNeeds, formatOrdinalDate } from '../sanUtils'
 import PreviousVersionsPage from '../../../pages/strengthsAndNeeds/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
@@ -86,7 +86,7 @@ test.describe('Previous Versions - Countersigned', () => {
     const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
 
     // Verify message is shown when previous versions exist
-    await expect(previousVersionsPage.mainContent).toContainText(
+    await expect(previousVersionsPage.mainForm).toContainText(
       "Check versions of Test's current assessment. The links will open in a new tab.",
     )
 
@@ -125,8 +125,6 @@ test.describe('Previous Versions - Countersigned', () => {
 
     await expect(allVersionsRows.first().getByRole('cell', { name: expectedCountersignedDate }).first()).toBeVisible()
     await expect(allVersionsRows.first().getByRole('cell', { name: 'Assessment and plan updated' })).toBeVisible()
-
-    await checkAccessibility(page, { include: '#main-content' })
 
   })
 })

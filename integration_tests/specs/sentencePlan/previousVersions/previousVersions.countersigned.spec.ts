@@ -26,7 +26,7 @@ test.describe('Previous Versions - Countersigned', () => {
           updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -47,7 +47,7 @@ test.describe('Previous Versions - Countersigned', () => {
           updatedAt: yesterday.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -79,6 +79,7 @@ test.describe('Previous Versions - Countersigned', () => {
         ...countersignedVersions,
       },
       countersignedVersions,
+      unaggregatedVersions: [],
     })
 
     await page.goto(handoverLink)
@@ -179,7 +180,7 @@ test.describe('Previous Versions - Countersigned', () => {
           updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -211,6 +212,7 @@ test.describe('Previous Versions - Countersigned', () => {
         ...countersignedVersions,
       },
       countersignedVersions,
+      unaggregatedVersions: [],
     })
 
     await page.goto(handoverLink)

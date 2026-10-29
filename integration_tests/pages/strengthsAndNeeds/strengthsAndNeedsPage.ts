@@ -27,7 +27,11 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
 
   readonly complete = this.page.locator('[data-complete="YES"]')
 
+  readonly pageHeading = this.page.getByRole('heading')
+
   readonly mainForm = this.page.getByTestId('main-form')
+
+  readonly previousVersionsLink = this.page.getByRole('link', { name: /View previous versions/i })
 
   /**
    * Opens the assessment via the handover link, handling the privacy screen, then goes to a step
@@ -41,7 +45,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     step: string = this.firstStep,
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}${this.section}/${step}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/edit/${assessmentId}/current${this.section}/${step}`)
     expect(page.url()).toContain(step)
   }
 
@@ -56,7 +60,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     step: string = this.firstStep,
   ): Promise<void> {
     await navigateToStrengthsAndNeedsReadOnly(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/view/${assessmentId}${this.section}/${step}`)
+    await page.goto(`${baseUrl}${sanFormPath}${v1Path}/view/${assessmentId}/current${this.section}/${step}`)
     expect(page.url()).toContain(step)
   }
 

@@ -2,7 +2,10 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/co
 import { Section } from '@server/forms/strengths-and-needs/versions/v1.0/constants/section'
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { QueriesResponse } from '@server/interfaces/aap-api/response'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import { TestAapApiClient } from '../../support/apis/TestAapApiClient'
 
 // strengths and needs V1 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
@@ -143,4 +146,29 @@ export const navigateToStrengthsAndNeedsReadOnly = async (
   await page.goto(handoverLink)
   // Wait for the redirect from the handover link to land on the expected page
   await page.waitForURL(url => url.pathname.includes(expectedPath))
+}
+
+export const storedAnswers = async (aapClient: TestAapApiClient, assessmentUuid: string) => {
+  const response: QueriesResponse = await aapClient.post(
+    {
+      path: '/query',
+      data: {
+        queries: [
+          {
+            type: 'AssessmentVersionQuery',
+            assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+            user: { id: 'e2e-test', name: 'E2E Test', authSource: 'HMPPS_AUTH' },
+          },
+        ],
+      },
+    },
+    asSystem(),
+  )
+  const assessment = response.queries[0].result
+
+  if (assessment.type !== 'AssessmentVersionQueryResult') {
+    throw new Error(`Expected assessment version, received ${assessment.type}`)
+  }
+
+  return assessment.answers
 }

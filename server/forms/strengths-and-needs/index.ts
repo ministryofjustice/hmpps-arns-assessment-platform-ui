@@ -5,7 +5,6 @@ import {
   Format,
   journey,
   redirect,
-  Session,
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
@@ -20,13 +19,16 @@ import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/form
 import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
+import { isHistoricVersion } from './versions/v1.0/guards'
+import { currentVersion } from './versions/v1.0/constants/path'
 
 const { createRoute } = SANGenerators
 
-// Where to send the user after accepting privacy, using the mode/uuid from the
-// handover session so they resume where they left off in the accommodation section.
+// Where to send the user after accepting privacy, so they resume where they left off in the
+// accommodation section. Uses the loaded assessment's UUID: the session identifier only has one for
+// OASys access (MPoP access identifies the assessment by CRN).
 const privacyScreenRedirectPath = createRoute(
-  [basePath, 'edit', Session('sessionDetails.assessmentIdentifier.uuid'), Section.accommodation.sideNavHref],
+  [basePath, 'edit', Data('assessmentUuid'), currentVersion, Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 
@@ -51,13 +53,15 @@ const versionRedirectStep = step({
   title: commonContentFor('strengths_and_needs'),
   onAccess: [
     access({
+      effects: [StrengthsAndNeedsEffects.resolveEntryRoute()],
       next: [
         redirect({
           goto: Format(
-            `/strengths-and-needs/%1/%2/%3`,
+            `${formRootPath}/%1/%2/%3/%4`,
             Data('assessment.formVersion'),
-            Session('mode'),
-            Session('uuid'),
+            Data('entryRoute.mode'),
+            Data('assessmentUuid'),
+            Data('entryRoute.versionUuid'),
           ),
         }),
       ],
@@ -74,10 +78,15 @@ export const strengthsAndNeedsRootJourney = journey({
       effects: [
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
-        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromUrl(),
-        StrengthsAndNeedsEffects.loadAssessment(),
-        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromHandoverContext(),
+        StrengthsAndNeedsEffects.validateModeAndVersionUuidFromUrl(),
       ],
+    }),
+    access({
+      when: isHistoricVersion,
+      effects: [StrengthsAndNeedsEffects.resolveHistoricVersion()],
+    }),
+    access({
+      effects: [StrengthsAndNeedsEffects.loadAssessment()],
     }),
   ],
   steps: [versionRedirectStep, privacyScreenStep],

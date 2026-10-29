@@ -1,6 +1,7 @@
 import {
   and,
   Answer,
+  ChainableExpr,
   Condition,
   Data,
   Format,
@@ -60,6 +61,9 @@ import { StrengthsAndNeedsConditions } from '../../../../conditions'
 const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
 const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
 const anyInjectableSelectedDrugs = Data('injectableSelectedDrugs').match(Condition.IsRequired())
+
+export const drugUsedInLastSixMonths = (drugValue: ChainableExpr) =>
+  Answer(Format(Question.drug_last_used_value, drugValue)).match(Condition.Equals(Option.last_six))
 
 const lastSixMonthConditions = drugsList.map(drug =>
   Answer(fieldCodeString(Question.drug_last_used, drug.value)).match(Condition.Equals(Option.last_six)),
@@ -140,7 +144,7 @@ export const drugHowOftenUsed = questionTemplate({
           },
         },
         items: content.options,
-        dependentWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
+        dependentWhen: drugUsedInLastSixMonths(content.param),
         validWhen: requiredValidationOf(content),
       }),
     collectionSummaryRow: content => ({
@@ -171,6 +175,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         formGroup: questionFormGroupOf(content.code),
         label: content.text,
         maxLength: CharacterLimit.c2000,
+        dependentWhen: drugUsedInLastSixMonths(content.param),
         validWhen: [
           validation({
             condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
@@ -845,7 +850,7 @@ const riskOfReoffending = question({
 })
 
 // `drugHowOftenUsed`/`drugHowOftenUsedDetails` are rendered per drug via
-// `.over()` against the runtime `drugsUsedInLastSix` collection rather than a
+// `.over()` against a collection of drugs rather than a
 // static option reveal, so `stableQuestionsOf` can't discover their instances
 // by walking reveals. Register one content entry per drug explicitly so they
 // still show up as stable questions (e.g. for FormConfig).

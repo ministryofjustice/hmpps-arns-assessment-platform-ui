@@ -15,7 +15,7 @@ test.describe('View Historic Assessment', () => {
 
     const [newPage] = await Promise.all([
       page.waitForEvent('popup'),
-      previousVersionsPage.clickViewVersionOnDate('1st January 2026'),
+      previousVersionsPage.viewVersionOnDate('1st January 2026'),
     ])
 
     return { newPage }

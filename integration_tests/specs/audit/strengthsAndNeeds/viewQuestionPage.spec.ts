@@ -27,7 +27,7 @@ test.describe('Views Question pages for each Criminogenic Needs section', () => 
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.goto(`/strengths-and-needs/v1.0/edit/${sanAssessmentId}/finances/finance`)
+    await page.goto(`/strengths-and-needs/v1.0/edit/${sanAssessmentId}/current/finances/finance`)
 
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.VIEW_QUESTION_PAGE, {
       additionalFilter: onPage('finance', 'finance'),

@@ -1,10 +1,7 @@
-import { type Locator, type Page } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import StrengthsAndNeedsPage from './strengthsAndNeedsPage'
 
 export default class PreviousVersionsPage extends StrengthsAndNeedsPage {
-  readonly pageHeading: Locator
-
-  readonly mainContent: Locator
 
   readonly table: Locator
 
@@ -12,13 +9,17 @@ export default class PreviousVersionsPage extends StrengthsAndNeedsPage {
 
   public constructor(page: Page) {
     super(page)
-    this.pageHeading = page.getByRole('heading')
-    this.mainContent = page.getByTestId('main-form')
-    this.table = page.locator('[data-qa="previous-versions-table"]')
+    this.table = page.getByTestId('previous-versions-table')
     this.tableCaption = page.getByRole('caption')
   }
 
-  async clickViewVersionOnDate(date: string): Promise<void> {
+  async viewVersionOnDate(date: string): Promise<void> {
     await this.table.last().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first().click()
+  }
+
+  async verifyOnPage(page: Page): Promise<PreviousVersionsPage> {
+    const previousVersionsPage = new PreviousVersionsPage(page)
+    await expect(previousVersionsPage.pageHeading).toContainText('Previous versions')
+    return previousVersionsPage
   }
 }

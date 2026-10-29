@@ -1,4 +1,4 @@
-import { StrengthsAndNeedsContext } from '../types'
+import { sanSession, StrengthsAndNeedsContext } from '../types'
 
 /**
  * Load session data into the data context.
@@ -19,8 +19,10 @@ export const loadSessionData = () => (context: StrengthsAndNeedsContext) => {
     context.setData('caseData', session.caseDetails)
   }
 
-  if (session.sessionDetails) {
-    context.setData('sessionDetails', session.sessionDetails)
+  const { sessionDetails } = sanSession(session)
+
+  if (sessionDetails) {
+    context.setData('sessionDetails', sessionDetails)
   }
 
   if (session.accessDetails) {

@@ -1,13 +1,11 @@
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
-import { BadRequest, InternalServerError } from 'http-errors'
-import { DateTime } from 'luxon'
+import { BadRequest, InternalServerError, NotFound } from 'http-errors'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 import { HandoverContext } from '../../../../interfaces/handover-api/response'
-import { storePreviousVersionsInSession } from './loadPreviousVersions'
 
 const isMissingAssessmentQueryError = (error: unknown): boolean =>
   error instanceof QueryError && error.queryType === 'AssessmentVersionQuery' && error.result === undefined
@@ -49,7 +47,8 @@ const validateAssessmentMatchesHandoverContext = (
 export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
   const user = context.getState('user')
   const session = context.getSession()
-  const sessionDetails = session.sessionDetails
+  const san = sanSession(session)
+  const { sessionDetails } = san
   const caseDetails = session.caseDetails
 
   if (!user) {
@@ -66,24 +65,20 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     assessmentIdentifier: sessionDetails.assessmentIdentifier,
   }
 
-  // Check if viewing a previous version via URL (uuid and mode are set on the session by an effect)
-  if (session.uuid && session.mode && ['view-historic'].includes(session.mode)) {
-    if (!session.previousVersions || session.countersignedVersions) {
-      await storePreviousVersionsInSession(deps, session.handoverContext.assessmentContext.assessmentId, session)
-    }
+  // Only the URL selects a previous version (resolved by resolveHistoricVersion). A version requested by
+  // the handover is turned into a URL on entry (resolveEntryRoute).
+  const historicVersion = context.getData('historicVersion')
 
-    const previousVersions = [...session.previousVersions, ...session.countersignedVersions]
-    const previousVersion = previousVersions.find(it => it.assessmentVersionId === session.uuid)
-
-    if (!previousVersion) {
-      throw new InternalServerError(`Invalid assessment version ID: ${session.uuid}`)
-    }
-
-    query.timestamp = DateTime.fromMillis(previousVersion?.assessmentUpdatedDate).toISO({ includeOffset: false })
-    context.setData('previousVersionDate', previousVersion?.assessmentUpdatedDate)
+  if (historicVersion) {
+    query.timestamp = historicVersion.updatedAt
   }
 
   let assessment = await loadAssessmentQuery(deps, query)
+
+  if (!assessment && query.timestamp) {
+    // Never fall back to the current assessment when a previous version was asked for.
+    throw new NotFound(`No assessment found at version timestamp ${query.timestamp}`)
+  }
 
   if (!assessment) {
     if (!caseDetails?.crn) {
@@ -93,7 +88,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     assessment = await deps.api.executeQuery({
       type: 'AssessmentVersionQuery',
       user,
-      assessmentIdentifier: session.sessionDetails.assessmentIdentifier,
+      assessmentIdentifier: sessionDetails.assessmentIdentifier,
     })
 
     if (session.handoverContext) {
@@ -113,7 +108,8 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   context.setData('assessment', assessment)
   context.setData('assessmentUuid', assessment.assessmentUuid)
-  context.setData('sessionDetails', session.sessionDetails)
+  context.setData('sessionDetails', sessionDetails)
+  san.assessmentUuid = assessment.assessmentUuid
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
   const properties = unwrapAll<Record<string, unknown>>(assessment.properties)
