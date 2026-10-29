@@ -1,4 +1,4 @@
-import { Condition, Format, Item, Iterator, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Data, Format, Item, Iterator, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
@@ -45,7 +45,8 @@ const assessmentCell = {
             '<a class="button-as-link" href="%1" target="_blank">%2<span class="govuk-visually-hidden"> %3 %4</span></a>',
             createRoute([
               basePath,
-              'view-historic',
+              'view',
+              Data('assessmentUuid'),
               Item().path('assessmentVersionId'),
               Section.accommodation.sideNavHref,
             ]),

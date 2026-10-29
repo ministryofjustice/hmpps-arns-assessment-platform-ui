@@ -47,16 +47,17 @@ describe('resolveEntryRoute', () => {
 
     await resolveEntryRoute(deps)(context)
 
-    expect(context.getData('entryRoute')).toEqual({ mode, uuid: assessmentUuid })
+    expect(context.getData('entryRoute')).toEqual({ mode, versionUuid: 'current' })
     expect(getVersionsByEntityId).not.toHaveBeenCalled()
   })
 
-  it('lands on view-historic of the version created at the handover timestamp', async () => {
+  it('lands on view of the version created at the handover timestamp', async () => {
     const context = contextFor({ accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis })
 
     await resolveEntryRoute(deps)(context)
 
-    expect(context.getData('entryRoute')).toEqual({ mode: 'view-historic', uuid: versionUuid })
+    expect(context.getData('entryRoute')).toEqual({ mode: 'view', versionUuid })
+    expect(context.getSession().san.requestedVersionUuid).toBe(versionUuid)
     expect(getVersionsByEntityId).toHaveBeenCalledWith(assessmentUuid)
   })
 
@@ -66,7 +67,7 @@ describe('resolveEntryRoute', () => {
     await resolveEntryRoute(deps)(context)
 
     expect(getVersionsByEntityId).toHaveBeenCalledTimes(1)
-    expect(context.getData('entryRoute')).toEqual({ mode: 'view-historic', uuid: versionUuid })
+    expect(context.getData('entryRoute')).toEqual({ mode: 'view', versionUuid })
   })
 
   it('throws NotFound when no version was created at the handover timestamp', async () => {

@@ -47,7 +47,7 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
   })
 
   // The `createdAt` (UTC epoch millis) of the version OASys asked for. Only the handover decides
-  // this: previous versions picked in SAN are carried in the URL (view-historic/<versionUuid>).
+  // this: previous versions picked in SAN are carried in the URL (view/<assessmentUuid>/<versionUuid>).
   const assessmentVersion = handoverContext?.assessmentContext?.assessmentVersion
 
   // A requested version is always shown read-only, even if OASys (unexpectedly) granted READ_WRITE.

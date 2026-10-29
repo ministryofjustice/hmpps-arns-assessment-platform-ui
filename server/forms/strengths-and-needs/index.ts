@@ -1,14 +1,10 @@
 import {
   access,
-  and,
-  Condition,
   createForgePackage,
   Data,
   Format,
   journey,
-  not,
   redirect,
-  Session,
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
@@ -23,7 +19,8 @@ import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/form
 import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
-import { isHistoricView } from './versions/v1.0/guards'
+import { isHistoricVersion } from './versions/v1.0/guards'
+import { currentVersion } from './versions/v1.0/constants/path'
 
 const { createRoute } = SANGenerators
 
@@ -31,7 +28,7 @@ const { createRoute } = SANGenerators
 // accommodation section. Uses the loaded assessment's UUID: the session identifier only has one for
 // OASys access (MPoP access identifies the assessment by CRN).
 const privacyScreenRedirectPath = createRoute(
-  [basePath, 'edit', Data('assessmentUuid'), Section.accommodation.sideNavHref],
+  [basePath, 'edit', Data('assessmentUuid'), currentVersion, Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 
@@ -60,10 +57,11 @@ const versionRedirectStep = step({
       next: [
         redirect({
           goto: Format(
-            `${formRootPath}/%1/%2/%3`,
+            `${formRootPath}/%1/%2/%3/%4`,
             Data('assessment.formVersion'),
             Data('entryRoute.mode'),
-            Data('entryRoute.uuid'),
+            Data('assessmentUuid'),
+            Data('entryRoute.versionUuid'),
           ),
         }),
       ],
@@ -83,14 +81,8 @@ export const strengthsAndNeedsRootJourney = journey({
         StrengthsAndNeedsEffects.validateModeAndVersionUuidFromUrl(),
       ],
     }),
-    // Previous versions are looked up by the assessment's UUID, which is only known once the entry step
-    // has loaded the assessment for this access (e.g. not for a bookmarked view-historic URL)
     access({
-      when: and(isHistoricView, not(Session('san.assessmentUuid').match(Condition.IsRequired()))),
-      next: [redirect({ goto: `${formRootPath}/` })],
-    }),
-    access({
-      when: isHistoricView,
+      when: isHistoricVersion,
       effects: [StrengthsAndNeedsEffects.resolveHistoricVersion()],
     }),
     access({

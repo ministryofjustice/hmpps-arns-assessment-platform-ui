@@ -8,9 +8,10 @@ import {
   Params,
   redirect,
   Request,
+  Session,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createRoute } from '../../generators'
-import { baseSanRoute } from './constants/path'
+import { baseSanRoute, currentVersion } from './constants/path'
 import { formRootPath } from './constants/formVersion'
 
 /**
@@ -24,33 +25,45 @@ import { formRootPath } from './constants/formVersion'
 export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.Equals('OASYS'))
 
 /**
- * True when viewing the current assessment read-only (URL mode `view`).
+ * True when viewing read-only (URL mode `view`), whichever version.
  */
 export const isViewMode = Params('mode').match(Condition.Equals('view'))
 
 /**
- * True when viewing a previous version (URL mode `view-historic`), which is always read-only.
+ * True when the URL names a previous version rather than `current`. Previous versions are always read-only.
  */
-export const isHistoricView = Params('mode').match(Condition.Equals('view-historic'))
+export const isHistoricVersion = and(
+  Params('versionUuid').match(Condition.IsRequired()),
+  not(Params('versionUuid').match(Condition.Equals(currentVersion))),
+)
+
+/**
+ * True when the URL names the previous version the handover asked for (see resolveEntryRoute),
+ * as opposed to one the user opened from the previous versions page.
+ */
+export const isRequestedVersion = and(
+  isHistoricVersion,
+  Params('versionUuid').match(Condition.Equals(Session('san.requestedVersionUuid'))),
+)
 
 const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
 
 /**
- * True when the session has READ_ONLY access, or the URL is in a read-only mode (`view` or `view-historic`).
+ * True when the session has READ_ONLY access, or the URL is read-only (`view` mode or a previous version).
  * Used to conditionally hide editable controls (save buttons, change links)
  * and prevent navigation to editable steps.
  */
 export const isReadOnlyMode = or(
   Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')),
   isViewMode,
-  isHistoricView,
+  isHistoricVersion,
 )
 
 /**
- * True when the user can edit: READ_WRITE access and URL mode `edit`.
+ * True when the user can edit: READ_WRITE access, URL mode `edit` and the current version.
  * Not quite the inverse of {@link isReadOnlyMode}: both are false when the access mode is missing.
  */
-export const isEditMode = and(hasReadWriteAccess, not(isViewMode), not(isHistoricView))
+export const isEditMode = and(hasReadWriteAccess, not(isViewMode), not(isHistoricVersion))
 
 /**
  * Redirects read-only users away from editable steps to the analysis step.
@@ -72,19 +85,21 @@ export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPa
  * Keeps the URL in line with the access. Anything else is sent to the entry step, which redirects
  * to where the access lands (see resolveEntryRoute):
  * - `edit` needs READ_WRITE access. A handover that asks for a version is READ_ONLY (see initializeSessionFromAccess)
- * - `edit` and `view` must name the assessment loaded for this access. `view-historic` URLs name a version
- *   instead, which resolveHistoricVersion checks belongs to that assessment
+ * - `edit` is only for the current version; previous versions are viewed
+ * - the URL must name the assessment loaded for this access. resolveHistoricVersion checks that a
+ *   previous version belongs to it
  */
 export const routeGuards = () => {
   const toEntryRoute = () => redirect({ goto: `${formRootPath}/` })
+  const isEditUrl = Params('mode').match(Condition.Equals('edit'))
 
   return [
     access({
-      when: and(Params('mode').match(Condition.Equals('edit')), not(hasReadWriteAccess)),
+      when: and(isEditUrl, or(not(hasReadWriteAccess), isHistoricVersion)),
       next: [toEntryRoute()],
     }),
     access({
-      when: and(not(isHistoricView), not(Params('uuid').match(Condition.Equals(Data('assessmentUuid'))))),
+      when: not(Params('assessmentUuid').match(Condition.Equals(Data('assessmentUuid')))),
       next: [toEntryRoute()],
     }),
   ]

@@ -5,9 +5,17 @@ import { basePath, formRootPath } from './constants/formVersion'
 import { routeGuards } from './guards'
 
 const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
-const otherUuid = 'e8f1a0a4-0000-4000-8000-000000000002'
+const versionUuid = 'e8f1a0a4-0000-4000-8000-000000000002'
+const otherUuid = 'e8f1a0a4-0000-4000-8000-000000000003'
 
-const get = async (accessMode: string, mode: string, uuid: string) => {
+interface Request {
+  accessMode: string
+  mode: string
+  assessment: string
+  version: string
+}
+
+const get = async ({ accessMode, mode, assessment, version }: Request) => {
   const testEffects = new EffectRegistry()
   const seed = testEffects.register('Seed', () => async (context: StrengthsAndNeedsContext) => {
     context.setData('assessmentUuid', assessmentUuid)
@@ -20,7 +28,7 @@ const get = async (accessMode: string, mode: string, uuid: string) => {
       journey: journey({
         code: 'strengths-and-needs-v1',
         title: 'Strengths and needs',
-        path: `${basePath}/:mode/:uuid`,
+        path: `${basePath}/:mode/:assessmentUuid/:versionUuid`,
         onAccess: [access({ effects: [seed()] }), ...routeGuards()],
         steps: [step({ path: '/page', title: 'Page', blocks: [], reachability: { entryWhen: true } })],
       }),
@@ -28,28 +36,48 @@ const get = async (accessMode: string, mode: string, uuid: string) => {
     })
     .createClient()
 
-  return client.get(`${basePath}/${mode}/${uuid}/page`, { params: { mode, uuid }, session: {} })
+  return client.get(`${basePath}/${mode}/${assessment}/${version}/page`, {
+    params: { mode, assessmentUuid: assessment, versionUuid: version },
+    session: {},
+  })
 }
 
 describe('routeGuards', () => {
   it.each([
-    { accessMode: 'READ_WRITE', mode: 'edit', uuid: assessmentUuid },
-    { accessMode: 'READ_WRITE', mode: 'view', uuid: assessmentUuid },
-    { accessMode: 'READ_ONLY', mode: 'view', uuid: assessmentUuid },
-    // a version UUID: resolveHistoricVersion checks it belongs to the assessment
-    { accessMode: 'READ_ONLY', mode: 'view-historic', uuid: otherUuid },
-  ])('allows $mode of $uuid with $accessMode access', async ({ accessMode, mode, uuid }) => {
-    const result = await get(accessMode, mode, uuid)
+    { accessMode: 'READ_WRITE', mode: 'edit', assessment: assessmentUuid, version: 'current' },
+    { accessMode: 'READ_WRITE', mode: 'view', assessment: assessmentUuid, version: 'current' },
+    { accessMode: 'READ_ONLY', mode: 'view', assessment: assessmentUuid, version: 'current' },
+    { accessMode: 'READ_WRITE', mode: 'view', assessment: assessmentUuid, version: versionUuid },
+    { accessMode: 'READ_ONLY', mode: 'view', assessment: assessmentUuid, version: versionUuid },
+  ])('allows $mode/$version with $accessMode access', async request => {
+    const result = await get(request)
 
     expect(result.type).toBe('render')
   })
 
   it.each([
-    { description: 'edit with READ_ONLY access', accessMode: 'READ_ONLY', mode: 'edit', uuid: assessmentUuid },
-    { description: 'edit of another assessment', accessMode: 'READ_WRITE', mode: 'edit', uuid: otherUuid },
-    { description: 'view of another assessment', accessMode: 'READ_ONLY', mode: 'view', uuid: otherUuid },
-  ])('sends $description to the entry step', async ({ accessMode, mode, uuid }) => {
-    const result = await get(accessMode, mode, uuid)
+    {
+      description: 'edit with READ_ONLY access',
+      request: { accessMode: 'READ_ONLY', mode: 'edit', assessment: assessmentUuid, version: 'current' },
+    },
+    {
+      description: 'edit of a previous version',
+      request: { accessMode: 'READ_WRITE', mode: 'edit', assessment: assessmentUuid, version: versionUuid },
+    },
+    {
+      description: 'edit of another assessment',
+      request: { accessMode: 'READ_WRITE', mode: 'edit', assessment: otherUuid, version: 'current' },
+    },
+    {
+      description: 'view of another assessment',
+      request: { accessMode: 'READ_ONLY', mode: 'view', assessment: otherUuid, version: 'current' },
+    },
+    {
+      description: "view of another assessment's version",
+      request: { accessMode: 'READ_ONLY', mode: 'view', assessment: otherUuid, version: versionUuid },
+    },
+  ])('sends $description to the entry step', async ({ request }) => {
+    const result = await get(request)
 
     expect(result).toMatchObject({ type: 'redirect', url: `${formRootPath}/` })
   })

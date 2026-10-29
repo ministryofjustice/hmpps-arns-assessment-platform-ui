@@ -24,6 +24,8 @@ export interface StrengthsAndNeedsSanSession {
   sessionDetails?: StrengthsAndNeedsSessionDetails
   /** UUID of the (current) assessment for this access, set by loadAssessment */
   assessmentUuid?: string
+  /** The previous version the handover asked for, set by resolveEntryRoute */
+  requestedVersionUuid?: string
   countersignedVersions?: PreviousVersionDisplay[]
   previousVersions?: PreviousVersionDisplay[]
   unaggregatedVersions?: VersionDetails[]

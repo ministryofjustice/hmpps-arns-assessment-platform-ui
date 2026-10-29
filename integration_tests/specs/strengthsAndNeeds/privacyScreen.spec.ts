@@ -23,7 +23,9 @@ test.describe('Strengths and needs privacy screen', () => {
     await privacyPage.confirmAndContinue()
     await expect(page).toHaveURL(/accommodation-status/)
 
-    await page.goto(`${baseURL}/strengths-and-needs/v1.0/edit/${sanAssessmentId}/accommodation/accommodation-status`)
+    await page.goto(
+      `${baseURL}/strengths-and-needs/v1.0/edit/${sanAssessmentId}/current/accommodation/accommodation-status`,
+    )
     await expect(page).toHaveURL(/accommodation-status/)
   })
 
