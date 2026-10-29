@@ -19,7 +19,7 @@ const sanVersion: VersionDetails = {
 
 const contextFor = (uuid: string, unaggregatedVersions?: VersionDetails[]) => {
   const context = createTestEffectContext({
-    session: { assessmentUuid, unaggregatedVersions },
+    session: { san: { assessmentUuid, unaggregatedVersions } },
   }) as unknown as StrengthsAndNeedsContext
   jest.spyOn(context, 'getRequestParam').mockImplementation(key => (key === 'uuid' ? uuid : 'view-historic'))
 

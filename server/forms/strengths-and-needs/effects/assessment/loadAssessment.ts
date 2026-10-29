@@ -3,7 +3,7 @@ import { BadRequest, InternalServerError, NotFound } from 'http-errors'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 import { HandoverContext } from '../../../../interfaces/handover-api/response'
 
@@ -47,7 +47,8 @@ const validateAssessmentMatchesHandoverContext = (
 export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
   const user = context.getState('user')
   const session = context.getSession()
-  const sessionDetails = session.sessionDetails
+  const san = sanSession(session)
+  const { sessionDetails } = san
   const caseDetails = session.caseDetails
 
   if (!user) {
@@ -88,7 +89,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     assessment = await deps.api.executeQuery({
       type: 'AssessmentVersionQuery',
       user,
-      assessmentIdentifier: session.sessionDetails.assessmentIdentifier,
+      assessmentIdentifier: sessionDetails.assessmentIdentifier,
     })
 
     if (session.handoverContext) {
@@ -108,8 +109,8 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   context.setData('assessment', assessment)
   context.setData('assessmentUuid', assessment.assessmentUuid)
-  context.setData('sessionDetails', session.sessionDetails)
-  session.assessmentUuid = assessment.assessmentUuid
+  context.setData('sessionDetails', sessionDetails)
+  san.assessmentUuid = assessment.assessmentUuid
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
   const properties = unwrapAll<Record<string, unknown>>(assessment.properties)

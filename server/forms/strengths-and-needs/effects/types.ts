@@ -17,20 +17,38 @@ export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
 }
 
 /**
+ * Session state owned by SAN, kept apart from other forms' (e.g. Sentence Plan also has `sessionDetails`).
+ * Cleared on every access (clearAccessSession).
+ */
+export interface StrengthsAndNeedsSanSession {
+  sessionDetails?: StrengthsAndNeedsSessionDetails
+  /** UUID of the (current) assessment for this access, set by loadAssessment */
+  assessmentUuid?: string
+  countersignedVersions?: PreviousVersionDisplay[]
+  previousVersions?: PreviousVersionDisplay[]
+  unaggregatedVersions?: VersionDetails[]
+}
+
+/**
  * Session data available to SAN effects.
  * Populated by the access form before the SAN form loads.
  */
 export interface StrengthsAndNeedsSession {
   caseDetails?: CaseDetails
   accessDetails?: AccessSessionDetails
-  sessionDetails?: StrengthsAndNeedsSessionDetails
   handoverContext?: HandoverContext
+  /** Shared with Sentence Plan: one privacy screen per session */
   privacyAccepted?: boolean
-  assessmentUuid?: string
-  countersignedVersions?: PreviousVersionDisplay[]
-  previousVersions?: PreviousVersionDisplay[]
-  unaggregatedVersions?: VersionDetails[]
+  san?: StrengthsAndNeedsSanSession
   patternDrafts?: Record<string, Record<string, unknown>>
+}
+
+/**
+ * SAN's own session state, created on first use.
+ */
+export const sanSession = (session: StrengthsAndNeedsSession): StrengthsAndNeedsSanSession => {
+  session.san ??= {}
+  return session.san
 }
 
 /**

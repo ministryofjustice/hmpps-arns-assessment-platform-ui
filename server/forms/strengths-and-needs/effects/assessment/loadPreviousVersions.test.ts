@@ -76,7 +76,7 @@ describe('findAssessmentVersion', () => {
   })
 
   it('uses the cached versions when they have the version', async () => {
-    const session = { assessmentUuid, unaggregatedVersions: [cached] } as StrengthsAndNeedsSession
+    const session: StrengthsAndNeedsSession = { san: { assessmentUuid, unaggregatedVersions: [cached] } }
 
     await expect(findAssessmentVersion(deps, session, byUuid('cached'))).resolves.toBe(cached)
     expect(getVersionsByEntityId).not.toHaveBeenCalled()
@@ -86,15 +86,15 @@ describe('findAssessmentVersion', () => {
     { description: 'nothing is cached', unaggregatedVersions: undefined },
     { description: 'the cache predates the version', unaggregatedVersions: [cached] },
   ])('fetches and caches the versions when $description', async ({ unaggregatedVersions }) => {
-    const session = { assessmentUuid, unaggregatedVersions } as StrengthsAndNeedsSession
+    const session: StrengthsAndNeedsSession = { san: { assessmentUuid, unaggregatedVersions } }
 
     await expect(findAssessmentVersion(deps, session, byUuid('created'))).resolves.toBe(created)
     expect(getVersionsByEntityId).toHaveBeenCalledWith(assessmentUuid)
-    expect(session.unaggregatedVersions).toEqual([cached, created])
+    expect(session.san.unaggregatedVersions).toEqual([cached, created])
   })
 
   it('returns undefined when the assessment has no such version', async () => {
-    const session = { assessmentUuid, unaggregatedVersions: [cached] } as StrengthsAndNeedsSession
+    const session: StrengthsAndNeedsSession = { san: { assessmentUuid, unaggregatedVersions: [cached] } }
 
     await expect(findAssessmentVersion(deps, session, byUuid('unknown'))).resolves.toBeUndefined()
     expect(getVersionsByEntityId).toHaveBeenCalledTimes(1)

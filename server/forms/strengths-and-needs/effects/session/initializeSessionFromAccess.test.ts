@@ -22,8 +22,8 @@ describe('initializeSessionFromAccess', () => {
 
     initializeSessionFromAccess()(context)
 
-    expect(session.sessionDetails.accessMode).toBe(accessMode)
-    expect(session.sessionDetails.assessmentVersion).toBeUndefined()
+    expect(session.san.sessionDetails.accessMode).toBe(accessMode)
+    expect(session.san.sessionDetails.assessmentVersion).toBeUndefined()
   })
 
   it.each(['READ_WRITE', 'READ_ONLY'])('makes %s access read-only when a version is requested', accessMode => {
@@ -31,20 +31,20 @@ describe('initializeSessionFromAccess', () => {
 
     initializeSessionFromAccess()(context)
 
-    expect(session.sessionDetails.accessMode).toBe('READ_ONLY')
-    expect(session.sessionDetails.assessmentVersion).toBe(createdAtMillis)
+    expect(session.san.sessionDetails.accessMode).toBe('READ_ONLY')
+    expect(session.san.sessionDetails.assessmentVersion).toBe(createdAtMillis)
   })
 
   it('does not carry a version over from an earlier access', () => {
     const { context, session } = contextFor({
       accessDetails: { accessType: 'HMPPS_AUTH', accessMode: 'READ_WRITE', planAccessMode: 'READ_WRITE' },
       caseDetails: { crn: 'X123456' },
-      sessionDetails: { accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis },
+      san: { sessionDetails: { accessMode: 'READ_ONLY', assessmentVersion: createdAtMillis } },
     })
 
     initializeSessionFromAccess()(context)
 
-    expect(session.sessionDetails.accessMode).toBe('READ_WRITE')
-    expect(session.sessionDetails.assessmentVersion).toBeUndefined()
+    expect(session.san.sessionDetails.accessMode).toBe('READ_WRITE')
+    expect(session.san.sessionDetails.assessmentVersion).toBeUndefined()
   })
 })

@@ -1,7 +1,7 @@
 import { InternalServerError, NotFound } from 'http-errors'
 import { DateTime } from 'luxon'
 import { VersionDetails, VersionsTable } from '../../../../interfaces/coordinator-api/previousVersions'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps, StrengthsAndNeedsSession } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps, StrengthsAndNeedsSession } from '../types'
 
 export interface PreviousVersionDisplay {
   assessmentUpdatedDate?: number
@@ -55,21 +55,23 @@ export const fetchAssessmentVersions = async (
   deps: StrengthsAndNeedsEffectsDeps,
   session: StrengthsAndNeedsSession,
 ): Promise<VersionDetails[]> => {
-  if (!session.assessmentUuid) {
+  const san = sanSession(session)
+
+  if (!san.assessmentUuid) {
     throw new InternalServerError('Assessment UUID is required to load previous versions')
   }
 
-  const previousVersions = await deps.coordinatorApi.getVersionsByEntityId(session.assessmentUuid)
+  const previousVersions = await deps.coordinatorApi.getVersionsByEntityId(san.assessmentUuid)
 
   if (!previousVersions) {
     throw new NotFound('Previous versions not found')
   }
 
-  session.countersignedVersions = buildPreviousVersions(previousVersions.countersignedVersions)
-  session.previousVersions = buildPreviousVersions(previousVersions.allVersions)
-  session.unaggregatedVersions = previousVersions.unaggregatedVersions
+  san.countersignedVersions = buildPreviousVersions(previousVersions.countersignedVersions)
+  san.previousVersions = buildPreviousVersions(previousVersions.allVersions)
+  san.unaggregatedVersions = previousVersions.unaggregatedVersions
 
-  return session.unaggregatedVersions
+  return san.unaggregatedVersions
 }
 
 /**
@@ -81,7 +83,8 @@ export const findAssessmentVersion = async (
   session: StrengthsAndNeedsSession,
   find: (versions: VersionDetails[]) => VersionDetails | undefined,
 ): Promise<VersionDetails | undefined> => {
-  const cachedVersion = session.unaggregatedVersions && find(session.unaggregatedVersions)
+  const { unaggregatedVersions } = sanSession(session)
+  const cachedVersion = unaggregatedVersions && find(unaggregatedVersions)
 
   return cachedVersion ?? find(await fetchAssessmentVersions(deps, session))
 }

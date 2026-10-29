@@ -21,7 +21,7 @@ const sanVersion: VersionDetails = {
 
 const contextFor = (sessionDetails: Record<string, unknown>, unaggregatedVersions?: VersionDetails[]) => {
   const context = createTestEffectContext({
-    session: { sessionDetails, assessmentUuid, unaggregatedVersions },
+    session: { san: { sessionDetails, assessmentUuid, unaggregatedVersions } },
   }) as unknown as StrengthsAndNeedsContext
 
   return context

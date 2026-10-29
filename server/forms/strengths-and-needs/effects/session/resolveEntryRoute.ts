@@ -1,6 +1,6 @@
 import { NotFound } from 'http-errors'
 import { DateTime } from 'luxon'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { findAssessmentVersion, findVersionCreatedAt } from '../assessment/loadPreviousVersions'
 
 export interface EntryRoute {
@@ -18,12 +18,13 @@ export interface EntryRoute {
  */
 export const resolveEntryRoute = (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
   const session = context.getSession()
-  const { accessMode, assessmentVersion } = session.sessionDetails
+  const { sessionDetails, assessmentUuid } = sanSession(session)
+  const { accessMode, assessmentVersion } = sessionDetails
 
   if (!assessmentVersion) {
     context.setData('entryRoute', {
       mode: accessMode === 'READ_WRITE' ? 'edit' : 'view',
-      uuid: session.assessmentUuid,
+      uuid: assessmentUuid,
     } satisfies EntryRoute)
     return
   }

@@ -1,7 +1,7 @@
 import { InternalServerError } from 'http-errors'
 import logger from '../../../../../logger'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsSession } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsSession } from '../types'
 import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
@@ -61,7 +61,7 @@ export const initializeSessionFromAccess = () => (context: StrengthsAndNeedsCont
 
   context.setData('assessmentVersion', assessmentVersion)
 
-  session.sessionDetails = {
+  sanSession(session).sessionDetails = {
     accessType: accessDetails.accessType,
     accessMode,
     planAccessMode: accessDetails.planAccessMode,

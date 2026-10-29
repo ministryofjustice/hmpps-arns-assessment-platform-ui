@@ -1,6 +1,6 @@
 import { NotFound } from 'http-errors'
 import { DateTime } from 'luxon'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { findAssessmentVersion } from './loadPreviousVersions'
 
 /**
@@ -18,7 +18,7 @@ export const resolveHistoricVersion =
     )
 
     if (!historicVersion) {
-      throw new NotFound(`No version ${versionUuid} of assessment ${session.assessmentUuid}`)
+      throw new NotFound(`No version ${versionUuid} of assessment ${sanSession(session).assessmentUuid}`)
     }
 
     context.setData('historicVersion', historicVersion)

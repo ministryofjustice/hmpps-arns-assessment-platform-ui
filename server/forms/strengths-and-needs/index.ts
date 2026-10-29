@@ -86,7 +86,7 @@ export const strengthsAndNeedsRootJourney = journey({
     // Previous versions are looked up by the assessment's UUID, which is only known once the entry step
     // has loaded the assessment for this access (e.g. not for a bookmarked view-historic URL)
     access({
-      when: and(isHistoricView, not(Session('assessmentUuid').match(Condition.IsRequired()))),
+      when: and(isHistoricView, not(Session('san.assessmentUuid').match(Condition.IsRequired()))),
       next: [redirect({ goto: `${formRootPath}/` })],
     }),
     access({
