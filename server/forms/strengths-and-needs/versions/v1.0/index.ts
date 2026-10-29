@@ -28,7 +28,7 @@ import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { previousVersionsStep } from './steps/previous-versions/step'
-import { configStep } from '../configStep'
+import { createConfigStep } from '../createConfigStep'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { createRoute } from '../../generators'
@@ -74,7 +74,6 @@ export const strengthsAndNeedsV1Journey = journey({
   },
   data: {
     formVersion,
-    formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
     // Prevent privilege escalation: check mode against accessMode
@@ -100,7 +99,7 @@ export const strengthsAndNeedsV1Journey = journey({
     ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
     viewAllAnswersStep,
     previousVersionsStep,
-    configStep,
+    createConfigStep(formConfigsByVersion[formVersion]),
   ],
   children: [
     accommodationJourney,
