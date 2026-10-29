@@ -5,6 +5,7 @@ import {
   Data,
   Item,
   Iterator,
+  Literal,
   Transformer,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
@@ -13,11 +14,12 @@ import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge
 
 import { CaseData } from '../../../../constants/formVersion'
 import { SANGenerators } from '../../../../../../generators'
-import { drugHowOftenUsed, drugHowOftenUsedDetails, drugUseSection } from '../../section'
+import { drugHowOftenUsed, drugHowOftenUsedDetails, drugUsedInLastSixMonths, drugUseSection } from '../../section'
 import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
 import { Option } from '../../constants/option'
+import { drugsList } from '../../constants'
 
 // --- Conditions ---
 
@@ -38,7 +40,7 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
         html: contentFor('question.how_often_used_last_six_months.summaryHtml'),
       }),
       CollectionBlock({
-        collection: Data('drugsUsedInLastSix').each(
+        collection: Literal(drugsList).each(
           Iterator.Map(
             TemplateWrapper({
               template: '<h2 class="govuk-heading-m">{{heading}}</h2>{{slot:fields}}',
@@ -60,6 +62,7 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
               slots: {
                 fields: [drugHowOftenUsed.over(drugValueLower), drugHowOftenUsedDetails.over(drugValueLower)],
               },
+              visibleWhen: drugUsedInLastSixMonths(drugValueLower),
             }),
           ),
         ),
