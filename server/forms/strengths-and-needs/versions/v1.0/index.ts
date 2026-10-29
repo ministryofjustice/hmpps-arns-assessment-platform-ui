@@ -4,8 +4,6 @@ import {
   Condition,
   Data,
   journey,
-  not,
-  or,
   Params,
   Request,
   redirect,
@@ -23,7 +21,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isEditMode, isHistoricVersion, isOasysAccess, isRequestedVersion, routeGuards } from './guards'
+import { isEditMode, routeGuards, showReturnToOasys } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
@@ -66,8 +64,7 @@ export const strengthsAndNeedsV1Journey = journey({
       viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
       viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
       buttons: {
-        // Not on previous versions the user opened, only on what OASys asked for
-        showReturnToOasysButton: and(isOasysAccess, or(not(isHistoricVersion), isRequestedVersion)),
+        showReturnToOasysButton: showReturnToOasys,
       },
       feedbackUrl,
       autosave: isEditMode, // Only enable autosave if we are in edit mode

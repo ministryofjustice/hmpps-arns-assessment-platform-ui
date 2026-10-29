@@ -7,7 +7,7 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 
 /**
  * Validates the route parameters of /strengths-and-needs/v1.0/{mode}/{assessmentUuid}/{versionUuid}:
- * - mode: `edit` or `view`
+ * - mode: `edit`, `view`, or `view-historic` (a version opened from the previous versions page)
  * - assessmentUuid: a UUID
  * - versionUuid: a UUID, or `current` for the latest version
  */
@@ -21,8 +21,8 @@ export const validateModeAndVersionUuidFromUrl = () => (context: StrengthsAndNee
     return
   }
 
-  if (mode !== 'edit' && mode !== 'view') {
-    throw new BadRequest(`Invalid mode parameter: ${mode}. Must be 'edit' or 'view'`)
+  if (mode !== 'edit' && mode !== 'view' && mode !== 'view-historic') {
+    throw new BadRequest(`Invalid mode parameter: ${mode}. Must be 'edit', 'view' or 'view-historic'`)
   }
 
   if (!UUID_REGEX.test(assessmentUuid ?? '')) {

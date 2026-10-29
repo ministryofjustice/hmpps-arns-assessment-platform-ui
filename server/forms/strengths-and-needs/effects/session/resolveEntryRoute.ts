@@ -40,6 +40,5 @@ export const resolveEntryRoute = (deps: StrengthsAndNeedsEffectsDeps) => async (
     )
   }
 
-  san.requestedVersionUuid = previousVersion.uuid
   context.setData('entryRoute', { mode: 'view', versionUuid: previousVersion.uuid } satisfies EntryRoute)
 }

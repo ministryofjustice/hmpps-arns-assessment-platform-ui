@@ -57,7 +57,6 @@ describe('resolveEntryRoute', () => {
     await resolveEntryRoute(deps)(context)
 
     expect(context.getData('entryRoute')).toEqual({ mode: 'view', versionUuid })
-    expect(context.getSession().san.requestedVersionUuid).toBe(versionUuid)
     expect(getVersionsByEntityId).toHaveBeenCalledWith(assessmentUuid)
   })
 

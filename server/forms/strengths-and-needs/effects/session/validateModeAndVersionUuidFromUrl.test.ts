@@ -18,6 +18,7 @@ describe('validateModeAndVersionUuidFromUrl', () => {
     { mode: 'edit', assessmentUuid, versionUuid: 'current' },
     { mode: 'view', assessmentUuid, versionUuid: 'current' },
     { mode: 'view', assessmentUuid, versionUuid },
+    { mode: 'view-historic', assessmentUuid, versionUuid },
     // not an assessment page, e.g. the entry step
     { mode: undefined, assessmentUuid: undefined, versionUuid: undefined },
   ])('accepts $mode/$assessmentUuid/$versionUuid', params => {
@@ -25,7 +26,7 @@ describe('validateModeAndVersionUuidFromUrl', () => {
   })
 
   it.each([
-    { error: BadRequest, mode: 'view-historic', assessmentUuid, versionUuid },
+    { error: BadRequest, mode: 'review', assessmentUuid, versionUuid },
     { error: NotFound, mode: 'view', assessmentUuid: 'current', versionUuid },
     { error: NotFound, mode: 'view', assessmentUuid, versionUuid: 'null' },
     { error: NotFound, mode: 'view', assessmentUuid, versionUuid: 'accommodation' },

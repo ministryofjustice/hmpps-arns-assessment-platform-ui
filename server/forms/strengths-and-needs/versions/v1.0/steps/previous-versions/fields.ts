@@ -45,7 +45,8 @@ const assessmentCell = {
             '<a class="button-as-link" href="%1" target="_blank">%2<span class="govuk-visually-hidden"> %3 %4</span></a>',
             createRoute([
               basePath,
-              'view',
+              // Opens in a new window, which isn't the OASys one
+              'view-historic',
               Data('assessmentUuid'),
               Item().path('assessmentVersionId'),
               Section.accommodation.sideNavHref,
