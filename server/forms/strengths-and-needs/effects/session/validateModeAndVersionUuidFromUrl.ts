@@ -1,35 +1,35 @@
 import { BadRequest, NotFound } from 'http-errors'
 import { StrengthsAndNeedsContext } from '../types'
+import { currentVersion } from '../../versions/v1.0/constants/path'
 
 // UUID format: 8-4-4-4-12 hexadecimal digits
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 /**
- * Extracts and validates mode and UUID from the URL path: /strengths-and-needs/v1.0/{mode}/{uuid}
- *
- * - In edit or view mode: uuid is the assessmentUuid
- * - In view-historic mode: uuid is the versionUuid
+ * Validates the route parameters of /strengths-and-needs/v1.0/{mode}/{assessmentUuid}/{versionUuid}:
+ * - mode: `edit`, `view`, or `view-historic` (a version opened from the previous versions page)
+ * - assessmentUuid: a UUID
+ * - versionUuid: a UUID, or `current` for the latest version
  */
 export const validateModeAndVersionUuidFromUrl = () => (context: StrengthsAndNeedsContext) => {
-  // Extract from URL path, e.g. /strengths-and-needs/v1.0/{mode}/{uuid}
-  // The forge framework will handle :mode/:uuid route parameters
   const mode = context.getRequestParam('mode') as string | undefined
-  const uuid = context.getRequestParam('uuid') as string | undefined
+  const assessmentUuid = context.getRequestParam('assessmentUuid') as string | undefined
+  const versionUuid = context.getRequestParam('versionUuid') as string | undefined
 
-  if (!mode || !uuid) {
-    // No URL parameters - session should already have mode/uuid or neither (entry point)
+  if (!mode) {
+    // Not an assessment page, e.g. the entry step
     return
   }
 
-  // Validate mode
   if (mode !== 'edit' && mode !== 'view' && mode !== 'view-historic') {
-    throw new BadRequest(`Invalid mode parameter: ${mode}. Must be 'edit', 'view', or 'view-historic'`)
+    throw new BadRequest(`Invalid mode parameter: ${mode}. Must be 'edit', 'view' or 'view-historic'`)
   }
 
-  // Validate UUID structure
-  if (!UUID_REGEX.test(uuid)) {
-    throw new NotFound(
-      `Invalid UUID format: ${uuid}. Must be a valid UUID (e.g., 550e8400-e29b-41d4-a716-446655440000)`,
-    )
+  if (!UUID_REGEX.test(assessmentUuid ?? '')) {
+    throw new NotFound(`Invalid assessment UUID: ${assessmentUuid}`)
+  }
+
+  if (versionUuid !== currentVersion && !UUID_REGEX.test(versionUuid ?? '')) {
+    throw new NotFound(`Invalid version UUID: ${versionUuid}. Must be a UUID or '${currentVersion}'`)
   }
 }

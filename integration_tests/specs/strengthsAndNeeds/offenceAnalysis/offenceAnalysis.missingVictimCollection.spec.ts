@@ -66,7 +66,7 @@ test.describe('Missing victim collection', () => {
       await offenceAnalysisPage.saveAndContinue.click()
 
       await expect(page).toHaveURL(
-        `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${offence}/${Step.offence_analysis_involved_parties.path}`,
+        `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${offence}/${Step.offence_analysis_involved_parties.path}`,
       )
       await expect(
         page.getByRole('group', {

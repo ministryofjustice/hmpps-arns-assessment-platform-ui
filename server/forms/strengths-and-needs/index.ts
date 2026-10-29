@@ -5,7 +5,6 @@ import {
   Format,
   journey,
   redirect,
-  Session,
   step,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { strengthsAndNeedsV1Journey } from './versions/v1.0'
@@ -20,6 +19,8 @@ import { basePath, CaseData, formRootPath } from './versions/v1.0/constants/form
 import { sanGeneratorRegistry, SANGenerators } from './generators'
 import { Section } from './versions/v1.0/constants/section'
 import { modalComponent } from './components/modal/modalComponent'
+import { isHistoricVersion } from './versions/v1.0/guards'
+import { currentVersion } from './versions/v1.0/constants/path'
 
 const { createRoute } = SANGenerators
 
@@ -27,7 +28,7 @@ const { createRoute } = SANGenerators
 // accommodation section. Uses the loaded assessment's UUID: the session identifier only has one for
 // OASys access (MPoP access identifies the assessment by CRN).
 const privacyScreenRedirectPath = createRoute(
-  [basePath, 'edit', Data('assessmentUuid'), Section.accommodation.sideNavHref],
+  [basePath, 'edit', Data('assessmentUuid'), currentVersion, Section.accommodation.sideNavHref],
   [{ name: 'resume', value: 'true' }],
 )
 
@@ -52,13 +53,15 @@ const versionRedirectStep = step({
   title: commonContentFor('strengths_and_needs'),
   onAccess: [
     access({
+      effects: [StrengthsAndNeedsEffects.resolveEntryRoute()],
       next: [
         redirect({
           goto: Format(
-            `/strengths-and-needs/%1/%2/%3`,
+            `${formRootPath}/%1/%2/%3/%4`,
             Data('assessment.formVersion'),
-            Session('mode'),
-            Session('uuid'),
+            Data('entryRoute.mode'),
+            Data('assessmentUuid'),
+            Data('entryRoute.versionUuid'),
           ),
         }),
       ],
@@ -76,9 +79,14 @@ export const strengthsAndNeedsRootJourney = journey({
         StrengthsAndNeedsEffects.initializeSessionFromAccess(),
         StrengthsAndNeedsEffects.loadSessionData(),
         StrengthsAndNeedsEffects.validateModeAndVersionUuidFromUrl(),
-        StrengthsAndNeedsEffects.loadAssessment(),
-        StrengthsAndNeedsEffects.extractModeAndVersionUuidFromHandoverContext(),
       ],
+    }),
+    access({
+      when: isHistoricVersion,
+      effects: [StrengthsAndNeedsEffects.resolveHistoricVersion()],
+    }),
+    access({
+      effects: [StrengthsAndNeedsEffects.loadAssessment()],
     }),
   ],
   steps: [versionRedirectStep, privacyScreenStep],

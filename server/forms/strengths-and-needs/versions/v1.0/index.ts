@@ -4,7 +4,6 @@ import {
   Condition,
   Data,
   journey,
-  not,
   Params,
   Request,
   redirect,
@@ -22,7 +21,7 @@ import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
-import { isEditMode, isHistoricView, isOasysAccess, preventPrivilegeEscalation } from './guards'
+import { isEditMode, routeGuards, showReturnToOasys } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
@@ -45,7 +44,7 @@ const feedbackUrl = config.privateBetaFeedbackUrl
 export const strengthsAndNeedsV1Journey = journey({
   code: 'strengths-and-needs-v1',
   title: commonContentFor('strengths_and_needs'),
-  path: `/${formVersion}/:mode/:uuid`,
+  path: `/${formVersion}/:mode/:assessmentUuid/:versionUuid`,
   view: {
     template: 'strengths-and-needs/views/san-step',
     locals: {
@@ -65,7 +64,7 @@ export const strengthsAndNeedsV1Journey = journey({
       viewPreviousVersionsLink: createRoute([...baseSanRoute, 'previous-versions']),
       viewAllAnswersLink: createRoute([...baseSanRoute, 'view-all-answers']),
       buttons: {
-        showReturnToOasysButton: and(isOasysAccess, not(isHistoricView)),
+        showReturnToOasysButton: showReturnToOasys,
       },
       feedbackUrl,
       autosave: isEditMode, // Only enable autosave if we are in edit mode
@@ -77,8 +76,8 @@ export const strengthsAndNeedsV1Journey = journey({
     formConfig: formConfigsByVersion[formVersion],
   },
   onAccess: [
-    // Prevent privilege escalation: check mode against accessMode
-    preventPrivilegeEscalation(),
+    // The URL mode and UUID must match the access
+    ...routeGuards(),
     // Writes to the assessment, so only when the user is editing the current version
     access({
       when: isEditMode,
@@ -91,8 +90,8 @@ export const strengthsAndNeedsV1Journey = journey({
     }),
     // Redirect to first page of v1 journey
     access({
-      // a 4-slug path means we are not in a section e.g. /strengths-and-needs/v1/edit/uuid
-      when: Request.Path().match(Condition.String.MatchesRegex('^/[^/]+/[^/]+/[^/]+/[^/]+$')),
+      // a 5-slug path means we are not in a section e.g. /strengths-and-needs/v1.0/edit/<assessmentUuid>/current
+      when: Request.Path().match(Condition.String.MatchesRegex('^/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$')),
       next: [redirect({ goto: Section.accommodation.sideNavHref })],
     }),
   ],

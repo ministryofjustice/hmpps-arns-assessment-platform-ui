@@ -55,7 +55,7 @@ export const walkToFinanceSummary = async (
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  await page.goto(`/strengths-and-needs/v1.0/edit/${sanAssessmentId}/finances/finance`)
+  await page.goto(`/strengths-and-needs/v1.0/edit/${sanAssessmentId}/current/finances/finance`)
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await expect(page).toHaveURL(/finance-summary/)
 }
