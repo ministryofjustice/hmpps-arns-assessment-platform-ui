@@ -539,6 +539,7 @@ export interface QuestionTemplateContent {
  * item.
  */
 export interface TemplateProjectionContent {
+  param: ChainableExpr
   code: ResolvableString
   // The input kind the question renders as.
   format: QuestionFormat
@@ -597,6 +598,7 @@ export const questionTemplate = (definition: {
     }
 
     return {
+      param: instanceParam,
       code: codeOver(instanceParam),
       format: template.format,
       text: template.text(instanceParam),
