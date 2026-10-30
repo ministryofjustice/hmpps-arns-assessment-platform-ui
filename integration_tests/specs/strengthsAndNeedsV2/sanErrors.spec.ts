@@ -1,7 +1,8 @@
 import HandoverPage from 'pages/strengthsAndNeedsV2/handoverPage'
 import { login } from 'testUtils'
+import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/step'
 import { expect, test, TargetService } from '../../support/fixtures'
-import { alcohol, handlePrivacyScreenIfPresent, sanFormPath, v2Path } from './sanUtils'
+import { alcohol, buildEditUrl, buildViewUrl, handlePrivacyScreenIfPresent } from './sanUtils'
 
 test.describe('Errors', () => {
   test('Page not found', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
@@ -14,7 +15,7 @@ test.describe('Errors', () => {
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
-    await page.goto(`${baseURL}${sanFormPath}${v2Path}/view/${sanAssessmentId}/employment-and-education/not-found`)
+    await page.goto(buildViewUrl(baseURL, sanAssessmentId, '/employment-and-education/not-found'))
 
     await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
   })
@@ -44,8 +45,7 @@ test.describe('HMPPS Auth error', () => {
 
     // HMPPS Auth login
     await login(page)
-
-    await page.goto(`${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-current-issues`)
+    await page.goto(buildEditUrl(baseURL, sanAssessmentId, `${alcohol}/${Step.alcohol_use_current_issues.path}`))
 
     await expect(page.getByRole('heading', { name: 'there is a problem with the service' })).toBeVisible()
   })

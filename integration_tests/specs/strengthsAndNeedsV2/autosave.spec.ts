@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test'
+import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
 import { TargetService, test } from '../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from './sanUtils'
 // import OffenceAnalysisPage from '../../pages/strengthsAndNeedsV2/offenceAnalysisPage'
@@ -67,7 +68,7 @@ test.describe('Autosave', () => {
     })
     await strengthsAndNeedsBuilder.fresh().save()
     // A read only session is redirected to the section's analysis page.
-    await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-analysis')
+    await navigateToStrengthsAndNeeds(page, handoverLink, Step.accommodation_analysis.path)
     await expect(page.getByTestId('main-form')).toHaveAttribute('data-autosave', 'false')
   })
 })
