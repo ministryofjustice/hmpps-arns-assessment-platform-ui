@@ -73,19 +73,19 @@ describe('generateHandoverLink', () => {
     )
   })
 
-  it.each([
-    { flags: [] as Session['flags'], expected: undefined },
-    { flags: ['SAN_PRIVATE_BETA'] as Session['flags'], expected: { accommodation: expect.any(Object) } },
-  ])(
-    'should send handover criminogenic needs only with the SAN Private Beta flag (flags: $flags)',
-    async ({ flags, expected }) => {
-      givenSession(createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, flags))
+  it('should not send criminogenic needs in the handover request, even for SAN Private Beta', async () => {
+    // Arrange
+    givenSession(
+      createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, [
+        'SAN_PRIVATE_BETA',
+      ]),
+    )
 
-      await generateHandoverLink(deps)(context)
+    // Act
+    await generateHandoverLink(deps)(context)
 
-      expect(handoverApiClient.createHandoverLink).toHaveBeenCalledWith(
-        expect.objectContaining({ criminogenicNeedsData: expected }),
-      )
-    },
-  )
+    // Assert
+    const [request] = handoverApiClient.createHandoverLink.mock.calls[0]
+    expect(request).not.toHaveProperty('criminogenicNeedsData')
+  })
 })
