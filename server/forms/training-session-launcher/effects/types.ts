@@ -1,7 +1,8 @@
-import { CoordinatorApiClient, HandoverApiClient, PreferencesStore } from '../../../data'
+import { CoordinatorApiClient, HandoverApiClient, PreferencesStore, WiremockAdminClient } from '../../../data'
 
 export interface TrainingSessionLauncherEffectsDeps {
   handoverApiClient: HandoverApiClient
+  wiremockAdminClient: WiremockAdminClient
   coordinatorApiClient: CoordinatorApiClient
   preferencesStore: PreferencesStore
 }

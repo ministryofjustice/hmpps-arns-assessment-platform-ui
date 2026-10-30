@@ -160,6 +160,15 @@ export default {
       },
       agent: new AgentConfig(Number(get('SUPERVISION_PACKAGE_API_TIMEOUT_RESPONSE', 5000))),
     },
+    wiremockAdmin: {
+      url: get('WIREMOCK_ADMIN_URL', 'http://localhost:9091/__admin'),
+      healthPath: '/health',
+      timeout: {
+        response: Number(get('WIREMOCK_ADMIN_TIMEOUT_RESPONSE', 5000)),
+        deadline: Number(get('WIREMOCK_ADMIN_TIMEOUT_DEADLINE', 5000)),
+      },
+      agent: new AgentConfig(Number(get('WIREMOCK_ADMIN_TIMEOUT_RESPONSE', 5000))),
+    },
   },
   sanUrl: get('SAN_URL', 'http://localhost:3000', requiredInProduction),
   sqs: {
@@ -232,6 +241,12 @@ export default {
     'tiering-assessment': {
       clientId: get('TIERING_ASSESSMENT_CLIENT_ID', 'tiering-assessment'),
       displayName: 'Tiering Assessment',
+    },
+  },
+  stubbedApis: {
+    arnsApi: {
+      enabled: get('CAN_STUB_ARNS_API', 'false') === 'true',
+      stubPrefix: '/arns-api',
     },
   },
 }

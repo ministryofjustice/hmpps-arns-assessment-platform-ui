@@ -55,10 +55,7 @@ test.describe('About Page: error states', () => {
       sentencePlanBuilder,
     }) => {
       const association = await coordinatorBuilder.create().withCrn('NOTFOUND').save()
-      const session = await handoverBuilder
-        .forAssociation(association)
-        .withCriminogenicNeeds(defaultCriminogenicNeedsData)
-        .save()
+      const session = await handoverBuilder.forAssociation(association).save()
 
       await arnsApi.stubGetCriminogenicNeedsDetails(
         'NOTFOUND',

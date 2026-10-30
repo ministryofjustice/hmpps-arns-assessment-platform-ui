@@ -203,6 +203,8 @@ services:
       AUDIT_SERVICE_NAME: hmpps-arns-assessment-platform-ui
       NODE_CLUSTER_ENABLED: true
       FORM_TRAINING_SESSION_LAUNCHER_ENABLED: true
+      CAN_STUB_ARNS_API: true
+      WIREMOCK_ADMIN_URL: http://wiremock:8080/__admin
       FORM_DATA_DELETION_TOOL_ENABLED: true
       CACHE_REDIS_HOST: redis
       SERVICE_NOW_FORM_URL: '#service-now-link'

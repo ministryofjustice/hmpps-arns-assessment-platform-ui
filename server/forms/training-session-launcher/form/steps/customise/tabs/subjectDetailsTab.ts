@@ -123,7 +123,7 @@ export const subjectDetailsTabContent = [
   GovUKRadioInput({
     code: 'stubbedCrn',
     label: 'Stubbed CRN',
-    hint: 'Replaces the CRN above with one that Wiremock answers for in local, dev and test, so the About and supervision package pages show canned data instead of calling the real APIs.',
+    hint: 'Replaces the CRN above with a shared test CRN that has fixed data in local, dev and test, so the About and supervision package pages show that data instead of calling the real services. If you pick one, Sentence Plan shows its canned criminogenic needs, not the ones you set on the Criminogenic Needs tab. The launcher never changes their data.',
     classes: 'govuk-radios--small',
     defaultValue: Data('stubbedCrn'),
     items: [
