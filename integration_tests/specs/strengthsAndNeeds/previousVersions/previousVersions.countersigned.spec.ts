@@ -6,7 +6,7 @@ import PreviousVersionsPage from '../../../pages/strengthsAndNeeds/previousVersi
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Countersigned', () => {
-  test.only('should show countersigned versions from previous days in a separate table', async ({
+  test('should show countersigned versions from previous days in a separate table', async ({
     page,
     createSession,
     baseURL,
