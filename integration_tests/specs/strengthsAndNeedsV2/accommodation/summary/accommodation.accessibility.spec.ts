@@ -52,7 +52,7 @@ test.describe('Accessibility', () => {
       ])
       .save()
 
-    await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-summary')
+    await navigateToStrengthsAndNeeds(page, handoverLink, Step.accommodation_summary.path)
     const accommodationPage = await AccommodationPage.verifyOnPage(page, 'Summary')
     await checkAccessibility(accommodationPage.page, {
       // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330

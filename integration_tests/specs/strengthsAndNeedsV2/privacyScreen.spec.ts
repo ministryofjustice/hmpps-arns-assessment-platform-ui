@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test'
 import PrivacyScreenPage from 'pages/sentencePlan/privacyScreenPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
 import { test, TargetService } from '../../support/fixtures'
-import { buildPageTitle, sanFormPath, v2Path } from './sanUtils'
+import { accommodation, buildEditUrl, buildPageTitle } from './sanUtils'
 
 // The screen itself is covered by the sentence plan privacy spec, these cover the SAN wiring.
 test.describe('Strengths and needs privacy screen', () => {
@@ -22,12 +23,12 @@ test.describe('Strengths and needs privacy screen', () => {
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)
     await privacyPage.confirmAndContinue()
 
-    await expect(page).toHaveURL(/accommodation-community-current-accommodation/)
+    await expect(page).toHaveURL(new RegExp(Step.community_current_accommodation.path))
 
     await page.goto(
-      `${baseURL}/${sanFormPath}/${v2Path}/edit/${sanAssessmentId}/accommodation/accommodation-community-current-accommodation`,
+      buildEditUrl(baseURL, sanAssessmentId, `${accommodation}/${Step.community_current_accommodation.path}`),
     )
-    await expect(page).toHaveURL(/accommodation-community-current-accommodation/)
+    await expect(page).toHaveURL(new RegExp(Step.community_current_accommodation.path))
   })
 
   test('is skipped for a read only assessment (regardless of the plan access mode)', async ({
@@ -44,6 +45,6 @@ test.describe('Strengths and needs privacy screen', () => {
 
     await page.goto(handoverLink)
 
-    await expect(page).toHaveURL(/accommodation-analysis/)
+    await expect(page).toHaveURL(new RegExp(Step.accommodation_analysis.path))
   })
 })

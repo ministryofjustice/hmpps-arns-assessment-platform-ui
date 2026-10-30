@@ -79,7 +79,7 @@ test.describe('Questions', () => {
       .save()
 
     // Reach the analysis page via the real flow: summary -> practitioner tab -> Mark as complete.
-    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'alcohol-use-summary')
+    await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.alcohol_use_summary.path)
     await page.getByRole('button', { name: 'Go to practitioner analysis' }).click()
     await page.getByRole('button', { name: 'Mark as complete' }).click()
 

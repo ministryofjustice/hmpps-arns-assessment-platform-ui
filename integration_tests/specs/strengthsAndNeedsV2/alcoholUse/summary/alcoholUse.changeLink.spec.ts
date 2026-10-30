@@ -66,9 +66,9 @@ const fullyAnswered: Scenario = {
 }
 
 const practitionerAnalysisChangeLinks = [
-  changeLink('alcohol-use-summary', 'alcohol_use_practitioner_analysis_strengths_or_protective_factors'),
-  changeLink('alcohol-use-summary', 'alcohol_use_practitioner_analysis_risk_of_serious_harm'),
-  changeLink('alcohol-use-summary', 'alcohol_use_practitioner_analysis_risk_of_reoffending'),
+  changeLink(summaryPage, 'alcohol_use_practitioner_analysis_strengths_or_protective_factors'),
+  changeLink(summaryPage, 'alcohol_use_practitioner_analysis_risk_of_serious_harm'),
+  changeLink(summaryPage, 'alcohol_use_practitioner_analysis_risk_of_reoffending'),
 ]
 
 const question = 'alcohol_use_practitioner_analysis_risk_of_reoffending'
