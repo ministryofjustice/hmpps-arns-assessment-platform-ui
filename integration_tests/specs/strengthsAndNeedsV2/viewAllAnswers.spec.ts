@@ -6,12 +6,7 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/co
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
 import { details } from 'testUtils'
-import {
-  buildEditUrl,
-  checkAccessibility,
-  navigateToStrengthsAndNeeds,
-  viewAllAnswers,
-} from './sanUtils'
+import { buildEditUrl, checkAccessibility, navigateToStrengthsAndNeeds, viewAllAnswers } from './sanUtils'
 import { test, TargetService } from '../../support/fixtures'
 
 type Answer = { question: string; value: string | string[] }

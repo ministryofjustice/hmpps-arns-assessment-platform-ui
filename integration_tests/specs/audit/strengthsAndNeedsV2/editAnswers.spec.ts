@@ -1,7 +1,6 @@
 import { Question } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
 import { expect } from '@playwright/test'
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
-import { basePath } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { TargetService, test } from '../../../support/fixtures'
 import { accommodation, buildEditUrl, handlePrivacyScreenIfPresent } from '../../strengthsAndNeedsV2/sanUtils'

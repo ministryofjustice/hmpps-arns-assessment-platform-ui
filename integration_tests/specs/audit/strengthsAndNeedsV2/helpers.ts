@@ -2,7 +2,6 @@ import { expect, Page } from '@playwright/test'
 import { basePath, formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 import type { AuditMessage } from '../../../support/AuditQueueClient'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
-import { buildEditUrl, finances } from '../../strengthsAndNeedsV2/sanUtils'
 
 export { CommonAuditEvent, SanAuditEvent } from '../auditEvents'
 

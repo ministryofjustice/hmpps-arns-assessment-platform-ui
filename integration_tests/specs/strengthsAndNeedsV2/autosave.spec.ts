@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
+import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
 import { TargetService, test } from '../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from './sanUtils'
-import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
 // import OffenceAnalysisPage from '../../pages/strengthsAndNeedsV2/offenceAnalysisPage'
 // import AlcoholUsePage from '../../pages/strengthsAndNeedsV2/alcoholUsePage'
 
