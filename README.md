@@ -65,9 +65,15 @@ In local, dev and test, calls to Delius, the ARNS API, the Tier API and the Supe
 | X555555 | C provisional     | In-flight, OASys review not started           |
 | X111111 | B confirmed       | In-flight, OASys review started, not finished |
 
-All seven share the same Delius case details and ARNS needs. To use one, customise any scenario in the Training Session Launcher and pick it under "Stubbed CRN" on the Subject Details tab.
+All seven share the same Delius case details and ARNS needs. To use one, customise any scenario in the Training Session Launcher and pick it under "Stubbed CRN" on the Subject Details tab. Everyone in dev and test shares them, so the launcher never stubs over them: a session on a stubbed CRN always gets its canned data, whatever criminogenic needs it sets.
 
 The list is kept in three places, keep them in step: `server/forms/training-session-launcher/scenarios/stubbedCrns.ts` (launcher picker), `helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings` (dev and test), `docker/wiremock/mappings` (local).
+
+### Mocked criminogenic needs in the Training Session Launcher
+
+In local, dev and test, generating a link for a session makes the ARNS needs endpoints return the criminogenic needs set for that scenario, for the session's own CRN. This only happens for scenarios with the SAN Private Beta flag, as Sentence Plan only reads ARNS needs for Private Beta. Untick "Use mocked criminogenic needs" on the Criminogenic Needs tab to use the real ARNS API instead (in local Docker, the canned needs Wiremock returns for every CRN): generating a link then removes any needs stubs an earlier session left for that CRN. This is switched on with `CAN_STUB_ARNS_API`, only happens when `ARNS_API_URL` points at Wiremock, and is skipped for anything that isn't a CRN (a letter and six digits). Every stub carries `metadata.source: training-launcher`, so leftovers can be found or removed with Wiremock's `/__admin/mappings/find-by-metadata` and `remove-by-metadata`.
+
+A session's stubs stay in Wiremock until the session is deleted (or "Reset all sessions" is used), so anyone opening that CRN another way, from OASys or nDelius say, sees the launcher's needs until then. If Wiremock restarts, every launcher stub is lost and those CRNs go back to the real ARNS API: press "Generate link" for the session again to put its stubs back.
 
 ### Common Development Commands
 
