@@ -2,12 +2,14 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/co
 import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, Page } from '@playwright/test'
-import { formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
+import { asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { QueriesResponse } from '@server/interfaces/aap-api/response'
+import { basePath } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import { TestAapApiClient } from '../../support/apis/TestAapApiClient'
 
 // strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
-export const v2Path = `/${formVersion}`
 export const accommodation = Section.accommodation.path
 export const employment = Section.employment_and_education.path
 export const health = Section.health_and_wellbeing.path
@@ -60,6 +62,12 @@ export const buildPageTitle = (stepTitle: string, serviceName: string = sanServi
 export const buildErrorPageTitle = (stepTitle: string, serviceName: string = sanServiceName): string =>
   `Error: ${buildPageTitle(stepTitle, serviceName)}`
 
+export const buildViewUrl = (baseUrl: string, sanAssessmentId: string, pageUrl: string): string =>
+  `${baseUrl}${basePath}/view/${sanAssessmentId}/current${pageUrl}`
+
+export const buildEditUrl = (baseUrl: string, sanAssessmentId: string, pageUrl: string): string =>
+  `${baseUrl}${basePath}/edit/${sanAssessmentId}/current${pageUrl}`
+
 /**
  * Runs the standard WCAG Axe scan for a sentence plan page and expects no violations.
  * By default it scans the main form area, but pages can override the selector if needed.
@@ -99,7 +107,6 @@ export const navigateToStrengthsAndNeeds = async (
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-
   // Wait for the redirect from the handover link to land on the expected page
   await page.waitForURL(url => url.pathname.includes(expectedPath))
 }
@@ -113,7 +120,31 @@ export const navigateToStrengthsAndNeedsReadOnly = async (
   expectedPath: string = 'accommodation-analysis',
 ): Promise<void> => {
   await page.goto(handoverLink)
-
   // Wait for the redirect from the handover link to land on the expected page
   await page.waitForURL(url => url.pathname.includes(expectedPath))
+}
+
+export const storedAnswers = async (aapClient: TestAapApiClient, assessmentUuid: string) => {
+  const response: QueriesResponse = await aapClient.post(
+    {
+      path: '/query',
+      data: {
+        queries: [
+          {
+            type: 'AssessmentVersionQuery',
+            assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+            user: { id: 'e2e-test', name: 'E2E Test', authSource: 'HMPPS_AUTH' },
+          },
+        ],
+      },
+    },
+    asSystem(),
+  )
+  const assessment = response.queries[0].result
+
+  if (assessment.type !== 'AssessmentVersionQueryResult') {
+    throw new Error(`Expected assessment version, received ${assessment.type}`)
+  }
+
+  return assessment.answers
 }
