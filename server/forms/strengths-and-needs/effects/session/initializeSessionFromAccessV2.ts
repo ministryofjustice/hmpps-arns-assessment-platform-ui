@@ -1,6 +1,7 @@
 import { InternalServerError } from 'http-errors'
+import logger from '../../../../../logger'
 import { IdentifierType } from '../../../../interfaces/aap-api/identifier'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsSession } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsSession } from '../types'
 import { Section, SectionComplete } from '../../versions/v2.0/constants/section'
 
 const SAN_ASSESSMENT_TYPE = 'SAN_SP'
@@ -45,18 +46,24 @@ export const initializeSessionFromAccessV2 = () => (context: StrengthsAndNeedsCo
     }
   })
 
-  // This effect runs on every access to the SAN journey (not just the initial handover),
-  // so it must not clobber an assessment version that was previously selected via the
-  // previous-versions page and persisted onto the session by `loadAssessment`. Only fall
-  // back to the session's existing value when the handover context doesn't carry one.
-  const assessmentVersion =
-    handoverContext?.assessmentContext?.assessmentVersion ?? session.sessionDetails?.assessmentVersion
+  // The `createdAt` (UTC epoch millis) of the version OASys asked for. Only the handover decides
+  // this: previous versions picked in SAN are carried in the URL (view/<assessmentUuid>/<versionUuid>).
+  const assessmentVersion = handoverContext?.assessmentContext?.assessmentVersion
+
+  // A requested version is always shown read-only, even if OASys (unexpectedly) granted READ_WRITE.
+  const accessMode = assessmentVersion ? 'READ_ONLY' : accessDetails.accessMode
+
+  if (accessMode !== accessDetails.accessMode) {
+    logger.warn(
+      `Handover requested assessment version ${assessmentVersion} with ${accessDetails.accessMode} access, using READ_ONLY`,
+    )
+  }
 
   context.setData('assessmentVersion', assessmentVersion)
 
-  session.sessionDetails = {
+  sanSession(session).sessionDetails = {
     accessType: accessDetails.accessType,
-    accessMode: accessDetails.accessMode,
+    accessMode,
     planAccessMode: accessDetails.planAccessMode,
     oasysRedirectUrl: accessDetails.oasysRedirectUrl,
     assessmentIdentifier,

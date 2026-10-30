@@ -1,4 +1,5 @@
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
+import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
 import { TargetService, test } from '../../../support/fixtures'
 import { navigateToStrengthsAndNeeds } from '../../strengthsAndNeedsV2/sanUtils'
 import { expectSanAuditEvent, onPage, SanAuditEvent } from './helpers'
@@ -9,7 +10,7 @@ test.describe('Views Question pages for each Criminogenic Needs section', () => 
     await strengthsAndNeedsBuilder.fresh().save()
     await navigateToStrengthsAndNeeds(page, handoverLink)
     const event = await auditQueue.waitForAuditEvent(crn, SanAuditEvent.VIEW_QUESTION_PAGE, {
-      additionalFilter: onPage('accommodation', Step.community_current_accommodation.code),
+      additionalFilter: onPage(Section.accommodation.code, Step.community_current_accommodation.code),
     })
     expectSanAuditEvent(event)
   })

@@ -1,7 +1,8 @@
 import { expect, Page } from '@playwright/test'
-import { formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
+import { basePath, formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
 import type { AuditMessage } from '../../../support/AuditQueueClient'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
+import { buildEditUrl, finances } from '../../strengthsAndNeedsV2/sanUtils'
 
 export { CommonAuditEvent, SanAuditEvent } from '../auditEvents'
 
@@ -54,7 +55,7 @@ export const walkToFinanceSummary = async (
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  await page.goto(`/strengths-and-needs/v2.0/edit/${sanAssessmentId}/finances/finance`)
+  await page.goto(`/${basePath}/edit/${sanAssessmentId}/current/finances/finance`)
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await expect(page).toHaveURL(/finance-summary/)
 }

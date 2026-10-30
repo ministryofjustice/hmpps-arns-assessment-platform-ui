@@ -16,7 +16,7 @@ export const autoSaveAccommodationSubmit = (stepCode: string) =>
     validate: false,
     onAlways: {
       effects: [
-        StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(true),
+        StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(false, true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
         StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
       ],

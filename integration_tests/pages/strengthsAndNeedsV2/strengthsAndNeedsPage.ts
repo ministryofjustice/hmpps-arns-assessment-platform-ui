@@ -1,10 +1,10 @@
 import { expect, Locator, Page } from '@playwright/test'
 import { questionIdOf } from '@server/forms/strengths-and-needs/constants/questionContent'
 import {
+  buildEditUrl,
+  buildViewUrl,
   navigateToStrengthsAndNeeds,
   navigateToStrengthsAndNeedsReadOnly,
-  sanFormPath,
-  v2Path,
 } from 'specs/strengthsAndNeedsV2/sanUtils'
 import AbstractPage from '../abstractPage'
 
@@ -41,8 +41,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     step: string = this.firstStep,
   ): Promise<void> {
     await navigateToStrengthsAndNeeds(page, handoverLink)
-
-    await page.goto(`${baseUrl}${sanFormPath}${v2Path}/edit/${assessmentId}${this.section}/${step}`)
+    await page.goto(buildEditUrl(baseUrl, assessmentId, `${this.section}/${step}`))
     expect(page.url()).toContain(step)
   }
 
@@ -57,7 +56,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
     step: string = this.firstStep,
   ): Promise<void> {
     await navigateToStrengthsAndNeedsReadOnly(page, handoverLink)
-    await page.goto(`${baseUrl}${sanFormPath}${v2Path}/view/${assessmentId}${this.section}/${step}`)
+    await page.goto(buildViewUrl(baseUrl, assessmentId, `${this.section}/${step}`))
     expect(page.url()).toContain(step)
   }
 
