@@ -22,18 +22,16 @@ test.describe('Previous Versions - Navigation', () => {
 
     // Verify message is shown when no previous versions exist
 
-    // TODO: Update the test after the fix of https://dsdmoj.atlassian.net/browse/ARN-3261
+    await expect(previousVersionsPage.mainForm).toContainText(
+      "Check versions of Test's current assessment. The links will open in a new tab.",
+    )
 
-    // await expect(previousVersionsPage.mainForm).toContainText(
-    //   "Check versions of Test's current assessment. The links will open in a new tab.",
-    // )
+    // Verify no previous versions rows are shown
+    const countersignedRows = previousVersionsPage.table.first().locator('tbody').getByRole('row')
+    const allVersionsRows = previousVersionsPage.table.last().locator('tbody').getByRole('row')
 
-    // // Verify no previous versions rows are shown
-    // const countersignedRows = previousVersionsPage.table.first().locator('tbody').getByRole('row')
-    // const allVersionsRows = previousVersionsPage.table.last().locator('tbody').getByRole('row')
-
-    // await expect(countersignedRows).toHaveCount(0)
-    // await expect(allVersionsRows).toHaveCount(0)
+    await expect(countersignedRows).toHaveCount(0)
+    await expect(allVersionsRows).toHaveCount(0)
 
   })
 })
