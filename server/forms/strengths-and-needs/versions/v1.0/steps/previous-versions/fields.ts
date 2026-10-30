@@ -114,6 +114,7 @@ const createVersionTable = (caption: ResolvableString, sessionKey: 'countersigne
     captionClasses: versionTableCaptionClasses,
     classes: versionTableClasses,
     head: tableHeadColumns,
+    attributes: { 'data-qa': 'previous-versions-table' },
     rows: Session(`san.${sessionKey}`).each(Iterator.Map(tableRows)),
   })
 

@@ -27,6 +27,8 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
 
   readonly complete = this.page.locator('[data-complete="YES"]')
 
+  readonly pageHeading = this.page.getByRole('heading')
+
   readonly mainForm = this.page.getByTestId('main-form')
 
   /**
