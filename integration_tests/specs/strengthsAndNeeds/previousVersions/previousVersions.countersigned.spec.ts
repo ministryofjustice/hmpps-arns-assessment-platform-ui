@@ -19,6 +19,8 @@ test.describe('Previous Versions - Countersigned', () => {
     const yesterday = new Date()
 
     yesterday.setDate(today.getDate() - 1)
+    const todaysDate = formatOrdinalDate(today)
+    const yesterdaysDate = formatOrdinalDate(yesterday)
 
     const countersignedVersions: VersionsTable = {
       [`${today.toISOString().split('T')[0]}`]: {
@@ -89,8 +91,6 @@ test.describe('Previous Versions - Countersigned', () => {
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${previousVersions}`)
     const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
-    const todaysDate = formatOrdinalDate(today)
-    const yesterdaysDate = formatOrdinalDate(yesterday)
 
     // Verify both previous versions tables are shown
     expect(previousVersionsPage.mainForm).toMatchAriaSnapshot(`

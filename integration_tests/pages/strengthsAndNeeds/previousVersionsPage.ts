@@ -7,10 +7,13 @@ export default class PreviousVersionsPage extends StrengthsAndNeedsPage {
 
   readonly tableCaption: Locator
 
+  readonly previousVersionsLink: Locator
+
   public constructor(page: Page) {
     super(page)
     this.table = page.getByTestId('previous-versions-table')
     this.tableCaption = page.getByRole('caption')
+    this.previousVersionsLink = page.getByRole('link', { name: /View previous versions/i })
   }
 
   async viewVersionOnDate(date: string): Promise<void> {

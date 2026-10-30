@@ -31,8 +31,6 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
 
   readonly mainForm = this.page.getByTestId('main-form')
 
-  readonly previousVersionsLink = this.page.getByRole('link', { name: /View previous versions/i })
-
   /**
    * Opens the assessment via the handover link, handling the privacy screen, then goes to a step
    * of the page object's section (its first step by default).
