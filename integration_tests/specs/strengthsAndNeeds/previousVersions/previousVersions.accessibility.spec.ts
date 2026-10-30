@@ -1,11 +1,11 @@
 import { VersionsTable } from '@server/interfaces/coordinator-api/previousVersions'
 import { test, TargetService } from '../../../support/fixtures'
-import { navigateToStrengthsAndNeeds, checkAccessibility } from '../sanUtils'
+import { navigateToStrengthsAndNeeds, checkAccessibility, previousVersions, v1Path, sanFormPath } from '../sanUtils'
 import PreviousVersionsPage from '../../../pages/strengthsAndNeeds/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Accessibility', () => {
-  test('should be accessibile', async ({ page, createSession }) => {
+  test('should be accessibile', async ({ page, createSession, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -25,7 +25,7 @@ test.describe('Accessibility', () => {
           updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -46,7 +46,7 @@ test.describe('Accessibility', () => {
           updatedAt: yesterday.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -78,10 +78,11 @@ test.describe('Accessibility', () => {
         ...countersignedVersions,
       },
       countersignedVersions,
+      unaggregatedVersions: [],
     })
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.getByRole('link', { name: /View previous versions/i }).click()
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${previousVersions}`)
     await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
     await checkAccessibility(page, { include: '#main-content' })
 

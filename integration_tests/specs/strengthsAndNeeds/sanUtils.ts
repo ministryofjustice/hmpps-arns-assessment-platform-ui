@@ -20,6 +20,7 @@ export const alcohol = Section.alcohol_use.path
 export const personal = Section.personal_relationships_and_community.path
 export const thinking = Section.thinking_behaviours_and_attitudes.path
 export const finances = Section.finance.path
+export const previousVersions = '/previous-versions'
 export const viewAllAnswers = '/view-all-answers'
 
 export const sentencePlanV1URLs = {

@@ -1,12 +1,16 @@
 import { expect } from '@playwright/test'
 import { VersionsTable } from '@server/interfaces/coordinator-api/previousVersions'
 import { test, TargetService } from '../../../support/fixtures'
-import { navigateToStrengthsAndNeeds, formatOrdinalDate } from '../sanUtils'
+import { navigateToStrengthsAndNeeds, formatOrdinalDate, v1Path, previousVersions, sanFormPath } from '../sanUtils'
 import PreviousVersionsPage from '../../../pages/strengthsAndNeeds/previousVersionsPage'
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Previous Versions - Countersigned', () => {
-  test('should show countersigned versions from previous days in a separate table', async ({ page, createSession }) => {
+  test.only('should show countersigned versions from previous days in a separate table', async ({
+    page,
+    createSession,
+    baseURL,
+  }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -26,7 +30,7 @@ test.describe('Previous Versions - Countersigned', () => {
           updatedAt: today.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -47,7 +51,7 @@ test.describe('Previous Versions - Countersigned', () => {
           updatedAt: yesterday.toISOString(),
           status: 'COUNTERSIGNED',
           planAgreementStatus: '',
-          entityType: 'ASSESSMENT',
+          entityType: 'AAP_SAN',
         },
         planVersion: {
           uuid: crypto.randomUUID(),
@@ -79,52 +83,86 @@ test.describe('Previous Versions - Countersigned', () => {
         ...countersignedVersions,
       },
       countersignedVersions,
+      unaggregatedVersions: [],
     })
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
-    await page.getByRole('link', { name: /View previous versions/i }).click()
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${previousVersions}`)
     const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
-
-    // Verify message is shown when previous versions exist
-    await expect(previousVersionsPage.mainForm).toContainText(
-      "Check versions of Test's current assessment. The links will open in a new tab.",
-    )
+    const todaysDate = formatOrdinalDate(today)
+    const yesterdaysDate = formatOrdinalDate(yesterday)
 
     // Verify both previous versions tables are shown
-    await expect(previousVersionsPage.table).toHaveCount(2)
-    const countersignedTable = previousVersionsPage.table.first()
-    const allVersionsTable = previousVersionsPage.table.last()
-
-    // Verify table captions
-    await expect(previousVersionsPage.tableCaption.first()).toContainText('Countersigned versions')
-    await expect(previousVersionsPage.tableCaption.last()).toContainText('All versions')
-
-    // Table headers
-    for (const table of [countersignedTable, allVersionsTable]) {
-      expect(table.getByRole('columnheader')).toHaveCount(3)
-      expect(table.getByRole('columnheader', { name: 'Date' })).toBeVisible()
-      expect(table.getByRole('columnheader', { name: 'Assessment' })).toBeVisible()
-      expect(table.getByRole('columnheader', { name: 'Plan' })).toBeVisible()
-    }
-
-    const countersignedRows = countersignedTable.locator('tbody').getByRole('row')
-    await expect(countersignedRows).toHaveCount(2)
-
-    const expectedCountersignedDate = formatOrdinalDate(today)
-
-    await expect(countersignedRows.first().getByRole('cell', { name: expectedCountersignedDate }).first()).toBeVisible()
-    await expect(countersignedRows.first().getByRole('cell', { name: 'Assessment and plan updated' })).toBeVisible()
-
-    const viewLinks = countersignedRows.first().getByRole('link', { name: 'View' })
-    await expect(viewLinks).toHaveCount(2)
-    await expect(viewLinks.first()).toHaveAttribute('target', '_blank')
-    await expect(viewLinks.last()).toHaveAttribute('target', '_blank')
-
-    const allVersionsRows = allVersionsTable.locator('tbody').getByRole('row')
-    await expect(allVersionsRows).toHaveCount(2)
-
-    await expect(allVersionsRows.first().getByRole('cell', { name: expectedCountersignedDate }).first()).toBeVisible()
-    await expect(allVersionsRows.first().getByRole('cell', { name: 'Assessment and plan updated' })).toBeVisible()
+    expect(previousVersionsPage.mainForm).toMatchAriaSnapshot(`
+      - paragraph: Check versions of Test's current assessment. The links will open in a new tab.
+      - table "Countersigned versions":
+        - caption: Countersigned versions
+        - rowgroup:
+          - row "Date Assessment Plan":
+            - columnheader "Date"
+            - columnheader "Assessment"
+            - columnheader "Plan"
+        - rowgroup:
+          - row "${todaysDate} Assessment and plan updated View assessment from ${todaysDate} View sentence plan from ${todaysDate}":
+            - cell "${todaysDate} Assessment and plan updated":
+              - paragraph: ${todaysDate}
+              - paragraph: Assessment and plan updated
+            - cell "View assessment from ${todaysDate}":
+              - paragraph:
+                - link "View assessment from ${todaysDate}":
+                  - /url: /\\/strengths-and-needs\\/v1\\.0\\/view-historic\\/.*/
+            - cell "View sentence plan from ${todaysDate}":
+              - paragraph:
+                - link "View sentence plan from ${todaysDate}":
+                  - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
+          - row "${yesterdaysDate} Assessment and plan updated View assessment from ${yesterdaysDate} View sentence plan from ${yesterdaysDate}":
+            - cell "${yesterdaysDate} Assessment and plan updated":
+              - paragraph: ${yesterdaysDate}
+              - paragraph: Assessment and plan updated
+            - cell "View assessment from ${yesterdaysDate}":
+              - paragraph:
+                - link "View assessment from ${yesterdaysDate}":
+                  - /url: /\\/strengths-and-needs\\/v1\\.0\\/view-historic\\/.*/
+            - cell "View sentence plan from ${yesterdaysDate}":
+              - paragraph:
+                - link "View sentence plan from ${yesterdaysDate}":
+                  - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
+      - table "All versions":
+        - caption: All versions
+        - rowgroup:
+          - row "Date Assessment Plan":
+            - columnheader "Date"
+            - columnheader "Assessment"
+            - columnheader "Plan"
+        - rowgroup:
+          - row "${todaysDate} Assessment and plan updated View assessment from ${todaysDate} View sentence plan from ${todaysDate}":
+            - cell "${todaysDate} Assessment and plan updated":
+              - paragraph: ${todaysDate}
+              - paragraph: Assessment and plan updated
+            - cell "View assessment from ${todaysDate}":
+              - paragraph:
+                - link "View assessment from ${todaysDate}":
+                  - /url: /\\/strengths-and-needs\\/v1\\.0\\/view-historic\\/.*/
+            - cell "View sentence plan from ${todaysDate}":
+              - paragraph:
+                - link "View sentence plan from ${todaysDate}":
+                  - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
+          - row "${yesterdaysDate} Assessment and plan updated View assessment from ${yesterdaysDate} View sentence plan from ${yesterdaysDate}":
+            - cell "${yesterdaysDate} Assessment and plan updated":
+              - paragraph: ${yesterdaysDate}
+              - paragraph: Assessment and plan updated
+            - cell "View assessment from ${yesterdaysDate}":
+              - paragraph:
+                - link "View assessment from ${yesterdaysDate}":
+                  - /url: /\\/strengths-and-needs\\/v1\\.0\\/view-historic\\/.*/
+            - cell "View sentence plan from ${yesterdaysDate}":
+              - paragraph:
+                - link "View sentence plan from ${yesterdaysDate}":
+                  - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
+      - paragraph:
+        - link "↑ Back to top":
+          - /url: "#main-content"
+    `)
 
   })
 })
