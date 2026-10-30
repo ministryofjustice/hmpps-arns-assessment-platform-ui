@@ -78,6 +78,7 @@ export interface TrainingSessionLauncherData extends RandomizedFieldFlags {
 
   // Customise page
   scenario: ScenarioValues
+  mockedCriminogenicNeedsSelection: 'YES'[]
   flags: TrainingScenarioFlag[]
   originalScenarioName: string
 

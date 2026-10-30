@@ -5,6 +5,7 @@ import { resolveHandoverConfig } from '../../flags/handlers'
 import { ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session, TargetApplication } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
+import { registerTrainingStubs } from './trainingStubs'
 
 /**
  * Get the OAuth client ID for a target application
@@ -180,7 +181,7 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     },
     subjectDetails: buildSubjectDetails(values),
     oasysAssessmentPk: values.oasysAssessmentPk,
-    criminogenicNeedsData: buildCriminogenicNeeds(values),
+    criminogenicNeedsData: session.flags.includes('SAN_PRIVATE_BETA') ? buildCriminogenicNeeds(values) : undefined,
   }
 
   // Add version info based on target application
@@ -206,8 +207,10 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
  * 1. Gets trainingSessionId and targetApplication from POST data
  * 2. Loads the session from preferences
  * 3. Builds a handover request from session values
- * 4. Calls the handover API to create the link
- * 5. Updates the session with the handover link
+ * 4. Registers Wiremock stubs for the scenario's criminogenic needs when "Use mocked criminogenic needs" is ticked,
+ *    the scenario has the SAN Private Beta flag, the CRN is a valid CRN that is not a magic CRN, and the ARNS API is
+ *    behind Wiremock. When it is not ticked or not Private Beta, removes any stubs an earlier launch left instead
+ * 5. Calls the handover API to create the link
  * 6. Sets the link in context data for redirect
  */
 export const generateHandoverLink =
@@ -242,6 +245,8 @@ export const generateHandoverLink =
     // Build and send handover request (applying any flag-based modifications)
     const baseRequest = buildHandoverRequest(session, targetApplication)
     const request = handoverConfig.modifyRequest(baseRequest)
+
+    await registerTrainingStubs(deps.wiremockAdminClient, session.values, session.flags)
 
     const response = await deps.handoverApiClient.createHandoverLink(request)
 

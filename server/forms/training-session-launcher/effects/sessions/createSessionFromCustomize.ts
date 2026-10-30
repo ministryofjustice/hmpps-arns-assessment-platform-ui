@@ -5,6 +5,7 @@ import { scenarioFieldKeys, scenarioFieldSchema, ScenarioValues } from '../../sc
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
 import { TrainingSessionLauncherEffectsDeps, TrainingLauncherNotification } from '../types'
 import { createInCoordinatorAndUpdatePreferences } from './coordinatorHelpers'
+import { readMockedNeedsAnswer } from '../customise/readMockedNeedsAnswer'
 
 /**
  * Default empty preferences
@@ -49,6 +50,8 @@ function collectSessionData(context: TrainingSessionLauncherContext): {
   if (typeof stubbedCrn === 'string' && stubbedCrn !== '') {
     values.crn = stubbedCrn
   }
+
+  values.useMockedCriminogenicNeeds = readMockedNeedsAnswer(context)
 
   return {
     scenarioName,

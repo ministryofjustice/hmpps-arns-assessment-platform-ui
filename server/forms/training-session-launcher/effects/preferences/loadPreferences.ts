@@ -194,7 +194,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
  */
 function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
   const seed = generateSeed()
-  const excludedFields = getExcludedFields(saved.flags)
+  const excludedFields = getExcludedFields(saved.flags, saved.fixedValues)
   const randomizeFields = getRandomizeFields(saved.fixedValues, excludedFields)
   const values = applyRandomization(saved.fixedValues, randomizeFields, seed)
   const sentencePlanVersion =
