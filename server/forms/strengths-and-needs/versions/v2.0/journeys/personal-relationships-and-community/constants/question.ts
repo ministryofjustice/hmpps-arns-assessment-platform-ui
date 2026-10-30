@@ -64,13 +64,13 @@ export const Question = {
   personal_relationships_community_domestic_abuse_perpetrator:
     'personal_relationships_community_domestic_abuse_perpetrator',
 
-  personal_relationships_community_domestic_abuse_against: 'personal_relationships_community_domestic_abuse_againt',
+  personal_relationships_community_domestic_abuse_against: 'personal_relationships_community_domestic_abuse_against',
   personal_relationships_community_domestic_abuse_against_family_details:
-    'personal_relationships_community_domestic_abuse_againt_family_details',
+    'personal_relationships_community_domestic_abuse_against_family_details',
   personal_relationships_community_domestic_abuse_against_partner_details:
-    'personal_relationships_community_domestic_abuse_againt_partner_details',
+    'personal_relationships_community_domestic_abuse_against_partner_details',
   personal_relationships_community_domestic_abuse_against_family_and_partner_details:
-    'personal_relationships_community_domestic_abuse_againt_family_and_partner_details',
+    'personal_relationships_community_domestic_abuse_against_family_and_partner_details',
 
   personal_relationships_community_coercive_behaviour: 'personal_relationships_community_coercive_behaviour',
   personal_relationships_community_coercive_behaviour_yes_details:

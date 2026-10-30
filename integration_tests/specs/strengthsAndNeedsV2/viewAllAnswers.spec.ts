@@ -239,73 +239,72 @@ const alcohol: Answer[] = [
 //   { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
 // ]
 
-// TODO Uncomment it during ACT-756 Personal relationship framework
-// const personal: Answer[] = [
-//   { question: 'personal_relationships_community_children_details', value: 'YES_CHILDREN_NOT_LIVING_WITH_POP' },
-//   {
-//     question: 'personal_relationships_community_children_details_yes_children_not_living_with_pop_details',
-//     value: details('children not living with them'),
-//   },
-//   {
-//     question: 'personal_relationships_community_important_people',
-//     value: ['PARTNER_INTIMATE_RELATIONSHIP', 'FAMILY', 'OTHER'],
-//   },
-//   {
-//     question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
-//     value: details('partner'),
-//   },
-//   { question: 'personal_relationships_community_important_people_family_details', value: details('family') },
-//   { question: 'personal_relationships_community_important_people_other_details', value: details('other people') },
-//   { question: 'personal_relationships_community_current_relationship', value: 'CONCERNS_HAPPY_RELATIONSHIP' },
-//   {
-//     question: 'personal_relationships_community_current_relationship_concerns_happy_relationship_details',
-//     value: details('happy but concerns'),
-//   },
-//   { question: 'personal_relationships_community_intimate_relationship', value: 'UNSTABLE_RELATIONSHIPS' },
-//   {
-//     question: 'personal_relationships_community_intimate_relationship_unstable_relationships_details',
-//     value: details('unstable relationships'),
-//   },
-//   { question: 'personal_relationships_community_challenges_intimate_relationship', value: details('challenges') },
-//   { question: 'personal_relationships_community_parental_responsibilities', value: 'SOMETIMES' },
-//   {
-//     question: 'personal_relationships_community_parental_responsibilities_sometimes_details',
-//     value: details('sometimes parental'),
-//   },
-//   { question: 'personal_relationships_community_family_relationship', value: 'MIXED_RELATIONSHIP' },
-//   {
-//     question: 'personal_relationships_community_family_relationship_mixed_relationship_details',
-//     value: details('mixed family'),
-//   },
-//   { question: 'personal_relationships_community_childhood', value: 'NEGATIVE_CHILDHOOD' },
-//   { question: 'personal_relationships_community_childhood_negative_childhood_details', value: details('childhood') },
-//   { question: 'personal_relationships_community_childhood_behaviour', value: 'YES' },
-//   {
-//     question: 'personal_relationships_community_childhood_behaviour_yes_details',
-//     value: details('childhood behaviour'),
-//   },
-//   { question: 'personal_relationships_community_belonging', value: details('belonging') },
-//   { question: 'personal_relationships_community_changes', value: 'DOES_NOT_WANT_TO_ANSWER' },
-//   {
-//     question: 'personal_relationships_community_changes_does_not_want_to_answer_details',
-//     value: details('declined to answer'),
-//   },
-//   { question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
-//   {
-//     question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details',
-//     value: details('relationship strengths'),
-//   },
-//   { question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
-//   {
-//     question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details',
-//     value: details('no relationship serious harm'),
-//   },
-//   { question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending', value: 'NO' },
-//   {
-//     question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details',
-//     value: details('no relationship reoffending'),
-//   },
-// ]
+const personal: Answer[] = [
+  { question: 'personal_relationships_community_children_details', value: 'YES_CHILDREN_NOT_LIVING_WITH_POP' },
+  {
+    question: 'personal_relationships_community_children_details_yes_children_not_living_with_pop_details',
+    value: details('children not living with them'),
+  },
+  {
+    question: 'personal_relationships_community_important_people',
+    value: ['PARTNER_INTIMATE_RELATIONSHIP', 'FAMILY', 'OTHER'],
+  },
+  {
+    question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
+    value: details('partner'),
+  },
+  { question: 'personal_relationships_community_important_people_family_details', value: details('family') },
+  { question: 'personal_relationships_community_important_people_other_details', value: details('other people') },
+  { question: 'personal_relationships_community_current_relationship', value: 'CONCERNS_HAPPY_RELATIONSHIP' },
+  {
+    question: 'personal_relationships_community_current_relationship_concerns_happy_relationship_details',
+    value: details('happy but concerns'),
+  },
+  { question: 'personal_relationships_community_intimate_relationship', value: 'UNSTABLE_RELATIONSHIPS' },
+  {
+    question: 'personal_relationships_community_intimate_relationship_unstable_relationships_details',
+    value: details('unstable relationships'),
+  },
+  { question: 'personal_relationships_community_challenges_intimate_relationship', value: details('challenges') },
+  { question: 'personal_relationships_community_parental_responsibilities', value: 'SOMETIMES' },
+  {
+    question: 'personal_relationships_community_parental_responsibilities_sometimes_details',
+    value: details('sometimes parental'),
+  },
+  { question: 'personal_relationships_community_family_relationship', value: 'MIXED_RELATIONSHIP' },
+  {
+    question: 'personal_relationships_community_family_relationship_mixed_relationship_details',
+    value: details('mixed family'),
+  },
+  { question: 'personal_relationships_community_childhood', value: 'NEGATIVE_CHILDHOOD' },
+  { question: 'personal_relationships_community_childhood_negative_childhood_details', value: details('childhood') },
+  { question: 'personal_relationships_community_childhood_behaviour', value: 'YES' },
+  {
+    question: 'personal_relationships_community_childhood_behaviour_yes_details',
+    value: details('childhood behaviour'),
+  },
+  { question: 'personal_relationships_community_belonging', value: details('belonging') },
+  { question: 'personal_relationships_community_changes', value: 'DOES_NOT_WANT_TO_ANSWER' },
+  {
+    question: 'personal_relationships_community_changes_does_not_want_to_answer_details',
+    value: details('declined to answer'),
+  },
+  { question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
+  {
+    question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details',
+    value: details('relationship strengths'),
+  },
+  { question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
+  {
+    question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details',
+    value: details('no relationship serious harm'),
+  },
+  { question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending', value: 'NO' },
+  {
+    question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details',
+    value: details('no relationship reoffending'),
+  },
+]
 
 // TODO Uncomment it during ACT-757 Thinking and Behaviours framework
 // const thinking: Answer[] = [
@@ -377,7 +376,7 @@ test.describe('View all answers', () => {
         // ...drugUse,
         ...alcohol,
         // ...health,
-        // ...personal,
+        ...personal,
         // ...thinking,
       ])
       .save()

@@ -448,42 +448,39 @@ const domesticAbuseAgainst = question({
   content: {
     code: Question.personal_relationships_community_domestic_abuse_against,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor(
-      'question.personal_relationships_community_domestic_abuse_againt.text',
-      CaseData.ForenamePossessive,
-    ),
+    text: contentFor('question.personal_relationships_community_domestic_abuse_against.text', CaseData.Forename),
     options: [
       {
         value: Option.family_member,
-        text: contentFor('question.personal_relationships_community_domestic_abuse_againt.option.FAMILY_MEMBER.text'),
+        text: contentFor('question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER.text'),
         reveals: requiredDetails({
           code: Question.personal_relationships_community_domestic_abuse_against_family_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_againt.option.FAMILY_MEMBER.validation',
+            'question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER.validation',
           ),
         }),
       },
       {
         value: Option.intimate_partner,
         text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_againt.option.INTIMATE_PARTNER.text',
+          'question.personal_relationships_community_domestic_abuse_against.option.INTIMATE_PARTNER.text',
         ),
         reveals: requiredDetails({
           code: Question.personal_relationships_community_domestic_abuse_against_partner_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_againt.option.INTIMATE_PARTNER.validation',
+            'question.personal_relationships_community_domestic_abuse_against.option.INTIMATE_PARTNER.validation',
           ),
         }),
       },
       {
         value: Option.family_member_and_intimate_partner,
         text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_againt.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.text',
+          'question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.text',
         ),
         reveals: requiredDetails({
           code: Question.personal_relationships_community_domestic_abuse_against_family_and_partner_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_againt.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.validation',
+            'question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.validation',
           ),
         }),
       },
@@ -681,7 +678,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_want_to_make_changes.path }),
   },
 })
 

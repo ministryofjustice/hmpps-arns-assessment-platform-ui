@@ -29,7 +29,7 @@ export const Step = {
   },
   personal_relationships_domestic_abuse_victim_by: {
     code: 'personal_relationships_domestic_abuse_victim_by',
-    path: 'personal-relationships-domestic-abuse-victim_by',
+    path: 'personal-relationships-domestic-abuse-victim-by',
   },
   personal_relationships_want_to_make_changes: {
     code: 'personal_relationships_want_to_make_changes',
