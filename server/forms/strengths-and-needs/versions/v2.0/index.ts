@@ -19,7 +19,7 @@ import { Section } from './constants/section'
 import { basePath, formRootPath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 // import { healthWellbeingJourney } from './journeys/health-wellbeing'
-// import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
+import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 // import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isEditMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
 // import { offenceAnalysisJourney } from './journeys/offence-analysis'
@@ -109,7 +109,7 @@ export const strengthsAndNeedsV2Journey = journey({
     // drugUseJourney,
     alcoholUseJourney,
     // healthWellbeingJourney,
-    // personalRelationshipsJourney,
+    personalRelationshipsJourney,
     // thinkingBehavioursAndAttitudesJourney,
     // offenceAnalysisJourney,
   ],
