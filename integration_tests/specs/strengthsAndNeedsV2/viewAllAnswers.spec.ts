@@ -2,9 +2,11 @@ import { expect, Page } from '@playwright/test'
 import { Section, SectionComplete } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
 import { Question as AlcoholQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/question'
 import { Question as AccommodationQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
+import { Question as HealthQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/question'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
+import { Option as HealthOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
 import { details } from 'testUtils'
 import { buildEditUrl, checkAccessibility, navigateToStrengthsAndNeeds, viewAllAnswers } from './sanUtils'
 import { test, TargetService } from '../../support/fixtures'
@@ -209,35 +211,37 @@ const alcohol: Answer[] = [
   },
 ]
 
-// TODO Uncomment it during ACT-755 Health and Wellbeing framework
 // Deliberately stops before the practitioner analysis, so that heading and its
 // list should be absent for this section.
-// const health: Answer[] = [
-//   { question: 'health_conditions', value: 'YES' },
-//   { question: 'has_health_conditions_details', value: details('health conditions') },
-//   { question: 'mental_health_problems', value: 'YES_ONGOING_SEVERE' },
-//   { question: 'severe_mental_health_problems_details', value: details('severe mental health') },
-//   { question: 'prescribed_physical_health_medications_treatments', value: details('physical medication') },
-//   { question: 'prescribed_mental_health_medications_treatments', value: details('mental health medication') },
-//   { question: 'psychiatric_treatment', value: 'PENDING_TREATMENT' },
-//   { question: 'head_injuries', value: 'YES' },
-//   { question: 'neurodiverse_conditions', value: 'YES' },
-//   { question: 'neurodiverse_conditions_details', value: details('neurodiverse') },
-//   { question: 'impact_on_learning_abilities', value: 'YES_LEARNING_SLIGHTLY_IMPACTED' },
-//   { question: 'learning_abilities_impacted_slightly_details', value: details('slight learning impact') },
-//   { question: 'cope_with_day_to_day_life', value: 'HAS_DIFFICULTIES_COPING' },
-//   { question: 'attitude_towards_self', value: 'WOULD_LIKE_TO_CHANGE_ASPECTS' },
-//   { question: 'self_harm', value: 'YES' },
-//   { question: 'self_harm_details', value: details('self harm') },
-//   { question: 'suicidal_tendencies', value: 'NO' },
-//   { question: 'feeling_about_future_health_wellbeing', value: 'UNSURE_OUTLOOK' },
-//   {
-//     question: 'helped_during_periods_good_health_wellbeing',
-//     value: ['MEDICATION_OR_TREATMENT', 'RELATIONSHIPS', 'OTHER'],
-//   },
-//   { question: 'helped_during_periods_good_health_wellbeing_details', value: details('what helped') },
-//   { question: 'changes_to_health_wellbeing', value: 'NOT_PRESENT' },
-// ]
+const health: Answer[] = [
+  { question: HealthQuestion.health_wellbeing_physical_health_condition, value: CommonOption.yes },
+  { question: HealthQuestion.health_wellbeing_physical_health_condition_yes_details, value: 'health conditions' },
+  { question: HealthQuestion.health_wellbeing_any_mental_health_conditions, value: CommonOption.yes },
+  { question: HealthQuestion.health_wellbeing_mental_health_condition, value: HealthOption.yes_ongoing_severe },
+  {
+    question: HealthQuestion.health_wellbeing_mental_health_condition_yes_ongoing_severe_details,
+    value: 'severe mental health',
+  },
+  { question: HealthQuestion.health_wellbeing_psychiatric_treatment, value: HealthOption.pending_treatment },
+  { question: HealthQuestion.health_wellbeing_learning_difficulties, value: HealthOption.yes_some_difficulties },
+  {
+    question: HealthQuestion.health_wellbeing_learning_difficulties_yes_some_difficulties_details,
+    value: 'slight learning impact',
+  },
+  { question: HealthQuestion.health_wellbeing_coping_day_to_day_life, value: HealthOption.yes_some_difficulties },
+  { question: HealthQuestion.health_wellbeing_gambling, value: HealthOption.yes_their_gambling },
+  { question: HealthQuestion.health_wellbeing_gambling_yes_their_gambling_details, value: 'their gambling' },
+  { question: HealthQuestion.health_wellbeing_attitude_towards_self, value: HealthOption.some_negative_aspects },
+  { question: HealthQuestion.health_wellbeing_self_harmed, value: CommonOption.yes },
+  { question: HealthQuestion.health_wellbeing_self_harmed_yes_details, value: 'self harm' },
+  { question: HealthQuestion.health_wellbeing_attempted_suicide_or_suicidal_thoughts, value: CommonOption.yes },
+  {
+    question: HealthQuestion.health_wellbeing_attempted_suicide_or_suicidal_thoughts_yes_details,
+    value: 'suicidal thoughts',
+  },
+  { question: HealthQuestion.health_wellbeing_changes, value: CommonOption.made_changes },
+  { question: HealthQuestion.health_wellbeing_changes_made_changes_details, value: 'made changes' },
+]
 
 const personal: Answer[] = [
   { question: 'personal_relationships_community_children_details', value: 'YES_CHILDREN_NOT_LIVING_WITH_POP' },
@@ -348,7 +352,7 @@ const statuses: Record<string, string> = {
   // [Section.finance.statusKey]: SectionComplete.no,
   // [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
-  // [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
+  [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
   // [Section.personal_relationships_and_community.statusKey]: SectionComplete.yes,
   // [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
   // [Section.offence_analysis.statusKey]: SectionComplete.no,
@@ -375,7 +379,7 @@ test.describe('View all answers', () => {
         // ...finance,
         // ...drugUse,
         ...alcohol,
-        // ...health,
+        ...health,
         ...personal,
         // ...thinking,
       ])
@@ -426,9 +430,8 @@ test.describe('View all answers', () => {
     // expect(page.getByText('Used more than 6 months ago')).toBeVisible()
 
     // A section stopped before its practitioner analysis shows none.
-    // TODO Uncomment it during ACT-755 Accommodation framework
-    // const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") + dl').first()
-    // expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
+    const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") + dl').first()
+    expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
   test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -484,9 +487,7 @@ test.describe('View all answers', () => {
     expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
     expect(page.getByText('Other', { exact: true })).toBeVisible()
     expect(page.getByText('other reason for no')).toBeVisible()
-
-    // TODO Uncomment it during ACT-755 Health and Wellbeing framework
-    // expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
+    expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
     expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
   })
 })

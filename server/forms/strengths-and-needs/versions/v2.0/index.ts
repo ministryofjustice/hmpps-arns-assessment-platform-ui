@@ -18,7 +18,7 @@ import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
 import { basePath, formRootPath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
-// import { healthWellbeingJourney } from './journeys/health-wellbeing'
+import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 // import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isEditMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
@@ -108,7 +108,7 @@ export const strengthsAndNeedsV2Journey = journey({
     // financeJourney,
     // drugUseJourney,
     alcoholUseJourney,
-    // healthWellbeingJourney,
+    healthWellbeingJourney,
     personalRelationshipsJourney,
     // thinkingBehavioursAndAttitudesJourney,
     // offenceAnalysisJourney,

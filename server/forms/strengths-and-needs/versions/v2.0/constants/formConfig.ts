@@ -5,7 +5,7 @@ import { alcoholUseSection } from '../journeys/alcohol-use/section'
 // import { drugUseSection } from '../journeys/drug-use/section'
 // import { employmentEducationSection } from '../journeys/employment-and-education/section'
 // import { financeSection } from '../journeys/finance/section'
-// import { healthWellbeingSection } from '../journeys/health-wellbeing/section'
+import { healthWellbeingSection } from '../journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from '../journeys/personal-relationships-and-community/section'
 // import { thinkingBehavioursAttitudesSection } from '../journeys/thinking-behaviours-and-attitudes/section'
 // import { offenceAnalysisSection } from '../journeys/offence-analysis/section'
@@ -27,7 +27,7 @@ export const v2FormConfig = {
       // financeSection,
       // drugUseSection,
       alcoholUseSection,
-      // healthWellbeingSection,
+      healthWellbeingSection,
       personalRelationshipsCommunitySection,
       // thinkingBehavioursAttitudesSection,
       // offenceAnalysisSection,
