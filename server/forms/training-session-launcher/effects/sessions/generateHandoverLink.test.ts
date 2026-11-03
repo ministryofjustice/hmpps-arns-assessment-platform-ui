@@ -61,7 +61,7 @@ describe('generateHandoverLink', () => {
   it('should register the training stubs for the session before creating the handover link', async () => {
     // Arrange
     const session = createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accOtherWeightedScore: '4' }, [
-      'SAN_PRIVATE_BETA',
+      'SAN_BETA',
     ])
     givenSession(session)
 
@@ -77,7 +77,7 @@ describe('generateHandoverLink', () => {
     // Arrange
     givenSession(
       createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, [
-        'SAN_PRIVATE_BETA',
+        'SAN_BETA',
       ]),
     )
 
