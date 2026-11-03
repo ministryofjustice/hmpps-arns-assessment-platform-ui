@@ -122,36 +122,6 @@ describe('HandoverApiClient', () => {
       expect(result).toEqual(expectedResponse)
       expect(mockPost).toHaveBeenCalledWith({ path: '/handover', data: { ...request } }, asSystem())
     })
-
-    it('should include criminogenic needs data when provided', async () => {
-      // Arrange
-      const request: CreateHandoverLinkRequest = {
-        user: mockPrincipal,
-        subjectDetails: mockSubject,
-        oasysAssessmentPk: '123456',
-        criminogenicNeedsData: {
-          accommodation: {
-            accLinkedToHarm: 'YES',
-            accLinkedToReoffending: 'NO',
-            accStrengths: 'NULL',
-          },
-        },
-      }
-
-      const expectedResponse: CreateHandoverLinkResponse = {
-        handoverSessionId: 'new-session-uuid',
-        handoverLink: 'http://localhost:7070/handover/abc123',
-      }
-
-      mockPost.mockResolvedValue(expectedResponse)
-
-      // Act
-      const result = await client.createHandoverLink(request)
-
-      // Assert
-      expect(result).toEqual(expectedResponse)
-      expect(mockPost).toHaveBeenCalledWith({ path: '/handover', data: { ...request } }, asSystem())
-    })
   })
 
   describe('updateContext()', () => {

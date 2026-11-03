@@ -77,7 +77,7 @@ export const loadScenarioForCustomise =
 
       if (savedScenario) {
         const seed = generateSeed()
-        const excludedFields = getExcludedFields(savedScenario.flags)
+        const excludedFields = getExcludedFields(savedScenario.flags, savedScenario.fixedValues)
         const randomizeFields = getRandomizeFields(savedScenario.fixedValues, excludedFields)
         const values = applyRandomization(savedScenario.fixedValues, randomizeFields, seed)
         populateForm(context, values, randomizeFields, savedScenario.name, savedScenario.flags)
@@ -111,6 +111,7 @@ function populateForm(
   context.setData('flags', flags)
   context.setData('originalScenarioName', presetName)
   context.setData('stubbedCrn', isStubbedCrn(values.crn) ? values.crn : '')
+  context.setData('mockedCriminogenicNeedsSelection', values.useMockedCriminogenicNeeds === 'YES' ? ['YES'] : [])
 
   // Set per-field randomize flags for RandomizableField components
   for (const fieldKey of scenarioFieldKeys) {

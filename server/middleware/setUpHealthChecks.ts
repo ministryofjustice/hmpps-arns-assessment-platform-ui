@@ -11,8 +11,9 @@ import config from '../config'
  * /health returns HTTP 500 when any component is DOWN, which alerting treats as this
  * service failing. These back the feature-flagged supervision package page only,
  * and it renders a usable state without them, so their outages must not page us.
+ * Wiremock admin only exists in local, dev and test for training launcher's stubs.
  */
-const EXCLUDED_FROM_HEALTH_CHECK = ['tierApi', 'supervisionPackageApi']
+const EXCLUDED_FROM_HEALTH_CHECK = ['tierApi', 'supervisionPackageApi', 'wiremockAdmin']
 
 export default function setUpHealthChecks(applicationInfo: ApplicationInfo): Router {
   const router = express.Router()

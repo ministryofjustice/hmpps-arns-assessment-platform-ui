@@ -2,6 +2,8 @@
  * CRNs that Wiremock answers for in local, dev and test instead of the real Delius, ARNS, Tier
  * and Supervision Package APIs. Keep in step with the mapping files under
  * helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings and docker/wiremock/mappings.
+ *
+ * Everyone shares these, so the launcher never registers its own stubs for them.
  */
 export interface StubbedCrn {
   crn: string
