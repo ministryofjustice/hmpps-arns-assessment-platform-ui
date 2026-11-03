@@ -1,4 +1,12 @@
-import { and, Answer, ChainableExpr, Condition, or, Request } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  and,
+  Answer,
+  ChainableExpr,
+  Condition,
+  or,
+  Request,
+  ResolvableExpression,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { StrengthsAndNeedsTransformers } from '../transformers'
 import { StrengthsAndNeedsConditions } from '../conditions'
@@ -17,8 +25,25 @@ export type Locale<T> = {
 
 export const contentFrom =
   <T>(locales: Locales) =>
-  (code: Paths<T>, ...replacements: any[]): ChainableExpr =>
-    Request.Headers('accept-language').pipe(StrengthsAndNeedsTransformers.ContentFor(locales, code, ...replacements))
+  (code: Paths<T> | ResolvableExpression, ...replacements: any[]): ChainableExpr => {
+    if (typeof code !== 'string') {
+      return Request.Headers('accept-language').pipe(
+        StrengthsAndNeedsTransformers.ContentFor(locales, code, ...replacements),
+      )
+    }
+
+    const path = code.split('.')
+    const translations = Object.fromEntries(
+      Object.entries(locales).map(([language, content]): [string, string | null] => {
+        const value = path.reduce((entry, segment) => entry?.[segment], content)
+        return [language, typeof value === 'string' ? value : null]
+      }),
+    )
+
+    return Request.Headers('accept-language').pipe(
+      StrengthsAndNeedsTransformers.ContentValue(translations, ...replacements),
+    )
+  }
 
 export const getDisplayTextForItems = (fieldCode: string, items: any[], options: { size?: 's' | 'l' } = {}) =>
   items.filter(item => !item.divider)

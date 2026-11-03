@@ -35,7 +35,7 @@ describe('trainingStubs', () => {
     it('should import the needs stubs built from the session values when mocked needs are on for Private Beta', async () => {
       const values = toValues({ useMockedCriminogenicNeeds: 'YES', accOtherWeightedScore: '4' })
 
-      await registerTrainingStubs(client, values, ['SAN_PRIVATE_BETA'])
+      await registerTrainingStubs(client, values, ['SAN_BETA'])
 
       expect(ArnsNeedsStubBuilder.build).toHaveBeenCalledWith('X123456', values)
       expect(client.importStubs).toHaveBeenCalledWith([stub])
@@ -46,9 +46,9 @@ describe('trainingStubs', () => {
       {
         description: 'the mocks are off',
         values: { useMockedCriminogenicNeeds: 'NO' as const },
-        flags: ['SAN_PRIVATE_BETA' as const],
+        flags: ['SAN_BETA' as const],
       },
-      { description: 'the session predates the mocks setting', values: {}, flags: ['SAN_PRIVATE_BETA' as const] },
+      { description: 'the session predates the mocks setting', values: {}, flags: ['SAN_BETA' as const] },
       {
         description: 'the session is not Private Beta',
         values: { useMockedCriminogenicNeeds: 'YES' as const },
@@ -70,7 +70,7 @@ describe('trainingStubs', () => {
       jest.mocked(ArnsNeedsStubBuilder.build).mockReturnValue([])
       const values = toValues({ useMockedCriminogenicNeeds: 'YES' })
 
-      await registerTrainingStubs(client, values, ['SAN_PRIVATE_BETA'])
+      await registerTrainingStubs(client, values, ['SAN_BETA'])
 
       expect(client.importStubs).not.toHaveBeenCalled()
       expect(client.removeStubs).toHaveBeenCalledWith(needsStubIds)
@@ -80,7 +80,7 @@ describe('trainingStubs', () => {
       client.canStub.mockReturnValue(false)
       const values = toValues({ useMockedCriminogenicNeeds: 'YES', accOtherWeightedScore: '4' })
 
-      await registerTrainingStubs(client, values, ['SAN_PRIVATE_BETA'])
+      await registerTrainingStubs(client, values, ['SAN_BETA'])
 
       expect(client.importStubs).not.toHaveBeenCalled()
       expect(client.removeStubs).not.toHaveBeenCalled()
@@ -89,7 +89,7 @@ describe('trainingStubs', () => {
     it('should not touch the stubs for a magic CRN', async () => {
       const values = toValues({ crn: 'X444444', useMockedCriminogenicNeeds: 'YES', accOtherWeightedScore: '4' })
 
-      await registerTrainingStubs(client, values, ['SAN_PRIVATE_BETA'])
+      await registerTrainingStubs(client, values, ['SAN_BETA'])
 
       expect(ArnsNeedsStubBuilder.build).not.toHaveBeenCalled()
       expect(client.importStubs).not.toHaveBeenCalled()
@@ -101,7 +101,7 @@ describe('trainingStubs', () => {
       async crn => {
         const values = toValues({ crn, useMockedCriminogenicNeeds: 'YES', accOtherWeightedScore: '4' })
 
-        await registerTrainingStubs(client, values, ['SAN_PRIVATE_BETA'])
+        await registerTrainingStubs(client, values, ['SAN_BETA'])
 
         expect(ArnsNeedsStubBuilder.build).not.toHaveBeenCalled()
         expect(client.importStubs).not.toHaveBeenCalled()

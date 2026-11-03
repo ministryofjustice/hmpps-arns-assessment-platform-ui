@@ -6,6 +6,13 @@ import { escape, unescape } from './transformers/html-encoder'
 
 const DEFAULT_LANGUAGE = 'en-gb'
 
+const languageFrom = (language: string): string => language?.split(',')[0]?.toLowerCase() ?? DEFAULT_LANGUAGE
+
+const replaceContent = (content: unknown, replacements: string[]): string =>
+  typeof content === 'string'
+    ? replacements.reduce((result, value, index) => result.replace(`%${index + 1}`, value), content)
+    : 'NO_TRANSLATION'
+
 const ordinalSuffix = (day: number): string => {
   const remainderTen = day % 10
   const remainderHundred = day % 100
@@ -23,17 +30,24 @@ export const StrengthsAndNeedsTransformers = {
     'ContentFor',
     () =>
       (language: string, locales: Locales, path: string, ...replacements: string[]): string => {
-        const lang = (language?.split(',')[0]?.toLowerCase() ?? DEFAULT_LANGUAGE) as unknown as Language
+        const lang = languageFrom(language) as Language
 
         const pathParts = path.split('.')
 
         const raw = pathParts.reduce((acc, segment) => acc?.[segment], locales[lang] ?? locales['en-gb'])
 
-        if (typeof raw !== 'string') {
-          return 'NO_TRANSLATION'
-        }
+        return replaceContent(raw, replacements)
+      },
+  ),
 
-        return replacements.reduce((acc, value, index) => acc.replace(`%${index + 1}`, value), raw)
+  ContentValue: sanTransformers.register(
+    'ContentValue',
+    () =>
+      (language: string, translations: Record<string, string | null>, ...replacements: string[]): string => {
+        const lang = languageFrom(language)
+        // A missing value in a supported locale must not fall back to English.
+        const raw = lang in translations ? translations[lang] : translations[DEFAULT_LANGUAGE]
+        return replaceContent(raw, replacements)
       },
   ),
 

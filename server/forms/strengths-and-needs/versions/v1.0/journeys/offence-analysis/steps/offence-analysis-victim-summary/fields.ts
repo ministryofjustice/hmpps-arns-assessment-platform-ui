@@ -45,7 +45,7 @@ const victimCardActions = {
 }
 
 const victimCardTitle = {
-  text: contentFor('victim_card_title', commonContentFor(Format('ordinals.%1', Loop.Index()) as any)).pipe(
+  text: contentFor('victim_card_title', commonContentFor(Format('ordinals.%1', Loop.Index()))).pipe(
     Transformer.String.Capitalize(),
   ),
 }
