@@ -3,7 +3,6 @@ import type { CreateHandoverLinkRequest } from '@server/interfaces/handover-api/
 import type {
   HandoverPrincipalDetails,
   HandoverSubjectDetails,
-  CriminogenicNeedsData,
   AccessMode,
   Location,
 } from '@server/interfaces/handover-api/shared'
@@ -67,8 +66,6 @@ export class HandoverBuilderInstance {
   private subject: Partial<HandoverSubjectDetails> = {}
 
   private omitCrn = false
-
-  private criminogenicNeeds: CriminogenicNeedsData | undefined
 
   private planVersion: number | undefined
 
@@ -190,15 +187,6 @@ export class HandoverBuilderInstance {
   }
 
   /**
-   * Set criminogenic needs data from OASys
-   */
-  withCriminogenicNeeds(needs: CriminogenicNeedsData): this {
-    this.criminogenicNeeds = needs
-
-    return this
-  }
-
-  /**
    * Set the plan version to include in the handover request.
    * When set, indicates the user is accessing a previous version of the plan.
    */
@@ -238,7 +226,6 @@ export class HandoverBuilderInstance {
         subjectDetails,
         oasysAssessmentPk: this.association.oasysAssessmentPk,
         sentencePlanVersion: this.planVersion,
-        criminogenicNeedsData: this.criminogenicNeeds,
       }
 
       const handoverResponse = await test.step('POST /handover (createHandoverLink)', () =>

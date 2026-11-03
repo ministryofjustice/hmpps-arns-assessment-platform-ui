@@ -75,7 +75,7 @@ export const createSessionFromPreset =
     const savedScenario = trainingLauncher.savedScenarios.find(s => s.id === scenarioId)
 
     if (savedScenario) {
-      const excludedFields = getExcludedFields(savedScenario.flags)
+      const excludedFields = getExcludedFields(savedScenario.flags, savedScenario.fixedValues)
       const randomizeFields = getRandomizeFields(savedScenario.fixedValues, excludedFields)
       const values = applyRandomization(savedScenario.fixedValues, randomizeFields, seed)
 

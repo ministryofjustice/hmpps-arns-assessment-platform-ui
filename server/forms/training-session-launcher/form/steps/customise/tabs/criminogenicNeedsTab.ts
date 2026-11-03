@@ -1,6 +1,11 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { GovUKTextInput, GovUKRadioInput, GovUKDetails } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  GovUKTextInput,
+  GovUKRadioInput,
+  GovUKDetails,
+  GovUKCheckboxInput,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
 
 /**
@@ -136,6 +141,19 @@ export const criminogenicNeedsTabContent = [
         Check "Randomise" to generate a new value each time the scenario is loaded.
       </p>
     `,
+  }),
+
+  GovUKCheckboxInput({
+    code: 'useMockedCriminogenicNeeds',
+    classes: 'govuk-checkboxes--small',
+    defaultValue: Data('mockedCriminogenicNeedsSelection'),
+    items: [
+      {
+        value: 'YES',
+        text: 'Use mocked criminogenic needs',
+        hint: 'The values below are returned in place of the ARNS API for this CRN. Only used with the SAN Private Beta flag, as Sentence Plan only shows criminogenic needs for Private Beta. Untick to use the data held by the real ARNS API in dev and test. When running locally, unticking gives the canned needs Wiremock returns for every CRN.',
+      },
+    ],
   }),
 
   // Accommodation (Section 3)
