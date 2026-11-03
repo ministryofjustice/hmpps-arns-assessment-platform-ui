@@ -76,9 +76,7 @@ describe('generateHandoverLink', () => {
   it('should not send criminogenic needs in the handover request, even for SAN Private Beta', async () => {
     // Arrange
     givenSession(
-      createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, [
-        'SAN_BETA',
-      ]),
+      createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, ['SAN_BETA']),
     )
 
     // Act
