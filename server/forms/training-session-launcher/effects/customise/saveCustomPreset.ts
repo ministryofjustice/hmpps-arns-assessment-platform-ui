@@ -3,6 +3,7 @@ import { TrainingScenarioFlag } from '../../constants'
 import { scenarioFieldKeys, ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, SavedScenario } from '../../types'
 import { TrainingSessionLauncherEffectsDeps, TrainingLauncherNotification } from '../types'
+import { readMockedNeedsAnswer } from './readMockedNeedsAnswer'
 
 /**
  * Default empty preferences
@@ -46,6 +47,8 @@ function collectCustomisationData(context: TrainingSessionLauncherContext): {
   if (typeof stubbedCrn === 'string' && stubbedCrn !== '') {
     fixedValues.crn = stubbedCrn
   }
+
+  fixedValues.useMockedCriminogenicNeeds = readMockedNeedsAnswer(context)
 
   return {
     scenarioName,

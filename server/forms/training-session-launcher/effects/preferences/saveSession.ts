@@ -1,5 +1,6 @@
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
+import { removeTrainingStubs } from '../sessions/trainingStubs'
 
 /**
  * Default empty preferences
@@ -42,8 +43,15 @@ export const saveSession =
     })
   }
 
+async function loadSessions(deps: TrainingSessionLauncherEffectsDeps, preferencesId: string): Promise<Session[]> {
+  const preferences = await deps.preferencesStore.get<{ trainingLauncher?: TrainingLauncherPreferences }>(preferencesId)
+
+  return preferences?.trainingLauncher?.sessions ?? []
+}
+
 /**
- * Delete a session from user preferences.
+ * Delete a session from user preferences, and its Wiremock stubs unless another of the user's sessions uses
+ * the same CRN.
  *
  * Reads the session ID from POST data (trainingSessionId field).
  */
@@ -60,6 +68,10 @@ export const deleteSession =
       throw new Error('Cannot delete session: trainingSessionId is missing from POST data')
     }
 
+    const sessions = await loadSessions(deps, preferencesId)
+    const deletedCrn = sessions.find(s => s.id === sessionId)?.values.crn
+    const isCrnStillUsed = sessions.some(s => s.id !== sessionId && s.values.crn === deletedCrn)
+
     await deps.preferencesStore.update<{ trainingLauncher?: TrainingLauncherPreferences }>(preferencesId, current => {
       const trainingLauncher = current?.trainingLauncher ?? DEFAULT_PREFERENCES
 
@@ -71,10 +83,14 @@ export const deleteSession =
         },
       }
     })
+
+    if (deletedCrn && !isCrnStillUsed) {
+      await removeTrainingStubs(deps.wiremockAdminClient, deletedCrn)
+    }
   }
 
 /**
- * Delete all sessions from user preferences.
+ * Delete all sessions from user preferences, and their Wiremock stubs.
  */
 export const deleteAllSessions =
   (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
@@ -83,6 +99,8 @@ export const deleteAllSessions =
     if (!preferencesId) {
       throw new Error('Cannot delete sessions: preferencesId is missing from state')
     }
+
+    const crns = new Set((await loadSessions(deps, preferencesId)).map(s => s.values.crn))
 
     await deps.preferencesStore.update<{ trainingLauncher?: TrainingLauncherPreferences }>(preferencesId, current => {
       const trainingLauncher = current?.trainingLauncher ?? DEFAULT_PREFERENCES
@@ -95,4 +113,6 @@ export const deleteAllSessions =
         },
       }
     })
+
+    await Promise.all([...crns].map(crn => removeTrainingStubs(deps.wiremockAdminClient, crn)))
   }
