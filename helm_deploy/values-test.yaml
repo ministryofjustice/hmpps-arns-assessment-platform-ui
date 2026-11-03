@@ -50,6 +50,8 @@ generic-service:
     FORGE_DEVTOOLS_ENABLED: 'true'
     AUDIT_ENABLED: 'true'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+    CAN_STUB_ARNS_API: 'true'
+    WIREMOCK_ADMIN_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/__admin'
     SMART_SURVEY_POPUP_CODE: 'XF5PNV'
 
   allowlist:
@@ -74,7 +76,8 @@ generic-service:
 wiremock:
   enabled: true
   nameOverride: wiremock
-  replicaCount: 2
+  # One replica because the training launcher registers stubs over Wiremock's admin API, which only reaches one pod
+  replicaCount: 1
 
   image:
     repository: wiremock/wiremock

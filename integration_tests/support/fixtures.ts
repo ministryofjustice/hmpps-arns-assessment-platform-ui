@@ -298,16 +298,12 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         sessionBuilder.withPlanAccessMode(options.planAccessMode)
       }
 
-      // Handle criminogenic needs data:
-      // - If explicitly null, don't set any data (for testing missing data scenarios)
+      // Criminogenic needs for the ARNS stub below:
+      // - If explicitly null, no needs (for testing missing data scenarios)
       // - If provided, use the provided data
       // - Otherwise use defaults so tests work without explicit setup
       const criminogenicNeeds =
         options.criminogenicNeedsData === null ? null : (options.criminogenicNeedsData ?? defaultCriminogenicNeedsData)
-
-      if (criminogenicNeeds) {
-        sessionBuilder.withCriminogenicNeeds(criminogenicNeeds)
-      }
 
       if (options.planVersion) {
         sessionBuilder.withPlanVersion(options.planVersion)

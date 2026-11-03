@@ -210,7 +210,7 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
  */
 function resolveSavedScenario(saved: SavedScenario): ResolvedScenario {
   const seed = generateSeed()
-  const excludedFields = getExcludedFields(saved.flags)
+  const excludedFields = getExcludedFields(saved.flags, saved.fixedValues)
   const randomizeFields = getRandomizeFields(saved.fixedValues, excludedFields)
 
   return {
