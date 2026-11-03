@@ -123,7 +123,7 @@ describe('initializeStepEditSession', () => {
 
       // Assert
       expect(session.stepChanges!['goal-1']).toEqual({
-        steps: [{ id: 'step_0', actor: '', description: '', status: '' }],
+        steps: [{ id: 'step_0', actor: '', description: '', status: 'NOT_STARTED' }],
         toCreate: ['step_0'],
         toUpdate: [],
         toDelete: [],
