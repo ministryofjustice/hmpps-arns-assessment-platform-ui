@@ -58,7 +58,7 @@ export const removeStepFromStepEditSession = () => async (context: SentencePlanC
       id: newStepId,
       actor: '',
       description: '',
-      status: '',
+      status: 'NOT_STARTED',
     }
 
     changes.toCreate.push(newStepId)

@@ -32,7 +32,6 @@ const stepDescriptionLabelText = 'What should they do to achieve the goal?'
 const stepStatusLabelText = 'What is the status?'
 
 const stepStatusOptions = [
-  { value: '', text: 'Choose status' },
   { value: 'NOT_STARTED', text: 'Not started' },
   { value: 'IN_PROGRESS', text: 'In progress' },
   { value: 'COMPLETED', text: 'Completed' },
@@ -169,12 +168,6 @@ export const stepRows = HtmlBlock({
                   },
                   items: stepStatusOptions,
                   defaultValue: Item().path('status'),
-                  validWhen: [
-                    validation({
-                      condition: Self().match(Condition.IsRequired()),
-                      message: 'Select the status',
-                    }),
-                  ],
                 }),
               }),
             ],

@@ -88,6 +88,44 @@ test.describe('Add or update steps page', () => {
     })
   })
 
+  test.describe('step status', () => {
+    test('defaults a new step to Not started and shows the available status options', async ({
+      page,
+      createSession,
+    }) => {
+      const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await navigateToSentencePlan(page, handoverLink)
+
+      await page.goto('/sentence-plan/v1.0/goal/new/add-goal/accommodation')
+
+      const createGoalPage = await CreateGoalPage.verifyOnPage(page)
+      await createGoalPage.enterGoalTitle('Test goal heading')
+      await createGoalPage.selectIsRelated(false)
+      await createGoalPage.selectCanStartNow(true)
+      await createGoalPage.selectTargetDateOption('3_months')
+      await createGoalPage.clickAddSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      const statusSelect = await addStepsPage.getStepStatusSelect(0)
+      const statusToggle = page.locator('#step_status_0')
+      await expect(statusSelect).toHaveValue('NOT_STARTED')
+      await expect(statusToggle).toHaveText('Not started')
+      await expect(page.locator('#step_status_0-error')).toHaveCount(0)
+
+      await statusToggle.click()
+
+      const statusOptions = page.locator('#step_status_0-menu').getByRole('option')
+      await expect(statusOptions).toHaveText([
+        'Not started',
+        'In progress',
+        'Completed',
+        'Cannot be done yet',
+        'No longer needed',
+      ])
+      await expect(statusOptions.filter({ hasText: /^Not started$/ })).toHaveAttribute('aria-selected', 'true')
+    })
+  })
+
   test.describe('goal context inset text', () => {
     test('displays the area of need in the inset in lower case when goal has no related areas', async ({
       page,
