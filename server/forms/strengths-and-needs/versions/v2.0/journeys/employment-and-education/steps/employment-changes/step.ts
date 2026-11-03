@@ -1,6 +1,14 @@
-import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { employmentEducationSection } from '../../section'
+import { employmentEducationSection, hasEducationalDifficulties } from '../../section'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
@@ -9,6 +17,8 @@ import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
 
 export const employmentChangesStep = step({
   path: `/${Step.employment_changes.path}`,
@@ -17,6 +27,11 @@ export const employmentChangesStep = step({
   view: {
     locals: {
       sectionTitleClass,
+      backlink: when(hasEducationalDifficulties)
+        .then(createRoute([...baseSanRoute, Section.employment_and_education.path, Step.education_difficulties.path]))
+        .else(
+          createRoute([...baseSanRoute, Section.employment_and_education.path, Step.employment_education_details.path]),
+        ),
     },
   },
   blocks: [employmentEducationSection.questions.changes.displayModes.field, saveButton],
@@ -40,20 +55,20 @@ export const employmentChangesStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employment_changes),
         ],
         next: [
           redirect({
-            goto: Step.employment_education_details.path,
+            goto: Step.employment_education_summary.path,
           }),
         ],
       },
       onInvalid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employment_changes),
         ],

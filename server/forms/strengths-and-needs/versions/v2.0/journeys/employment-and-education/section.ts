@@ -23,12 +23,15 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
+import { checkboxSummaryRow } from '../../../v1.0/constants/questionContent'
 
 export const isEmployedOrSelfEmployed = Answer(Question.community_employment_status).match(
   Condition.Equals(Option.employed_or_self_employed),
 )
 
-export const notWorking = not(isEmployedOrSelfEmployed)
+export const isRetired = Answer(Question.community_employment_status).match(Condition.Equals(Option.retired))
+
+export const notWorkingOrAvailableForWork = not(or(isEmployedOrSelfEmployed, isRetired))
 
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
@@ -37,13 +40,15 @@ const hasBeenEmployed = or(
   Answer(Question.community_ever_had_a_job).match(Condition.Equals(CommonOption.yes)),
 )
 
-const hasBeenEmployedOrRetired = or(
-  hasBeenEmployed,
-  Answer(Question.community_employment_status).match(Condition.Equals(Option.retired)),
-)
+const hasBeenEmployedOrRetired = or(hasBeenEmployed, isRetired)
 
-const isNotRetired = Answer(Question.community_employment_status).not.match(Condition.Equals(Option.retired))
+const hasReadingDifficulties = Answer(Question.education_difficulties).match(Condition.Array.Contains(Option.reading))
+const hasWritingDifficulties = Answer(Question.education_difficulties).match(Condition.Array.Contains(Option.writing))
+const hasNumeracyDifficulties = Answer(Question.education_difficulties).match(Condition.Array.Contains(Option.numeracy))
 
+export const hasEducationalDifficulties = or(hasReadingDifficulties, hasWritingDifficulties, hasNumeracyDifficulties)
+
+const isNotRetired = not(isRetired)
 const currentEmploymentStatus = question({
   content: {
     code: Question.community_employment_status,
@@ -67,8 +72,8 @@ const currentEmploymentStatus = question({
     validationMessage: commonContentFor('select_one_option'),
   },
   displayModes: {
-    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: textSummaryRow({
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_status.path,
     }),
   },
@@ -78,7 +83,7 @@ const everHadAJob = question({
   content: {
     code: Question.community_ever_had_a_job,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.community_ever_had_a_job.text'),
+    text: contentFor('question.community_ever_had_a_job.text', CaseData.Forename),
     options: [
       { value: CommonOption.yes, text: commonContentFor('option.YES') },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
@@ -89,7 +94,7 @@ const everHadAJob = question({
     field: radioField(),
     summaryRow: textSummaryRow({
       changeHref: Step.employment_education_details.path,
-      visibleWhen: notWorking,
+      visibleWhen: notWorkingOrAvailableForWork,
     }),
   },
 })
@@ -148,25 +153,28 @@ const employmentHistory = question({
 
 const dayToDayCommitments = question({
   content: {
-    code: Question.employment_other_responsibilities,
+    code: Question.community_employment_other_responsibilities,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.employment_other_responsibilities.text', CaseData.Forename),
-    hint: contentFor('question.employment_other_responsibilities.hint'),
+    text: contentFor('question.community_employment_other_responsibilities.text', CaseData.Forename),
+    hint: contentFor('question.community_employment_other_responsibilities.hint'),
     options: [
       {
         value: Option.carer,
-        text: contentFor('question.employment_other_responsibilities.option.CARER'),
+        text: contentFor('question.community_employment_other_responsibilities.option.CARER'),
         reveals: optionalDetails({ code: Question.employment_other_responsibilities_carer_details }),
       },
       {
         value: Option.child,
-        text: contentFor('question.employment_other_responsibilities.option.CHILD'),
+        text: contentFor('question.community_employment_other_responsibilities.option.CHILD'),
         reveals: optionalDetails({ code: Question.employment_other_responsibilities_child_details }),
       },
-      { value: Option.studying, text: contentFor('question.employment_other_responsibilities.option.STUDYING') },
+      {
+        value: Option.studying,
+        text: contentFor('question.community_employment_other_responsibilities.option.STUDYING'),
+      },
       {
         value: Option.volunteer,
-        text: contentFor('question.employment_other_responsibilities.option.VOLUNTEER'),
+        text: contentFor('question.community_employment_other_responsibilities.option.VOLUNTEER'),
         reveals: optionalDetails({ code: Question.employment_other_responsibilities_volunteer_details }),
       },
       {
@@ -178,10 +186,28 @@ const dayToDayCommitments = question({
       { divider: commonContentFor('or') },
       { value: CommonOption.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' as const },
     ],
-    validationMessage: contentFor('question.employment_other_responsibilities.validation'),
+    validationMessage: contentFor('question.community_employment_other_responsibilities.validation'),
   },
   displayModes: {
     field: checkboxField(),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
+  },
+})
+
+const academicProfessionalOrVocationalQualifications = question({
+  content: {
+    code: Question.education_academic_professional_vocational_qualifications,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.education_academic_professional_vocational_qualifications.text', CaseData.Forename),
+    options: [
+      { value: CommonOption.yes, text: commonContentFor('option.YES') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
+    validationMessage: contentFor('question.education_academic_professional_vocational_qualifications.validation'),
+  },
+  displayModes: {
+    field: radioField(),
     summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
@@ -213,8 +239,8 @@ const jobSkills = question({
     validationMessage: contentFor('question.education_transferable_skills.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
+    field: radioField({ dependentWhen: isNotRetired, visibleWhen: isNotRetired }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path, visibleWhen: isNotRetired }),
   },
 })
 
@@ -248,15 +274,15 @@ const difficultiesReadingWritingNumeracy = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
+    summaryRow: checkboxSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 
-const readingSeverity = question({
+const readingDifficulties = question({
   content: {
     code: Question.education_difficulties_reading_severity,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.education_difficulties_reading_severity.text'),
+    text: contentFor('question.education_difficulties_reading_severity.text', CaseData.Forename),
     options: [
       { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
       { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
@@ -264,16 +290,19 @@ const readingSeverity = question({
     validationMessage: contentFor('question.education_difficulties_reading_severity.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.education_severities.path }),
+    field: radioField({ dependentWhen: hasReadingDifficulties, visibleWhen: hasReadingDifficulties }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.education_difficulties.path,
+      visibleWhen: hasReadingDifficulties,
+    }),
   },
 })
 
-const writingSeverity = question({
+const writingDifficulties = question({
   content: {
     code: Question.education_difficulties_writing_severity,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.education_difficulties_writing_severity.text'),
+    text: contentFor('question.education_difficulties_writing_severity.text', CaseData.Forename),
     options: [
       { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
       { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
@@ -281,16 +310,19 @@ const writingSeverity = question({
     validationMessage: contentFor('question.education_difficulties_writing_severity.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.education_severities.path }),
+    field: radioField({ dependentWhen: hasWritingDifficulties, visibleWhen: hasWritingDifficulties }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.education_difficulties.path,
+      visibleWhen: hasReadingDifficulties,
+    }),
   },
 })
 
-const numeracySeverity = question({
+const numeracyDifficulties = question({
   content: {
     code: Question.education_difficulties_numeracy_severity,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.education_difficulties_numeracy_severity.text'),
+    text: contentFor('question.education_difficulties_numeracy_severity.text', CaseData.Forename),
     options: [
       { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
       { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
@@ -298,8 +330,11 @@ const numeracySeverity = question({
     validationMessage: contentFor('question.education_difficulties_numeracy_severity.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.education_severities.path }),
+    field: radioField({ dependentWhen: hasNumeracyDifficulties, visibleWhen: hasNumeracyDifficulties }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.education_difficulties.path,
+      visibleWhen: hasReadingDifficulties,
+    }),
   },
 })
 
@@ -353,7 +388,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_changes.path }),
   },
 })
 
@@ -462,11 +497,12 @@ export const employmentEducationSection = {
     everHadAJob,
     employmentHistory,
     dayToDayCommitments,
+    academicProfessionalOrVocationalQualifications,
     jobSkills,
     difficultiesReadingWritingNumeracy,
-    readingSeverity,
-    writingSeverity,
-    numeracySeverity,
+    readingDifficulties,
+    writingDifficulties,
+    numeracyDifficulties,
     changes,
   },
   practitionerAnalysis: {

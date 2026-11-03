@@ -8,6 +8,8 @@ import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
 import { employmentChangesStep } from './steps/employment-changes/step'
+import { hasEverHadAJobStep } from './steps/employment-community-ever-had-a-job/step'
+import { educationDifficultiesStep } from './steps/employment-education-difficulties/step'
 
 /**
  * Employment Journey
@@ -31,7 +33,9 @@ export const employmentJourney = journey({
   },
   steps: [
     employmentStatusStep,
+    hasEverHadAJobStep,
     employmentEducationDetailsStep,
+    educationDifficultiesStep,
     employmentChangesStep,
     employmentEducationSummaryStep,
     employmentEducationAnalysisStep,

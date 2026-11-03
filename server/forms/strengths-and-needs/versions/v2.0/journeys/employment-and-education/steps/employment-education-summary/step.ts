@@ -36,7 +36,7 @@ export const employmentEducationSummaryStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.yes),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.employment_and_education, SectionComplete.yes),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
@@ -49,7 +49,7 @@ export const employmentEducationSummaryStep = step({
       onInvalid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.employment_and_education, SectionComplete.no),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.employment_and_education,

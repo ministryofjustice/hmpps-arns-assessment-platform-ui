@@ -11,9 +11,9 @@ export const Step = {
     code: 'employment_education_details',
     path: 'employment-education-details',
   },
-  education_severities: {
-    code: 'education_severities',
-    path: 'education-severities',
+  education_difficulties: {
+    code: 'education_difficulties',
+    path: 'education-difficulties',
   },
   employment_changes: {
     code: 'employment_changes',

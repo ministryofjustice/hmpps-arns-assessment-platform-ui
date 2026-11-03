@@ -44,7 +44,7 @@ export const english = {
       hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their employment and education',
     },
-    [Question.employment_other_responsibilities]: {
+    [Question.community_employment_other_responsibilities]: {
       text: 'Does %1 have any additional day-to-day commitments?',
       hint: 'Select all that apply.',
       option: {
@@ -71,6 +71,10 @@ export const english = {
       },
       validation: 'Select if they have any skills that could help them in a job or to get a job',
     },
+    [Question.education_academic_professional_vocational_qualifications]: {
+      text: 'Does %1 have any academic, professional or vocational qualifications?',
+      validation: `Select if they have have any academic, professional or vocational qualifications`,
+    },
     [Question.education_difficulties]: {
       text: 'Does %1 have difficulties with reading, writing or numeracy?',
       hint: 'Select all that apply.',
@@ -82,16 +86,16 @@ export const english = {
       },
       validation: `Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'`,
     },
-    [Question.education_difficulties_numeracy_severity]: {
-      text: 'Select level of difficulty',
+    [Question.education_difficulties_reading_severity]: {
+      text: 'How much support does %1 need with reading?',
       validation: 'Select level of difficulty',
     },
     [Question.education_difficulties_writing_severity]: {
-      text: 'Select level of difficulty',
+      text: 'How much support does %1 need with writing?',
       validation: 'Select level of difficulty',
     },
-    [Question.education_difficulties_reading_severity]: {
-      text: 'Select level of difficulty',
+    [Question.education_difficulties_numeracy_severity]: {
+      text: 'How much support does %1 need with numeracy?',
       validation: 'Select level of difficulty',
     },
     [Question.employment_history_stable_details]: {

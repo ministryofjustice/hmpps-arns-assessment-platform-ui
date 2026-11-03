@@ -5,14 +5,22 @@ import { Question as AccommodationQuestion } from '@server/forms/strengths-and-n
 import { Question as HealthQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/question'
 import { Question as PersonalRelationshipsQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/question'
 import { Question as ThinkingBehavioursQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import { Question as EmploymentQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/question'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
 import { Option as HealthOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
 import { Option as PersonalRelationshipsOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
 import { Option as ThinkingBehavioursOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/option'
+import { Option as EmploymentOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/option'
 import { details } from 'testUtils'
-import { buildEditUrl, checkAccessibility, navigateToStrengthsAndNeeds, viewAllAnswers } from './sanUtils'
+import {
+  buildEditUrl,
+  checkAccessibility,
+  navigateToStrengthsAndNeeds,
+  sanPageTitles,
+  viewAllAnswers,
+} from './sanUtils'
 import { test, TargetService } from '../../support/fixtures'
 
 type Answer = { question: string; value: string | string[] }
@@ -83,39 +91,73 @@ const accommodation: Answer[] = [
   },
 ]
 
-// TODO Uncomment it during ACT-751 Employment and Education framework
-// const employment: Answer[] = [
-//   { question: 'current_employment_status', value: 'EMPLOYED' },
-//   { question: 'type_of_employment', value: 'FULL_TIME' },
-//   { question: 'employment_sector', value: 'Construction' },
-//   { question: 'employment_history', value: 'PERIODS_OF_INSTABILITY' },
-//   { question: 'changes_often_employment_history_employment_details', value: details('unstable spells') },
-//   { question: 'day_to_day_commitments', value: ['CARING', 'CHILDREN', 'OTHER'] },
-//   { question: 'day_to_day_caring_responsibilities_details', value: details('caring') },
-//   { question: 'day_to_day_child_responsibilities_details', value: details('children') },
-//   { question: 'day_to_day_other_commitments_details', value: details('other commitments') },
-//   { question: 'academic_qualification', value: 'LEVEL_3' },
-//   { question: 'professional_qualification', value: 'YES' },
-//   { question: 'professional_qualification_details', value: details('CSCS card') },
-//   { question: 'job_skills', value: 'SOME_SKILLS' },
-//   { question: 'some_job_skills_details', value: details('some skills') },
-//   // Multi-select whose options reveal *optioned* follow-ups.
-//   { question: 'difficulties_reading_writing_numeracy', value: ['YES_READING', 'YES_NUMERACY'] },
-//   { question: 'reading_difficulty_level', value: 'SIGNIFICANT_DIFFICULTIES' },
-//   { question: 'numeracy_difficulty_level', value: 'SOME_DIFFICULTIES' },
-//   { question: 'employment_experience', value: 'MOSTLY_POSITIVE' },
-//   { question: 'mostly_positive_employment_experience_details', value: details('mostly positive at work') },
-//   { question: 'education_experience', value: 'NEGATIVE' },
-//   { question: 'negative_education_experience_details', value: details('negative at school') },
-//   { question: 'employment_and_education_changes', value: 'HAS_MADE_CHANGES' },
-//   { question: 'has_made_positive_changes_details', value: details('has made changes') },
-//   { question: 'employment_education_strengths_protective_factors', value: 'YES' },
-//   { question: 'employment_education_strengths_protective_factors_details', value: details('employment strengths') },
-//   { question: 'employment_education_linked_to_serious_harm', value: 'NO' },
-//   { question: 'employment_education_no_serious_harm_details', value: details('no serious harm') },
-//   { question: 'employment_education_linked_to_reoffending', value: 'NO' },
-//   { question: 'employment_education_no_risk_of_reoffending_details', value: details('no reoffending link') },
-// ]
+const employment: Answer[] = [
+  { question: EmploymentQuestion.community_employment_status, value: EmploymentOption.employed_or_self_employed },
+  { question: EmploymentQuestion.employment_history, value: EmploymentOption.stable },
+  { question: EmploymentQuestion.employment_history_stable_details, value: details('Stable employment details') },
+  {
+    question: EmploymentQuestion.community_employment_other_responsibilities,
+    value: [EmploymentOption.carer, EmploymentOption.child, CommonOption.other],
+  },
+  {
+    question: EmploymentQuestion.employment_other_responsibilities_carer_details,
+    value: details('Carer responsibilities details'),
+  },
+  {
+    question: EmploymentQuestion.employment_other_responsibilities_child_details,
+    value: details('Child responsibilities details'),
+  },
+  {
+    question: EmploymentQuestion.employment_other_responsibilities_other_details,
+    value: details('Other responsibilities details'),
+  },
+  { question: EmploymentQuestion.education_academic_professional_vocational_qualifications, value: CommonOption.yes },
+  { question: EmploymentQuestion.education_transferable_skills, value: CommonOption.yes },
+  {
+    question: EmploymentQuestion.education_transferable_skills_yes_details,
+    value: details('Transferable skills details'),
+  },
+  {
+    question: EmploymentQuestion.education_difficulties,
+    value: EmploymentOption.reading,
+  },
+  {
+    question: EmploymentQuestion.education_difficulties_reading_severity,
+    value: EmploymentOption.significant_difficulties,
+  },
+  {
+    question: EmploymentQuestion.employment_education_changes,
+    value: CommonOption.made_changes,
+  },
+  {
+    question: EmploymentQuestion.employment_education_changes_made_changes_details,
+    value: details('Made changes details'),
+  },
+  {
+    question: EmploymentQuestion.employment_education_practitioner_analysis_strengths_or_protective_factors,
+    value: CommonOption.no,
+  },
+  {
+    question: EmploymentQuestion.employment_education_practitioner_analysis_strengths_or_protective_factors_no_details,
+    value: details('no education strengths'),
+  },
+  {
+    question: EmploymentQuestion.employment_education_practitioner_analysis_risk_of_serious_harm,
+    value: CommonOption.yes,
+  },
+  {
+    question: EmploymentQuestion.employment_education_practitioner_analysis_risk_of_serious_harm_yes_details,
+    value: details('employment serious harm'),
+  },
+  {
+    question: EmploymentQuestion.employment_education_practitioner_analysis_risk_of_reoffending,
+    value: CommonOption.yes,
+  },
+  {
+    question: EmploymentQuestion.employment_education_practitioner_analysis_risk_of_reoffending_yes_details,
+    value: details('education reoffending'),
+  },
+]
 
 // TODO Uncomment it during ACT-752 Finance framework
 // const finance: Answer[] = [
@@ -488,7 +530,7 @@ const thinking: Answer[] = [
 
 const statuses: Record<string, string> = {
   [Section.accommodation.statusKey]: SectionComplete.yes,
-  // [Section.employment_and_education.statusKey]: SectionComplete.no,
+  [Section.employment_and_education.statusKey]: SectionComplete.yes,
   // [Section.finance.statusKey]: SectionComplete.no,
   // [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
@@ -515,7 +557,7 @@ test.describe('View all answers', () => {
       .withAnswers([
         // TODO Uncomment for each section work
         ...accommodation,
-        // ...employment,
+        ...employment,
         // ...finance,
         // ...drugUse,
         ...alcohol,
@@ -534,12 +576,13 @@ test.describe('View all answers', () => {
 
     // Every section, and a status against each.
     // TODO Uncomment for each section work
-    await expect(page.getByText('Accommodation\nComplete', { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.accommodation}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nComplete`, { exact: true })).toBeVisible()
     // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
     // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
-    await expect(page.getByText('Alcohol use\nComplete', { exact: true })).toBeVisible()
-    await expect(page.getByText('Personal relationships and community\nComplete', { exact: true })).toBeVisible()
-    await expect(page.getByText('Thinking, behaviours and attitudes\nComplete', { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.employmentAndEducation}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.personal}\nComplete`, { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
 

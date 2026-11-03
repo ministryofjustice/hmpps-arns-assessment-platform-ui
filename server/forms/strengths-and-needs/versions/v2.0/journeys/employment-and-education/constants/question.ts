@@ -2,7 +2,7 @@ export const Question = {
   community_employment_status: 'community_employment_status',
   community_ever_had_a_job: 'community_ever_had_a_job',
   employment_type: 'employment_type',
-  employment_other_responsibilities: 'employment_other_responsibilities',
+  community_employment_other_responsibilities: 'community_employment_other_responsibilities',
   employment_history: 'employment_history',
   employment_history_stable_details: 'employment_history_stable_details',
   employment_history_periods_of_instability_details: 'employment_history_periods_of_instability_details',
@@ -25,9 +25,11 @@ export const Question = {
   employment_education_changes_made_changes_details: 'employment_education_changes_made_changes_details',
 
   education_difficulties: 'education_difficulties',
-  education_difficulties_numeracy_severity: 'education_difficulties_numeracy_severity',
-  education_difficulties_writing_severity: 'education_difficulties_writing_severity',
+  education_academic_professional_vocational_qualifications:
+    'education_academic_professional_vocational_qualifications',
   education_difficulties_reading_severity: 'education_difficulties_reading_severity',
+  education_difficulties_writing_severity: 'education_difficulties_writing_severity',
+  education_difficulties_numeracy_severity: 'education_difficulties_numeracy_severity',
   education_transferable_skills: 'education_transferable_skills',
   education_transferable_skills_yes_some_skills_details: 'education_transferable_skills_yes_some_skills_details',
   education_transferable_skills_yes_details: 'education_transferable_skills_yes_details',

@@ -9,14 +9,17 @@ import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../../v1.0/constants/path'
 
-export const employmentStatusStep = step({
+export const hasEverHadAJobStep = step({
   path: `/${Step.community_ever_had_a_job.path}`,
   title: sectionPageTitle(Section.employment_and_education),
   reachability: { entryWhen: true },
   view: {
     locals: {
       sectionTitleClass,
+      backlink: createRoute([...baseSanRoute, Section.employment_and_education.path, Step.employment_status.path]),
     },
   },
   blocks: [employmentEducationSection.questions.everHadAJob.displayModes.field, saveButton],
@@ -40,7 +43,7 @@ export const employmentStatusStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
@@ -57,7 +60,7 @@ export const employmentStatusStep = step({
       onInvalid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
+          StrengthsAndNeedsEffects.setSectionProgressV2(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
