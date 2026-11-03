@@ -36,7 +36,7 @@ export const test = base.extend<{
       await builder.save()
       await navigateToStrengthsAndNeeds(page, handoverLink, sanFormPath)
 
-      return `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${sectionPath}`
+      return `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${sectionPath}`
     })
   },
 })

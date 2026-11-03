@@ -14,7 +14,9 @@ test.describe('Errors', () => {
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/view/${sanAssessmentId}/employment-and-education/not-found`)
+    await page.goto(
+      `${baseURL}${sanFormPath}${v1Path}/view/${sanAssessmentId}/current/employment-and-education/not-found`,
+    )
 
     await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
   })
@@ -45,7 +47,7 @@ test.describe('HMPPS Auth error', () => {
     // HMPPS Auth login
     await login(page)
 
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${employment}/employment-status`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${employment}/employment-status`)
 
     await expect(page.getByRole('heading', { name: 'there is a problem with the service' })).toBeVisible()
   })

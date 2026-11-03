@@ -1,13 +1,11 @@
 import { SanitisedError } from '@ministryofjustice/hmpps-rest-client'
 import { BadRequest, InternalServerError, NotFound } from 'http-errors'
-import { DateTime } from 'luxon'
 import { unwrapAll } from '../../../../data/aap-api/wrappers'
 import { AssessmentVersionQuery } from '../../../../interfaces/aap-api/query'
 import { QueryError } from '../../../../errors/aap-api/QueryError'
-import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { sanSession, StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 import { HandoverContext } from '../../../../interfaces/handover-api/response'
-import { storePreviousVersionsInSession } from './loadPreviousVersions'
 
 const isMissingAssessmentQueryError = (error: unknown): boolean =>
   error instanceof QueryError && error.queryType === 'AssessmentVersionQuery' && error.result === undefined
@@ -49,7 +47,8 @@ const validateAssessmentMatchesHandoverContext = (
 export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (context: StrengthsAndNeedsContext) => {
   const user = context.getState('user')
   const session = context.getSession()
-  const sessionDetails = session.sessionDetails
+  const san = sanSession(session)
+  const { sessionDetails } = san
   const caseDetails = session.caseDetails
 
   if (!user) {
@@ -66,29 +65,12 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     assessmentIdentifier: sessionDetails.assessmentIdentifier,
   }
 
-  // Only the URL selects a previous version. A version requested by the handover is turned into a
-  // view-historic URL on entry (extractModeAndVersionUuidFromHandoverContext), so edit and view
-  // URLs always load the current assessment.
-  const mode = context.getRequestParam('mode')
-  const uuid = context.getRequestParam('uuid')
+  // Only the URL selects a previous version (resolved by resolveHistoricVersion). A version requested by
+  // the handover is turned into a URL on entry (resolveEntryRoute).
+  const historicVersion = context.getData('historicVersion')
 
-  if (uuid && mode && ['view-historic'].includes(mode)) {
-    if (!session.unaggregatedVersions) {
-      // session.uuid holds a version UUID after a historic handover, so prefer the handover's assessment ID
-      const assessmentUuid = session.handoverContext?.assessmentContext?.assessmentId ?? session.uuid
-      await storePreviousVersionsInSession(deps, assessmentUuid, session)
-    }
-
-    const previousVersion = session.unaggregatedVersions.find(it => it.entityType === 'AAP_SAN' && it.uuid === uuid)
-
-    if (!previousVersion) {
-      const validUuids = session.unaggregatedVersions.map(it => it.uuid).join(', ')
-      throw new NotFound(`Invalid assessment version UUID: ${uuid}. Valid UUIDs: ${validUuids}`)
-    }
-
-    query.timestamp = previousVersion.updatedAt
-    // Coordinator timestamps are UTC; don't let an offset-less value be read in the server's time zone.
-    context.setData('previousVersionDate', DateTime.fromISO(previousVersion.updatedAt, { zone: 'utc' }).toMillis())
+  if (historicVersion) {
+    query.timestamp = historicVersion.updatedAt
   }
 
   let assessment = await loadAssessmentQuery(deps, query)
@@ -106,7 +88,7 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
     assessment = await deps.api.executeQuery({
       type: 'AssessmentVersionQuery',
       user,
-      assessmentIdentifier: session.sessionDetails.assessmentIdentifier,
+      assessmentIdentifier: sessionDetails.assessmentIdentifier,
     })
 
     if (session.handoverContext) {
@@ -126,8 +108,8 @@ export const loadAssessment = (deps: StrengthsAndNeedsEffectsDeps) => async (con
 
   context.setData('assessment', assessment)
   context.setData('assessmentUuid', assessment.assessmentUuid)
-  context.setData('sessionDetails', session.sessionDetails)
-  session.uuid = assessment.assessmentUuid
+  context.setData('sessionDetails', sessionDetails)
+  san.assessmentUuid = assessment.assessmentUuid
 
   const answers = unwrapAll<Record<string, unknown>>(assessment.answers)
   const properties = unwrapAll<Record<string, unknown>>(assessment.properties)

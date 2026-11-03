@@ -8,11 +8,10 @@ import {
   Params,
   redirect,
   Request,
-  Session,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { createRoute } from '../../generators'
-import { baseSanRoute } from './constants/path'
-import { basePath } from './constants/formVersion'
+import { baseSanRoute, currentVersion } from './constants/path'
+import { formRootPath } from './constants/formVersion'
 
 /**
  * Shared access predicates for strengths-and-needs steps.
@@ -25,36 +24,58 @@ import { basePath } from './constants/formVersion'
 export const isOasysAccess = Data('sessionDetails.accessType').match(Condition.Equals('OASYS'))
 
 /**
- * True when viewing a previous version (read-only mode based on URL mode parameter).
- * Viewing a historic assessment version is always read-only, regardless of accessMode.
- * Used to conditionally hide editable controls (save buttons, change links)
- * and prevent navigation to editable steps.
+ * True when viewing read-only what OASys or MPoP opened (URL mode `view`), whichever version.
  */
 export const isViewMode = Params('mode').match(Condition.Equals('view'))
 
-export const isHistoricView = Params('mode').match(Condition.Equals('view-historic'))
+/**
+ * True in the window the previous versions page opens a version in (URL mode `view-historic`).
+ * Read-only, and loads data exactly like `view`: the mode only marks the window, e.g. it isn't the
+ * OASys window, so it has no "Return to OASys" button.
+ */
+export const isHistoricWindow = Params('mode').match(Condition.Equals('view-historic'))
 
 /**
- * True when the session was opened in READ_ONLY access mode, or when viewing
- * a specific assessment version (mode === 'view').
- * Viewing a historic assessment version is always read-only, regardless of accessMode.
+ * Show "Return to OASys" only in the window OASys opened, not in windows the previous versions page opens.
+ */
+export const showReturnToOasys = and(isOasysAccess, not(isHistoricWindow))
+
+/**
+ * True when the URL names a previous version rather than `current`. Previous versions are always read-only.
+ */
+export const isHistoricVersion = and(
+  Params('versionUuid').match(Condition.IsRequired()),
+  not(Params('versionUuid').match(Condition.Equals(currentVersion))),
+)
+
+/**
+ * Show "View previous versions" only on the current version.
+ */
+export const showPreviousVersionsLink = Params('versionUuid').match(Condition.Equals(currentVersion))
+
+const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
+
+/**
+ * True when the session has READ_ONLY access, or the URL is read-only (`view` or `view-historic` mode, or a
+ * previous version).
  * Used to conditionally hide editable controls (save buttons, change links)
  * and prevent navigation to editable steps.
  */
 export const isReadOnlyMode = or(
   Data('sessionDetails.accessMode').match(Condition.Equals('READ_ONLY')),
   isViewMode,
-  isHistoricView,
+  isHistoricWindow,
+  isHistoricVersion,
 )
 
 /**
- * True when the session is NOT in READ_ONLY mode (i.e. the user can edit).
- * Convenience inverse of {@link isReadOnlyMode}.
+ * True when the user can edit: READ_WRITE access, URL mode `edit` and the current version.
+ * Not quite the inverse of {@link isReadOnlyMode}: both are false when the access mode is missing.
  */
 export const isEditMode = and(
-  Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE')),
-  not(isViewMode),
-  not(isHistoricView),
+  hasReadWriteAccess,
+  Params('mode').match(Condition.Equals('edit')),
+  not(isHistoricVersion),
 )
 
 /**
@@ -74,24 +95,25 @@ export const redirectToAnalysisIfReadOnly = (sectionPath: string, analysisStepPa
 }
 
 /**
- * Prevents privilege escalation by validating the mode parameter against the accessMode.
- *
- * Rules:
- * - READ_ONLY accessMode: only allows 'view' or 'view-historic' mode
- * - READ_WRITE accessMode: allows 'view', 'edit', or 'view-historic' mode
- *
- * Redirects users attempting to access unauthorized modes to the accommodation section in view mode.
+ * Keeps the URL in line with the access. Anything else is sent to the entry step, which redirects
+ * to where the access lands (see resolveEntryRoute):
+ * - `edit` needs READ_WRITE access. A handover that asks for a version is READ_ONLY (see initializeSessionFromAccess)
+ * - `edit` is only for the current version; previous versions are viewed
+ * - the URL must name the assessment loaded for this access. resolveHistoricVersion checks that a
+ *   previous version belongs to it
  */
-export const preventPrivilegeEscalation = () => {
-  const isReadWriteMode = Params('mode').match(Condition.Equals('edit'))
-  const hasReadWriteAccess = Data('sessionDetails.accessMode').match(Condition.Equals('READ_WRITE'))
+export const routeGuards = () => {
+  const toEntryRoute = () => redirect({ goto: `${formRootPath}/` })
+  const isEditUrl = Params('mode').match(Condition.Equals('edit'))
 
-  return access({
-    when: and(isReadWriteMode, not(hasReadWriteAccess)),
-    next: [
-      redirect({
-        goto: createRoute([basePath, Session('mode'), Session('uuid'), 'accommodation']),
-      }),
-    ],
-  })
+  return [
+    access({
+      when: and(isEditUrl, or(not(hasReadWriteAccess), isHistoricVersion)),
+      next: [toEntryRoute()],
+    }),
+    access({
+      when: not(Params('assessmentUuid').match(Condition.Equals(Data('assessmentUuid')))),
+      next: [toEntryRoute()],
+    }),
+  ]
 }

@@ -9,7 +9,7 @@ const textCode = 'offence_analysis_description_of_offence'
 
 const openOffenceAnalysis = async (page: Page, baseURL: string, handoverLink: string, assessmentId: string) => {
   await navigateToStrengthsAndNeeds(page, handoverLink)
-  await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${assessmentId}${offence}/offence-analysis`)
+  await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${assessmentId}/current${offence}/offence-analysis`)
   return page.getByTestId('main-form')
 }
 
@@ -54,11 +54,11 @@ test.describe('Autosave', () => {
     await expect(form).toHaveAttribute('data-autosave-state', 'pending')
 
     // walk away
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${alcohol}/alcohol-use-status`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${alcohol}/alcohol-use-status`)
     await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol')
 
     // come back
-    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}${offence}/offence-analysis`)
+    await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${offence}/offence-analysis`)
     const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Offence analysis')
 
     // check autosaved value is persisted

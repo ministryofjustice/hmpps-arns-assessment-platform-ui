@@ -18,16 +18,16 @@
   {% endif %}
 
   {% if not hideNavigationLinks %}
-    {% set navigationLinks = navigationLinks.concat([
-      {
+    {% if showPreviousVersionsLink %}
+      {% set navigationLinks = navigationLinks.concat([{
         text: 'View previous versions',
         href: viewPreviousVersionsLink
-      },
-      {
-        text: 'View all answers',
-        href: viewAllAnswersLink
-      }
-    ]) %}
+      }]) %}
+    {% endif %}
+    {% set navigationLinks = navigationLinks.concat([{
+      text: 'View all answers',
+      href: viewAllAnswersLink
+    }]) %}
   {% endif %}
 
   {% if person %}

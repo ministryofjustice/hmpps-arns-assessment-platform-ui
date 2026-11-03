@@ -11,7 +11,12 @@ import {
   Transformer,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { GovUKAccordion, GovUKTable, GovUKWarningText } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  GovUKAccordion,
+  GovUKHeading,
+  GovUKTable,
+  GovUKWarningText,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { MOJAlert } from '@ministryofjustice/hmpps-forge/moj-components'
 import { CaseData, sentencePlanOverviewPath } from '../../constants'
 import { AssessmentInfoDetails } from '../../../../components'
@@ -69,9 +74,11 @@ export const assessmentLastUpdated = HtmlBlock({
 
 // Sentence information starts
 
-export const sentenceHeading = HtmlBlock({
+export const sentenceHeading = GovUKHeading({
   visibleWhen: not(isSentenceInformationAndAssessmentLoadingError),
-  content: '<h2 class="govuk-heading-m">Sentence information</h2>',
+  text: 'Sentence information',
+  size: 'm',
+  level: 2,
 })
 
 // Table displaying sentence details with unpaid work and RAR progress:
@@ -231,9 +238,12 @@ export const incompleteAreasAccordion = createAreaAccordion('incompleteAreas', '
 
 // High-scoring Areas:
 // always shown with fallback text when empty, hidden on assessment error
-export const highScoringAreasHeading = HtmlBlock({
+export const highScoringAreasHeading = GovUKHeading({
   visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad)),
-  content: '<h2 class="govuk-heading-m govuk-!-margin-top-6">High-scoring areas from the assessment</h2>',
+  text: 'High-scoring areas from the assessment',
+  size: 'm',
+  level: 2,
+  classes: 'govuk-!-margin-top-6',
 })
 export const highScoringAreasAccordion = [
   createAreaAccordion('highScoringAreas', 'high-scoring-areas-accordion'),
@@ -242,9 +252,12 @@ export const highScoringAreasAccordion = [
 
 // Low-scoring Areas:
 // always shown with fallback text when empty, hidden on assessment error
-export const lowScoringAreasHeading = HtmlBlock({
+export const lowScoringAreasHeading = GovUKHeading({
   visibleWhen: not(or(isSentenceInformationAndAssessmentLoadingError, hasAssessmentDataFailedToLoad)),
-  content: '<h2 class="govuk-heading-m govuk-!-margin-top-6">Low-scoring areas from the assessment</h2>',
+  text: 'Low-scoring areas from the assessment',
+  size: 'm',
+  level: 2,
+  classes: 'govuk-!-margin-top-6',
 })
 export const lowScoringAreasAccordion = [
   createAreaAccordion('lowScoringAreas', 'low-scoring-areas-accordion'),
