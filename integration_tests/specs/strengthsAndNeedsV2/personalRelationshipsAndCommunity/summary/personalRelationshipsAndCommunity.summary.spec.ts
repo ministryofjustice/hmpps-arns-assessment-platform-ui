@@ -143,7 +143,7 @@ test.describe('Summary', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-community-summary',
+      Step.personal_relationships_community_summary.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -409,7 +409,7 @@ test.describe('Summary', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-community-summary',
+      Step.personal_relationships_community_summary.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -574,7 +574,7 @@ test.describe('Summary', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-community-summary#practitioner-analysis',
+      `${Step.personal_relationships_community_summary.path}#practitioner-analysis`,
     )
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
@@ -585,6 +585,6 @@ test.describe('Summary', () => {
       .click()
     await personalRelationshipsAndCommunityPage.markComplete.click()
     await expect(personalRelationshipsAndCommunityPage.complete).toBeVisible()
-    expect(page.url()).toContain('personal-relationships-community-analysis')
+    expect(page.url()).toContain(Step.personal_relationships_community_analysis.path)
   })
 })

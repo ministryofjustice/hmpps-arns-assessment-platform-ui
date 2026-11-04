@@ -200,7 +200,6 @@ const relationshipsAndChildhood = [
 const changeOptionsDomesticAbuse = [
   PersonalRelationshipOption.family_member,
   PersonalRelationshipOption.intimate_partner,
-  PersonalRelationshipOption.family_member_and_intimate_partner,
 ]
 
 test.describe('Personal relationships and community character counts', () => {

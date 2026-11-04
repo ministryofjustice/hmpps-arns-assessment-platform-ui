@@ -2,7 +2,6 @@ import {
   Answer,
   ChainableConditional,
   Condition,
-  not,
   Post,
   redirect,
   step,
@@ -37,21 +36,19 @@ const backlinkLogic: ChainableConditional = when(
     ]),
   ).else(
     when(
-      not(
-        Answer(Question.personal_relationships_community_domestic_abuse_against)
-          .match(Condition.Array.Contains(Option.intimate_partner || Option.family_member_and_intimate_partner)),
-      ),
+      Answer(Question.personal_relationships_community_domestic_abuse_against)
+        .match(Condition.Array.Contains(Option.intimate_partner)),
     ).then(
         createRoute([
           ...baseSanRoute,
           Section.personal_relationships_and_community.path,
-          Step.personal_relationships_domestic_abuse_against.path,
+          Step.personal_relationships_strangulation.path,
         ]),
       ).else(
         createRoute([
           ...baseSanRoute,
           Section.personal_relationships_and_community.path,
-          Step.personal_relationships_strangulation.path,
+          Step.personal_relationships_domestic_abuse_against.path,
         ]),
       ),
   )

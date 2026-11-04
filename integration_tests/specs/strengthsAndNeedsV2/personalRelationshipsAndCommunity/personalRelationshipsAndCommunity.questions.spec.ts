@@ -64,7 +64,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-any-parenting-responsibilities',
+      Step.personal_relationships_any_parenting_responsibilities.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -113,7 +113,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-community',
+      Step.personal_relationships_community.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -279,7 +279,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-perpetrator',
+      Step.personal_relationships_domestic_abuse_perpetrator.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -390,7 +390,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-against',
+      Step.personal_relationships_domestic_abuse_against.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -405,8 +405,6 @@ test.describe('Questions', () => {
         - text: Family member
         - checkbox "Intimate partner"
         - text: Intimate partner
-        - checkbox "Family member and intimate partner"
-        - text: Family member and intimate partner
       - group "Is there evidence of coercive behaviour?":
         - text: Is there evidence of coercive behaviour?
         - radio "Yes"
@@ -526,7 +524,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-strangulation',
+      Step.personal_relationships_strangulation.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -663,7 +661,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-victim',
+      Step.personal_relationships_domestic_abuse_victim.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -805,7 +803,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-victim-by',
+      Step.personal_relationships_domestic_abuse_victim_by.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -820,8 +818,6 @@ test.describe('Questions', () => {
         - text: Family member
         - checkbox "Intimate partner"
         - text: Intimate partner
-        - checkbox "Family member and intimate partner"
-        - text: Family member and intimate partner
       - button "Save and continue"
     `)
   })
@@ -958,7 +954,7 @@ test.describe('Questions', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-want-to-make-changes',
+      Step.personal_relationships_want_to_make_changes.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(

@@ -3,10 +3,12 @@ import { Section, SectionComplete } from '@server/forms/strengths-and-needs/vers
 import { Question as AlcoholQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/question'
 import { Question as AccommodationQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
 import { Question as HealthQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/question'
+import { Question as PersonalRelationshipsQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/question'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
 import { Option as HealthOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
+import { Option as PersonalRelationshipsOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
 import { details } from 'testUtils'
 import { buildEditUrl, checkAccessibility, navigateToStrengthsAndNeeds, viewAllAnswers } from './sanUtils'
 import { test, TargetService } from '../../support/fixtures'
@@ -244,68 +246,148 @@ const health: Answer[] = [
 ]
 
 const personal: Answer[] = [
-  { question: 'personal_relationships_community_children_details', value: 'YES_CHILDREN_NOT_LIVING_WITH_POP' },
   {
-    question: 'personal_relationships_community_children_details_yes_children_not_living_with_pop_details',
+    question: PersonalRelationshipsQuestion.personal_relationships_community_children_details,
+    value: PersonalRelationshipsOption.yes_children_not_living_with_pop,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_children_details_yes_children_not_living_with_pop_details,
     value: details('children not living with them'),
   },
   {
-    question: 'personal_relationships_community_important_people',
-    value: ['PARTNER_INTIMATE_RELATIONSHIP', 'FAMILY', 'OTHER'],
+    question: PersonalRelationshipsQuestion.personal_relationships_community_any_parenting_responsibilities,
+    value: CommonOption.yes,
   },
   {
-    question: 'personal_relationships_community_important_people_partner_intimate_relationship_details',
-    value: details('partner'),
+    question: PersonalRelationshipsQuestion.personal_relationships_community_parental_responsibilities,
+    value: PersonalRelationshipsOption.sometimes,
   },
-  { question: 'personal_relationships_community_important_people_family_details', value: details('family') },
-  { question: 'personal_relationships_community_important_people_other_details', value: details('other people') },
-  { question: 'personal_relationships_community_current_relationship', value: 'CONCERNS_HAPPY_RELATIONSHIP' },
   {
-    question: 'personal_relationships_community_current_relationship_concerns_happy_relationship_details',
-    value: details('happy but concerns'),
-  },
-  { question: 'personal_relationships_community_intimate_relationship', value: 'UNSTABLE_RELATIONSHIPS' },
-  {
-    question: 'personal_relationships_community_intimate_relationship_unstable_relationships_details',
-    value: details('unstable relationships'),
-  },
-  { question: 'personal_relationships_community_challenges_intimate_relationship', value: details('challenges') },
-  { question: 'personal_relationships_community_parental_responsibilities', value: 'SOMETIMES' },
-  {
-    question: 'personal_relationships_community_parental_responsibilities_sometimes_details',
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_parental_responsibilities_sometimes_details,
     value: details('sometimes parental'),
   },
-  { question: 'personal_relationships_community_family_relationship', value: 'MIXED_RELATIONSHIP' },
   {
-    question: 'personal_relationships_community_family_relationship_mixed_relationship_details',
+    question: PersonalRelationshipsQuestion.personal_relationships_community_family_relationship,
+    value: PersonalRelationshipsOption.mixed_relationship,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_family_relationship_mixed_relationship_details,
     value: details('mixed family'),
   },
-  { question: 'personal_relationships_community_childhood', value: 'NEGATIVE_CHILDHOOD' },
-  { question: 'personal_relationships_community_childhood_negative_childhood_details', value: details('childhood') },
-  { question: 'personal_relationships_community_childhood_behaviour', value: 'YES' },
   {
-    question: 'personal_relationships_community_childhood_behaviour_yes_details',
+    question: PersonalRelationshipsQuestion.personal_relationships_community_childhood,
+    value: PersonalRelationshipsOption.negative_childhood,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_childhood_negative_childhood_details,
+    value: details('childhood'),
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_childhood_behaviour,
+    value: CommonOption.yes,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_childhood_behaviour_yes_details,
     value: details('childhood behaviour'),
   },
-  { question: 'personal_relationships_community_belonging', value: details('belonging') },
-  { question: 'personal_relationships_community_changes', value: 'DOES_NOT_WANT_TO_ANSWER' },
+  { question: PersonalRelationshipsQuestion.personal_relationships_community_belonging, value: details('belonging') },
   {
-    question: 'personal_relationships_community_changes_does_not_want_to_answer_details',
+    question: PersonalRelationshipsQuestion.personal_relationships_community_current_relationship,
+    value: PersonalRelationshipsOption.concerns_happy_relationship,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_in_relationship,
+    value: PersonalRelationshipsOption.in_relationship_living_together,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_current_relationship_concerns_happy_relationship_details,
+    value: details('happy but concerns'),
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_intimate_relationship,
+    value: PersonalRelationshipsOption.unstable_relationships,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_intimate_relationship_unstable_relationships_details,
+    value: details('unstable relationships'),
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_perpetrator,
+    value: CommonOption.yes,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_against,
+    value: PersonalRelationshipsOption.intimate_partner,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_against_partner_details,
+    value: details('against intimate partner'),
+  },
+
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_coercive_behaviour,
+    value: CommonOption.yes,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_coercive_behaviour_yes_details,
+    value: details('coercive behaviour'),
+  },
+  { question: PersonalRelationshipsQuestion.personal_relationships_community_strangulation, value: CommonOption.yes },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_strangulation_yes_details,
+    value: details('strangulation evidence'),
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_victim,
+    value: CommonOption.yes,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_victim_by,
+    value: PersonalRelationshipsOption.intimate_partner,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
+    value: details('by intimate partner'),
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_changes,
+    value: CommonOption.does_not_want_to_answer,
+  },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_changes_does_not_want_to_answer_details,
     value: details('declined to answer'),
   },
-  { question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
   {
-    question: 'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details',
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
+    value: CommonOption.yes,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: details('relationship strengths'),
   },
-  { question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm', value: 'NO' },
   {
-    question: 'personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details',
+    question: PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_serious_harm,
+    value: CommonOption.no,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details,
     value: details('no relationship serious harm'),
   },
-  { question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending', value: 'NO' },
   {
-    question: 'personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details',
+    question: PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_reoffending,
+    value: CommonOption.no,
+  },
+  {
+    question:
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details,
     value: details('no relationship reoffending'),
   },
 ]
@@ -353,7 +435,7 @@ const statuses: Record<string, string> = {
   // [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
   [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
-  // [Section.personal_relationships_and_community.statusKey]: SectionComplete.yes,
+  [Section.personal_relationships_and_community.statusKey]: SectionComplete.yes,
   // [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
   // [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
@@ -398,6 +480,7 @@ test.describe('View all answers', () => {
     // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
     // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
     expect(page.getByText('Alcohol use\nComplete', { exact: true })).toBeVisible()
+    expect(page.getByText('Personal relationships and community\nComplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
 
@@ -428,9 +511,8 @@ test.describe('View all answers', () => {
     // expect(page.getByText('Heroin').first()).toBeVisible()
     // expect(page.getByText('Last used').nth(2)).toBeVisible()
     // expect(page.getByText('Used more than 6 months ago')).toBeVisible()
-
     // A section stopped before its practitioner analysis shows none.
-    const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") + dl').first()
+    const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") ~ dl').first()
     expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
@@ -487,8 +569,10 @@ test.describe('View all answers', () => {
     expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
     expect(page.getByText('Other', { exact: true })).toBeVisible()
     expect(page.getByText('other reason for no')).toBeVisible()
-    expect(page.getByText('Alcohol use\nIncomplete\nHealth and wellbeing')).toBeVisible()
+    expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
     expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
+    expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
+    expect(page.getByText('Health and wellbeing\nIncomplete\nPersonal relationships and community')).toBeVisible()
   })
 })
 

@@ -34,7 +34,7 @@ export const english = {
     },
     [Question.personal_relationships_community_any_parenting_responsibilities]: {
       text: 'Does %1 have any parenting responsibilities?',
-      validation: 'Select if they have parent responsibilities',
+      validation: 'Select if they have parenting responsibilities',
     },
     [Question.personal_relationships_community_parental_responsibilities]: {
       text: 'Is %1 able to manage their parenting responsibilities?',
@@ -162,10 +162,6 @@ export const english = {
           text: 'Intimate partner',
           validation: 'Enter details of abuse against intimate partner',
         },
-        [Option.family_member_and_intimate_partner]: {
-          text: 'Family member and intimate partner',
-          validation: 'Enter details of abuse against family member and intimate partner',
-        },
       },
     },
     [Question.personal_relationships_community_coercive_behaviour]: {
@@ -197,10 +193,6 @@ export const english = {
         [Option.intimate_partner]: {
           text: 'Intimate partner',
           validation: 'Enter details of intimate partner who abused them',
-        },
-        [Option.family_member_and_intimate_partner]: {
-          text: 'Family member and intimate partner',
-          validation: 'Enter details of family member and intimate partner who abused them',
         },
       },
     },
