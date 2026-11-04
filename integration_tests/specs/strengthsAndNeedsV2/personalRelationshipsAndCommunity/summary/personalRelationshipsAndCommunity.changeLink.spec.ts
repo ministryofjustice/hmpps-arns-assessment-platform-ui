@@ -166,47 +166,62 @@ const fullyAnswered: Scenario = {
     },
   ],
   summaryChangeLinks: [
-    changeLink('personal-relationships-children-information', 'personal_relationships_community_children_details'),
-
     changeLink(
-      'personal-relationships-any-parenting-responsibilities',
-      'personal_relationships_community_any_parenting_responsibilities',
+      Step.personal_relationships_children_information.path,
+      Question.personal_relationships_community_children_details,
     ),
-
-    changeLink('personal-relationships-community', 'personal_relationships_community_parental_responsibilities'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_family_relationship'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_childhood'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_childhood_behaviour'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_belonging'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_in_relationship'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_current_relationship'),
-    changeLink('personal-relationships-community', 'personal_relationships_community_intimate_relationship'),
-
     changeLink(
-      'personal-relationships-domestic-abuse-perpetrator',
-      'personal_relationships_community_domestic_abuse_perpetrator',
+      Step.personal_relationships_any_parenting_responsibilities.path,
+      Question.personal_relationships_community_any_parenting_responsibilities,
     ),
-
     changeLink(
-      'personal-relationships-domestic-abuse-against',
-      'personal_relationships_community_domestic_abuse_against',
+      Step.personal_relationships_community.path,
+      Question.personal_relationships_community_parental_responsibilities,
     ),
-
-    changeLink('personal-relationships-domestic-abuse-against', 'personal_relationships_community_coercive_behaviour'),
-
-    changeLink('personal-relationships-strangulation', 'personal_relationships_community_strangulation'),
-
     changeLink(
-      'personal-relationships-domestic-abuse-victim',
-      'personal_relationships_community_domestic_abuse_victim',
+      Step.personal_relationships_community.path,
+      Question.personal_relationships_community_family_relationship,
     ),
-
+    changeLink(Step.personal_relationships_community.path, Question.personal_relationships_community_childhood),
     changeLink(
-      'personal-relationships-domestic-abuse-victim-by',
-      'personal_relationships_community_domestic_abuse_victim_by',
+      Step.personal_relationships_community.path,
+      Question.personal_relationships_community_childhood_behaviour,
     ),
-
-    changeLink('personal-relationships-want-to-make-changes', 'personal_relationships_community_changes'),
+    changeLink(Step.personal_relationships_community.path, Question.personal_relationships_community_belonging),
+    changeLink(Step.personal_relationships_community.path, Question.personal_relationships_community_in_relationship),
+    changeLink(
+      Step.personal_relationships_community.path,
+      Question.personal_relationships_community_current_relationship,
+    ),
+    changeLink(
+      Step.personal_relationships_community.path,
+      Question.personal_relationships_community_intimate_relationship,
+    ),
+    changeLink(
+      Step.personal_relationships_domestic_abuse_perpetrator.path,
+      Question.personal_relationships_community_domestic_abuse_perpetrator,
+    ),
+    changeLink(
+      Step.personal_relationships_domestic_abuse_against.path,
+      Question.personal_relationships_community_domestic_abuse_against,
+    ),
+    changeLink(
+      Step.personal_relationships_domestic_abuse_against.path,
+      Question.personal_relationships_community_coercive_behaviour,
+    ),
+    changeLink(Step.personal_relationships_strangulation.path, Question.personal_relationships_community_strangulation),
+    changeLink(
+      Step.personal_relationships_domestic_abuse_victim.path,
+      Question.personal_relationships_community_domestic_abuse_victim,
+    ),
+    changeLink(
+      Step.personal_relationships_domestic_abuse_victim_by.path,
+      Question.personal_relationships_community_domestic_abuse_victim_by,
+    ),
+    changeLink(
+      Step.personal_relationships_want_to_make_changes.path,
+      Question.personal_relationships_community_changes,
+    ),
   ],
   userSubmittedSteps: [
     Step.personal_relationships_children_information.code,
@@ -224,16 +239,16 @@ const fullyAnswered: Scenario = {
 
 const practitionerAnalysisChangeLinks = [
   changeLink(
-    'personal-relationships-community-summary',
-    'personal_relationships_community_practitioner_analysis_strengths_or_protective_factors',
+    Step.personal_relationships_community_summary.path,
+    Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
   ),
   changeLink(
-    'personal-relationships-community-summary',
-    'personal_relationships_community_practitioner_analysis_risk_of_serious_harm',
+    Step.personal_relationships_community_summary.path,
+    Question.personal_relationships_community_practitioner_analysis_risk_of_serious_harm,
   ),
   changeLink(
-    'personal-relationships-community-summary',
-    'personal_relationships_community_practitioner_analysis_risk_of_reoffending',
+    Step.personal_relationships_community_summary.path,
+    Question.personal_relationships_community_practitioner_analysis_risk_of_reoffending,
   ),
 ]
 

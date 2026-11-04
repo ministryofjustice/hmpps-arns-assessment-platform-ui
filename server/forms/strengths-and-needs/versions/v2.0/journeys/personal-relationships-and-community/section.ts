@@ -472,18 +472,6 @@ const domesticAbuseAgainst = question({
           ),
         }),
       },
-      {
-        value: Option.family_member_and_intimate_partner,
-        text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.text',
-        ),
-        reveals: requiredDetails({
-          code: Question.personal_relationships_community_domestic_abuse_against_family_and_partner_details,
-          validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.validation',
-          ),
-        }),
-      },
     ],
     validationMessage: commonContentFor('validation.select_at_least_one_option'),
   },
@@ -591,18 +579,6 @@ const domesticAbuseVictimBy = question({
           code: Question.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
           validationMessage: contentFor(
             'question.personal_relationships_community_domestic_abuse_victim_by.option.INTIMATE_PARTNER.validation',
-          ),
-        }),
-      },
-      {
-        value: Option.family_member_and_intimate_partner,
-        text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_victim_by.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.text',
-        ),
-        reveals: requiredDetails({
-          code: Question.personal_relationships_community_domestic_abuse_victim_by_family_member_and_intimate_partner,
-          validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_victim_by.option.FAMILY_MEMBER_AND_INTIMATE_PARTNER.validation',
           ),
         }),
       },

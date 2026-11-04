@@ -83,7 +83,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-any-parenting-responsibilities',
+      Step.personal_relationships_any_parenting_responsibilities.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -100,7 +100,7 @@ test.describe('Validation', () => {
         - heading "There is a problem" [level=2]
         - list:
           - listitem:
-            - link "Select if they have parent responsibilities":
+            - link "Select if they have parenting responsibilities":
               - /url: "#personal_relationships_community_any_parenting_responsibilities"
     `)
 
@@ -144,7 +144,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-community',
+      Step.personal_relationships_community.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -292,7 +292,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-perpetrator',
+      Step.personal_relationships_domestic_abuse_perpetrator.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -415,7 +415,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-against',
+      Step.personal_relationships_domestic_abuse_against.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -555,7 +555,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-strangulation',
+      Step.personal_relationships_strangulation.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -704,7 +704,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-victim',
+      Step.personal_relationships_domestic_abuse_victim.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -858,7 +858,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-domestic-abuse-victim-by',
+      Step.personal_relationships_domestic_abuse_victim_by.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
@@ -1021,7 +1021,7 @@ test.describe('Validation', () => {
       handoverLink,
       baseURL,
       sanAssessmentId,
-      'personal-relationships-want-to-make-changes',
+      Step.personal_relationships_want_to_make_changes.path,
     )
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(

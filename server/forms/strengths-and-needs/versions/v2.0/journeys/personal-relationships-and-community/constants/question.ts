@@ -69,8 +69,6 @@ export const Question = {
     'personal_relationships_community_domestic_abuse_against_family_details',
   personal_relationships_community_domestic_abuse_against_partner_details:
     'personal_relationships_community_domestic_abuse_against_partner_details',
-  personal_relationships_community_domestic_abuse_against_family_and_partner_details:
-    'personal_relationships_community_domestic_abuse_against_family_and_partner_details',
 
   personal_relationships_community_coercive_behaviour: 'personal_relationships_community_coercive_behaviour',
   personal_relationships_community_coercive_behaviour_yes_details:
@@ -92,8 +90,6 @@ export const Question = {
     'personal_relationships_community_domestic_abuse_victim_by_family_member',
   personal_relationships_community_domestic_abuse_victim_by_intimate_partner:
     'personal_relationships_community_domestic_abuse_victim_by_intimate_partner',
-  personal_relationships_community_domestic_abuse_victim_by_family_member_and_intimate_partner:
-    'personal_relationships_community_domestic_abuse_victim_by_family_member_and_intimate_partner',
 
   personal_relationships_community_changes: 'personal_relationships_community_changes',
   personal_relationships_community_changes_made_changes_details:

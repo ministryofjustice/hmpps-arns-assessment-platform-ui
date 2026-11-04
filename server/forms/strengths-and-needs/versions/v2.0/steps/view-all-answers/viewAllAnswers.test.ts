@@ -111,8 +111,8 @@ describe('view all answers', () => {
       // 'Finances',
       // 'Drug use',
       'Alcohol use',
-      // 'Health and wellbeing',
-      // 'Personal relationships and community',
+      'Health and wellbeing',
+      'Personal relationships and community',
       // 'Thinking, behaviours and attitudes',
       // 'Offence analysis',
     ])
@@ -124,7 +124,7 @@ describe('view all answers', () => {
    * covers both the questions and the analysis.
    */
   it('shows a status against every section, complete only once the section is', async () => {
-    expect(tags(await renderPage())).toEqual(Array(2).fill('Incomplete'))
+    expect(tags(await renderPage())).toEqual(Array(4).fill('Incomplete'))
 
     const complete = await renderPage({}, { [Section.accommodation.statusKey]: SectionComplete.yes })
     expect(tags(complete).filter(tag => tag === 'Complete')).toHaveLength(1)
