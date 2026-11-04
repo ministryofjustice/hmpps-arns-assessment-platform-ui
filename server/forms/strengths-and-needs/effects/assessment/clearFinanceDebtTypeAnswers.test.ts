@@ -1,9 +1,9 @@
-import {createTestEffectContext} from '@ministryofjustice/hmpps-forge/core/testing'
-import {StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
-import {CommonOption} from '../../versions/v2.0/constants/commonOption'
-import {Option} from '../../versions/v2.0/journeys/finance/constants/option'
-import {Question} from '../../versions/v2.0/journeys/finance/constants/question'
-import {clearFinanceDebtTypeAnswers} from './clearFinanceDebtTypeAnswers'
+import { createTestEffectContext } from '@ministryofjustice/hmpps-forge/core/testing'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { CommonOption } from '../../versions/v2.0/constants/commonOption'
+import { Option } from '../../versions/v2.0/journeys/finance/constants/option'
+import { Question } from '../../versions/v2.0/journeys/finance/constants/question'
+import { clearFinanceDebtTypeAnswers } from './clearFinanceDebtTypeAnswers'
 
 const debtTypeAnswers = [
   Question.yes_type_of_debt,
@@ -18,7 +18,7 @@ const deps = {} as StrengthsAndNeedsEffectsDeps
 
 const contextFor = (debtAnswer: string) =>
   createTestEffectContext({
-    answers: {[Question.finance_debt]: debtAnswer},
+    answers: { [Question.finance_debt]: debtAnswer },
   }) as unknown as StrengthsAndNeedsContext
 
 describe('clearFinanceDebtTypeAnswers', () => {
