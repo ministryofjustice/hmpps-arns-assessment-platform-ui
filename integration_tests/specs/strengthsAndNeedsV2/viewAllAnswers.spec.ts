@@ -10,9 +10,10 @@ import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/co
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
 import { Option as HealthOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
-import { Option as PersonalRelationshipsOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
 import { Option as ThinkingBehavioursOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/option'
 import { Option as EmploymentOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/option'
+import { Option as PersonalRelationshipsOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
+
 import { details } from 'testUtils'
 import {
   buildEditUrl,
@@ -535,7 +536,7 @@ const statuses: Record<string, string> = {
   // [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
   [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
-  [Section.personal_relationships_and_community.statusKey]: SectionComplete.yes,
+  [Section.personal_relationships_and_community.statusKey]: SectionComplete.no,
   [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
   // [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
@@ -581,7 +582,7 @@ test.describe('View all answers', () => {
     // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, { exact: true })).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.personal}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.personal}\nIncomplete`, { exact: true })).toBeVisible()
     // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
@@ -626,7 +627,18 @@ test.describe('View all answers', () => {
 
     // Nothing answered: the sections, their statuses, and nothing else.
     expect(await pageText(page)).toContain(
-      "Back\nTest's strengths and needs\nAccommodation\nIncomplete\nAlcohol use\nIncomplete",
+      'Back\n' +
+        "Test's strengths and needs\n" +
+        'Accommodation\n' +
+        'Incomplete\n' +
+        'Employment and education\n' +
+        'Incomplete\n' +
+        'Alcohol use\n' +
+        'Incomplete\n' +
+        'Health and wellbeing\n' +
+        'Incomplete\n' +
+        'Personal relationships and community\n' +
+        'Incomplete',
     )
 
     await strengthsAndNeedsBuilder
