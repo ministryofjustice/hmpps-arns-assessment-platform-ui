@@ -40,6 +40,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
             Section.personal_relationships_and_community,
             SectionComplete.yes,
           ),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
             Section.personal_relationships_and_community,
@@ -52,6 +53,7 @@ export const personalRelationshipsCommunitySummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.personal_relationships_and_community, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.personal_relationships_and_community,

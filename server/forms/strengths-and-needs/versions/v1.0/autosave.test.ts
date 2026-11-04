@@ -20,9 +20,9 @@ import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/que
 const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
 const user = { username: 'test.user', displayName: 'Test User' }
 
-const post = async (body: Record<string, unknown>) => {
+const post = async (body: Record<string, unknown>, executeCommands = jest.fn().mockResolvedValue([])) => {
   const deps = {
-    api: { executeCommand: jest.fn().mockResolvedValue(undefined) },
+    api: { executeCommand: jest.fn().mockResolvedValue(undefined), executeCommands },
     auditService: { send: jest.fn() },
   } as unknown as StrengthsAndNeedsEffectsDeps
 
@@ -74,5 +74,21 @@ describe('autosave submit hook', () => {
     const result = await post({ action: 'save', alcohol_use: 'YES' })
 
     expect(result.type).toBe('redirect')
+  })
+
+  it('saves the whole page submission in one API call', async () => {
+    const executeCommands = jest.fn().mockResolvedValue([])
+
+    await post({ action: 'save', alcohol_use: 'YES' }, executeCommands)
+
+    expect(executeCommands).toHaveBeenCalledTimes(1)
+    const commands = executeCommands.mock.calls[0]
+    expect(commands.map((command: { type: string }) => command.type)).toEqual([
+      'UpdateAssessmentPropertiesCommand',
+      'UpdateAssessmentAnswersCommand',
+      'UpdateAssessmentPropertiesCommand',
+      'UpdateAssessmentPropertiesCommand',
+    ])
+    expect(commands.filter((command: { hooks?: unknown[] }) => command.hooks)).toEqual([commands[3]])
   })
 })

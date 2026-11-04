@@ -44,6 +44,7 @@ export const drugUseSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.yes),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.drug_use, Step.drug_use_summary),
         ],
         next: [redirect({ goto: `${Step.drug_use_analysis.path}#practitioner-analysis` })],
@@ -52,6 +53,7 @@ export const drugUseSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_summary),
         ],
       },

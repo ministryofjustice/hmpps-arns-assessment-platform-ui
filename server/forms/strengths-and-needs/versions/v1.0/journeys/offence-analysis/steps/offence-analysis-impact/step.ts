@@ -52,6 +52,7 @@ export const offenceAnalysisImpactStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.yes),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
         next: [
           redirect({
@@ -64,6 +65,7 @@ export const offenceAnalysisImpactStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
     }),
