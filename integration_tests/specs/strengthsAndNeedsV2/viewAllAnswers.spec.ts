@@ -577,12 +577,12 @@ test.describe('View all answers', () => {
     // Every section, and a status against each.
     // TODO Uncomment for each section work
     await expect(page.getByText(`${sanPageTitles.accommodation}\nComplete`, { exact: true })).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nComplete`, { exact: true })).toBeVisible()
-    // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
-    // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.employmentAndEducation}\nComplete`, { exact: true })).toBeVisible()
+    // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.personal}\nComplete`, { exact: true })).toBeVisible()
+    // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
 

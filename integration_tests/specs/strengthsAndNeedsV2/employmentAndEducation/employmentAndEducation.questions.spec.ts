@@ -37,9 +37,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_employment_status, value: Option.employed_or_self_employed },
-      ])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_employment_status, value: Option.employed_or_self_employed }])
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
@@ -174,11 +172,11 @@ test.describe('Questions', () => {
   })
 
   test('shows currently unemployed - has been employed questions', async ({
-                                                                                      page,
-                                                                                      createSession,
-                                                                                      strengthsAndNeedsBuilder,
-                                                                                      baseURL,
-                                                                                    }) => {
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })

@@ -23,7 +23,6 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
-import { checkboxSummaryRow } from '../../../v1.0/constants/questionContent'
 
 export const isEmployedOrSelfEmployed = Answer(Question.community_employment_status).match(
   Condition.Equals(Option.employed_or_self_employed),
@@ -274,7 +273,7 @@ const difficultiesReadingWritingNumeracy = question({
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: checkboxSummaryRow({ changeHref: Step.employment_education_details.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.employment_education_details.path }),
   },
 })
 

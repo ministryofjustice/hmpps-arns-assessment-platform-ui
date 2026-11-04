@@ -53,9 +53,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
-        { question: Question.community_employment_status, value: Option.employed_or_self_employed },
-      ])
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_employment_status, value: Option.employed_or_self_employed }])
       .withUserSubmittedSteps([
         Step.employment_status.code,
         Step.employment_education_details.code,

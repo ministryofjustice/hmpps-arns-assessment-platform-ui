@@ -107,7 +107,7 @@ describe('view all answers', () => {
   it('lists every section, including offence analysis, before any is started', async () => {
     expect(headings(await renderPage(), 2)).toEqual([
       'Accommodation',
-      // 'Employment and education',
+      'Employment and education',
       // 'Finances',
       // 'Drug use',
       'Alcohol use',

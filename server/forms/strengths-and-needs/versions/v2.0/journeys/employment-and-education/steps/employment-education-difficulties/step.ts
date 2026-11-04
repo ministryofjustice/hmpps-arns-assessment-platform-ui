@@ -1,14 +1,6 @@
-import {
-  Condition,
-  Post,
-  redirect,
-  step,
-  submit,
-  validation,
-  when,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { employmentEducationSection, notWorkingOrAvailableForWork } from '../../section'
+import { employmentEducationSection } from '../../section'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
