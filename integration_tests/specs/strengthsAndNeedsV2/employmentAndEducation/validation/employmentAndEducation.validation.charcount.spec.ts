@@ -79,7 +79,10 @@ const userSubmittedSteps = [
 ]
 
 test.describe('Employment and education character counts', () => {
-  test('employed: other responsibilities, qualifications and transferable skills', async ({ page, openSection }) => {
+  test('employed: other responsibilities, academic,professional and vocational qualifications and transferable skills', async ({
+    page,
+    openSection,
+  }) => {
     const section = await openSection(employment, answers, userSubmittedSteps)
     const employmentPage = new EmploymentAndEducationPage(page)
     const { questions } = employmentPage
@@ -95,16 +98,18 @@ test.describe('Employment and education character counts', () => {
     await expectTheLimitsOnThePage(employmentPage)
   })
 
-  test('employed: some transferable skills', async ({ page, openSection }) => {
-    const section = await openSection(employment, answers, userSubmittedSteps)
-    const employmentPage = new EmploymentAndEducationPage(page)
-    const { questions } = employmentPage
-    await page.goto(`${section}/${Step.employment_education_details.path}`)
+  for (const option of [CommonOption.yes, Option.yes_some_skills]) {
+    test(`employed: some transferable skills ${option}`, async ({ page, openSection }) => {
+      const section = await openSection(employment, answers, userSubmittedSteps)
+      const employmentPage = new EmploymentAndEducationPage(page)
+      const { questions } = employmentPage
+      await page.goto(`${section}/${Step.employment_education_details.path}`)
 
-    await questions.education_transferable_skills.option(Option.yes_some_skills).check()
+      await questions.education_transferable_skills.option(option).check()
 
-    await expectTheLimitsOnThePage(employmentPage)
-  })
+      await expectTheLimitsOnThePage(employmentPage)
+    })
+  }
 
   // a test per option, because each one reveals its own details field
   for (const option of [Option.stable, Option.periods_of_instability, Option.unstable, CommonOption.unknown]) {
