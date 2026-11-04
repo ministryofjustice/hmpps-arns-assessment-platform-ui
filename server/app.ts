@@ -55,6 +55,7 @@ export default function createApp(services: Services): express.Application {
       assessmentPlatformApiClient: services.assessmentPlatformApiClient,
       coordinatorApiClient: services.coordinatorApiClient,
       handoverApiClient: services.handoverApiClient,
+      wiremockAdminClient: services.wiremockAdminClient,
       preferencesStore: services.preferencesStore,
     })
     .registerPackage(dataDeletionTool, {

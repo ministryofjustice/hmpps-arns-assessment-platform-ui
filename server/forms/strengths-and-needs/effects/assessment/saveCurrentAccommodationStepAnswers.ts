@@ -3,9 +3,8 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { Question } from '../../versions/v1.0/journeys/accommodation/constants/question'
-import { sendFormAuditEvent } from '../../../shared'
-import { SAN_AUDIT_FORM, SanAuditEvent } from '../../auditEvents'
-import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
+import { SanAuditEvent } from '../../auditEvents'
+import { queueCommand } from './pendingCommands'
 import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
 
 /**
@@ -29,7 +28,7 @@ export const sanitizeDateValue = (value: string | undefined): string | undefined
 
 // TODO: replace this with saveCurrentStepAnswers
 export const saveCurrentAccommodationStepAnswers =
-  (deps: StrengthsAndNeedsEffectsDeps) =>
+  (_deps: StrengthsAndNeedsEffectsDeps) =>
   async (context: StrengthsAndNeedsContext, clearFields = true, isAutosaved = false) => {
     const user = context.getState('user')
     const assessmentUuid = context.getData('assessmentUuid')
@@ -71,15 +70,14 @@ export const saveCurrentAccommodationStepAnswers =
     }
     const removed = [...new Set([...delta.removed])]
 
-    await deps.api.executeCommand({
-      type: 'UpdateAssessmentAnswersCommand',
+    const command = {
+      type: 'UpdateAssessmentAnswersCommand' as const,
       assessmentUuid,
       user,
       added: wrapAll(delta.added),
       removed: clearFields && !isAutosaved ? removed : [],
-      hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
       autosaved: isAutosaved,
-    })
+    }
 
     if (!clearRemovals) {
       restoreSuppressedAnswers(context, histories, removed)
@@ -89,10 +87,10 @@ export const saveCurrentAccommodationStepAnswers =
     const changedFields =
       !clearFields && isAutosaved ? fieldsToChange.filter(field => !removed.includes(field)) : fieldsToChange
 
-    if (changedFields.length) {
+    queueCommand(context, {
+      command,
+      mapToOasys: true,
       /* Field codes only, answers do not belong in the audit log. */
-      await sendFormAuditEvent(deps.auditService, context, SAN_AUDIT_FORM, SanAuditEvent.EDIT_ANSWERS, {
-        changedFields,
-      })
-    }
+      audit: changedFields.length ? { action: SanAuditEvent.EDIT_ANSWERS, details: { changedFields } } : undefined,
+    })
   }

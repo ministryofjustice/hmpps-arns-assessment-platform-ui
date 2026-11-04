@@ -22,6 +22,7 @@ import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAcc
 import { validateModeAndVersionUuidFromUrl } from './session/validateModeAndVersionUuidFromUrl'
 import { setUserSubmitted } from './assessment/setUserSubmitted'
 import { resolveEntryRoute } from './session/resolveEntryRoute'
+import { commitPendingCommands } from './assessment/pendingCommands'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -44,6 +45,7 @@ export const StrengthsAndNeedsEffects = {
   loadAnswersFromCollection: sanEffects.register('loadAnswersFromCollection', loadAnswersFromCollection),
   setRiskOfSexualHarm: sanEffects.register('setRiskOfSexualHarm', setRiskOfSexualHarm),
   setUserSubmitted: sanEffects.register('setUserSubmitted', setUserSubmitted),
+  commitPendingCommands: sanEffects.register('commitPendingCommands', commitPendingCommands),
   resolveEntryRoute: sanEffects.register('resolveEntryRoute', resolveEntryRoute),
   validateModeAndVersionUuidFromUrl: sanEffects.register(
     'validateModeAndVersionUuidFromUrl',

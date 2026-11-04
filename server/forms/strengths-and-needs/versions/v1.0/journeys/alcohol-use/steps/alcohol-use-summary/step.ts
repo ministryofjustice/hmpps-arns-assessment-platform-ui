@@ -31,6 +31,7 @@ export const alcoholUseSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.yes),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.alcohol_use, Step.alcohol_use_summary),
         ],
         next: [redirect({ goto: `${Step.alcohol_use_analysis.path}#practitioner-analysis` })],
@@ -39,6 +40,7 @@ export const alcoholUseSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
     }),

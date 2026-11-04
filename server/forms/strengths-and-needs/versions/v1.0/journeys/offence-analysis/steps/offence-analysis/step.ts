@@ -55,6 +55,7 @@ export const offenceAnalysisStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
         ],
         next: [
@@ -79,7 +80,10 @@ export const offenceAnalysisStep = step({
         ],
       },
       onInvalid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(false)],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
+        ],
       },
     }),
   ],

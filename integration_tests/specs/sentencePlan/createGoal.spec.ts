@@ -55,9 +55,11 @@ test.describe('Create Goal Journey', () => {
 
       await expect(actorSelect).toHaveAttribute('aria-describedby', /step_actor_0-error/)
       await expect(descriptionInput).toHaveAttribute('aria-describedby', /step_description_0-error/)
-      await expect(statusSelect).toHaveAttribute('aria-describedby', /step_status_0-error/)
+      await expect(statusSelect).not.toHaveAttribute('aria-describedby', /step_status_0-error/)
+      await expect(statusSelect).toHaveValue('NOT_STARTED')
 
-      await addStepsPage.enterStep(0, 'probation_practitioner', "Contact housing services about 'emergency housing'")
+      await actorSelect.selectOption('probation_practitioner', { force: true })
+      await descriptionInput.fill("Contact housing services about 'emergency housing'")
 
       // Add steps accessibility
       await checkAccessibility(page)
@@ -72,6 +74,7 @@ test.describe('Create Goal Journey', () => {
       const goalTitle = await updatedPlanOverview.getGoalCardTitle(0)
       expect(goalTitle).toContain("I'm not homeless ('sofa surfing')")
       await expect(goalCard).toContainText("'emergency housing'")
+      await expect(goalCard).toContainText('Not started')
     })
 
     test('can add multiple steps to a goal', async ({ page, createSession }) => {
