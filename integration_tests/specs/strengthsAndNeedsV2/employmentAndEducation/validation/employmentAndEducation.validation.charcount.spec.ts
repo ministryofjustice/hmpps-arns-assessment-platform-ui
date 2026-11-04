@@ -16,25 +16,29 @@ import { details } from '../../../../testUtils'
 
 const answers = [
   { question: Question.community_employment_status, value: Option.employed_or_self_employed },
-  { question: Question.employment_history, value: Option.stable },
-  { question: Question.employment_history_stable_details, value: details('Stable employment details') },
+  { question: Question.community_employment_history, value: Option.stable },
+  { question: Question.community_employment_history_stable_details, value: details('Stable employment details') },
   {
     question: Question.community_employment_other_responsibilities,
     value: [Option.carer, Option.child, CommonOption.other],
   },
   {
-    question: Question.employment_other_responsibilities_carer_details,
+    question: Question.community_employment_other_responsibilities_carer_details,
     value: details('Carer responsibilities details'),
   },
   {
-    question: Question.employment_other_responsibilities_child_details,
+    question: Question.community_employment_other_responsibilities_child_details,
     value: details('Child responsibilities details'),
   },
   {
-    question: Question.employment_other_responsibilities_other_details,
+    question: Question.community_employment_other_responsibilities_other_details,
     value: details('Other responsibilities details'),
   },
   { question: Question.education_academic_professional_vocational_qualifications, value: CommonOption.yes },
+  {
+    question: Question.education_academic_professional_vocational_qualifications_details,
+    value: details('Academic, professional, vocational qualifications details'),
+  },
   { question: Question.education_transferable_skills, value: CommonOption.yes },
   {
     question: Question.education_transferable_skills_yes_details,
@@ -50,6 +54,10 @@ const answers = [
   },
   {
     question: Question.education_difficulties_writing_severity,
+    value: Option.some_difficulties,
+  },
+  {
+    question: Question.education_difficulties_numeracy_severity,
     value: Option.some_difficulties,
   },
   {
@@ -106,7 +114,7 @@ test.describe('Employment and education character counts', () => {
       const { questions } = employmentPage
       await page.goto(`${section}/${Step.employment_education_details.path}`)
 
-      await questions.employment_history.option(option).check()
+      await questions.community_employment_history.option(option).check()
 
       await expectTheLimitsOnThePage(employmentPage)
     })

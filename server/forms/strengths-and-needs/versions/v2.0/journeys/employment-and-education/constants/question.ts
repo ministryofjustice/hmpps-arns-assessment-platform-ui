@@ -1,40 +1,61 @@
 export const Question = {
   community_employment_status: 'community_employment_status',
   community_ever_had_a_job: 'community_ever_had_a_job',
-  employment_type: 'employment_type',
-  community_employment_other_responsibilities: 'community_employment_other_responsibilities',
-  employment_history: 'employment_history',
-  employment_history_stable_details: 'employment_history_stable_details',
-  employment_history_periods_of_instability_details: 'employment_history_periods_of_instability_details',
-  employment_history_unstable_details: 'employment_history_unstable_details',
-  employment_history_unknown_details: 'employment_history_unknown_details',
-  employment_other_responsibilities_carer_details: 'employment_other_responsibilities_carer_details',
-  employment_other_responsibilities_volunteer_details: 'employment_other_responsibilities_volunteer_details',
-  employment_education_changes: 'employment_education_changes',
-  employment_education_changes_does_not_want_to_answer_details:
-    'employment_education_changes_does_not_want_to_answer_details',
-  employment_education_changes_does_not_want_to_make_changes_details:
-    'employment_education_changes_does_not_want_to_make_changes_details',
-  employment_education_changes_thinking_about_making_changes_details:
-    'employment_education_changes_thinking_about_making_changes_details',
-  employment_education_changes_needs_help_to_make_changes_details:
-    'employment_education_changes_needs_help_to_make_changes_details',
-  employment_education_changes_want_to_make_changes_details:
-    'employment_education_changes_want_to_make_changes_details',
-  employment_education_changes_making_changes_details: 'employment_education_changes_making_changes_details',
-  employment_education_changes_made_changes_details: 'employment_education_changes_made_changes_details',
 
-  education_difficulties: 'education_difficulties',
+  // Employment history
+  community_employment_history: 'community_employment_history',
+  community_employment_history_stable_details: 'community_employment_history_stable_details',
+  community_employment_history_periods_of_instability_details:
+    'community_employment_history_periods_of_instability_details',
+  community_employment_history_unstable_details: 'community_employment_history_unstable_details',
+  community_employment_history_unknown_details: 'community_employment_history_unknown_details',
+
+  // Other responsibilities
+  community_employment_other_responsibilities: 'community_employment_other_responsibilities',
+  community_employment_other_responsibilities_carer_details:
+    'community_employment_other_responsibilities_carer_details',
+  community_employment_other_responsibilities_child_details:
+    'community_employment_other_responsibilities_child_details',
+  community_employment_other_responsibilities_studying_details:
+    'community_employment_other_responsibilities_studying_details',
+  community_employment_other_responsibilities_volunteer_details:
+    'community_employment_other_responsibilities_volunteer_details',
+  community_employment_other_responsibilities_other_details:
+    'community_employment_other_responsibilities_other_details',
+
+  // Academic professional vocational qualifications
   education_academic_professional_vocational_qualifications:
     'education_academic_professional_vocational_qualifications',
+  education_academic_professional_vocational_qualifications_details:
+    'education_academic_professional_vocational_qualifications_details',
+
+  // Transferable skills
+  education_transferable_skills: 'education_transferable_skills',
+  education_transferable_skills_yes_details: 'education_transferable_skills_yes_details',
+  education_transferable_skills_yes_some_skills_details: 'education_transferable_skills_yes_some_skills_details',
+
+  // Education difficulties
+  education_difficulties: 'education_difficulties',
   education_difficulties_reading_severity: 'education_difficulties_reading_severity',
   education_difficulties_writing_severity: 'education_difficulties_writing_severity',
   education_difficulties_numeracy_severity: 'education_difficulties_numeracy_severity',
-  education_transferable_skills: 'education_transferable_skills',
-  education_transferable_skills_yes_some_skills_details: 'education_transferable_skills_yes_some_skills_details',
-  education_transferable_skills_yes_details: 'education_transferable_skills_yes_details',
-  employment_other_responsibilities_other_details: 'employment_other_responsibilities_other_details',
-  employment_other_responsibilities_child_details: 'employment_other_responsibilities_child_details',
+
+  // Education changes
+  employment_education_changes: 'employment_education_changes',
+  employment_education_changes_made_changes_details: 'employment_education_changes_made_changes_details',
+  employment_education_changes_making_changes_details: 'employment_education_changes_making_changes_details',
+  employment_education_changes_want_to_make_changes_details:
+    'employment_education_changes_want_to_make_changes_details',
+  employment_education_changes_needs_help_to_make_changes_details:
+    'employment_education_changes_needs_help_to_make_changes_details',
+  employment_education_changes_thinking_about_making_changes_details:
+    'employment_education_changes_thinking_about_making_changes_details',
+  employment_education_changes_does_not_want_to_make_changes_details:
+    'employment_education_changes_does_not_want_to_make_changes_details',
+  employment_education_changes_does_not_want_to_answer_details:
+    'employment_education_changes_does_not_want_to_answer_details',
+
+  // Practitioner questions
   employment_education_practitioner_analysis_strengths_or_protective_factors:
     'employment_education_practitioner_analysis_strengths_or_protective_factors',
   employment_education_practitioner_analysis_risk_of_serious_harm:

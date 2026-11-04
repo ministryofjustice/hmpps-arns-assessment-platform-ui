@@ -15,22 +15,22 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.employed_or_self_employed },
-        { question: Question.employment_history, value: Option.stable },
-        { question: Question.employment_history_stable_details, value: details('Stable employment details') },
+        { question: Question.community_employment_history, value: Option.stable },
+        { question: Question.community_employment_history_stable_details, value: details('Stable employment details') },
         {
           question: Question.community_employment_other_responsibilities,
           value: [Option.carer, Option.child, CommonOption.other],
         },
         {
-          question: Question.employment_other_responsibilities_carer_details,
+          question: Question.community_employment_other_responsibilities_carer_details,
           value: details('Carer responsibilities details'),
         },
         {
-          question: Question.employment_other_responsibilities_child_details,
+          question: Question.community_employment_other_responsibilities_child_details,
           value: details('Child responsibilities details'),
         },
         {
-          question: Question.employment_other_responsibilities_other_details,
+          question: Question.community_employment_other_responsibilities_other_details,
           value: details('Other responsibilities details'),
         },
         { question: Question.education_academic_professional_vocational_qualifications, value: CommonOption.yes },
@@ -155,22 +155,22 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.employed_or_self_employed },
-        { question: Question.employment_history, value: Option.stable },
-        { question: Question.employment_history_stable_details, value: details('Stable employment details') },
+        { question: Question.community_employment_history, value: Option.stable },
+        { question: Question.community_employment_history_stable_details, value: details('Stable employment details') },
         {
           question: Question.community_employment_other_responsibilities,
           value: [Option.carer, Option.child, CommonOption.other],
         },
         {
-          question: Question.employment_other_responsibilities_carer_details,
+          question: Question.community_employment_other_responsibilities_carer_details,
           value: details('Carer responsibilities details'),
         },
         {
-          question: Question.employment_other_responsibilities_child_details,
+          question: Question.community_employment_other_responsibilities_child_details,
           value: details('Child responsibilities details'),
         },
         {
-          question: Question.employment_other_responsibilities_other_details,
+          question: Question.community_employment_other_responsibilities_other_details,
           value: details('Other responsibilities details'),
         },
         { question: Question.education_academic_professional_vocational_qualifications, value: CommonOption.yes },
@@ -229,22 +229,30 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.employed_or_self_employed },
-        { question: Question.employment_history, value: Option.stable },
-        { question: Question.employment_history_stable_details, value: details('Stable employment details') },
+        { question: Question.community_employment_history, value: Option.stable },
+        { question: Question.community_employment_history_stable_details, value: details('Stable employment details') },
         {
           question: Question.community_employment_other_responsibilities,
           value: [Option.carer, Option.child, CommonOption.other],
         },
         {
-          question: Question.employment_other_responsibilities_carer_details,
+          question: Question.community_employment_other_responsibilities_carer_details,
           value: details('Carer responsibilities details'),
         },
         {
-          question: Question.employment_other_responsibilities_child_details,
+          question: Question.community_employment_other_responsibilities_child_details,
           value: details('Child responsibilities details'),
         },
         {
-          question: Question.employment_other_responsibilities_other_details,
+          question: Question.community_employment_other_responsibilities_studying_details,
+          value: details('Studying responsibilities details'),
+        },
+        {
+          question: Question.community_employment_other_responsibilities_volunteer_details,
+          value: details('Volunteer responsibilities details'),
+        },
+        {
+          question: Question.community_employment_other_responsibilities_other_details,
           value: details('Other responsibilities details'),
         },
         { question: Question.education_academic_professional_vocational_qualifications, value: CommonOption.yes },

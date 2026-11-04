@@ -94,22 +94,25 @@ const accommodation: Answer[] = [
 
 const employment: Answer[] = [
   { question: EmploymentQuestion.community_employment_status, value: EmploymentOption.employed_or_self_employed },
-  { question: EmploymentQuestion.employment_history, value: EmploymentOption.stable },
-  { question: EmploymentQuestion.employment_history_stable_details, value: details('Stable employment details') },
+  { question: EmploymentQuestion.community_employment_history, value: EmploymentOption.stable },
+  {
+    question: EmploymentQuestion.community_employment_history_stable_details,
+    value: details('Stable employment details'),
+  },
   {
     question: EmploymentQuestion.community_employment_other_responsibilities,
     value: [EmploymentOption.carer, EmploymentOption.child, CommonOption.other],
   },
   {
-    question: EmploymentQuestion.employment_other_responsibilities_carer_details,
+    question: EmploymentQuestion.community_employment_other_responsibilities_carer_details,
     value: details('Carer responsibilities details'),
   },
   {
-    question: EmploymentQuestion.employment_other_responsibilities_child_details,
+    question: EmploymentQuestion.community_employment_other_responsibilities_child_details,
     value: details('Child responsibilities details'),
   },
   {
-    question: EmploymentQuestion.employment_other_responsibilities_other_details,
+    question: EmploymentQuestion.community_employment_other_responsibilities_other_details,
     value: details('Other responsibilities details'),
   },
   { question: EmploymentQuestion.education_academic_professional_vocational_qualifications, value: CommonOption.yes },

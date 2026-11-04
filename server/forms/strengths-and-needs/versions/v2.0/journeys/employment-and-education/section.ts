@@ -94,46 +94,46 @@ const everHadAJob = question({
 
 const employmentHistory = question({
   content: {
-    code: Question.employment_history,
+    code: Question.community_employment_history,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.employment_history.text', CaseData.ForenamePossessive),
-    hint: contentFor('question.employment_history.hint'),
+    text: contentFor('question.community_employment_history.text', CaseData.ForenamePossessive),
+    hint: contentFor('question.community_employment_history.hint'),
     options: [
       {
         value: Option.stable,
-        text: contentFor('question.employment_history.option.STABLE.text'),
-        hint: contentFor('question.employment_history.option.STABLE.hint'),
+        text: contentFor('question.community_employment_history.option.STABLE.text'),
+        hint: contentFor('question.community_employment_history.option.STABLE.hint'),
         reveals: optionalDetails({
-          code: Question.employment_history_stable_details,
-          hint: contentFor('question.employment_history_stable_details.hint'),
+          code: Question.community_employment_history_stable_details,
+          hint: contentFor('question.community_employment_history.hint'),
         }),
       },
       {
         value: Option.periods_of_instability,
-        text: contentFor('question.employment_history.option.PERIODS_OF_INSTABILITY'),
+        text: contentFor('question.community_employment_history.option.PERIODS_OF_INSTABILITY'),
         reveals: optionalDetails({
-          code: Question.employment_history_periods_of_instability_details,
-          hint: contentFor('question.employment_history_periods_of_instability_details.hint'),
+          code: Question.community_employment_history_periods_of_instability_details,
+          hint: contentFor('question.community_employment_history_periods_of_instability_details.hint'),
         }),
       },
       {
         value: Option.unstable,
-        text: contentFor('question.employment_history.option.UNSTABLE'),
+        text: contentFor('question.community_employment_history.option.UNSTABLE'),
         reveals: optionalDetails({
-          code: Question.employment_history_unstable_details,
-          hint: contentFor('question.employment_history_unstable_details.hint'),
+          code: Question.community_employment_history_unstable_details,
+          hint: contentFor('question.community_employment_history.hint'),
         }),
       },
       {
         value: CommonOption.unknown,
         text: commonContentFor('option.UNKNOWN'),
         reveals: optionalDetails({
-          code: Question.employment_history_unknown_details,
-          hint: contentFor('question.employment_history_unknown_details.hint'),
+          code: Question.community_employment_history_unknown_details,
+          hint: contentFor('question.community_employment_history.hint'),
         }),
       },
     ],
-    validationMessage: contentFor('question.employment_history.validation'),
+    validationMessage: contentFor('question.community_employment_history.validation'),
   },
   displayModes: {
     field: radioField({ dependentWhen: hasBeenEmployedOrRetired, visibleWhen: hasBeenEmployedOrRetired }),
@@ -154,26 +154,27 @@ const dayToDayCommitments = question({
       {
         value: Option.carer,
         text: contentFor('question.community_employment_other_responsibilities.option.CARER'),
-        reveals: optionalDetails({ code: Question.employment_other_responsibilities_carer_details }),
+        reveals: optionalDetails({ code: Question.community_employment_other_responsibilities_carer_details }),
       },
       {
         value: Option.child,
         text: contentFor('question.community_employment_other_responsibilities.option.CHILD'),
-        reveals: optionalDetails({ code: Question.employment_other_responsibilities_child_details }),
+        reveals: optionalDetails({ code: Question.community_employment_other_responsibilities_child_details }),
       },
       {
         value: Option.studying,
         text: contentFor('question.community_employment_other_responsibilities.option.STUDYING'),
+        reveals: optionalDetails({ code: Question.community_employment_other_responsibilities_studying_details }),
       },
       {
         value: Option.volunteer,
         text: contentFor('question.community_employment_other_responsibilities.option.VOLUNTEER'),
-        reveals: optionalDetails({ code: Question.employment_other_responsibilities_volunteer_details }),
+        reveals: optionalDetails({ code: Question.community_employment_other_responsibilities_volunteer_details }),
       },
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
-        reveals: optionalDetails({ code: Question.employment_other_responsibilities_other_details }),
+        reveals: optionalDetails({ code: Question.community_employment_other_responsibilities_other_details }),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
       { divider: commonContentFor('or') },
@@ -193,7 +194,11 @@ const academicProfessionalOrVocationalQualifications = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.education_academic_professional_vocational_qualifications.text', CaseData.Forename),
     options: [
-      { value: CommonOption.yes, text: commonContentFor('option.YES') },
+      {
+        value: CommonOption.yes,
+        text: commonContentFor('option.YES'),
+        reveals: optionalDetails({ code: Question.education_academic_professional_vocational_qualifications_details }),
+      },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],

@@ -95,8 +95,8 @@ test.describe('Validation', () => {
               - /url: "#education_difficulties"
     `)
 
-    await questions.employment_history.errorLink.click()
-    await expect(questions.employment_history.input).toBeFocused()
+    await questions.community_employment_history.errorLink.click()
+    await expect(questions.community_employment_history.input).toBeFocused()
     await questions.community_employment_other_responsibilities.errorLink.click()
     await expect(questions.community_employment_other_responsibilities.input).toBeFocused()
     await questions.education_academic_professional_vocational_qualifications.errorLink.click()

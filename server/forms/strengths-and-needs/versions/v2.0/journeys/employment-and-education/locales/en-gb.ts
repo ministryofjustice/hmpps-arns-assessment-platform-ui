@@ -17,7 +17,7 @@ export const english = {
     [Question.community_ever_had_a_job]: {
       text: 'Has %1 ever had a job?',
     },
-    [Question.employment_history]: {
+    [Question.community_employment_history]: {
       text: 'What is %1 employment history?',
       hint: 'Include their current employment.',
       option: {
@@ -29,15 +29,6 @@ export const english = {
         [Option.unstable]: 'Unstable employment history with regular periods of unemployment',
       },
       validation: 'Select their employment history',
-    },
-    [Question.employment_type]: {
-      text: 'What is the type of employment?',
-      option: {
-        [Option.full_time]: 'Full-time',
-        [Option.part_time]: 'Part-time',
-        [Option.temporary_or_casual]: 'Temporary or casual',
-        [Option.apprenticeship]: 'Apprenticeship',
-      },
     },
     [Question.employment_education_changes]: {
       text: 'Does %1 want to make changes to their employment and education?',
@@ -98,16 +89,16 @@ export const english = {
       text: 'How much support does %1 need with numeracy?',
       validation: 'Select level of difficulty',
     },
-    [Question.employment_history_stable_details]: {
+    [Question.community_employment_history_stable_details]: {
       hint: `Include what type of work they’ve done before.`,
     },
-    [Question.employment_history_periods_of_instability_details]: {
+    [Question.community_employment_history_periods_of_instability_details]: {
       hint: `Include what type of work they’ve done before.`,
     },
-    [Question.employment_history_unstable_details]: {
+    [Question.community_employment_history_unstable_details]: {
       hint: `Include what type of work they’ve done before.`,
     },
-    [Question.employment_history_unknown_details]: {
+    [Question.community_employment_history_unknown_details]: {
       hint: `Include what type of work they’ve done before.`,
     },
     [Question.employment_education_practitioner_analysis_strengths_or_protective_factors]: {
