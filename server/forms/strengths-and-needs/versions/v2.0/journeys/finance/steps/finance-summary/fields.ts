@@ -1,14 +1,14 @@
-import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
-import { financeSection } from '../../section'
-import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
-import { Step } from '../../constants/step'
-import { commonContentFor } from '../../../../locales'
-import { questionsOf } from '../../../../steps/view-all-answers/sections'
-import { anyAnswered } from '../../../../steps/view-all-answers/fields'
-import { Section } from '../../../../constants/section'
+import {GovUKSummaryList, GovUKTabs} from '@ministryofjustice/hmpps-forge/govuk-components'
+import {not} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {HtmlBlock} from '@ministryofjustice/hmpps-forge/core/components'
+import {MOJBanner} from '@ministryofjustice/hmpps-forge/moj-components'
+import {financeSection, hasFinancialConcerns} from '../../section'
+import {goToPractitionerAnalysisButton, markAsCompleteButton} from '../../../../constants/buttons'
+import {commonContentFor} from '../../../../locales'
+import {questionsOf} from '../../../../steps/view-all-answers/sections'
+import {anyAnswered} from '../../../../steps/view-all-answers/fields'
+import {Section} from '../../../../constants/section'
+import {Step} from '../../constants/step'
 
 export const questions = questionsOf({
   section: Section.finance,
@@ -18,14 +18,20 @@ export const questions = questionsOf({
 export const summary = GovUKSummaryList({
   rows: [
     financeSection.questions.income.displayModes.summaryRow,
+    financeSection.questions.overReliantOnFamilyOrFriends.displayModes.summaryRow,
+    financeSection.questions.financialConcerns.displayModes.summaryRow,
     financeSection.questions.moneyManagement.displayModes.summaryRow,
-    financeSection.questions.gambling.displayModes.summaryRow,
     financeSection.questions.debt.displayModes.summaryRow,
+    financeSection.questions.debtTypeTheir.displayModes.summaryRow,
+    financeSection.questions.debtTypeSomeoneElses.displayModes.summaryRow,
     financeSection.questions.changes.displayModes.summaryRow,
   ],
 })
 
-const summaryPanel = [summary, goToPractitionerAnalysisButton(Step.finance_summary.path)]
+const summaryPanel = [
+  summary,
+  goToPractitionerAnalysisButton(Step.finance_summary.path, 'practitioner-analysis', hasFinancialConcerns),
+]
 
 export const summaryTab = HtmlBlock({
   content: [
@@ -40,13 +46,12 @@ export const summaryTab = HtmlBlock({
         {
           id: 'summary',
           label: commonContentFor('summary'),
-          panel: {
-            blocks: summaryPanel,
-          },
+          panel: {blocks: summaryPanel},
         },
         {
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
+          visibleWhen: hasFinancialConcerns,
           panel: {
             blocks: [
               financeSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,

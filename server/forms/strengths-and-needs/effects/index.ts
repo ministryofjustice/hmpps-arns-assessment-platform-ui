@@ -1,32 +1,34 @@
-import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { deriveDrugCategories } from './assessment/deriveDrugCategories'
-import { clearUnselectedDrugAnswers } from './assessment/clearUnselectedDrugAnswers'
-import { clearInapplicableLivingWithAnswers } from './assessment/clearInapplicableLivingWithAnswers'
-import { loadAssessment } from './assessment/loadAssessment'
-import { loadPreviousVersions } from './assessment/loadPreviousVersions'
-import { resolveHistoricVersion } from './assessment/resolveHistoricVersion'
-import { initializeSessionFromAccess } from './session/initializeSessionFromAccess'
-import { loadSessionData } from './session/loadSessionData'
-import { setPrivacyAccepted } from './session/setPrivacyAccepted'
-import { setDynamicBacklink } from './session/setDynamicBacklink'
-import { StrengthsAndNeedsEffectsDeps } from './types'
-import { setSectionProgress } from './assessment/setSectionProgress'
-import { saveCurrentStepAnswers } from './assessment/saveCurrentStepAnswers'
-import { addItemToCollection } from './assessment/addItemToCollection'
-import { loadAnswersFromCollection } from './assessment/loadAnswersFromCollection'
-import { loadItemFromCollection } from './assessment/loadItemFromCollection'
-import { updateItemFromCollection } from './assessment/updateItemFromCollection'
-import { removeItemFromCollection } from './assessment/removeItemFromCollection'
-import { emptyCollection } from './assessment/emptyCollection'
-import { setRiskOfSexualHarm } from './assessment/setRiskOfSexualHarm'
-import { sendAuditEvent } from './audit/sendAuditEvent'
-import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAccommodationStepAnswers'
-import { validateModeAndVersionUuidFromUrl } from './session/validateModeAndVersionUuidFromUrl'
-import { setUserSubmitted } from './assessment/setUserSubmitted'
-import { resolveEntryRoute } from './session/resolveEntryRoute'
-import { initializeSessionFromAccessV2 } from './session/initializeSessionFromAccessV2'
-import { setSectionProgressV2 } from './assessment/setSectionProgressV2'
-import { commitPendingCommands } from './assessment/pendingCommands'
+import {EffectRegistry} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {deriveDrugCategories} from './assessment/deriveDrugCategories'
+import {clearUnselectedDrugAnswers} from './assessment/clearUnselectedDrugAnswers'
+import {clearInapplicableLivingWithAnswers} from './assessment/clearInapplicableLivingWithAnswers'
+import {loadAssessment} from './assessment/loadAssessment'
+import {loadPreviousVersions} from './assessment/loadPreviousVersions'
+import {resolveHistoricVersion} from './assessment/resolveHistoricVersion'
+import {initializeSessionFromAccess} from './session/initializeSessionFromAccess'
+import {loadSessionData} from './session/loadSessionData'
+import {setPrivacyAccepted} from './session/setPrivacyAccepted'
+import {setDynamicBacklink} from './session/setDynamicBacklink'
+import {StrengthsAndNeedsEffectsDeps} from './types'
+import {setSectionProgress} from './assessment/setSectionProgress'
+import {saveCurrentStepAnswers} from './assessment/saveCurrentStepAnswers'
+import {addItemToCollection} from './assessment/addItemToCollection'
+import {loadAnswersFromCollection} from './assessment/loadAnswersFromCollection'
+import {loadItemFromCollection} from './assessment/loadItemFromCollection'
+import {updateItemFromCollection} from './assessment/updateItemFromCollection'
+import {removeItemFromCollection} from './assessment/removeItemFromCollection'
+import {emptyCollection} from './assessment/emptyCollection'
+import {setRiskOfSexualHarm} from './assessment/setRiskOfSexualHarm'
+import {sendAuditEvent} from './audit/sendAuditEvent'
+import {saveCurrentAccommodationStepAnswers} from './assessment/saveCurrentAccommodationStepAnswers'
+import {validateModeAndVersionUuidFromUrl} from './session/validateModeAndVersionUuidFromUrl'
+import {setUserSubmitted} from './assessment/setUserSubmitted'
+import {resolveEntryRoute} from './session/resolveEntryRoute'
+import {initializeSessionFromAccessV2} from './session/initializeSessionFromAccessV2'
+import {setSectionProgressV2} from './assessment/setSectionProgressV2'
+import {commitPendingCommands} from './assessment/pendingCommands'
+import {clearFinanceConcernsDownstreamAnswers} from './assessment/clearFinanceConcernsDownstreamAnswers'
+import {clearFinanceDebtTypeAnswers} from './assessment/clearFinanceDebtTypeAnswers'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -67,7 +69,12 @@ export const StrengthsAndNeedsEffects = {
     'saveCurrentAccommodationStepAnswers',
     saveCurrentAccommodationStepAnswers,
   ),
+  clearFinanceConcernsDownstreamAnswers: sanEffects.register(
+    'clearFinanceConcernsDownstreamAnswers',
+    clearFinanceConcernsDownstreamAnswers,
+  ),
+  clearFinanceDebtTypeAnswers: sanEffects.register('clearFinanceDebtTypeAnswers', clearFinanceDebtTypeAnswers),
 }
 
-export { CommonAuditEvent } from '../../shared'
-export { SanAuditEvent } from '../auditEvents'
+export {CommonAuditEvent} from '../../shared'
+export {SanAuditEvent} from '../auditEvents'
