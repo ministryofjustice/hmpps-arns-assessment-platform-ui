@@ -33,8 +33,9 @@ const fieldOptionsOf = (content: QuestionContent): Pick<FormConfigField, 'option
   isOptioned(content) ? { options: content.options.filter(isQuestionOption).map(({ value }) => ({ value })) } : {}
 
 /**
- * Built as a plain object (not a class instance) because it is passed to the
- * form as `data`, which forge requires to be JSON-serialisable.
+ * Built as a plain object for mapping hooks and the version-configured diagnostic
+ * step's `data`, which Forge requires to be JSON-serialisable. Ordinary steps do
+ * not need this mapping configuration in their request data.
  */
 export const buildFormConfig = (
   version: string,

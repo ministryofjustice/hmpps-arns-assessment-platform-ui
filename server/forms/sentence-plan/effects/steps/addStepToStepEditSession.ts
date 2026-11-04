@@ -36,7 +36,7 @@ export const addStepToStepEditSession = () => async (context: SentencePlanContex
     id: newStepId,
     actor: '',
     description: '',
-    status: '',
+    status: 'NOT_STARTED',
   })
 
   // Track for creation on save

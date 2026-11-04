@@ -364,6 +364,39 @@ test.describe('Update goal and steps page', () => {
       expect(currentStatus).toBe(stepStatusOptions[1])
     })
 
+    test('defaults a new step to Not started without resetting an existing status', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      const { plan } = await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoals([
+              {
+                title: 'Goal with an in-progress step',
+                areaOfNeed: 'accommodation',
+                status: 'ACTIVE',
+                targetDate: getDatePlusDaysAsISO(90),
+                steps: [{ actor: 'probation_practitioner', description: 'Existing step', status: 'IN_PROGRESS' }],
+              },
+            ])
+            .withAgreementStatus('AGREED'),
+      })
+      const goalUuid = plan.goals[0].uuid
+
+      await page.goto(sentencePlanV1UrlBuilders.goalUpdateSteps(goalUuid))
+      const updatePage = await UpdateGoalAndStepsPage.verifyOnPage(page)
+      await updatePage.clickAddOrChangeSteps()
+
+      const addStepsPage = await AddStepsPage.verifyOnPage(page)
+      await addStepsPage.clickAddStep()
+
+      await expect(await addStepsPage.getStepStatusSelect(0)).toHaveValue('IN_PROGRESS')
+      await expect(await addStepsPage.getStepStatusSelect(1)).toHaveValue('NOT_STARTED')
+      await expect(page.locator('#step_status_1')).toHaveText('Not started')
+      await expect(page.locator('#step_status_1-error')).toHaveCount(0)
+    })
+
     for (const targetStatus of stepStatusOptions) {
       test(`can change step status to ${targetStatus}`, async ({ page, openSentencePlan }) => {
         const { plan } = await openSentencePlan({

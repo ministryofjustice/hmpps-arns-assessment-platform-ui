@@ -23,6 +23,7 @@ export const autosaveSubmit = (stepCode: string, section: (typeof Section)[keyof
         StrengthsAndNeedsEffects.saveCurrentStepAnswers(false, true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
         StrengthsAndNeedsEffects.setSectionProgress(section, SectionComplete.no),
+        StrengthsAndNeedsEffects.commitPendingCommands(),
       ],
     },
   })

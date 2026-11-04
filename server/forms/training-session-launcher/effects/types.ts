@@ -1,9 +1,10 @@
 import AssessmentPlatformApiClient from '../../../data/assessmentPlatformApiClient'
-import { CoordinatorApiClient, HandoverApiClient, PreferencesStore } from '../../../data'
+import { CoordinatorApiClient, HandoverApiClient, PreferencesStore, WiremockAdminClient } from '../../../data'
 
 export interface TrainingSessionLauncherEffectsDeps {
   assessmentPlatformApiClient: AssessmentPlatformApiClient
   handoverApiClient: HandoverApiClient
+  wiremockAdminClient: WiremockAdminClient
   coordinatorApiClient: CoordinatorApiClient
   preferencesStore: PreferencesStore
 }

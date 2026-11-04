@@ -34,7 +34,10 @@ export const drugUseTypesStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: { groups: ['default', 'drugs'] },
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_types.code)],
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_types.code),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
+        ],
       },
       onValid: {
         effects: [
@@ -43,6 +46,7 @@ export const drugUseTypesStep = step({
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_details.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_history.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_types),
         ],
         next: [redirect({ goto: Step.drug_use_details.path })],
@@ -52,6 +56,7 @@ export const drugUseTypesStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_types),
         ],
       },
