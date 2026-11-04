@@ -93,7 +93,7 @@ test.describe('Summary', () => {
           - paragraph: Stable employment details — free text answer.
         - definition:
           - link "Change What is Test's employment history?":
-            - /url: employment-education-details#employment_history-question
+            - /url: employment-education-details#community_employment_history-question
         - term: Does Test have any additional day-to-day commitments?
         - definition:
           - paragraph: Caring responsibilities

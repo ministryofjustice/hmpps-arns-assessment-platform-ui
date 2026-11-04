@@ -80,7 +80,7 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select their employment history":
-              - /url: "#employment_history"
+              - /url: "#community_employment_history"
           - listitem:
             - link "Select if they have any additional day-to-day commitments, or select 'None'":
               - /url: "#community_employment_other_responsibilities"
