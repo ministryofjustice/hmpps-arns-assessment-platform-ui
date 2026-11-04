@@ -1,6 +1,17 @@
-import { Condition, Data, Format, Item, Iterator, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKBody, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import {
+  and,
+  Condition,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  not,
+  Session,
+  Transformer,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKBody, GovUKHeading, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Fragment, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
 import { basePath, CaseData } from '../../constants/formVersion'
 import { contentFor } from './locales'
@@ -108,15 +119,39 @@ const tableRows = [
   // statusCell,
 ]
 
-const createVersionTable = (caption: ResolvableString, sessionKey: 'countersignedVersions' | 'previousVersions') =>
-  GovUKTable({
-    caption,
-    captionClasses: versionTableCaptionClasses,
-    classes: versionTableClasses,
-    head: tableHeadColumns,
-    attributes: { 'data-qa': 'previous-versions-table' },
-    rows: Session(`san.${sessionKey}`).each(Iterator.Map(tableRows)),
+const createVersionTable = (caption: ResolvableString, sessionKey: 'countersignedVersions' | 'previousVersions') => {
+  const tableData = Session(`san.${sessionKey}`)
+  const hasRows = and(
+    tableData.match(Condition.Array.IsArray()),
+    tableData.pipe(Transformer.Array.Length()).match(Condition.Number.GreaterThan(0)),
+  )
+
+  return Fragment({
+    blocks: [
+      GovUKTable({
+        caption,
+        captionClasses: versionTableCaptionClasses,
+        classes: versionTableClasses,
+        head: tableHeadColumns,
+        attributes: { 'data-qa': 'previous-versions-table' },
+        rows: tableData.each(Iterator.Map(tableRows)),
+        visibleWhen: hasRows,
+      }),
+      Fragment({
+        blocks: [
+          GovUKHeading({
+            size: 'm',
+            text: caption,
+          }),
+          GovUKBody({
+            text: contentFor('no_versions'),
+          }),
+        ],
+        visibleWhen: not(hasRows),
+      }),
+    ],
   })
+}
 
 export const countersignedVersionTable = createVersionTable(
   contentFor('countersigned_versions_table_caption'),
