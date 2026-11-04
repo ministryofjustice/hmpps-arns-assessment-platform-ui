@@ -40,6 +40,7 @@ export const employmentStatusStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employment_status),
         ],
         next: [
@@ -53,6 +54,7 @@ export const employmentStatusStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.employment_and_education, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.employment_education_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.employment_and_education, Step.employment_status),
         ],
       },

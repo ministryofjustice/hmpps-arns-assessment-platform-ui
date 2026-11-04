@@ -60,7 +60,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         ],
       },
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(), StrengthsAndNeedsEffects.commitPendingCommands()],
         next: [
           redirect({
             goto: Step.offence_analysis_impact.path,
@@ -68,7 +68,10 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         ],
       },
       onInvalid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(false)],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
+        ],
       },
     }),
   ],

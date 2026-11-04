@@ -49,6 +49,7 @@ export const alcoholUseStatusStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_status),
         ],
         next: [
@@ -67,6 +68,7 @@ export const alcoholUseStatusStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.alcohol_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.alcohol_use_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.alcohol_use, Step.alcohol_use_status),
         ],
       },

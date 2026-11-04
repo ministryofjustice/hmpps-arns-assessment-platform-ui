@@ -10,6 +10,7 @@ import AuditService from '../../../services/auditService'
 import { PreviousVersionDisplay } from './assessment/loadPreviousVersions'
 import { VersionDetails } from '../../../interfaces/coordinator-api/previousVersions'
 import type { EntryRoute } from './session/resolveEntryRoute'
+import type { PendingCommand } from './assessment/pendingCommands'
 
 export interface StrengthsAndNeedsSessionDetails extends AccessSessionDetails {
   assessmentIdentifier: AssessmentIdentifiers
@@ -64,6 +65,8 @@ export interface StrengthsAndNeedsData {
   historicVersion?: VersionDetails
   entryRoute?: EntryRoute
   collectionUuids?: Record<string, string>
+  /** Commands waiting for commitPendingCommands */
+  pendingCommands?: PendingCommand[]
   [key: string]: unknown
 }
 

@@ -40,6 +40,7 @@ export const offenceAnalysisVictimStep = step({
         effects: [
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
       onValid: {
