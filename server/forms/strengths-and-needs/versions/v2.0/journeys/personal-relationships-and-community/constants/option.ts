@@ -5,13 +5,6 @@ export const Option = {
   yes_children_visiting: 'YES_CHILDREN_VISITING',
   no_children: 'NO_CHILDREN',
 
-  // Q: Who are the important people in [subject]'s life?
-  partner_intimate_relationship: 'PARTNER_INTIMATE_RELATIONSHIP',
-  child_parental_responsibilities: 'CHILD_PARENTAL_RESPONSIBILITIES',
-  other_children: 'OTHER_CHILDREN',
-  family: 'FAMILY',
-  friends: 'FRIENDS',
-
   // Q: Is [subject] happy with their current relationship status?
   happy_relationship: 'HAPPY_RELATIONSHIP',
   concerns_happy_relationship: 'CONCERNS_HAPPY_RELATIONSHIP',
@@ -40,7 +33,6 @@ export const Option = {
   // Q: Who did [subject] abuse?
   family_member: 'FAMILY_MEMBER',
   intimate_partner: 'INTIMATE_PARTNER',
-  family_member_and_intimate_partner: 'FAMILY_MEMBER_AND_INTIMATE_PARTNER',
 
   // Q: in a relationship?
   in_relationship_living_together: 'IN_RELATIONSHIP_LIVING_TOGETHER',
