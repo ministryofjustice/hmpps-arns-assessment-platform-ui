@@ -1,6 +1,14 @@
-import { Condition, Post, redirect, step, submit, validation, when } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { financeSection } from '../../section'
+import { financeSection, hasDebt } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
@@ -10,7 +18,6 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { hasDebt } from '../../section'
 
 export const financeChangesStep = step({
   path: `/${Step.finance_changes.path}`,

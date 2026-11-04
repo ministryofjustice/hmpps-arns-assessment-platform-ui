@@ -2,12 +2,7 @@ import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/autho
 
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
-import {
-  checkboxField,
-  question,
-  QuestionFormat,
-  radioField,
-} from '../../../../constants/questionContent'
+import { checkboxField, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
 import { Question } from './constants/question'
@@ -23,9 +18,7 @@ export const hasFamilyOrFriendsIncome = Answer(Question.finance_income).match(
 
 export const hasFinancialConcerns = Answer(Question.finance_concerns).match(Condition.Equals(CommonOption.yes))
 export const hasTheirDebt = Answer(Question.finance_debt).match(Condition.Equals(Option.yes_their_debt))
-export const hasSomeoneElsesDebt = Answer(Question.finance_debt).match(
-  Condition.Equals(Option.yes_someone_elses_debt),
-)
+export const hasSomeoneElsesDebt = Answer(Question.finance_debt).match(Condition.Equals(Option.yes_someone_elses_debt))
 export const hasDebt = or(hasTheirDebt, hasSomeoneElsesDebt)
 
 const overReliantOnFamilyOrFriends = question({
