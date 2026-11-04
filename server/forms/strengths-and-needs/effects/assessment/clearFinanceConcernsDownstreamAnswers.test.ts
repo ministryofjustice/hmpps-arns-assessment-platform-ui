@@ -1,7 +1,7 @@
-import {createTestEffectContext} from '@ministryofjustice/hmpps-forge/core/testing'
-import {StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps} from '../types'
-import {CommonOption} from '../../versions/v2.0/constants/commonOption'
-import {clearFinanceConcernsDownstreamAnswers} from './clearFinanceConcernsDownstreamAnswers'
+import { createTestEffectContext } from '@ministryofjustice/hmpps-forge/core/testing'
+import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
+import { CommonOption } from '../../versions/v2.0/constants/commonOption'
+import { clearFinanceConcernsDownstreamAnswers } from './clearFinanceConcernsDownstreamAnswers'
 
 const downstreamAnswers = [
   'finance_money_management',
@@ -40,7 +40,7 @@ const deps = {} as StrengthsAndNeedsEffectsDeps
 
 const contextFor = (financialConcernsAnswer: string) =>
   createTestEffectContext({
-    answers: {finance_concerns: financialConcernsAnswer},
+    answers: { finance_concerns: financialConcernsAnswer },
   }) as unknown as StrengthsAndNeedsContext
 
 describe('clearFinanceConcernsDownstreamAnswers', () => {
