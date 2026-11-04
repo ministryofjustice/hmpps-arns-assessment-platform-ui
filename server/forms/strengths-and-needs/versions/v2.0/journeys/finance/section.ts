@@ -1,16 +1,12 @@
-import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import {
-  checkboxDetails,
   checkboxField,
   question,
   QuestionFormat,
-  radioDetails,
   radioField,
-  revealedQuestion,
-
 } from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { contentFor } from './locales'
@@ -21,66 +17,122 @@ import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 
-const overReliantOnFamilyOrFriendsRevealed = revealedQuestion({
+export const hasFamilyOrFriendsIncome = Answer(Question.finance_income).match(
+  Condition.Array.Contains(Option.family_or_friends),
+)
+
+export const hasFinancialConcerns = Answer(Question.finance_concerns).match(Condition.Equals(CommonOption.yes))
+export const hasTheirDebt = Answer(Question.finance_debt).match(Condition.Equals(Option.yes_their_debt))
+export const hasSomeoneElsesDebt = Answer(Question.finance_debt).match(
+  Condition.Equals(Option.yes_someone_elses_debt),
+)
+export const hasDebt = or(hasTheirDebt, hasSomeoneElsesDebt)
+
+const overReliantOnFamilyOrFriends = question({
   content: {
-    code: Question.family_or_friends_details,
+    code: Question.community_finance_income_friends_family,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.family_or_friends_details.text', CaseData.Forename),
+    text: contentFor('question.community_finance_income_friends_family.text', CaseData.Forename),
     options: [
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        summaryText: contentFor('question.finance_income.summary.option.YES'),
+        reveals: requiredDetails({
+          code: Question.community_finance_income_friends_family_yes_details,
+          validationMessage: contentFor('question.community_finance_income_friends_family_yes_details.validation'),
+          maxLength: CharacterLimit.c2000,
+        }),
       },
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
-        summaryText: contentFor('question.finance_income.summary.option.NO'),
       },
       {
         value: CommonOption.unknown,
         text: commonContentFor('option.UNKNOWN'),
-        summaryText: contentFor('question.finance_income.summary.option.UNKNOWN'),
       },
     ],
-    validationMessage: contentFor('question.family_or_friends_details.validation'),
+    validationMessage: contentFor('question.community_finance_income_friends_family.validation'),
   },
-  displayModes: { field: radioDetails() },
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.community_finance_income_friends_family.path,
+      visibleWhen: hasFamilyOrFriendsIncome,
+    }),
+  },
 })
 
-const typeOfDebtRevealed = (content: {
+const financialConcerns = question({
+  content: {
+    code: Question.finance_concerns,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.finance_concerns.text', CaseData.Forename),
+    options: [
+      {
+        value: CommonOption.yes,
+        text: commonContentFor('option.YES'),
+      },
+      {
+        value: CommonOption.no,
+        text: commonContentFor('option.NO'),
+        reveals: optionalDetails({
+          code: Question.finance_concerns_no_details,
+          maxLength: CharacterLimit.c2000,
+        }),
+      },
+    ],
+    validationMessage: contentFor('question.finance_concerns.validation'),
+  },
+  displayModes: {
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_concerns.path }),
+  },
+})
+
+const typeOfDebt = (content: {
   code: string
-  text: ResolvableString
   debtToOthersDetailsCode: string
   formalDebtDetailsCode: string
+  visibleWhen: typeof hasTheirDebt
 }) =>
-  revealedQuestion({
+  question({
     content: {
       code: content.code,
       format: QuestionFormat.CHECKBOX,
-      text: content.text,
+      text: contentFor('question.finance_debt_type.text', CaseData.Forename),
       hint: commonContentFor('select_all_that_apply'),
       options: [
         {
           value: Option.debt_to_others,
           text: contentFor('common.option.DEBT_TO_OTHERS'),
-          reveals: optionalDetails({
+          reveals: requiredDetails({
             code: content.debtToOthersDetailsCode,
+            validationMessage: contentFor('common.validation.enter_debt_details'),
             hint: contentFor('common.hint.DEBT_TO_OTHERS'),
+            maxLength: CharacterLimit.c2000,
           }),
         },
         {
           value: Option.formal_debt,
           text: contentFor('common.option.FORMAL_DEBT'),
-          reveals: optionalDetails({
+          reveals: requiredDetails({
             code: content.formalDebtDetailsCode,
+            validationMessage: contentFor('common.validation.enter_debt_details'),
             hint: contentFor('common.hint.FORMAL_DEBT'),
+            maxLength: CharacterLimit.c2000,
           }),
         },
       ],
       validationMessage: contentFor('common.validation.select_type_of_debt'),
     },
-    displayModes: { field: checkboxDetails() },
+    displayModes: {
+      field: checkboxField({ dependentWhen: content.visibleWhen, visibleWhen: content.visibleWhen }),
+      summaryRow: itemisedSummaryRow({
+        changeHref: Step.finance_debt.path,
+        visibleWhen: content.visibleWhen,
+      }),
+    },
   })
 
 const income = question({
@@ -100,7 +152,6 @@ const income = question({
       {
         value: Option.family_or_friends,
         text: contentFor('question.finance_income.option.FAMILY_OR_FRIENDS'),
-        reveals: overReliantOnFamilyOrFriendsRevealed,
       },
       { value: Option.offending, text: contentFor('question.finance_income.option.OFFENDING') },
       { value: Option.pension, text: contentFor('question.finance_income.option.PENSION') },
@@ -169,65 +220,19 @@ const moneyManagement = question({
   },
 })
 
-const gambling = question({
-  content: {
-    code: Question.finance_gambling,
-    format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.finance_gambling.text', CaseData.Forename),
-    hint: commonContentFor('select_all_that_apply'),
-    options: [
-      {
-        value: Option.yes_their_gambling,
-        text: contentFor('question.finance_gambling.option.YES_THEIR_GAMBLING'),
-        reveals: optionalDetails({ code: Question.finance_gambling_yes_their_gambling_details }),
-      },
-      {
-        value: Option.yes_someone_elses_gambling,
-        text: contentFor('question.finance_gambling.option.YES_SOMEONE_ELSES_GAMBLING'),
-        reveals: optionalDetails({ code: Question.finance_gambling_yes_someone_elses_gambling_details }),
-      },
-      { divider: commonContentFor('or') },
-      { value: CommonOption.no, text: commonContentFor('option.NO'), behaviour: 'exclusive' as const },
-      {
-        value: CommonOption.unknown,
-        text: commonContentFor('option.UNKNOWN'),
-        behaviour: 'exclusive' as const,
-        reveals: optionalDetails({ code: Question.finance_gambling_unknown_details }),
-      },
-    ],
-    validationMessage: contentFor('question.finance_gambling.validation'),
-  },
-  displayModes: {
-    field: checkboxField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
-  },
-})
-
 const debt = question({
   content: {
     code: Question.finance_debt,
-    format: QuestionFormat.CHECKBOX,
+    format: QuestionFormat.RADIO,
     text: contentFor('question.finance_debt.text', CaseData.Forename),
     options: [
       {
         value: Option.yes_their_debt,
         text: contentFor('question.finance_debt.option.YES_THEIR_DEBT'),
-        reveals: typeOfDebtRevealed({
-          code: Question.yes_type_of_debt,
-          text: contentFor('question.finance_debt.option.YES_THEIR_DEBT'),
-          debtToOthersDetailsCode: Question.yes_type_of_debt_debt_to_others_details,
-          formalDebtDetailsCode: Question.yes_type_of_debt_formal_debt_details,
-        }),
       },
       {
         value: Option.yes_someone_elses_debt,
         text: contentFor('question.finance_debt.option.YES_SOMEONE_ELSES_DEBT'),
-        reveals: typeOfDebtRevealed({
-          code: Question.yes_someone_elses_type_of_debt,
-          text: contentFor('question.finance_debt.option.YES_SOMEONE_ELSES_DEBT'),
-          debtToOthersDetailsCode: Question.yes_someone_elses_type_of_debt_debt_to_others_details,
-          formalDebtDetailsCode: Question.yes_someone_elses_type_of_debt_formal_debt_details,
-        }),
       },
       { divider: commonContentFor('or') },
       { value: CommonOption.no, text: commonContentFor('option.NO'), behaviour: 'exclusive' as const },
@@ -241,9 +246,23 @@ const debt = question({
     validationMessage: contentFor('question.finance_debt.validation'),
   },
   displayModes: {
-    field: checkboxField(),
+    field: radioField(),
     summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
   },
+})
+
+const debtTypeTheir = typeOfDebt({
+  code: Question.yes_type_of_debt,
+  debtToOthersDetailsCode: Question.yes_type_of_debt_debt_to_others_details,
+  formalDebtDetailsCode: Question.yes_type_of_debt_formal_debt_details,
+  visibleWhen: hasTheirDebt,
+})
+
+const debtTypeSomeoneElses = typeOfDebt({
+  code: Question.yes_someone_elses_type_of_debt,
+  debtToOthersDetailsCode: Question.yes_someone_elses_type_of_debt_debt_to_others_details,
+  formalDebtDetailsCode: Question.yes_someone_elses_type_of_debt_formal_debt_details,
+  visibleWhen: hasSomeoneElsesDebt,
 })
 
 const changes = question({
@@ -392,9 +411,12 @@ export const financeSection = {
   code: Section.finance.code,
   questions: {
     income,
+    overReliantOnFamilyOrFriends,
+    financialConcerns,
     moneyManagement,
-    gambling,
     debt,
+    debtTypeTheir,
+    debtTypeSomeoneElses,
     changes,
   },
   practitionerAnalysis: {

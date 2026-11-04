@@ -1,4 +1,12 @@
-import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  Answer,
+  Condition,
+  Post,
+  redirect,
+  step,
+  submit,
+  validation,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { financeSection } from '../../section'
 import { Step } from '../../constants/step'
@@ -8,15 +16,14 @@ import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { Option } from '../../constants/option'
+import { Question } from '../../constants/question'
 
 export const financeIncomeStep = step({
   path: `/${Step.finance_income.path}`,
   title: sectionPageTitle(Section.finance),
   reachability: { entryWhen: true },
-  blocks: [
-    financeSection.questions.income.displayModes.field,
-    saveButton,
-  ],
+  blocks: [financeSection.questions.income.displayModes.field, saveButton],
   view: {
     template: 'strengths-and-needs/views/san-step',
   },
@@ -44,7 +51,11 @@ export const financeIncomeStep = step({
         ],
         next: [
           redirect({
-            goto: Step.finance_summary.path,
+            when: Answer(Question.finance_income).match(Condition.Array.Contains(Option.family_or_friends)),
+            goto: Step.community_finance_income_friends_family.path,
+          }),
+          redirect({
+            goto: Step.finance_concerns.path,
           }),
         ],
       },

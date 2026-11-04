@@ -1,7 +1,6 @@
 import { Locale } from '../../../../../i18n'
 import { Question } from '../constants/question'
 import { Option } from '../constants/option'
-import { CommonOption } from '../../../constants/commonOption'
 
 export const english = {
   question: {
@@ -27,17 +26,20 @@ export const english = {
         [Option.no_money]: 'No money',
       },
       validation: "Select where they currently get their money from, or select 'No money'",
-      summary: {
-        option: {
-          [CommonOption.yes]: 'Yes, over reliant on friends and family for money',
-          [CommonOption.no]: 'No, not over reliant on friends and family for money',
-          [CommonOption.unknown]: 'Unknown if they’re over reliant on friends and family for money',
-        },
-      },
     },
-    [Question.family_or_friends_details]: {
+    [Question.community_finance_income_friends_family]: {
       text: 'Is %1 over reliant on family or friends for money?',
       validation: 'Select if they are over reliant on family or friends for money',
+    },
+    [Question.community_finance_income_friends_family_yes_details]: {
+      validation: 'Give details on how they are over reliant on family or friends for money',
+    },
+    [Question.finance_concerns]: {
+      text: 'Does %1 have any financial issues or worries?',
+      validation: 'Select if they have any financial issues or worries',
+    },
+    [Question.finance_concerns_no_details]: {
+      validation: 'Give details (optional)',
     },
     [Question.finance_money_management]: {
       text: 'How good is %1 at managing their money?',
@@ -50,14 +52,6 @@ export const english = {
       },
       validation: 'Select how good they are at managing their money',
     },
-    [Question.finance_gambling]: {
-      text: 'Is %1 affected by gambling?',
-      option: {
-        [Option.yes_their_gambling]: 'Yes, their own gambling',
-        [Option.yes_someone_elses_gambling]: 'Yes, someone else’s gambling',
-      },
-      validation: 'Select if they are affected by gambling',
-    },
     [Question.finance_debt]: {
       text: 'Is %1 affected by debt?',
       option: {
@@ -65,6 +59,10 @@ export const english = {
         [Option.yes_someone_elses_debt]: 'Yes, someone else’s debt',
       },
       validation: 'Select if they are affected by debt',
+    },
+    finance_debt_type: {
+      text: 'What type of debt does %1 have?',
+      validation: 'Select the type of debt',
     },
     [Question.finance_changes]: {
       text: 'Does %1 want to make changes to their finances?',
@@ -105,6 +103,7 @@ export const english = {
     },
     validation: {
       select_type_of_debt: 'Select type of debt',
+      enter_debt_details: 'Enter details about this type of debt',
     },
   },
 } as const
