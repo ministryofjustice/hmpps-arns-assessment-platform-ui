@@ -5,6 +5,7 @@ import {
   Condition,
   Format,
   or,
+  Post,
   PredicateExpr,
   Self,
   validation,
@@ -224,16 +225,30 @@ export const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option:
       : entry,
   )
 
+const isSaving = Post('action').match(Condition.Equals('save'))
+
+/**
+ * A save re-checks every page before it on the way through. A required answer
+ * missing on one of them there means that page is unfinished, not that the pages
+ * after it no longer apply, so it must not cut them off and have their answers
+ * cleared. Navigation still stops at the unfinished page, and the page's own
+ * save still insists on the answer.
+ */
+export const requiredValidations = (message: ResolvableString) => [
+  validation({ condition: Self().match(Condition.IsRequired()), message, submissionOnly: true }),
+  validation({ condition: or(isSaving, Self().match(Condition.IsRequired())), message }),
+]
+
+/**
+ * A rule about the answer, such as its length, has nothing to check until there
+ * is one. Without this an unanswered optional field fails it, and the pages
+ * after it are cut off.
+ */
+export const whenAnswered = (condition: PredicateExpr) => or(Self().not.match(Condition.IsRequired()), condition)
+
 /** Exported for bespoke template projections that hand-write their own component props. */
 export const requiredValidationOf = (content: { validationMessage?: ResolvableString }) =>
-  content.validationMessage
-    ? [
-        validation({
-          condition: Self().match(Condition.IsRequired()),
-          message: content.validationMessage,
-        }),
-      ]
-    : undefined
+  content.validationMessage ? requiredValidations(content.validationMessage) : undefined
 
 /**
  * The display mode functions: shared projections from question content to
