@@ -16,13 +16,7 @@ import { Step } from './constants/step'
 import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
-import {
-  itemisedSummaryRow,
-  optionalDetails,
-  requiredDetails,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
+import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 
 export const isEmployedOrSelfEmployed = Answer(Question.community_employment_status).match(
   Condition.Equals(Option.employed_or_self_employed),
@@ -91,7 +85,7 @@ const everHadAJob = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: textSummaryRow({
+    summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_education_details.path,
       visibleWhen: notWorkingOrAvailableForWork,
     }),
