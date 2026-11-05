@@ -586,6 +586,7 @@ test.describe('View all answers', () => {
     await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.personal}\nIncomplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.thinking}\nComplete`, { exact: true })).toBeVisible()
     // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
@@ -641,6 +642,8 @@ test.describe('View all answers', () => {
         'Health and wellbeing\n' +
         'Incomplete\n' +
         'Personal relationships and community\n' +
+        'Incomplete\n' +
+        'Thinking, behaviours and attitudes\n' +
         'Incomplete',
     )
 
@@ -691,8 +694,9 @@ test.describe('View all answers', () => {
     await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
     await expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
     await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
-    await expect(page.getByText('Health and wellbeing\nIncomplete\nPersonal relationships and community')).toBeVisible()
-    await expect(page.getByText('Health and wellbeing\nIncomplete\nPersonal relationships and community')).toBeVisible()
+    await expect(page.getByText('Health and wellbeing\nIncomplete\n')).toBeVisible()
+    await expect(page.getByText('Personal relationships and community\nIncomplete\n')).toBeVisible()
+    await expect(page.getByText('Thinking, behaviours and attitudes\nIncomplete\n')).toBeVisible()
   })
 })
 
