@@ -10,7 +10,7 @@ import {
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
-// import { employmentJourney } from './journeys/employment-and-education'
+import { employmentJourney } from './journeys/employment-and-education'
 // import { financeJourney } from './journeys/finance'
 // import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
@@ -20,7 +20,7 @@ import { basePath, formRootPath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
-// import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
+import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isEditMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
 import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
@@ -104,13 +104,13 @@ export const strengthsAndNeedsV2Journey = journey({
   ],
   children: [
     accommodationJourney,
-    // employmentJourney,
+    employmentJourney,
     // financeJourney,
     // drugUseJourney,
     alcoholUseJourney,
     healthWellbeingJourney,
     personalRelationshipsJourney,
-    // thinkingBehavioursAndAttitudesJourney,
+    thinkingBehavioursAndAttitudesJourney,
     offenceAnalysisJourney,
   ],
 })
