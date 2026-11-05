@@ -50,11 +50,11 @@ const fullyAnswered: Scenario = {
     { question: Question.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('alcohol-use-current-issues', 'alcohol_current_issues'),
-    changeLink('alcohol-use-excessive-drinking-past-issues', 'alcohol_evidence_of_excess_drinking'),
-    changeLink('alcohol-use-excessive-drinking-past-issues', 'alcohol_past_issues'),
-    changeLink('alcohol-use-stopped-or-reduced', 'alcohol_stopped_or_reduced'),
-    changeLink('alcohol-use-changes', 'alcohol_use_changes'),
+    changeLink(Step.alcohol_use_current_issues.path, Question.alcohol_current_issues),
+    changeLink(Step.alcohol_use_excessive_drinking_past_issues.path, Question.alcohol_evidence_of_excess_drinking),
+    changeLink(Step.alcohol_use_excessive_drinking_past_issues.path, Question.alcohol_past_issues),
+    changeLink(Step.alcohol_use_stopped_or_reduced.path, Question.alcohol_stopped_or_reduced),
+    changeLink(Step.alcohol_use_changes.path, Question.alcohol_use_changes),
   ],
   userSubmittedSteps: [
     Step.alcohol_use_current_issues.code,
@@ -66,12 +66,12 @@ const fullyAnswered: Scenario = {
 }
 
 const practitionerAnalysisChangeLinks = [
-  changeLink(summaryPage, 'alcohol_use_practitioner_analysis_strengths_or_protective_factors'),
-  changeLink(summaryPage, 'alcohol_use_practitioner_analysis_risk_of_serious_harm'),
-  changeLink(summaryPage, 'alcohol_use_practitioner_analysis_risk_of_reoffending'),
+  changeLink(summaryPage, Question.alcohol_use_practitioner_analysis_strengths_or_protective_factors),
+  changeLink(summaryPage, Question.alcohol_use_practitioner_analysis_risk_of_serious_harm),
+  changeLink(summaryPage, Question.alcohol_use_practitioner_analysis_risk_of_reoffending),
 ]
 
-const question = 'alcohol_use_practitioner_analysis_risk_of_reoffending'
+const question = Question.alcohol_use_practitioner_analysis_risk_of_reoffending
 const changeHref = `${summaryPage}#${question}-question`
 const landedOnQuestion = new RegExp(`/${summaryPage}#${question}-question$`)
 
