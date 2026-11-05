@@ -107,7 +107,7 @@ describe('view all answers', () => {
   it('lists every section, including offence analysis, before any is started', async () => {
     expect(headings(await renderPage(), 2)).toEqual([
       'Accommodation',
-      // 'Employment and education',
+      'Employment and education',
       // 'Finances',
       // 'Drug use',
       'Alcohol use',
@@ -124,7 +124,7 @@ describe('view all answers', () => {
    * covers both the questions and the analysis.
    */
   it('shows a status against every section, complete only once the section is', async () => {
-    expect(tags(await renderPage())).toEqual(Array(5).fill('Incomplete'))
+    expect(tags(await renderPage())).toEqual(Array(6).fill('Incomplete'))
 
     const complete = await renderPage({}, { [Section.accommodation.statusKey]: SectionComplete.yes })
     expect(tags(complete).filter(tag => tag === 'Complete')).toHaveLength(1)

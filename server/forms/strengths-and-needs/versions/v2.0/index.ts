@@ -10,7 +10,7 @@ import {
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { accommodationJourney } from './journeys/accommodation'
-// import { employmentJourney } from './journeys/employment-and-education'
+import { employmentJourney } from './journeys/employment-and-education'
 // import { financeJourney } from './journeys/finance'
 // import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
@@ -104,7 +104,7 @@ export const strengthsAndNeedsV2Journey = journey({
   ],
   children: [
     accommodationJourney,
-    // employmentJourney,
+    employmentJourney,
     // financeJourney,
     // drugUseJourney,
     alcoholUseJourney,
