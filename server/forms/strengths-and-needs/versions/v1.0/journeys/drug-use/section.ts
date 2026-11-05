@@ -34,6 +34,8 @@ import {
   requiredValidationOf,
   revealedQuestion,
   SummaryRow,
+  requiredValidations,
+  whenAnswered,
 } from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
 import { SANGenerators } from '../../../../generators'
@@ -178,7 +180,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         dependentWhen: drugUsedInLastSixMonths(content.param),
         validWhen: [
           validation({
-            condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
+            condition: whenAnswered(Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000))),
             message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
@@ -255,12 +257,9 @@ const otherDrugNameRevealed = revealedQuestion({
         hint: content.hint,
         dependentWhen: parent.selectedWhen,
         validWhen: [
+          ...requiredValidations(content.validationMessage),
           validation({
-            condition: Self().match(Condition.IsRequired()),
-            message: content.validationMessage,
-          }),
-          validation({
-            condition: not(Self().not.match(Condition.String.HasMaxLength(CharacterLimit.c200))),
+            condition: whenAnswered(Self().match(Condition.String.HasMaxLength(CharacterLimit.c200))),
             message: contentFor('question.other_drug_name.validation', CharacterLimit.c200),
           }),
         ],

@@ -29,6 +29,7 @@ import {
   QuestionOption,
   requiredValidationOf,
   revealedAnswerBlocksOf,
+  whenAnswered,
   revealedQuestion,
   RevealedQuestion,
   revealedQuestionsOf,
@@ -47,7 +48,7 @@ const isPresent = <T>(value: T | null | undefined): value is T => value != null
 const characterCountValidationsOf = (content: QuestionContent, maxLength: number) => [
   ...(requiredValidationOf(content) ?? []),
   validation({
-    condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(maxLength)),
+    condition: whenAnswered(Self().match(StrengthsAndNeedsConditions.HasMaxLength(maxLength))),
     message: commonContentFor('validation.details_must_be_less_than', maxLength),
   }),
 ]
