@@ -89,6 +89,7 @@ describe('SAN effects lists', () => {
   const queuing = [
     'saveCurrentStepAnswers',
     'saveCurrentAccommodationStepAnswers',
+    'clearUnselectedDrugAnswers',
     'setSectionProgress',
     'setUserSubmitted',
   ]

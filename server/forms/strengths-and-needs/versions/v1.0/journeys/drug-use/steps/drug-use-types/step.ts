@@ -42,6 +42,7 @@ export const drugUseTypesStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.clearUnselectedDrugAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_details.code, IsUserSubmitted.false),
