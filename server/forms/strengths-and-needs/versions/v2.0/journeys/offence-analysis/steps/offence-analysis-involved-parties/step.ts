@@ -18,7 +18,7 @@ import { Option } from '../../constants/option'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
-import { auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView } from '../../../../audit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisInvolvedPartiesStep = step({
@@ -60,7 +60,14 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         ],
       },
       onValid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers()],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.offence_analysis,
+            Step.offence_analysis_involved_parties,
+          ),
+        ],
         next: [
           redirect({
             goto: Step.offence_analysis_impact.path,
@@ -68,7 +75,14 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         ],
       },
       onInvalid: {
-        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(false)],
+        effects: [
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.offence_analysis,
+            Step.offence_analysis_involved_parties,
+          ),
+        ],
       },
     }),
   ],

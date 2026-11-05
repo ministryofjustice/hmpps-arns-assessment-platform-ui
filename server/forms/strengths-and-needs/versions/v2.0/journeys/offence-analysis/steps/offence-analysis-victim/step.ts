@@ -7,7 +7,7 @@ import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView } from '../../../../audit'
 import { IsUserSubmitted, isUserSubmittedCondition } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisVictimStep = step({
@@ -43,7 +43,10 @@ export const offenceAnalysisVictimStep = step({
         ],
       },
       onValid: {
-        effects: [StrengthsAndNeedsEffects.addItemToCollection(victimsCollection)],
+        effects: [
+          StrengthsAndNeedsEffects.addItemToCollection(victimsCollection),
+          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis_victim),
+        ],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },
     }),

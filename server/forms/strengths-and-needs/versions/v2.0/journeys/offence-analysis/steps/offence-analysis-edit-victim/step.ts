@@ -17,7 +17,7 @@ import { victimsCollection } from '../../constants/collections'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView } from '../../../../audit'
 import { autoSaveVictimEditSubmit } from '../../../../autoVictimEdit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
@@ -83,6 +83,11 @@ export const offenceAnalysisEditVictimStep = step({
             Params('itemId').pipe(Transformer.String.ToInt()),
           ),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.offence_analysis,
+            Step.offence_analysis_victim_edit,
+          ),
         ],
         next: [redirect({ goto: Step.offence_analysis_victim_summary.path })],
       },

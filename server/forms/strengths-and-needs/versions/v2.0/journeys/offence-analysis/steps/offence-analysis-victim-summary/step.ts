@@ -19,7 +19,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { auditPageView } from '../../../../audit'
+import { auditPageAction, auditPageView } from '../../../../audit'
 import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
@@ -66,6 +66,13 @@ export const offenceAnalysisVictimSummaryStep = step({
         effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code)],
       },
       onValid: {
+        effects: [
+          auditPageAction(
+            SanAuditEvent.SAVE_QUESTION_PAGE,
+            Section.offence_analysis,
+            Step.offence_analysis_victim_summary,
+          ),
+        ],
         next: [redirect({ goto: Step.offence_analysis_involved_parties.path })],
       },
     }),
