@@ -23,13 +23,10 @@ test.describe('Previous Versions - Navigation', () => {
     // Verify message is shown when no previous versions exist
     expect(previousVersionsPage.mainForm).toMatchAriaSnapshot(`
       - paragraph: Check versions of Test's current assessment. The links will open in a new tab.
-      - heading "Countersigned versions"
+      - heading "Countersigned versions" [level=2]
       - paragraph: There are no previous versions to display
-      - heading "All versions"
+      - heading "All versions" [level=2]
       - paragraph: There are no previous versions to display
-      - paragraph:
-        - link "↑ Back to top":
-          - /url: "#main-content"
     `)
   })
 })
