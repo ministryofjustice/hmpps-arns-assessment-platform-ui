@@ -4,11 +4,13 @@ import { Question as AlcoholQuestion } from '@server/forms/strengths-and-needs/v
 import { Question as AccommodationQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
 import { Question as HealthQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/question'
 import { Question as PersonalRelationshipsQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/question'
+import { Question as ThinkingBehavioursQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/question'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
 import { Option as HealthOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
 import { Option as PersonalRelationshipsOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
+import { Option as ThinkingBehavioursOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/option'
 import { details } from 'testUtils'
 import { buildEditUrl, checkAccessibility, navigateToStrengthsAndNeeds, viewAllAnswers } from './sanUtils'
 import { test, TargetService } from '../../support/fixtures'
@@ -392,41 +394,97 @@ const personal: Answer[] = [
   },
 ]
 
-// TODO Uncomment it during ACT-757 Thinking and Behaviours framework
-// const thinking: Answer[] = [
-//   { question: 'thinking_behaviours_attitudes_consequences', value: 'SOMETIMES' },
-//   { question: 'thinking_behaviours_attitudes_stable_behaviour', value: 'NO' },
-//   { question: 'thinking_behaviours_attitudes_offending_activities', value: 'YES_OFFENDING_ACTIVITIES' },
-//   { question: 'thinking_behaviours_attitudes_peer_pressure', value: 'SOME' },
-//   { question: 'thinking_behaviours_attitudes_peer_pressure_some_details', value: details('some peer pressure') },
-//   { question: 'thinking_behaviours_attitudes_problem_solving', value: 'LIMITED_PROBLEM_SOLVING' },
-//   { question: 'thinking_behaviours_attitudes_peoples_views', value: 'SOMETIMES' },
-//   { question: 'thinking_behaviours_attitudes_manipulative_predatory_behaviour', value: 'SOME' },
-//   { question: 'thinking_behaviours_attitudes_temper_management', value: 'NO' },
-//   { question: 'thinking_behaviours_attitudes_violence_controlling_behaviour', value: 'SOMETIMES' },
-//   { question: 'thinking_behaviours_attitudes_impulsive_behaviour', value: 'YES' },
-//   { question: 'thinking_behaviours_attitudes_positive_attitude', value: 'NEGATIVE_ATTITUDE_AND_CONCERNS' },
-//   { question: 'thinking_behaviours_attitudes_hostile_orientation', value: 'SOME' },
-//   { question: 'thinking_behaviours_attitudes_supervision', value: 'UNSURE_SUPERVISION' },
-//   { question: 'thinking_behaviours_attitudes_criminal_behaviour', value: 'SOMETIMES' },
-//   { question: 'thinking_behaviours_attitudes_changes', value: 'NOT_APPLICABLE' },
-//   { question: 'thinking_behaviours_attitudes_risk_sexual_harm', value: 'YES' },
-//   { question: 'thinking_behaviours_attitudes_sexual_preoccupation', value: 'SOMETIMES' },
-//   {
-//     question: 'thinking_behaviours_attitudes_offence_related_sexual_interest',
-//     value: 'SOME_OFFENCE_RELATED_SEXUAL_INTEREST',
-//   },
-//   { question: 'thinking_behaviours_attitudes_emotional_intimacy', value: 'UNKNOWN' },
-//   { question: 'thinking_behaviours_attitudes_strengths_protective_factors', value: 'YES' },
-//   {
-//     question: 'thinking_behaviours_attitudes_strengths_protective_factors_details',
-//     value: details('thinking strengths'),
-//   },
-//   { question: 'thinking_behaviours_attitudes_linked_to_serious_harm', value: 'YES' },
-//   { question: 'thinking_behaviours_attitudes_serious_harm_details', value: details('thinking serious harm') },
-//   { question: 'thinking_behaviours_attitudes_linked_to_reoffending', value: 'YES' },
-//   { question: 'thinking_behaviours_attitudes_risk_of_reoffending_details', value: details('thinking reoffending') },
-// ]
+const thinking: Answer[] = [
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_consequences,
+    value: ThinkingBehavioursOption.sometimes,
+  },
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.no },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_offending_activities,
+    value: ThinkingBehavioursOption.yes_offending_activities,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_peer_pressure,
+    value: ThinkingBehavioursOption.some,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_peer_pressure_some_details,
+    value: details('some peer pressure'),
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_problem_solving,
+    value: ThinkingBehavioursOption.limited_problem_solving,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_peoples_views,
+    value: ThinkingBehavioursOption.sometimes,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_manipulative_predatory_behaviour,
+    value: 'SOME',
+  },
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_temper_management, value: CommonOption.no },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_violence_controlling_behaviour,
+    value: ThinkingBehavioursOption.sometimes,
+  },
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.yes },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_hostile_orientation,
+    value: ThinkingBehavioursOption.some,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_supervision,
+    value: ThinkingBehavioursOption.unsure_supervision,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_criminal_behaviour,
+    value: ThinkingBehavioursOption.sometimes,
+  },
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_changes, value: CommonOption.not_applicable },
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_sexual_preoccupation,
+    value: ThinkingBehavioursOption.sometimes,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_offence_related_sexual_interest,
+    value: ThinkingBehavioursOption.some_offence_related_sexual_interest,
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_emotional_intimacy,
+    value: CommonOption.unknown,
+  },
+  {
+    question:
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors,
+    value: CommonOption.yes,
+  },
+  {
+    question:
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details,
+    value: details('thinking strengths'),
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm,
+    value: CommonOption.yes,
+  },
+  {
+    question:
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details,
+    value: details('thinking serious harm'),
+  },
+  {
+    question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending,
+    value: CommonOption.yes,
+  },
+  {
+    question:
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details,
+    value: details('thinking reoffending'),
+  },
+]
 
 const statuses: Record<string, string> = {
   [Section.accommodation.statusKey]: SectionComplete.yes,
@@ -436,7 +494,7 @@ const statuses: Record<string, string> = {
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
   [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
   [Section.personal_relationships_and_community.statusKey]: SectionComplete.yes,
-  // [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
+  [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
   // [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
 
@@ -463,7 +521,7 @@ test.describe('View all answers', () => {
         ...alcohol,
         ...health,
         ...personal,
-        // ...thinking,
+        ...thinking,
       ])
       .save()
 
@@ -476,11 +534,12 @@ test.describe('View all answers', () => {
 
     // Every section, and a status against each.
     // TODO Uncomment for each section work
-    expect(page.getByText('Accommodation\nComplete', { exact: true })).toBeVisible()
+    await expect(page.getByText('Accommodation\nComplete', { exact: true })).toBeVisible()
     // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
     // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
-    expect(page.getByText('Alcohol use\nComplete', { exact: true })).toBeVisible()
-    expect(page.getByText('Personal relationships and community\nComplete', { exact: true })).toBeVisible()
+    await expect(page.getByText('Alcohol use\nComplete', { exact: true })).toBeVisible()
+    await expect(page.getByText('Personal relationships and community\nComplete', { exact: true })).toBeVisible()
+    await expect(page.getByText('Thinking, behaviours and attitudes\nComplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
 
@@ -513,7 +572,7 @@ test.describe('View all answers', () => {
     // expect(page.getByText('Used more than 6 months ago')).toBeVisible()
     // A section stopped before its practitioner analysis shows none.
     const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") ~ dl').first()
-    expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
+    await expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
   test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -564,15 +623,18 @@ test.describe('View all answers', () => {
 
     await page.goto(buildEditUrl(baseURL, sanAssessmentId, viewAllAnswers))
 
-    expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
-    expect(page.getByText('Does Test currently have somewhere to live?\nNo', { exact: true }).first()).toBeVisible()
-    expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
-    expect(page.getByText('Other', { exact: true })).toBeVisible()
-    expect(page.getByText('other reason for no')).toBeVisible()
-    expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
-    expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
-    expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
-    expect(page.getByText('Health and wellbeing\nIncomplete\nPersonal relationships and community')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
+    await expect(
+      page.getByText('Does Test currently have somewhere to live?\nNo', { exact: true }).first(),
+    ).toBeVisible()
+    await expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
+    await expect(page.getByText('Other', { exact: true })).toBeVisible()
+    await expect(page.getByText('other reason for no')).toBeVisible()
+    await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
+    await expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
+    await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
+    await expect(page.getByText('Health and wellbeing\nIncomplete\nPersonal relationships and community')).toBeVisible()
+    await expect(page.getByText('Health and wellbeing\nIncomplete\nPersonal relationships and community')).toBeVisible()
   })
 })
 

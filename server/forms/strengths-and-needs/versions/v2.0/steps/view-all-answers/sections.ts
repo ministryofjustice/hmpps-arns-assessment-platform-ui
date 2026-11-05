@@ -7,7 +7,7 @@ import { personalRelationshipsCommunitySection } from '../../journeys/personal-r
 // import { drugUseSection } from '../../journeys/drug-use/section'
 // import { employmentEducationSection } from '../../journeys/employment-and-education/section'
 // import { financeSection } from '../../journeys/finance/section'
-// import { thinkingBehavioursAttitudesSection } from '../../journeys/thinking-behaviours-and-attitudes/section'
+import { thinkingBehavioursAttitudesSection } from '../../journeys/thinking-behaviours-and-attitudes/section'
 // import { offenceAnalysisSection } from '../../journeys/offence-analysis/section'
 
 type SectionDefinitionOf = (typeof Section)[keyof typeof Section]
@@ -25,7 +25,7 @@ export const viewAllAnswersSections: ViewAllAnswersSection[] = [
   { section: Section.alcohol_use, config: alcoholUseSection },
   { section: Section.health_and_wellbeing, config: healthWellbeingSection },
   { section: Section.personal_relationships_and_community, config: personalRelationshipsCommunitySection },
-  // { section: Section.thinking_behaviours_and_attitudes, config: thinkingBehavioursAttitudesSection },
+  { section: Section.thinking_behaviours_and_attitudes, config: thinkingBehavioursAttitudesSection },
   // { section: Section.offence_analysis, config: offenceAnalysisSection },
 ]
 
