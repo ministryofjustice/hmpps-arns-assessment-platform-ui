@@ -1,0 +1,43 @@
+import { and, Condition, journey, Query } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { employmentStatusStep } from './steps/employment-status/step'
+import { employmentEducationDetailsStep } from './steps/employment-education-details/step'
+import { employmentEducationSummaryStep } from './steps/employment-education-summary/step'
+import { employmentEducationAnalysisStep } from './steps/employment-education-analysis/step'
+import { Section } from '../../constants/section'
+import { sectionPageTitle, sectionStatusTag } from '../../locales'
+import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
+import { Step } from './constants/step'
+import { employmentChangesStep } from './steps/employment-changes/step'
+import { hasEverHadAJobStep } from './steps/employment-community-ever-had-a-job/step'
+import { educationDifficultiesStep } from './steps/employment-education-difficulties/step'
+
+/**
+ * Employment Journey
+ *
+ * Flow:
+ * employment-status → employment-education-details → employment-education-summary → employment-education-analysis
+ */
+export const employmentJourney = journey({
+  code: Section.employment_and_education.code,
+  title: sectionPageTitle(Section.employment_and_education),
+  path: Section.employment_and_education.path,
+  reachability: { resumeWhen: and(Query('resume').match(Condition.Equals('true')), isEditMode) },
+  onAccess: [
+    redirectToAnalysisIfReadOnly(Section.employment_and_education.path, Step.employment_education_analysis.path),
+  ],
+  view: {
+    locals: {
+      sectionTitle: sectionPageTitle(Section.employment_and_education),
+      sectionStatusTag: sectionStatusTag(Section.employment_and_education),
+    },
+  },
+  steps: [
+    employmentStatusStep,
+    hasEverHadAJobStep,
+    employmentEducationDetailsStep,
+    educationDifficultiesStep,
+    employmentChangesStep,
+    employmentEducationSummaryStep,
+    employmentEducationAnalysisStep,
+  ],
+})

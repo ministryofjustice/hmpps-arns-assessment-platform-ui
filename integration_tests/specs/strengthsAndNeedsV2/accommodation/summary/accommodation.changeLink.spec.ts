@@ -73,13 +73,16 @@ const settledAccommodation: Scenario = {
     },
   ],
   summaryChangeLinks: [
-    changeLink(Step.community_current_accommodation.path, 'community_current_accommodation'),
-    changeLink(Step.community_current_accommodation_settled.path, 'community_current_accommodation_settled'),
-    changeLink(Step.community_suitable_housing_location.path, 'community_suitable_housing_location'),
-    changeLink(Step.community_suitable_housing_location_concerns.path, 'community_suitable_housing_location_concerns'),
-    changeLink(Step.community_suitable_housing.path, 'community_suitable_housing'),
-    changeLink(Step.community_suitable_housing_concerns.path, 'community_unsuitable_housing_concerns'),
-    changeLink(Step.accommodation_changes.path, 'accommodation_changes'),
+    changeLink(Step.community_current_accommodation.path, Question.community_current_accommodation),
+    changeLink(Step.community_current_accommodation_settled.path, Question.community_current_accommodation_settled),
+    changeLink(Step.community_suitable_housing_location.path, Question.community_suitable_housing_location),
+    changeLink(
+      Step.community_suitable_housing_location_concerns.path,
+      Question.community_suitable_housing_location_concerns,
+    ),
+    changeLink(Step.community_suitable_housing.path, Question.community_suitable_housing),
+    changeLink(Step.community_suitable_housing_concerns.path, Question.community_unsuitable_housing_concerns),
+    changeLink(Step.accommodation_changes.path, Question.accommodation_changes),
   ],
   userSubmittedSteps: [
     Step.community_current_accommodation.code,
@@ -110,9 +113,9 @@ const noAccommodation: Scenario = {
     { question: Question.accommodation_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink(Step.community_current_accommodation.path, Step.community_current_accommodation.code),
-    changeLink(Step.community_no_accommodation_reason.path, Step.community_no_accommodation_reason.code),
-    changeLink(Step.accommodation_changes.path, Step.accommodation_changes.code),
+    changeLink(Step.community_current_accommodation.path, Question.community_current_accommodation),
+    changeLink(Step.community_no_accommodation_reason.path, Question.community_no_accommodation_reason),
+    changeLink(Step.accommodation_changes.path, Question.accommodation_changes),
   ],
   userSubmittedSteps: [
     Step.community_current_accommodation.code,
@@ -123,9 +126,12 @@ const noAccommodation: Scenario = {
 }
 
 const practitionerAnalysisChangeLinks = [
-  changeLink('accommodation-summary', 'accommodation_practitioner_analysis_strengths_or_protective_factors'),
-  changeLink('accommodation-summary', 'accommodation_practitioner_analysis_risk_of_serious_harm'),
-  changeLink('accommodation-summary', 'accommodation_practitioner_analysis_risk_of_reoffending'),
+  changeLink(
+    Step.accommodation_summary.path,
+    Question.accommodation_practitioner_analysis_strengths_or_protective_factors,
+  ),
+  changeLink(Step.accommodation_summary.path, Question.accommodation_practitioner_analysis_risk_of_serious_harm),
+  changeLink(Step.accommodation_summary.path, Question.accommodation_practitioner_analysis_risk_of_reoffending),
 ]
 
 test.describe('Accommodation change links', () => {
