@@ -644,7 +644,7 @@ describe('removeStepFromStepEditSession', () => {
       expect(context.setAnswer).toHaveBeenCalledWith('step_description_1', 'Dc')
     })
 
-    it('should set empty answers when clearing the last step', async () => {
+    it('should set default answers when clearing the last step', async () => {
       // Arrange
       const steps = [createStep({ id: 'only-step', actor: 'Actor', description: 'Desc', status: 'IN_PROGRESS' })]
       const context = createMockContext({
@@ -660,7 +660,7 @@ describe('removeStepFromStepEditSession', () => {
       // Assert
       expect(context.setAnswer).toHaveBeenCalledWith('step_actor_0', '')
       expect(context.setAnswer).toHaveBeenCalledWith('step_description_0', '')
-      expect(context.setAnswer).toHaveBeenCalledWith('step_status_0', '')
+      expect(context.setAnswer).toHaveBeenCalledWith('step_status_0', 'NOT_STARTED')
     })
 
     it('should preserve step_status answers on remaining rows after removing a step', async () => {

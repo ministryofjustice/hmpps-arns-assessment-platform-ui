@@ -20,7 +20,7 @@ import {
  */
 export interface ScenarioFieldConfig<T> {
   label: string
-  group: 'subject' | 'practitioner' | 'criminogenicNeeds'
+  group: 'subject' | 'practitioner' | 'criminogenicNeeds' | 'criminogenicNeedsMocks'
   randomize: () => T
 }
 
@@ -101,6 +101,14 @@ export const scenarioFieldSchema = {
     label: 'Plan access mode',
     group: 'practitioner',
     randomize: randomPlanAccessMode,
+  },
+
+  // Not in the 'criminogenicNeeds' group: turning the mocks off leaves that whole group out (getExcludedFields),
+  // and this setting has to be kept so the scenario remembers the mocks are off.
+  useMockedCriminogenicNeeds: {
+    label: 'Use mocked criminogenic needs',
+    group: 'criminogenicNeedsMocks',
+    randomize: (): 'YES' | 'NO' => 'YES',
   },
 
   // Criminogenic needs - Accommodation

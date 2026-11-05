@@ -13,6 +13,7 @@ import ArnsApiClient from './arnsApiClient'
 import AssessmentCacheStore from './assessmentCacheStore'
 import PreferencesStore from './preferencesStore'
 import GotenbergClient from './gotenbergClient'
+import WiremockAdminClient from './wiremockAdminClient'
 
 const applicationInfo = applicationInfoSupplier()
 
@@ -42,6 +43,7 @@ export const dataAccess = () => {
     ),
     arnsApiClient: new ArnsApiClient(hmppsAuthClient),
     gotenbergClient: new GotenbergClient(config.apis.gotenberg),
+    wiremockAdminClient: new WiremockAdminClient(),
     assessmentCacheStore,
     preferencesStore: new PreferencesStore(),
   }
@@ -58,6 +60,7 @@ export {
   CoordinatorApiClient,
   ArnsApiClient,
   GotenbergClient,
+  WiremockAdminClient,
   PreferencesStore,
   MPoPComponents,
 }

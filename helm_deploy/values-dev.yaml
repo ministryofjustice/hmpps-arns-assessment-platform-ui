@@ -32,7 +32,7 @@ generic-service:
     HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
     HMPPS_ARNS_HANDOVER_URL: 'https://arns-handover-service-dev.hmpps.service.justice.gov.uk'
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
-    AAP_API_URL: 'https://arns-assessment-platform-api-dev.hmpps.service.justice.gov.uk'
+    AAP_API_URL: 'http://hmpps-arns-assessment-platform-api.hmpps-arns-assessment-platform-dev.svc.cluster.local'
     COORDINATOR_API_URL: 'https://arns-coordinator-api-dev.hmpps.service.justice.gov.uk'
     DELIUS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/delius'
     ARNS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/arns-api'
@@ -50,6 +50,8 @@ generic-service:
     FORGE_DEVTOOLS_ENABLED: 'true'
     AUDIT_ENABLED: 'true'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+    CAN_STUB_ARNS_API: 'true'
+    WIREMOCK_ADMIN_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/__admin'
     SMART_SURVEY_POPUP_CODE: 'XF5PNV'
 
   namespace_secrets:
@@ -62,7 +64,8 @@ generic-service:
 wiremock:
   enabled: true
   nameOverride: wiremock
-  replicaCount: 2
+  # One replica because the training launcher registers stubs over Wiremock's admin API, which only reaches one pod
+  replicaCount: 1
 
   image:
     repository: wiremock/wiremock
