@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View Plan History Page', () => {
   test('visiting plan history page', async ({ page, auditQueue, openSentencePlan }) => {
@@ -14,7 +14,7 @@ test.describe('View Plan History Page', () => {
 
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_HISTORY)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_HISTORY)
     expectAuditEvent(event)
   })
 
@@ -26,8 +26,8 @@ test.describe('View Plan History Page', () => {
     await page.goto(sentencePlanV1URLs.PLAN_HISTORY)
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    await expect(auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_PLAN_HISTORY, { timeout: 3_000 })).rejects.toThrow(
-      'Timed out',
-    )
+    await expect(
+      auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_PLAN_HISTORY, { timeout: 3_000 }),
+    ).rejects.toThrow('Timed out')
   })
 })

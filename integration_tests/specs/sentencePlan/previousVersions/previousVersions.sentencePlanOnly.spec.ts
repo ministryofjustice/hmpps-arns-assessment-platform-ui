@@ -23,6 +23,7 @@ const stubVersionsResponse = async (sentencePlanId: string) =>
       },
     },
     countersignedVersions: {},
+    unaggregatedVersions: [],
   })
 
 const assertSentencePlanOnlyView = async (previousVersionsPage: PreviousVersionsPage, expectedName: string) => {

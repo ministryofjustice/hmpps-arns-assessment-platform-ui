@@ -1,4 +1,8 @@
 generic-service:
+  resources:
+    requests: { cpu: 500m, memory: 2Gi }
+    limits: { cpu: 2000m, memory: 3Gi }
+
   nameOverride: hmpps-arns-assessment-platform-ui
   serviceAccountName: hmpps-arns-assessment-platform-service-account
   productId: 'HMPPS509' # productId for the product that this belongs too, i.e. DPS001, see README.md for details
@@ -26,6 +30,7 @@ generic-service:
   # Environment variables to load into the deployment
   env:
     NODE_ENV: 'production'
+    NODE_OPTIONS: '--max-old-space-size=2560'
     REDIS_ENABLED: 'true'
     REDIS_TLS_ENABLED: 'true'
     TOKEN_VERIFICATION_ENABLED: 'true'
@@ -36,6 +41,8 @@ generic-service:
     OASYS_URL: 'https://oasys.service.justice.gov.uk'
     OASYS_REVIEW_URL: 'https://int.oasys.service.justice.gov.uk'
     MPOP_URL: 'https://manage-people-on-probation.hmpps.service.justice.gov.uk'
+    NATIONAL_ROLLOUT_FEEDBACK_URL: '#national-rollout-feedback-url'
+    PRIVATE_BETA_FEEDBACK_URL: '#private-beta-feedback-url'
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:

@@ -15,17 +15,7 @@ import {
   TrainingSessionLauncherContext,
 } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
-
-/**
- * Gender code to display label mapping
- * Standard NOMIS codes
- */
-const GENDER_LABELS: Record<string, string> = {
-  '0': 'Not Known',
-  '1': 'Male',
-  '2': 'Female',
-  '9': 'Not Specified',
-}
+import { handoverGenderLabel } from '../../../shared/constants/gender'
 
 /**
  * Location code to display label mapping
@@ -179,6 +169,10 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     values.sentencePlanVersion === undefined || values.sentencePlanVersion === null
       ? ''
       : String(values.sentencePlanVersion).trim()
+  const sanAssessmentVersion =
+    values.sanAssessmentVersion === undefined || values.sanAssessmentVersion === null
+      ? ''
+      : String(values.sanAssessmentVersion).trim()
 
   return {
     id: scenario.id,
@@ -192,12 +186,13 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     givenName: values.givenName || '',
     familyName: values.familyName || '',
     dateOfBirth: formatDateOfBirth(values.dateOfBirth),
-    gender: GENDER_LABELS[values.gender] || values.gender || '',
+    gender: handoverGenderLabel(values.gender),
     location: LOCATION_LABELS[values.location] || values.location || '',
     crn: values.crn || '',
     pnc: values.pnc || '',
     oasysAssessmentPk: values.oasysAssessmentPk || '',
     sentencePlanVersion,
+    sanAssessmentVersion,
 
     displayNeeds: transformToDisplayNeeds(values),
     isCustom,

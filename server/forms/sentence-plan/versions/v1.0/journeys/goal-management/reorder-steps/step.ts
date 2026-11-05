@@ -10,7 +10,7 @@ import {
   Format,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageLayout } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalHasLessThanTwoSteps, redirectIfGoalNotFound } from '../../../guards'
 
 const backDestination = match(Data('navigationReferrer'))
@@ -42,7 +42,7 @@ export const reorderStepsStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.reorderStepsInSession(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_REORDER_STEPS),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_REORDER_STEPS),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
@@ -64,7 +64,7 @@ export const reorderStepsStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.saveReorderedSteps(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.REORDER_STEPS),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.REORDER_STEPS),
         ],
         next: [redirect({ goto: backDestination })],
       },
