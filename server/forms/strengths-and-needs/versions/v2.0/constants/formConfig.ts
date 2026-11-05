@@ -2,7 +2,7 @@ import { buildFormConfig } from '../../../constants/formConfig'
 import { formVersion } from './formVersion'
 import { accommodationSection } from '../journeys/accommodation/section'
 import { alcoholUseSection } from '../journeys/alcohol-use/section'
-// import { drugUseSection } from '../journeys/drug-use/section'
+import { drugUseSection } from '../journeys/drug-use/section'
 // import { employmentEducationSection } from '../journeys/employment-and-education/section'
 // import { financeSection } from '../journeys/finance/section'
 // import { healthWellbeingSection } from '../journeys/health-wellbeing/section'
@@ -25,7 +25,7 @@ export const v2FormConfig = {
       accommodationSection,
       // employmentEducationSection,
       // financeSection,
-      // drugUseSection,
+      drugUseSection,
       alcoholUseSection,
       // healthWellbeingSection,
       personalRelationshipsCommunitySection,
