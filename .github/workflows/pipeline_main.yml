@@ -60,18 +60,6 @@ jobs:
       app_version: ${{ needs.build_docker.outputs.app_version }}
     secrets: inherit
 
-  trigger_pact_provider_verification:
-    permissions:
-      contents: read
-    name: Trigger Pact Provider Verification
-    needs:
-      - app_version
-      - pact_test
-    uses: ./.github/workflows/trigger_pact_provider_verification.yml
-    with:
-      app_version: ${{ needs.build_docker.outputs.app_version }}
-    secrets: inherit
-
   e2e_test:
     name: E2E tests
     needs: [build_docker]
@@ -88,6 +76,7 @@ jobs:
       - node_build
       - node_unit_tests
       - e2e_test
+      - pact_test
       - build_docker
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_push.yml@v2
     with:
@@ -102,7 +91,7 @@ jobs:
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'dev'

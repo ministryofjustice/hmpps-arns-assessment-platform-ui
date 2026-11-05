@@ -49,6 +49,16 @@ jobs:
       docker_multiplatform: true
       upload_image_artifact: true
 
+  pact_test:
+    permissions:
+      contents: read
+    name: Pact Consumer Tests and Publish Contracts
+    needs: build_docker
+    uses: ./.github/workflows/pact_test_publish.yml
+    with:
+      app_version: ${{ needs.build_docker.outputs.app_version }}
+    secrets: inherit
+
   e2e_test:
     name: E2E tests
     needs: [build_docker]
@@ -65,6 +75,7 @@ jobs:
       - node_build
       - node_unit_tests
       - e2e_test
+      - pact_test
       - build_docker
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_push.yml@v2
     with:
@@ -79,7 +90,7 @@ jobs:
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'dev'
@@ -91,7 +102,7 @@ jobs:
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'test'
@@ -104,7 +115,7 @@ jobs:
       - build_docker
       - deploy_dev
       - deploy_test
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'preprod'
@@ -117,7 +128,7 @@ jobs:
     needs:
       - build_docker
       - deploy_preprod
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@1cd277cf487926d2f86fa68c87049e62a461d55e
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'prod'

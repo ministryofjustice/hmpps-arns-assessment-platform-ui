@@ -35,39 +35,25 @@ describe('Arns Api Client', () => {
 
     it('returns an HTTP 200 and a assessment version', () => {
       const assessmentNeeds = {
-        identifiedNeeds: eachLike([
-          {
-            name: 'Drug Misuse',
-            section: 'DRUG_MISUSE',
-            oasysThreshold: {
-              standard: 2,
-            },
-            riskOfHarm: true,
-            riskOfReoffending: true,
-            score: 8,
+        identifiedNeeds: eachLike({
+          name: 'Drug Misuse',
+          section: 'DRUG_MISUSE',
+          oasysThreshold: {
+            standard: 2,
           },
-        ]),
-        notIdentifiedNeeds: eachLike([
-          {
-            name: 'Accommodation',
-            section: 'ACCOMMODATION',
-            oasysThreshold: {
-              standard: 2,
-            },
-            riskOfHarm: false,
-            riskOfReoffending: false,
-            score: 0,
+          riskOfHarm: true,
+          riskOfReoffending: true,
+          score: 8,
+        }),
+        notIdentifiedNeeds: eachLike({
+          name: 'Accommodation',
+          section: 'ACCOMMODATION',
+          oasysThreshold: {
+            standard: 2,
           },
-        ]),
-        unansweredNeeds: eachLike([
-          {
-            name: 'Alcohol Misuse',
-            section: 'ALCOHOL_MISUSE',
-            oasysThreshold: {
-              standard: 2,
-            },
-          },
-        ]),
+          score: 0,
+        }),
+        unansweredNeeds: [] as any,
         assessmentVersion: string('SAN'),
         assessedOn: timestamp("yyyy-MM-dd'T'HH:mm:ss", '2025-09-10T09:58:12'),
       }

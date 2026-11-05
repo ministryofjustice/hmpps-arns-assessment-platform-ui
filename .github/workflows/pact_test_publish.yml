@@ -13,13 +13,6 @@ on:
         description: App version used for the Docker image tag / Helm deploy.
         required: true
         type: string
-    secrets:
-      PACT_BROKER_URL:
-        required: true
-      HMPPS_PACT_BROKER_USERNAME:
-        required: true
-      HMPPS_PACT_BROKER_PASSWORD:
-        required: true
 
 jobs:
   pact_test_publish:
@@ -32,6 +25,19 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
+      - name: Apply webhook for hmpps-assess-risks-and-needs
+        permissions:
+          contents: read
+          id-token: write
+        uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_apply_webhook.yml@386d4ea009b450ddd4e6d37c2a1f484762bfa9de
+        with:
+          provider_repository: hmpps-assess-risks-and-needs
+          webhook_name: hmpps-assess-risks-and-needs
+          webhook_id: dHJlZWZld2Vyd2luZGJv
+        secrets:
+          PACT_BROKER_URL: ${{ secrets.PACT_BROKER_URL }}
+          HMPPS_PACT_BROKER_USERNAME: ${{ secrets.HMPPS_PACT_BROKER_USERNAME }}
+          HMPPS_PACT_BROKER_PASSWORD: ${{ secrets.HMPPS_PACT_BROKER_PASSWORD }}
       - name: Generate Pact contracts
         run: npm run pact:test
       - name: Publish pacts
