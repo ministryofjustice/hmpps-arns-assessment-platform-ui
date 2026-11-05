@@ -1,4 +1,3 @@
-import { InternalServerError } from 'http-errors'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
 import { Question } from '../../versions/v1.0/journeys/drug-use/constants/question'
