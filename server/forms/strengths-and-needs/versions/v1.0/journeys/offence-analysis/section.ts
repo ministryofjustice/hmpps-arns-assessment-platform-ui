@@ -10,6 +10,8 @@ import {
   radioDetails,
   radioField,
   revealedQuestion,
+  requiredValidations,
+  whenAnswered,
 } from '../../../../constants/questionContent'
 import {
   characterCountField,
@@ -66,7 +68,7 @@ const weaponDetailsRevealed = revealedQuestion({
         dependentWhen: parent.selectedWhen,
         validWhen: [
           validation({
-            condition: Self().match(Condition.String.HasMaxLength(CharacterLimit.c200)),
+            condition: whenAnswered(Self().match(Condition.String.HasMaxLength(CharacterLimit.c200))),
             message: contentFor('question.offence_weapon_details.validation', CharacterLimit.c200),
           }),
         ],
@@ -223,12 +225,9 @@ const offenceCommitedAgainstOtherDetailsRevealed = revealedQuestion({
         maxLength: CharacterLimit.c2000,
         dependentWhen: parent.selectedWhen,
         validWhen: [
+          ...requiredValidations(commonContentFor('validation.enter_details')),
           validation({
-            condition: Self().match(Condition.IsRequired()),
-            message: commonContentFor('validation.enter_details'),
-          }),
-          validation({
-            condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
+            condition: whenAnswered(Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000))),
             message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c2000),
           }),
         ],
@@ -329,13 +328,10 @@ const offenceAnalysisLeader = question({
               dependentWhen: parent.selectedWhen,
               validWhen: [
                 validation({
-                  condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000)),
+                  condition: whenAnswered(Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000))),
                   message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
                 }),
-                validation({
-                  condition: Self().match(Condition.IsRequired()),
-                  message: commonContentFor('validation.enter_details'),
-                }),
+                ...requiredValidations(commonContentFor('validation.enter_details')),
               ],
               parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
               formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
@@ -358,7 +354,7 @@ const offenceAnalysisLeader = question({
               dependentWhen: parent.selectedWhen,
               validWhen: [
                 validation({
-                  condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000)),
+                  condition: whenAnswered(Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000))),
                   message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
                 }),
               ],
@@ -613,13 +609,10 @@ const offenceAnalysisRiskDetailsField = (content: QuestionContent, parent: Paren
     dependentWhen: parent.selectedWhen,
     validWhen: [
       validation({
-        condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000)),
+        condition: whenAnswered(Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c4000))),
         message: commonContentFor('validation.details_must_be_less_than', CharacterLimit.c4000),
       }),
-      validation({
-        condition: Self().match(Condition.IsRequired()),
-        message: commonContentFor('validation.enter_details'),
-      }),
+      ...requiredValidations(commonContentFor('validation.enter_details')),
     ],
     parsers: [StrengthsAndNeedsTransformers.DecodeHtmlEntities()],
     formatters: [StrengthsAndNeedsTransformers.EncodeHtmlEntities()],
@@ -892,12 +885,7 @@ const victimEthnicity = question({
         formGroup: questionFormGroupOf(content.code),
         label: { text: content.text, classes: 'govuk-label--m' },
         items: victimEthnicitySelectItems,
-        validWhen: [
-          validation({
-            condition: Self().match(Condition.IsRequired()),
-            message: content.validationMessage,
-          }),
-        ],
+        validWhen: [...requiredValidations(content.validationMessage)],
       }),
   },
 })

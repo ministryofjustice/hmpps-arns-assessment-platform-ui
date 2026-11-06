@@ -5,6 +5,7 @@ import {
   Condition,
   Format,
   or,
+  Post,
   PredicateExpr,
   Self,
   validation,
@@ -224,16 +225,29 @@ export const itemsOf = (content: OptionedQuestionContent, selectedWhen: (option:
       : entry,
   )
 
+const isSaving = Post('action').match(Condition.Equals('save'))
+
+/**
+ * A required answer that's missing must not make forge clear the answers on
+ * later pages. The first rule makes this page's own save insist on the answer.
+ * The second stops the user moving past this page without it, but lets saves
+ * of other pages through so they don't count it as blocking.
+ */
+export const requiredValidations = (message: ResolvableString) => [
+  validation({ condition: Self().match(Condition.IsRequired()), message, submissionOnly: true }),
+  validation({ condition: or(isSaving, Self().match(Condition.IsRequired())), message }),
+]
+
+/**
+ * Only checks the rule when there's an answer. Without this, an empty
+ * optional field fails rules like max length, and forge clears the answers
+ * on later pages.
+ */
+export const whenAnswered = (condition: PredicateExpr) => or(Self().not.match(Condition.IsRequired()), condition)
+
 /** Exported for bespoke template projections that hand-write their own component props. */
 export const requiredValidationOf = (content: { validationMessage?: ResolvableString }) =>
-  content.validationMessage
-    ? [
-        validation({
-          condition: Self().match(Condition.IsRequired()),
-          message: content.validationMessage,
-        }),
-      ]
-    : undefined
+  content.validationMessage ? requiredValidations(content.validationMessage) : undefined
 
 /**
  * The display mode functions: shared projections from question content to

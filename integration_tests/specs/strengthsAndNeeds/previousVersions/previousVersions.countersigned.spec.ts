@@ -55,15 +55,7 @@ test.describe('Previous Versions - Countersigned', () => {
           planAgreementStatus: '',
           entityType: 'AAP_SAN',
         },
-        planVersion: {
-          uuid: crypto.randomUUID(),
-          version: yesterday.getTime(),
-          createdAt: yesterday.toISOString(),
-          updatedAt: yesterday.toISOString(),
-          status: 'COUNTERSIGNED',
-          planAgreementStatus: '',
-          entityType: 'AAP_PLAN',
-        },
+        planVersion: null,
       },
     }
 
@@ -115,7 +107,7 @@ test.describe('Previous Versions - Countersigned', () => {
               - paragraph:
                 - link "View sentence plan from ${todaysDate}":
                   - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
-          - row "${yesterdaysDate} Assessment and plan updated View assessment from ${yesterdaysDate} View sentence plan from ${yesterdaysDate}":
+          - row "${yesterdaysDate} Assessment and plan updated View assessment from ${yesterdaysDate} No version":
             - cell "${yesterdaysDate} Assessment and plan updated":
               - paragraph: ${yesterdaysDate}
               - paragraph: Assessment and plan updated
@@ -123,10 +115,8 @@ test.describe('Previous Versions - Countersigned', () => {
               - paragraph:
                 - link "View assessment from ${yesterdaysDate}":
                   - /url: /\\/strengths-and-needs\\/v1\\.0\\/view-historic\\/.*/
-            - cell "View sentence plan from ${yesterdaysDate}":
-              - paragraph:
-                - link "View sentence plan from ${yesterdaysDate}":
-                  - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
+            - cell "No version":
+              - paragraph: No version
       - table "All versions":
         - caption: All versions
         - rowgroup:
@@ -147,7 +137,7 @@ test.describe('Previous Versions - Countersigned', () => {
               - paragraph:
                 - link "View sentence plan from ${todaysDate}":
                   - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
-          - row "${yesterdaysDate} Assessment and plan updated View assessment from ${yesterdaysDate} View sentence plan from ${yesterdaysDate}":
+          - row "${yesterdaysDate} Assessment and plan updated View assessment from ${yesterdaysDate} No version":
             - cell "${yesterdaysDate} Assessment and plan updated":
               - paragraph: ${yesterdaysDate}
               - paragraph: Assessment and plan updated
@@ -155,10 +145,8 @@ test.describe('Previous Versions - Countersigned', () => {
               - paragraph:
                 - link "View assessment from ${yesterdaysDate}":
                   - /url: /\\/strengths-and-needs\\/v1\\.0\\/view-historic\\/.*/
-            - cell "View sentence plan from ${yesterdaysDate}":
-              - paragraph:
-                - link "View sentence plan from ${yesterdaysDate}":
-                  - /url: /\\/sentence-plan\\/v1\\.0\\/plan\\/view-historic\\/\\d+.*/
+            - cell "No version":
+              - paragraph: No version
       - paragraph:
         - link "↑ Back to top":
           - /url: "#main-content"

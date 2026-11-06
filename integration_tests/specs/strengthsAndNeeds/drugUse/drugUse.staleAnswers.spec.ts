@@ -59,6 +59,10 @@ test.describe('Stale answers', () => {
     await drugUsePage.saveAndContinue.click()
     await expect(page).toHaveURL(`${drugUseUrl}${Step.drug_use_details.path}`)
 
+    const afterTypesSave = await storedAnswers(aapClient, sanAssessmentId)
+    expect(Object.keys(afterTypesSave).filter(code => code.includes('amphetamines'))).toEqual([])
+    expect(afterTypesSave).not.toHaveProperty(Question.drugs_injected)
+
     await page.goto(`${drugUseUrl}${Step.drug_use_summary.path}`)
     await expect(page).toHaveURL(`${drugUseUrl}${Step.drug_use_status.path}`)
 
