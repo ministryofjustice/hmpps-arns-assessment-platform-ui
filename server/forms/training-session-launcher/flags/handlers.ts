@@ -6,7 +6,6 @@ import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
 import { randomOasysAssessmentPk } from '../scenarios/helpers'
 import { TrainingSessionLauncherContext, Session, TargetApplication } from '../types'
 import { TrainingSessionLauncherEffectsDeps } from '../effects/types'
-import { latestVersion } from '../../strengths-and-needs/constants/formVersion'
 
 /**
  * Configuration for the session creation phase
@@ -68,11 +67,7 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
     },
   },
-  MAX_UPLIFT_VERSION: {
-    handover: {
-      modifyRequest: request => ({ ...request, maxUpliftVersion: latestVersion }),
-    },
-  },
+  MAX_UPLIFT_VERSION: {},
   NEW_PERIOD_OF_SUPERVISION: {
     session: {
       modifyRequest: request => ({

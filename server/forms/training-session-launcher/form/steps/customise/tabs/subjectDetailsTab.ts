@@ -4,6 +4,7 @@ import { GovUKTextInput, GovUKSelectInput, GovUKRadioInput } from '@ministryofju
 import { RandomizableField } from '../../../../components'
 import { stubbedCrns } from '../../../../scenarios/stubbedCrns'
 import { handoverGenderOptions } from '../../../../../shared/constants/gender'
+import { sanVersionsDropdownOptions } from '../../../../scenarios/helpers'
 
 /**
  * Subject details tab content
@@ -174,5 +175,14 @@ export const subjectDetailsTabContent = [
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.sanAssessmentVersion'),
     }),
+  }),
+
+  GovUKSelectInput({
+    code: 'sanMaxUpliftVersion',
+    label: 'SAN Max Uplift Version',
+    hint: 'Set the max uplift version for SAN migration',
+    classes: 'govuk-radios--small',
+    defaultValue: Data('scenario.sanMaxUpliftVersion'),
+    items: [...sanVersionsDropdownOptions.map(version => ({ value: version, text: version }))],
   }),
 ]
