@@ -32,6 +32,11 @@ export const flagsTabContent = [
         hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
       },
       {
+        value: 'MAX_UPLIFT_VERSION',
+        text: 'Max uplift version',
+        hint: 'Sets the max uplift version',
+      },
+      {
         value: 'NEW_PERIOD_OF_SUPERVISION',
         text: 'New Period of Supervision',
         hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',

@@ -276,4 +276,5 @@ export const generateHandoverLink =
 
     // Set the link in context for redirect
     context.setData('handoverLink', finalHandoverLink)
+    context.setData('maxUpliftVersion', response.maxUpliftVersion)
   }
