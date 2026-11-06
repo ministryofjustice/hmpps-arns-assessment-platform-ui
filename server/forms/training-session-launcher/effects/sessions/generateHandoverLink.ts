@@ -183,8 +183,13 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     criminogenicNeedsData: buildCriminogenicNeeds(values),
   }
 
-  if (targetApplication === 'strengths-and-needs' && values.sanAssessmentVersion) {
-    request.assessmentVersion = values.sanAssessmentVersion
+  if (targetApplication === 'strengths-and-needs') {
+    if (values.sanAssessmentVersion) {
+      request.assessmentVersion = values.sanAssessmentVersion
+    }
+    if (session.flags.includes('MAX_UPLIFT_VERSION') && values.sanMaxUpliftVersion) {
+      request.maxUpliftVersion = values.sanMaxUpliftVersion
+    }
   }
 
   if (targetApplication === 'sentence-plan' && values.sentencePlanVersion) {
@@ -276,4 +281,5 @@ export const generateHandoverLink =
 
     // Set the link in context for redirect
     context.setData('handoverLink', finalHandoverLink)
+    context.setData('maxUpliftVersion', response.maxUpliftVersion)
   }

@@ -167,7 +167,11 @@ function transformToDisplaySession(session: Session): DisplaySession {
     sanAssessmentVersionValue === undefined || sanAssessmentVersionValue === null
       ? ''
       : String(sanAssessmentVersionValue).trim()
-
+  const sanMaxUpliftVersionValue = session.values.sanMaxUpliftVersion ?? values.sanAssessmentVersion
+  const sanMaxUpliftVersion =
+    sanMaxUpliftVersionValue === undefined || sanMaxUpliftVersionValue === null
+      ? 'v1.0'
+      : String(sanMaxUpliftVersionValue).trim()
   return {
     ...session,
     scenarioName: session.name,
@@ -182,6 +186,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
     oasysAssessmentPk: values.oasysAssessmentPk || '',
     sentencePlanVersion,
     sanAssessmentVersion,
+    sanMaxUpliftVersion,
     availableServices: computeAvailableServices(session),
   }
 }
@@ -202,7 +207,10 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     values.sanAssessmentVersion === undefined || values.sanAssessmentVersion === null
       ? ''
       : String(values.sanAssessmentVersion).trim()
-
+  const sanMaxUpliftVersion =
+    values.sanMaxUpliftVersion === undefined || values.sanMaxUpliftVersion === null
+      ? ''
+      : String(values.sanAssessmentVersion).trim()
   return {
     id: saved.id,
     name: saved.name,
@@ -221,7 +229,7 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     oasysAssessmentPk: values.oasysAssessmentPk || '',
     sentencePlanVersion,
     sanAssessmentVersion,
-
+    sanMaxUpliftVersion,
     displayNeeds: transformToDisplayNeeds(values),
     isCustom: true,
     rawScenario: {

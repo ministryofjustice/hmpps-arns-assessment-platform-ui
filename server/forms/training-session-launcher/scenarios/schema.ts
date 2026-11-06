@@ -85,6 +85,11 @@ export const scenarioFieldSchema = {
     group: 'subject',
     randomize: () => null,
   },
+  sanMaxUpliftVersion: {
+    label: 'SAN Max Uplift Version',
+    group: 'subject',
+    randomize: () => null,
+  },
   // Practitioner details
   practitionerIdentifier: {
     label: 'Practitioner identifier',

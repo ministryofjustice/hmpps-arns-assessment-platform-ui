@@ -43,6 +43,7 @@ export interface DisplayScenario {
   oasysAssessmentPk: string
   sentencePlanVersion: string
   sanAssessmentVersion: string
+  sanMaxUpliftVersion: string
 
   // For display
   displayNeeds: DisplayNeed[]
@@ -76,6 +77,7 @@ export interface TrainingSessionLauncherData extends RandomizedFieldFlags {
   // Handover
   handoverLink?: string
   handoverApiFailure?: boolean
+  maxUpliftVersion?: string
 
   // Customise page
   scenario: ScenarioValues
@@ -147,7 +149,7 @@ export interface ServiceOption {
 /**
  * Display version of a session with formatted values
  */
-export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion'> & {
+export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion' | 'sanMaxUpliftVersion'> & {
   scenarioName: string
   displayNeeds: DisplayNeed[]
   givenName: string
@@ -160,6 +162,7 @@ export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmen
   oasysAssessmentPk: string
   sentencePlanVersion: string
   sanAssessmentVersion: string
+  sanMaxUpliftVersion: string
   availableServices: ServiceOption[]
 }
 

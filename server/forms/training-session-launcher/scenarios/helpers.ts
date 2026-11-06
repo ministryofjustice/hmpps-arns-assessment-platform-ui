@@ -137,3 +137,5 @@ export function randomPlanAccessMode(): AccessMode {
 export function randomPractitionerIdentifier(): string {
   return `TRAINING${String(faker.number.int({ min: 1, max: 9999 })).padStart(4, '0')}`
 }
+
+export const sanVersionsDropdownOptions: string[] = ['v1.0', 'v2.0']
