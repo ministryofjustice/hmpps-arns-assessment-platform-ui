@@ -13,7 +13,6 @@ import {
 } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
 import { handoverGenderLabel } from '../../../shared/constants/gender'
-import { latestVersion } from '../../../strengths-and-needs/constants/formVersion'
 
 /**
  * Location code to display label mapping

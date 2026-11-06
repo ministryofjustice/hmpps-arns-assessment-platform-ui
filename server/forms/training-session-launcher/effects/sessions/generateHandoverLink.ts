@@ -187,7 +187,6 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     if (values.sanAssessmentVersion) {
       request.assessmentVersion = values.sanAssessmentVersion
     }
-    console.log('------------------------', values)
     if (session.flags.includes('MAX_UPLIFT_VERSION') && values.sanMaxUpliftVersion) {
       request.maxUpliftVersion = values.sanMaxUpliftVersion
     }
