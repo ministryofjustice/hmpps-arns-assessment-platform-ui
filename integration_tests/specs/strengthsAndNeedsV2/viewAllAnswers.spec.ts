@@ -541,7 +541,7 @@ const statuses: Record<string, string> = {
   [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
   [Section.personal_relationships_and_community.statusKey]: SectionComplete.no,
   [Section.thinking_behaviours_and_attitudes.statusKey]: SectionComplete.yes,
-  // [Section.offence_analysis.statusKey]: SectionComplete.no,
+  [Section.offence_analysis.statusKey]: SectionComplete.no,
 }
 
 const pageText = (page: Page) => page.locator('#main-content').innerText()
@@ -587,7 +587,7 @@ test.describe('View all answers', () => {
     await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.personal}\nIncomplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.thinking}\nComplete`, { exact: true })).toBeVisible()
-    // expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
+    expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
 
@@ -697,6 +697,7 @@ test.describe('View all answers', () => {
     await expect(page.getByText('Health and wellbeing\nIncomplete\n')).toBeVisible()
     await expect(page.getByText('Personal relationships and community\nIncomplete\n')).toBeVisible()
     await expect(page.getByText('Thinking, behaviours and attitudes\nIncomplete\n')).toBeVisible()
+    await expect(page.getByText('Offence analysis\nIncomplete\n')).toBeVisible()
   })
 })
 
