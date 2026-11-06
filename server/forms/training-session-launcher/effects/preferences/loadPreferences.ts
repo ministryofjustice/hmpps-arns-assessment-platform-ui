@@ -170,7 +170,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
   const sanMaxUpliftVersionValue = session.values.sanMaxUpliftVersion ?? values.sanAssessmentVersion
   const sanMaxUpliftVersion =
     sanMaxUpliftVersionValue === undefined || sanMaxUpliftVersionValue === null
-      ? ''
+      ? 'v1.0'
       : String(sanMaxUpliftVersionValue).trim()
   return {
     ...session,
