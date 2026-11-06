@@ -8,7 +8,7 @@ import { alcoholUseSection } from '../journeys/alcohol-use/section'
 import { healthWellbeingSection } from '../journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from '../journeys/personal-relationships-and-community/section'
 // import { thinkingBehavioursAttitudesSection } from '../journeys/thinking-behaviours-and-attitudes/section'
-// import { offenceAnalysisSection } from '../journeys/offence-analysis/section'
+import { offenceAnalysisSection } from '../journeys/offence-analysis/section'
 import { Section } from './section'
 
 const sectionStatusKeys = Object.values(Section).map(section => section.statusKey)
@@ -30,7 +30,7 @@ export const v2FormConfig = {
       healthWellbeingSection,
       personalRelationshipsCommunitySection,
       // thinkingBehavioursAttitudesSection,
-      // offenceAnalysisSection,
+      offenceAnalysisSection,
     ],
     sectionStatusKeys,
   ),

@@ -20,6 +20,30 @@ const within = <T>(value: unknown, take: (node: Node) => T | undefined, found: T
 }
 
 /**
+ * Change link hrefs are `Format` expressions, resolved at render time. Those built
+ * from static step paths and question codes can be resolved here instead.
+ */
+const resolveHref = (href: unknown): string | undefined => {
+  if (typeof href === 'string') {
+    return href
+  }
+
+  const expression = (href as { expr?: Node })?.expr
+
+  if (expression?.name !== 'FormatString') {
+    return undefined
+  }
+
+  const [template, ...args] = expression.arguments as unknown[]
+
+  if (typeof template !== 'string' || !args.every(arg => typeof arg === 'string')) {
+    return undefined
+  }
+
+  return template.replace(/%(\d+)/g, (placeholder, index) => (args[Number(index) - 1] as string) ?? placeholder)
+}
+
+/**
  * These two tests fail if a newly written question
  * does not conform to expected change link behaviour.
  */
@@ -39,7 +63,7 @@ describe.each(viewAllAnswersSections.map(({ section, config }) => [section.code,
 
   it('points every summary row change link at one of those questions', () => {
     const rows = fields.flatMap((field: Node) => field.displayModes?.summaryRow ?? [])
-    const anchors = within(rows, node => (typeof node.href === 'string' ? node.href.split('#')[1] : undefined))
+    const anchors = within(rows, node => resolveHref(node.href)?.split('#')[1])
 
     expect(anchors).toHaveLength(rows.length)
     expect(anchors.filter(anchor => !blocks.some(block => block.formGroup?.attributes?.id === anchor))).toEqual([])
