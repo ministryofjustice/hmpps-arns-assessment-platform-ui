@@ -15,6 +15,7 @@ import { initStepStatusTracking } from './step-status-tracking.mjs'
 import { initGoalRelationTracking } from './goal-relation-tracking.mjs'
 import { initStepActorTracking } from './step-actor-tracking.mjs'
 import { initGoalAchievementTracking } from './goal-achievement-tracking.mjs'
+import { initLocalPrefill } from './local-prefill.mjs'
 import '../../server/forms/sentence-plan/components/copy-button/copy-button.mjs'
 import '../../server/forms/sentence-plan/components/report-problem-link/report-problem-link.mjs'
 
@@ -31,6 +32,7 @@ initStepStatusTracking()
 initGoalRelationTracking()
 initStepActorTracking()
 initGoalAchievementTracking()
+initLocalPrefill()
 
 customElements.define('app-copy-code', CopyCode)
 customElements.define('app-support-widget', SupportWidget)
