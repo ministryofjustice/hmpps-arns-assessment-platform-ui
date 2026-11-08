@@ -1,0 +1,139 @@
+---
+# Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
+# Training environment for L&D (Jira ATE-3). Deployed by hand only, never from a pipeline.
+
+generic-service:
+  ingress:
+    host: arns-assessment-platform-training.hmpps.service.justice.gov.uk
+    className: modsec-non-prod
+    modsecurity_enabled: true
+    modsecurity_audit_enabled: true
+    modsecurity_snippet: |
+      SecRuleEngine On
+      # Team here grants access to the OpenSearch logs to delve into the cause of the blockage
+      SecDefaultAction "phase:2,pass,log,tag:github_team=hmpps-assessments,tag:namespace={{ .Release.Namespace }}"
+      # Rule 920272 (unusual characters) false-alarms on normal post bodies; skip the raw body for this check only.
+      SecRuleUpdateTargetById 920272 "!REQUEST_BODY"
+      # Practitioner free-text in sentence-plan forms (goals, steps, notes) can false-block; skip those checks on these pages only.
+      SecRule REQUEST_URI "@beginsWith /sentence-plan/" "id:10010,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-rce;ARGS,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-injection-php;ARGS,ctl:ruleRemoveTargetByTag=attack-injection-generic;ARGS"
+      # Random sign-in tokens (code/state) can false-block; skip those checks on the sign-in routes only.
+      SecRule REQUEST_URI "@beginsWith /sign-in/" "id:10020,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-rce;ARGS"
+      SecRule REQUEST_URI "@beginsWith /oauth2/" "id:10021,phase:1,pass,nolog,ctl:ruleRemoveTargetByTag=attack-sqli;ARGS,ctl:ruleRemoveTargetByTag=attack-rce;ARGS"
+      # Random cookie values (analytics ai_*, login session) can false-block a user on every page; skip these cookies only.
+      SecRuleUpdateTargetByTag "attack-rce" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      SecRuleUpdateTargetByTag "attack-sqli" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      SecRuleUpdateTargetByTag "attack-lfi" "!REQUEST_COOKIES:ai_user|!REQUEST_COOKIES:ai_session|!REQUEST_COOKIES:hmpps-arns-assessment-platform-ui.session"
+      # Change default denial to be a 406 so that we can tell easily that it is modsecurity doing the blocking
+      SecRuleUpdateActionById 949110 "deny,status:406,logdata:%{SERVER_NAME}"
+      SecRuleUpdateActionById 959100 "deny,status:406,logdata:%{SERVER_NAME}"
+      SecAction "id:900000,phase:1,nolog,pass,t:none,setvar:tx.paranoia_level=2"
+
+  env:
+    INGRESS_URL: 'https://arns-assessment-platform-training.hmpps.service.justice.gov.uk'
+    HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
+    # Handover and coordinator go through Wiremock so they can be faked without changing the app.
+    # Until the team picks an approach (docs: ATE-3 handover options) Wiremock forwards them to test.
+    HMPPS_ARNS_HANDOVER_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/handover'
+    HMPPS_ARNS_HANDOVER_EXTERNAL_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
+    TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
+    AAP_API_URL: 'http://hmpps-arns-assessment-platform-api.hmpps-arns-assessment-platform-training.svc.cluster.local'
+    COORDINATOR_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/coordinator-api'
+    DELIUS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/delius'
+    ARNS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/arns-api'
+    TIER_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/tier-api'
+    SUPERVISION_PACKAGE_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/supervision-package-api'
+    SAN_URL: 'https://strengths-based-needs-assessments-test.hmpps.service.justice.gov.uk'
+    OASYS_URL: 'https://arns-assessment-platform-training.hmpps.service.justice.gov.uk/training-session-launcher/sessions'
+    OASYS_REVIEW_URL: 'https://t2.oasys.service.justice.gov.uk'
+    MPOP_URL: 'https://manage-people-on-probation-test.hmpps.service.justice.gov.uk'
+    FEATURE_FLAG_URL: 'https://feature-toggles-dev.hmpps.service.justice.gov.uk'
+    SERVICE_NOW_FORM_URL: '#service-now-link'
+    NATIONAL_ROLLOUT_FEEDBACK_URL: 'national-rollout-feedback-url'
+    FEEDBACK_FORM_URL: 'private-beta-feedback-url'
+    ENVIRONMENT_NAME: TRAINING
+    FORGE_DEVTOOLS_ENABLED: 'false'
+    AUDIT_ENABLED: 'true'
+    FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+    CAN_STUB_ARNS_API: 'true'
+    WIREMOCK_ADMIN_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/__admin'
+    SMART_SURVEY_POPUP_CODE: 'XF5PNV'
+
+  allowlist:
+    mp-nat-egress-one: 13.43.9.198/32
+    mp-nat-egress-two: 13.42.163.245/32
+    mp-nat-egress-three: 18.132.208.127/32
+    capita-dev: 51.104.16.30/31
+    captia-further: 172.167.141.40/32
+    capita-developers-vms-one: 85.115.52.180/32
+    capita-developers-vms-two: 85.115.52.200/29
+    capita-developers-vms-three: 85.115.53.180/32
+    capita-developers-vms-four: 85.115.53.200/29
+    capita-developers-vms-five: 85.115.54.180/32
+    capita-developers-vms-six: 85.115.54.200/29
+    kpmg-pentest: 195.68.59.74/32
+    t1-jump2022-1: 10.26.8.12/32
+    accessibility-audit: 5.181.59.114/32
+
+# Delius, ARNS, Tier and Supervision Package calls go via Wiremock. Any CRN that is not one of the
+# magic CRNs in helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings is forwarded, unchanged,
+# to the real API at the URL below. Only the magic CRNs get a canned response.
+wiremock:
+  enabled: true
+  nameOverride: wiremock
+  # One replica because the training launcher registers stubs over Wiremock's admin API, which only reaches one pod
+  replicaCount: 1
+
+  image:
+    repository: wiremock/wiremock
+    tag: 3.13.2
+    port: 8080
+
+  containerArgs: ['--global-response-templating', '--no-request-journal']
+
+  ingress:
+    enabled: false
+
+  livenessProbe:
+    httpGet:
+      path: /__admin/health
+    periodSeconds: 30
+    initialDelaySeconds: 20
+
+  readinessProbe:
+    httpGet:
+      path: /__admin/health
+    periodSeconds: 20
+    initialDelaySeconds: 20
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  securityContext:
+    runAsUser: 1001
+    runAsNonRoot: true
+    privileged: false
+
+  volumes:
+    - name: mappings
+      configMap:
+        name: hmpps-arns-assessment-platform-ui-wiremock-mappings
+  volumeMounts:
+    - name: mappings
+      mountPath: /home/wiremock/mappings
+      readOnly: true
+  env:
+    WIREMOCK_DELIUS_URL: 'https://sentence-plan-and-delius-dev.hmpps.service.justice.gov.uk'
+    WIREMOCK_ARNS_API_URL: 'https://assess-risks-and-needs-test.hmpps.service.justice.gov.uk'
+    WIREMOCK_TIER_API_URL: 'https://hmpps-tier-dev.hmpps.service.justice.gov.uk'
+    WIREMOCK_SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-dev.hmpps.service.justice.gov.uk'
+    WIREMOCK_HANDOVER_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
+    WIREMOCK_COORDINATOR_API_URL: 'https://arns-coordinator-api-test.hmpps.service.justice.gov.uk'
+
+generic-prometheus-alerts:
+  targetApplication: hmpps-arns-assessment-platform-ui
+  businessHoursOnly: true
