@@ -32,7 +32,9 @@ generic-service:
     INGRESS_URL: 'https://arns-assessment-platform-training.hmpps.service.justice.gov.uk'
     HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
     # Handover and coordinator go through Wiremock so they can be faked without changing the app.
-    # Until the team picks an approach (docs: ATE-3 handover options) Wiremock forwards them to test.
+    # Handover is forwarded to test for now. Coordinator is not forwarded anywhere: the test
+    # coordinator writes to the test database, so training needs stubs or its own coordinator
+    # before the launcher will work (ATE-3 open decision).
     HMPPS_ARNS_HANDOVER_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/handover'
     HMPPS_ARNS_HANDOVER_EXTERNAL_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
@@ -132,7 +134,6 @@ wiremock:
     WIREMOCK_TIER_API_URL: 'https://hmpps-tier-dev.hmpps.service.justice.gov.uk'
     WIREMOCK_SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-dev.hmpps.service.justice.gov.uk'
     WIREMOCK_HANDOVER_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
-    WIREMOCK_COORDINATOR_API_URL: 'https://arns-coordinator-api-test.hmpps.service.justice.gov.uk'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
