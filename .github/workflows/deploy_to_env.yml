@@ -14,6 +14,7 @@ on:
         options:
           - dev
           - test
+          - training
         default: 'dev'
       image_tag:
         description: Optional image tag to deploy. If left blank, a new image will be built, pushed and deployed
@@ -36,7 +37,8 @@ jobs:
     name: Trigger integration tests
     runs-on: ubuntu-latest
     needs: deploy_to_env
-    if: contains('
+    # No integration tests run against training
+    if: inputs.environment != 'training' && contains('
       refs/heads/main
       refs/heads/develop
       ', github.ref)
