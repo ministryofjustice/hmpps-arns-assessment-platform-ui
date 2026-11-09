@@ -1,5 +1,5 @@
 import { expect, Page } from '@playwright/test'
-import { AnswerConfig } from 'builders/types';
+import { AnswerConfig } from 'builders/types'
 import { Answer, test } from './fixtures'
 
 export type ChangeLink = { step: string; question: string }
