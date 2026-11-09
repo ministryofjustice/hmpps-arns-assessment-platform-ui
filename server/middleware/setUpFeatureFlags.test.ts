@@ -21,6 +21,57 @@ describe('setUpFeatureFlags', () => {
     jest.clearAllMocks()
   })
 
+  it.each(['user-123', undefined])('loads banner content when enabled for user %s', async userId => {
+    const content = { heading: 'Planned downtime', message: 'Maintenance.' }
+    const featureFlagService = {
+      evaluateBooleanFlags: jest.fn().mockResolvedValue({
+        booleanFeatureFlags: { downtimeNotificationBanner: true },
+      }),
+      getDowntimeBannerContent: jest.fn().mockResolvedValue(content),
+    }
+    const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
+    const { req, res, next } = createMocks(userId)
+
+    await router.stack[0].handle(req, res, next)
+
+    expect(featureFlagService.getDowntimeBannerContent).toHaveBeenCalledWith(userId)
+    expect(res.locals.downtimeBanner).toEqual(content)
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('does not request content when the banner is disabled', async () => {
+    const featureFlagService = {
+      evaluateBooleanFlags: jest.fn().mockResolvedValue({
+        booleanFeatureFlags: { downtimeNotificationBanner: false },
+      }),
+      getDowntimeBannerContent: jest.fn(),
+    }
+    const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
+    const { req, res, next } = createMocks()
+
+    await router.stack[0].handle(req, res, next)
+
+    expect(featureFlagService.getDowntimeBannerContent).not.toHaveBeenCalled()
+    expect(res.locals.downtimeBanner).toBeUndefined()
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('continues without banner content when content is unavailable', async () => {
+    const featureFlagService = {
+      evaluateBooleanFlags: jest.fn().mockResolvedValue({
+        booleanFeatureFlags: { downtimeNotificationBanner: true },
+      }),
+      getDowntimeBannerContent: jest.fn().mockResolvedValue(undefined),
+    }
+    const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
+    const { req, res, next } = createMocks()
+
+    await router.stack[0].handle(req, res, next)
+
+    expect(res.locals.downtimeBanner).toBeUndefined()
+    expect(next).toHaveBeenCalled()
+  })
+
   it('should evaluate the configured boolean feature flags for the current user and store them in locals', async () => {
     const evaluateBooleanFlags = jest.fn().mockResolvedValue({
       booleanFeatureFlags: {

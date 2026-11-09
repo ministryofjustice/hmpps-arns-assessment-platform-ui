@@ -1,6 +1,6 @@
 import { FliptClient } from '@flipt-io/flipt-client-js'
 import FeatureFlagService from './featureFlagService'
-import { FeatureFlagsConfig } from '../utils/featureFlagsUtils'
+import { DOWNTIME_BANNER_CONTENT_FLAG, FeatureFlagsConfig } from '../utils/featureFlagsUtils'
 
 jest.mock('@flipt-io/flipt-client-js')
 jest.mock('../config', () => ({
@@ -18,6 +18,7 @@ const mockFliptClientInit = FliptClient.init as jest.Mock
 describe('FeatureFlagService', () => {
   let featureFlagService: FeatureFlagService
   let mockEvaluateBoolean: jest.Mock
+  let mockEvaluateVariant: jest.Mock
 
   const mockFeatureFlags: FeatureFlagsConfig = {
     TEST_FLAG_ONE: {
@@ -41,9 +42,106 @@ describe('FeatureFlagService', () => {
     jest.clearAllMocks()
 
     mockEvaluateBoolean = jest.fn()
-    mockFliptClientInit.mockResolvedValue({ evaluateBoolean: mockEvaluateBoolean })
+    mockEvaluateVariant = jest.fn()
+    mockFliptClientInit.mockResolvedValue({
+      evaluateBoolean: mockEvaluateBoolean,
+      evaluateVariant: mockEvaluateVariant,
+    })
 
     featureFlagService = new FeatureFlagService()
+  })
+
+  describe('getDowntimeBannerContent', () => {
+    const content = { heading: 'Planned downtime', message: 'Unavailable during maintenance.' }
+
+    it('reads the variant attachment for the current user', async () => {
+      mockEvaluateVariant.mockReturnValue({ variantAttachment: JSON.stringify(content) })
+
+      expect(await featureFlagService.getDowntimeBannerContent('user123')).toEqual(content)
+      expect(mockEvaluateVariant).toHaveBeenCalledWith({
+        flagKey: DOWNTIME_BANNER_CONTENT_FLAG,
+        entityId: 'user123',
+        context: {},
+      })
+    })
+
+    it('uses fallbackUser when no user is provided and accepts a default variant attachment', async () => {
+      mockEvaluateVariant.mockReturnValue({ match: false, variantAttachment: JSON.stringify(content) })
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toEqual(content)
+      expect(mockEvaluateVariant).toHaveBeenCalledWith(expect.objectContaining({ entityId: 'fallbackUser' }))
+    })
+
+    it('trims whitespace from the content', async () => {
+      mockEvaluateVariant.mockReturnValue({
+        variantAttachment: JSON.stringify({ heading: ' Planned downtime ', message: ' Maintenance. ' }),
+      })
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toEqual({
+        heading: 'Planned downtime',
+        message: 'Maintenance.',
+      })
+    })
+
+    it.each([
+      {},
+      { heading: 'Planned downtime' },
+      { message: 'Maintenance.' },
+      { heading: '', message: 'Maintenance.' },
+      { heading: 'Planned downtime', message: ' \n ' },
+      { heading: 123, message: 'Maintenance.' },
+      { heading: 'Planned downtime', message: null },
+      null,
+      [],
+    ])('logs and returns no content for an invalid attachment: %j', async attachment => {
+      mockEvaluateVariant.mockReturnValue({ variantAttachment: JSON.stringify(attachment) })
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toBeUndefined()
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Invalid downtime banner content: heading and message must be non-empty strings',
+      )
+    })
+
+    it.each(['not JSON', '', undefined])('logs and returns no content for unparseable JSON: %s', async attachment => {
+      mockEvaluateVariant.mockReturnValue({ variantAttachment: attachment })
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toBeUndefined()
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Error evaluating downtime banner content flag ${DOWNTIME_BANNER_CONTENT_FLAG}:`,
+        expect.any(Error),
+      )
+    })
+
+    it('logs and returns no content when evaluation fails', async () => {
+      const error = new Error('Flag not found')
+      mockEvaluateVariant.mockImplementation(() => {
+        throw error
+      })
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toBeUndefined()
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Error evaluating downtime banner content flag ${DOWNTIME_BANNER_CONTENT_FLAG}:`,
+        error,
+      )
+    })
+
+    it('logs and returns no content when the client cannot initialise', async () => {
+      mockFliptClientInit.mockRejectedValue(new Error('Flipt unavailable'))
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toBeUndefined()
+      expect(mockLogger.error).toHaveBeenCalledWith('Unable to initialise Flipt client for downtime banner content')
+      expect(mockEvaluateVariant).not.toHaveBeenCalled()
+    })
+
+    it('reuses the boolean flag client', async () => {
+      mockEvaluateBoolean.mockReturnValue({ enabled: true })
+      mockEvaluateVariant.mockReturnValue({ variantAttachment: JSON.stringify(content) })
+
+      await featureFlagService.evaluateBooleanFlags(mockFeatureFlags)
+      await featureFlagService.getDowntimeBannerContent()
+
+      expect(mockFliptClientInit).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('evaluateBooleanFlags', () => {

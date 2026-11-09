@@ -1,7 +1,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 
-{% set showDowntimeNotificationBanner = featureFlags.downtimeNotificationBanner %}
+{% set showDowntimeNotificationBanner = featureFlags.downtimeNotificationBanner and downtimeBanner %}
 
 {% if hidePlanHeader %}
   <div class="govuk-width-container">

@@ -12,6 +12,9 @@ export default function setUpFeatureFlags(featureFlagService: FeatureFlagService
     const result = await featureFlagService.evaluateBooleanFlags(BooleanFeatureFlags, userId)
 
     res.locals.featureFlags = result.booleanFeatureFlags
+    res.locals.downtimeBanner = result.booleanFeatureFlags.downtimeNotificationBanner
+      ? await featureFlagService.getDowntimeBannerContent(userId)
+      : undefined
     return next()
   })
 

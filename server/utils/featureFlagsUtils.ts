@@ -1,6 +1,13 @@
 export const FEATURE_FLAG_NAMESPACE = 'hmpps-arns-assessment-platform'
 export const UPDATE_INTERVAL_SECONDS = 120
 
+export const DOWNTIME_BANNER_CONTENT_FLAG = 'sp-downtime-notification-banner-content'
+
+export interface DowntimeBannerContent {
+  heading: string
+  message: string
+}
+
 export const BooleanFeatureFlags = {
   ENABLE_SMART_SURVEY_IN_BETA: {
     fliptKey: 'sp-enable-smart-survey-in-private-beta',

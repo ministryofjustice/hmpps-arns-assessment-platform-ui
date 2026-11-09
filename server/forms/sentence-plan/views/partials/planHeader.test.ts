@@ -123,12 +123,15 @@ describe('plan header', () => {
         featureFlags: {
           downtimeNotificationBanner: true,
         },
+        downtimeBanner: { heading: 'Planned downtime', message: 'Unavailable during maintenance.' },
         headerPageHeading: "Joan's plan",
         showPrintPageHeaders: false,
       })
 
       expect(html).toContain('govuk-notification-banner__header')
       expect(html).toContain('govuk-notification-banner__content')
+      expect(html).toContain('Planned downtime')
+      expect(html).toContain('Unavailable during maintenance.')
     })
 
     it('does not render the service downtime banner when feature flag is false', () => {
@@ -143,6 +146,7 @@ describe('plan header', () => {
         featureFlags: {
           downtimeNotificationBanner: false,
         },
+        downtimeBanner: { heading: 'Planned downtime', message: 'Unavailable during maintenance.' },
         headerPageHeading: "Joan's plan",
       })
 
