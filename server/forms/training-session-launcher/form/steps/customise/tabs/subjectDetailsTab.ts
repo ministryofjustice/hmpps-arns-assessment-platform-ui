@@ -178,11 +178,11 @@ export const subjectDetailsTabContent = [
   }),
 
   GovUKSelectInput({
-    code: 'sanMaxUpliftVersion',
+    code: 'maxUpliftVersion',
     label: 'SAN Max Uplift Version',
     hint: 'Set the max uplift version for SAN migration',
     classes: 'govuk-radios--small',
-    defaultValue: Data('scenario.sanMaxUpliftVersion'),
+    defaultValue: Data('scenario.maxUpliftVersion'),
     items: [...sanVersionsDropdownOptions.map(version => ({ value: version, text: version }))],
   }),
 ]

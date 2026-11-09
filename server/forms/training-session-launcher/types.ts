@@ -43,7 +43,7 @@ export interface DisplayScenario {
   oasysAssessmentPk: string
   sentencePlanVersion: string
   sanAssessmentVersion: string
-  sanMaxUpliftVersion: string
+  maxUpliftVersion: string
 
   // For display
   displayNeeds: DisplayNeed[]
@@ -149,7 +149,7 @@ export interface ServiceOption {
 /**
  * Display version of a session with formatted values
  */
-export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion' | 'sanMaxUpliftVersion'> & {
+export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion' | 'maxUpliftVersion'> & {
   scenarioName: string
   displayNeeds: DisplayNeed[]
   givenName: string
@@ -162,7 +162,7 @@ export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmen
   oasysAssessmentPk: string
   sentencePlanVersion: string
   sanAssessmentVersion: string
-  sanMaxUpliftVersion: string
+  maxUpliftVersion: string
   availableServices: ServiceOption[]
 }
 

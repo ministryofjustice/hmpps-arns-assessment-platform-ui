@@ -85,7 +85,7 @@ export const scenarioFieldSchema = {
     group: 'subject',
     randomize: () => null,
   },
-  sanMaxUpliftVersion: {
+  maxUpliftVersion: {
     label: 'SAN Max Uplift Version',
     group: 'subject',
     randomize: () => null,

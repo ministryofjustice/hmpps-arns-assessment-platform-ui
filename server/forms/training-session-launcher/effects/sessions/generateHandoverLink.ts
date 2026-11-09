@@ -187,8 +187,8 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     if (values.sanAssessmentVersion) {
       request.assessmentVersion = values.sanAssessmentVersion
     }
-    if (session.flags.includes('MAX_UPLIFT_VERSION') && values.sanMaxUpliftVersion) {
-      request.maxUpliftVersion = values.sanMaxUpliftVersion
+    if (session.flags.includes('MAX_UPLIFT_VERSION') && values.maxUpliftVersion) {
+      request.maxUpliftVersion = values.maxUpliftVersion
     }
   }
 
@@ -281,5 +281,4 @@ export const generateHandoverLink =
 
     // Set the link in context for redirect
     context.setData('handoverLink', finalHandoverLink)
-    context.setData('maxUpliftVersion', response.maxUpliftVersion)
   }

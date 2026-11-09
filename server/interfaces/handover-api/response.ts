@@ -4,7 +4,6 @@ import { HandoverAssessmentContext, HandoverSentencePlanContext } from './reques
 export interface CreateHandoverLinkResponse {
   handoverSessionId: string
   handoverLink: string
-  maxUpliftVersion?: string
 }
 
 export interface HandoverContext {
@@ -13,4 +12,5 @@ export interface HandoverContext {
   subject: HandoverSubjectDetails
   assessmentContext?: HandoverAssessmentContext
   sentencePlanContext?: HandoverSentencePlanContext
+  maxUpliftVersion?: string
 }
