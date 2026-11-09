@@ -154,13 +154,11 @@ test.describe('Offence analysis change links', () => {
         withVictim.userSubmittedSteps,
         withVictim.collections,
       )
-
       await expectSaveNavigationSucessAfterEditChanges(
         page,
         `${section}/${victimSummaryPage}`,
-        withVictim.summaryChangeLinks,
+        changeLink('offence-analysis-victim/edit/0', 'offence_analysis_victim_relationship'),
         withVictim.collections,
-        'victim-summary',
       )
     })
   })

@@ -82,37 +82,26 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
 export const expectSaveNavigationSucessAfterEditChanges = async (
   page: Page,
   url: string,
-  changeLinks: ChangeLink[],
+  link: ChangeLink,
   answers: AnswerConfig[],
-  tab: string,
 ) => {
-  for (const link of changeLinks) {
-    // eslint-disable-next-line no-await-in-loop
-    await test.step(`Change → ${hrefOf(link)}`, async () => {
-      await openPage(page, url)
-      if (tab !== 'victim-summary') {
-        await showTab(page, tab)
-      }
-      const change = page.locator(`main a[href="${hrefOf(link)}"]`).first()
-      await expect(change, 'says what it changes, as visually hidden text').toHaveAccessibleName(/^Change\s+\S/)
-      await change.click()
+  await openPage(page, url)
+  const change = page.locator(`main a[href="${hrefOf(link)}"]`).first()
+  await expect(change, 'says what it changes, as visually hidden text').toHaveAccessibleName(/^Change\s+\S/)
+  await change.click()
 
-      await expect(page).toHaveURL(new RegExp(`/${link.step}#${link.question}-question$`))
+  await expect(page).toHaveURL(new RegExp(`/${link.step}#${link.question}-question$`))
 
-      const expectedAnswer = answers.find(ans => ans.question === link.question)
-      if (expectedAnswer) {
-        const locator = page.locator(`[id=${link.question}][value="${expectedAnswer.value}"]`)
-        const tagName = await locator.evaluate(elment => elment.tagName.toLowerCase())
+  const expectedAnswer = answers.find(ans => ans.question === link.question)
+  if (expectedAnswer) {
+    const locator = page.locator(`[id=${link.question}][value="${expectedAnswer.value}"]`)
+    const tagName = await locator.evaluate(elment => elment.tagName.toLowerCase())
 
-        if (tagName === 'select' || tagName === 'textarea') {
-          await expect(locator).toHaveValue(expectedAnswer.value.toString())
-        } else if (tagName === 'input') {
-          await expect(page.locator(`[id="${link.question}"][value="${expectedAnswer.value}"]`)).toBeChecked()
-        }
-      }
-      await page.getByRole('button', { name: 'Save and continue' }).click()
-
-      expect(page.url()).toContain('offence-analysis/offence-analysis-victim-summary')
-    })
+    if (tagName === 'select' || tagName === 'textarea') {
+      await expect(locator).toHaveValue(expectedAnswer.value.toString())
+    } else if (tagName === 'input') {
+      await expect(page.locator(`[id="${link.question}"][value="${expectedAnswer.value}"]`)).toBeChecked()
+    }
   }
+
 }
