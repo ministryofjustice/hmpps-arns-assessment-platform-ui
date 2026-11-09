@@ -43,7 +43,6 @@ export interface DisplayScenario {
   oasysAssessmentPk: string
   sentencePlanVersion: string
   sanAssessmentVersion: string
-  maxUpliftVersion: string
 
   // For display
   displayNeeds: DisplayNeed[]
@@ -162,7 +161,6 @@ export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmen
   oasysAssessmentPk: string
   sentencePlanVersion: string
   sanAssessmentVersion: string
-  maxUpliftVersion: string
   availableServices: ServiceOption[]
 }
 

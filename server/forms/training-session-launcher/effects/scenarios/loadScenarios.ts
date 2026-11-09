@@ -173,10 +173,6 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     values.sanAssessmentVersion === undefined || values.sanAssessmentVersion === null
       ? ''
       : String(values.sanAssessmentVersion).trim()
-  const maxUpliftVersion =
-    values.maxUpliftVersion === undefined || values.maxUpliftVersion === null
-      ? 'v1.0'
-      : String(values.maxUpliftVersion).trim()
   return {
     id: scenario.id,
     name: scenario.name,
@@ -196,7 +192,6 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     oasysAssessmentPk: values.oasysAssessmentPk || '',
     sentencePlanVersion,
     sanAssessmentVersion,
-    maxUpliftVersion,
     displayNeeds: transformToDisplayNeeds(values),
     isCustom,
     rawScenario: scenario,
