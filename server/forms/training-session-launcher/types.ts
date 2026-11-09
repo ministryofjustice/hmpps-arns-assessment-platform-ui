@@ -148,7 +148,7 @@ export interface ServiceOption {
 /**
  * Display version of a session with formatted values
  */
-export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion' | 'maxUpliftVersion'> & {
+export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmentVersion'> & {
   scenarioName: string
   displayNeeds: DisplayNeed[]
   givenName: string

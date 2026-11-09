@@ -173,6 +173,7 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
     values.sanAssessmentVersion === undefined || values.sanAssessmentVersion === null
       ? ''
       : String(values.sanAssessmentVersion).trim()
+
   return {
     id: scenario.id,
     name: scenario.name,
