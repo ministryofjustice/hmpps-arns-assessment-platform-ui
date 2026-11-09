@@ -22,7 +22,7 @@ import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
 import { thinkingBehavioursAndAttitudesJourney } from './journeys/thinking-behaviours-and-attitudes'
 import { isEditMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
-// import { offenceAnalysisJourney } from './journeys/offence-analysis'
+import { offenceAnalysisJourney } from './journeys/offence-analysis'
 import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
@@ -111,6 +111,6 @@ export const strengthsAndNeedsV2Journey = journey({
     healthWellbeingJourney,
     personalRelationshipsJourney,
     thinkingBehavioursAndAttitudesJourney,
-    // offenceAnalysisJourney,
+    offenceAnalysisJourney,
   ],
 })
