@@ -49,6 +49,20 @@ jobs:
       upload_image_artifact: true
       image_artifact_retention_days: 1
 
+  pact_test:
+    permissions:
+      contents: read
+      id-token: write
+    name: Pact Consumer Tests and Publish Contracts
+    needs: build_docker
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_node_test_publish.yml@feat/pact-node-consumer-publish
+    with:
+      app_version: ${{ needs.build_docker.outputs.app_version }}
+      webhook_name: hmpps-assess-risks-and-needs
+      webhook_id: dHJlZWZld2Vyd2luZGJv
+      webhook_provider_repository: 'ministryofjustice/hmpps-assess-risks-and-needs'
+    secrets: inherit
+
   e2e_test:
     name: E2E tests
     needs: [build_docker]

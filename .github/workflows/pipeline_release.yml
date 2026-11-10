@@ -49,6 +49,16 @@ jobs:
       docker_multiplatform: true
       upload_image_artifact: true
 
+  pact_test:
+    permissions:
+      contents: read
+    name: Pact Consumer Tests and Publish Contracts
+    needs: build_docker
+    uses: ./.github/workflows/pact_test_publish.yml
+    with:
+      app_version: ${{ needs.build_docker.outputs.app_version }}
+    secrets: inherit
+
   e2e_test:
     name: E2E tests
     needs: [build_docker]
@@ -65,6 +75,7 @@ jobs:
       - node_build
       - node_unit_tests
       - e2e_test
+      - pact_test
       - build_docker
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_push.yml@v2
     with:
@@ -79,22 +90,24 @@ jobs:
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'dev'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true
 
   deploy_test:
     name: Deploy to the test environment
     needs:
       - build_docker
       - publish_docker
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'test'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true
 
   deploy_preprod:
     name: Deploy to the pre-production environment
@@ -102,11 +115,12 @@ jobs:
       - build_docker
       - deploy_dev
       - deploy_test
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'preprod'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true
 
   deploy_prod:
     name: Deploy to the production environment
@@ -114,8 +128,9 @@ jobs:
     needs:
       - build_docker
       - deploy_preprod
-    uses: ministryofjustice/hmpps-github-actions/.github/workflows/deploy_env.yml@v2
+    uses: ministryofjustice/hmpps-github-actions/.github/workflows/pact_deploy_env.yml@v2
     secrets: inherit
     with:
       environment: 'prod'
       app_version: '${{ needs.build_docker.outputs.app_version }}'
+      pact_consumer_deployment: true

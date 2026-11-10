@@ -1,5 +1,8 @@
 import { InternalServerError, NotFound } from 'http-errors'
 import { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
+import { User } from '../../../../interfaces/user'
+import { AssessmentIdentifiers } from '../../../../interfaces/aap-api/identifier'
+import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 
 /**
  * Soft-deleting an OASys assessment marks its Coordinator association as deleted. A CRN lookup goes straight to the
@@ -34,11 +37,7 @@ export const loadPlan = (deps: SentencePlanEffectsDeps) => async (context: Sente
     throw new InternalServerError('Plan identifier is required in session details')
   }
 
-  const assessment = await deps.api.executeQuery({
-    type: 'AssessmentVersionQuery',
-    user,
-    assessmentIdentifier: sessionDetails.planIdentifier,
-  })
+  const assessment = await assessmentVersionQuery(deps, user, sessionDetails.planIdentifier)
 
   if (!assessment) {
     throw new NotFound('Sentence plan not found')
@@ -55,4 +54,16 @@ export const loadPlan = (deps: SentencePlanEffectsDeps) => async (context: Sente
   if (session.caseDetails) {
     context.setData('caseData', session.caseDetails)
   }
+}
+
+export const assessmentVersionQuery = async (
+  deps: SentencePlanEffectsDeps,
+  user: User,
+  planIdentifier: AssessmentIdentifiers,
+): Promise<AssessmentVersionQueryResult> => {
+  return await deps.api.executeQuery({
+    type: 'AssessmentVersionQuery',
+    user,
+    assessmentIdentifier: planIdentifier,
+  })
 }
