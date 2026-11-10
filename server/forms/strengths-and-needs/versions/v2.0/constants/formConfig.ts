@@ -12,6 +12,8 @@ import { offenceAnalysisSection } from '../journeys/offence-analysis/section'
 import { Section } from './section'
 
 const sectionStatusKeys = Object.values(Section).map(section => section.statusKey)
+// TODO ACT-855 Change this to an actual live date ( once it is defined )
+const goLiveDate: string = '01/02/2027'
 
 /**
  * Built independently of the journey/effects module graph so it can be
@@ -33,5 +35,6 @@ export const v2FormConfig = {
       offenceAnalysisSection,
     ],
     sectionStatusKeys,
+    goLiveDate,
   ),
 }
