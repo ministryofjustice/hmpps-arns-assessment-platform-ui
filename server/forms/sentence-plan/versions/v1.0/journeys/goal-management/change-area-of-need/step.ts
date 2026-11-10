@@ -1,7 +1,7 @@
 import { access, Answer, Data, Format, redirect, step, submit } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, areaOfNeedField, continueButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
-import { redirectIfGoalNotFound } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Change area of need page
@@ -29,6 +29,7 @@ export const changeAreaOfNeedStep = step({
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [

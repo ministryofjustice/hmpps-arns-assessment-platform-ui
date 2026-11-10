@@ -239,11 +239,14 @@ export interface GoalUpdatedHistoryEntry extends GoalEventContext {
  *
  * The frontend-context call bundles the phase, appointment allowance and next
  * appointment in one response, so a single derived type covers the whole
- * supervision package. The method can return null (no package yet), so unwrap it.
+ * supervision package. The method can return null (no package yet) or, for a 500,
+ * an `outcome: 'error'` object — only the success branch is package details.
  */
-export type SupervisionPackageDetails = NonNullable<
+type SupervisionPackageFrontendContextResponse = NonNullable<
   Awaited<ReturnType<MPoPComponents['getSupervisionPackageFrontendContext']>>
 >
+
+export type SupervisionPackageDetails = Extract<SupervisionPackageFrontendContextResponse, { outcome: 'success' }>
 
 export type TierDetailsResponse = Awaited<ReturnType<MPoPComponents['getTierDetails']>>
 export type TierCalculation = TierDetailsResponse['calculation']
@@ -340,6 +343,8 @@ export interface StepChanges {
   toDelete: string[]
   /** UUID of the STEPS collection (if goal already has one) */
   collectionUuid?: string
+  // Draft step order during reorder - applied to steps on save, discarded on cancel
+  reorderedStepsDraft?: string[]
 }
 
 /**

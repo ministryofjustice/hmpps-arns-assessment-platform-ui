@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, oneDayAgoMs } from '../sentencePlanUtils'
 import UpdateGoalAndStepsPage from '../../../pages/sentencePlan/updateGoalAndStepsPage'
 
 test.describe('Plan History - Created Goals', () => {
@@ -24,7 +24,7 @@ test.describe('Plan History - Created Goals', () => {
         {
           status: 'AGREED',
           createdBy: 'Test Practitioner',
-          dateOffset: -86400000, // 1 day ago
+          dateOffset: oneDayAgoMs,
         },
       ])
       .save()

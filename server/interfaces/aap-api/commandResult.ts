@@ -41,7 +41,6 @@ export interface CommandResultMap {
   CreateAssessmentCommand: CreateAssessmentCommandResult
   CreateCollectionCommand: CreateCollectionCommandResult
   AddCollectionItemCommand: AddCollectionItemCommandResult
-  GroupCommand: GroupCommandResult
 }
 
 /**

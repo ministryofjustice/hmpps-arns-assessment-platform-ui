@@ -14,7 +14,7 @@ import {
 import { pageLayout } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { hasPostAgreementStatus, redirectIfGoalNotFound } from '../../../guards'
+import { hasPostAgreementStatus, redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Change Goal page
@@ -57,6 +57,7 @@ export const changeGoalStep = step({
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [

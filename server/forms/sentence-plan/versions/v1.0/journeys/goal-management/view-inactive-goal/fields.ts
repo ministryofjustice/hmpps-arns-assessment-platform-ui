@@ -7,14 +7,9 @@ import {
   Iterator,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {
-  GovUKDetails,
-  GovUKTag,
-  GovUKLinkButton,
-  GovUKHeading,
-  GovUKBody,
-} from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKDetails, GovUKLinkButton, GovUKHeading, GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { TemplateWrapper, CollectionBlock } from '@ministryofjustice/hmpps-forge/core/components'
+import { statusTag } from '../sharedFields'
 
 /**
  * Shared fields for viewing inactive goals (achieved or removed)
@@ -95,32 +90,7 @@ export const reviewStepsTable = TemplateWrapper({
                 description: Item().path('description').pipe(Transformer.String.EscapeHtml()),
               },
               slots: {
-                statusField: [
-                  GovUKTag({
-                    text: 'Not started',
-                    classes: 'govuk-tag--grey',
-                    visibleWhen: Item().path('status').match(Condition.Equals('NOT_STARTED')),
-                  }),
-                  GovUKTag({
-                    text: 'In progress',
-                    visibleWhen: Item().path('status').match(Condition.Equals('IN_PROGRESS')),
-                  }),
-                  GovUKTag({
-                    text: 'Completed',
-                    classes: 'govuk-tag--green',
-                    visibleWhen: Item().path('status').match(Condition.Equals('COMPLETED')),
-                  }),
-                  GovUKTag({
-                    text: 'Cannot be done yet',
-                    classes: 'govuk-tag--purple',
-                    visibleWhen: Item().path('status').match(Condition.Equals('CANNOT_BE_DONE_YET')),
-                  }),
-                  GovUKTag({
-                    text: 'No longer needed',
-                    classes: 'govuk-tag--yellow',
-                    visibleWhen: Item().path('status').match(Condition.Equals('NO_LONGER_NEEDED')),
-                  }),
-                ],
+                statusField: statusTag,
               },
             }),
           ),

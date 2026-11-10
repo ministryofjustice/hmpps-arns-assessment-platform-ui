@@ -2,7 +2,7 @@ import config from '../../../config'
 import { CreateHandoverLinkRequest } from '../../../interfaces/handover-api/request'
 import { OasysCreateRequest } from '../../../interfaces/coordinator-api/oasysCreate'
 import { TrainingScenarioFlag } from '../constants'
-import { ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
+import { PartialScenarioValues, ScenarioFieldKey, getFieldsByGroup } from '../scenarios'
 import { randomOasysAssessmentPk } from '../scenarios/helpers'
 import { TrainingSessionLauncherContext, Session, TargetApplication } from '../types'
 import { TrainingSessionLauncherEffectsDeps } from '../effects/types'
@@ -171,14 +171,21 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
 }
 
 /**
- * Get all fields that should be excluded based on flags.
+ * Get all fields that should be excluded based on flags and the scenario's fixed values.
  * Excluded fields remain undefined (not fixed, not randomized).
  *
- * By default, criminogenic needs fields are excluded.
- * The SAN_PRIVATE_BETA flag includes them.
+ * Criminogenic needs fields are excluded only when the SAN_PRIVATE_BETA flag is off and the
+ * scenario has turned the mocked criminogenic needs off. Built-in presets never fix that
+ * setting, so they always get needs.
  */
-export function getExcludedFields(flags: TrainingScenarioFlag[]): Set<ScenarioFieldKey> {
-  if (flags.includes('SAN_PRIVATE_BETA')) {
+export function getExcludedFields(
+  flags: TrainingScenarioFlag[],
+  fixedValues: PartialScenarioValues = {},
+): Set<ScenarioFieldKey> {
+  // A scenario that never set the mocks setting counts as on
+  const mocksTurnedOff = fixedValues.useMockedCriminogenicNeeds === 'NO'
+
+  if (flags.includes('SAN_PRIVATE_BETA') || !mocksTurnedOff) {
     return new Set<ScenarioFieldKey>()
   }
 

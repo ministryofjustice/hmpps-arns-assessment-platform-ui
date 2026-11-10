@@ -10,14 +10,30 @@ import { getRequiredEffectContext } from '../goals/goalUtils'
 export const loadHistoricPlan = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
   const { user, assessmentUuid } = getRequiredEffectContext(context, 'loadHistoricPlan')
 
-  const pointInTime = new Date(Number(context.getRequestParam('timestamp')))
+  const timestamp = context.getRequestParam('timestamp')
 
-  const assessment = await deps.api.executeQuery({
-    type: 'AssessmentVersionQuery',
-    user,
-    assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
-    timestamp: pointInTime.toISOString().replace('Z', '999Z'),
-  })
+  const pointInTime = new Date(Number(timestamp))
+
+  /**
+   * Reject missing or invalid timestamps with a 404.
+   */
+  if (!timestamp || !Number.isFinite(pointInTime.getTime())) {
+    throw new NotFound('Historic sentence plan not found')
+  }
+
+  const assessment = await deps.api
+    .executeQuery({
+      type: 'AssessmentVersionQuery',
+      user,
+      assessmentIdentifier: { type: 'UUID', uuid: assessmentUuid },
+      timestamp: pointInTime.toISOString().replace('Z', '999Z'),
+    })
+    .catch(error => {
+      if (error?.responseStatus === 400) {
+        throw new NotFound('Historic sentence plan not found')
+      }
+      throw error
+    })
 
   if (!assessment) {
     throw new NotFound('Historic sentence plan not found')

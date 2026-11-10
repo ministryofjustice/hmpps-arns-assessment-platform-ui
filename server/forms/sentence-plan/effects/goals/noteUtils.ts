@@ -1,7 +1,7 @@
 import { User } from '../../../../interfaces/user'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { DerivedGoal, SentencePlanEffectsDeps } from '../types'
+import { DerivedGoal } from '../types'
 
 /**
  * Note types used in goal lifecycle events
@@ -9,71 +9,64 @@ import { DerivedGoal, SentencePlanEffectsDeps } from '../types'
 export type NoteType = 'READDED' | 'REMOVED' | 'ACHIEVED'
 
 /**
- * Get existing notes collection UUID or create one if it doesn't exist.
+ * Build the commands to add a note to a goal, for use inside a single command batch.
  *
- * Used by effects that need to add notes to a goal (remove, achieve, re-add, progress).
- */
-export const getOrCreateNotesCollection = async (
-  deps: SentencePlanEffectsDeps,
-  params: {
-    activeGoal: DerivedGoal
-    assessmentUuid: string
-    user: User
-  },
-): Promise<string> => {
-  const { activeGoal, assessmentUuid, user } = params
-
-  if (activeGoal.notesCollectionUuid) {
-    return activeGoal.notesCollectionUuid
-  }
-
-  const createResult = await deps.api.executeCommand({
-    type: 'CreateCollectionCommand',
-    name: 'NOTES',
-    parentCollectionItemUuid: activeGoal.uuid,
-    assessmentUuid,
-    user,
-  })
-
-  return createResult.collectionUuid
-}
-
-/**
- * Build a command to add a note to a goal's notes collection.
+ * When the goal has no NOTES collection yet, a CreateCollectionCommand is included first and
+ * the note points at it with an "@N" placeholder, which the API swaps for the new collection's
+ * UUID. This keeps the collection and the note in the same batch, so both save or neither does.
  *
- * @param params.collectionUuid - UUID of the NOTES collection
+ * Used by effects that add notes to a goal (remove, achieve, re-add, progress).
+ *
+ * @param params.activeGoal - The goal the note belongs to
+ * @param params.batchIndex - Position in the batch where these commands will start
  * @param params.noteText - The note content (will be trimmed)
  * @param params.noteType - Optional type (READDED, REMOVED, ACHIEVED)
  * @param params.createdBy - Practitioner name
  * @param params.assessmentUuid - Assessment UUID
  * @param params.user - Current user
  */
-export const buildAddNoteCommand = (params: {
-  collectionUuid: string
+export const buildAddNoteCommands = (params: {
+  activeGoal: DerivedGoal
+  batchIndex: number
   noteText: string
   noteType?: NoteType
   createdBy: string
   assessmentUuid: string
   user: User
-}): Commands => {
-  const { collectionUuid, noteText, noteType, createdBy, assessmentUuid, user } = params
+}): Commands[] => {
+  const { activeGoal, batchIndex, noteText, noteType, createdBy, assessmentUuid, user } = params
 
-  return {
-    type: 'AddCollectionItemCommand',
-    collectionUuid,
-    properties: wrapAll({
-      created_at: new Date().toISOString(),
-      ...(noteType && { type: noteType }),
-    }),
-    answers: wrapAll({
-      note: noteText.trim(),
-      created_by: createdBy,
-    }),
-    timeline: {
-      type: 'NOTE_ADDED',
-      data: {},
+  const createCollectionCommands: Commands[] = activeGoal.notesCollectionUuid
+    ? []
+    : [
+        {
+          type: 'CreateCollectionCommand',
+          name: 'NOTES',
+          parentCollectionItemUuid: activeGoal.uuid,
+          assessmentUuid,
+          user,
+        },
+      ]
+
+  return [
+    ...createCollectionCommands,
+    {
+      type: 'AddCollectionItemCommand',
+      collectionUuid: activeGoal.notesCollectionUuid ?? `@${batchIndex}`,
+      properties: wrapAll({
+        created_at: new Date().toISOString(),
+        ...(noteType && { type: noteType }),
+      }),
+      answers: wrapAll({
+        note: noteText.trim(),
+        created_by: createdBy,
+      }),
+      timeline: {
+        type: 'NOTE_ADDED',
+        data: {},
+      },
+      assessmentUuid,
+      user,
     },
-    assessmentUuid,
-    user,
-  }
+  ]
 }

@@ -3,7 +3,7 @@ import { DerivedGoal, SentencePlanContext, SentencePlanEffectsDeps } from '../ty
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Commands } from '../../../../interfaces/aap-api/command'
 import { getRequiredEffectContext, calculateTargetDate, determineGoalStatus, getPractitionerName } from './goalUtils'
-import { getOrCreateNotesCollection, buildAddNoteCommand } from './noteUtils'
+import { buildAddNoteCommands } from './noteUtils'
 import { snapshotFromGoal } from './goalSnapshot'
 import { trackBusinessEvent } from '../telemetry/trackBusinessEvent'
 import { publishGoalsAddedEvent } from '../domain-events/publishGoalsDomainEvent'
@@ -100,11 +100,10 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
 
   // 2. Add re-add note if provided
   if (readdNote && typeof readdNote === 'string' && readdNote.trim().length > 0) {
-    const collectionUuid = await getOrCreateNotesCollection(deps, { activeGoal, assessmentUuid, user })
-
     commands.push(
-      buildAddNoteCommand({
-        collectionUuid,
+      ...buildAddNoteCommands({
+        activeGoal,
+        batchIndex: commands.length,
         noteText: readdNote,
         noteType: 'READDED',
         createdBy: practitionerName,
@@ -114,14 +113,7 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
     )
   }
 
-  // Execute all commands in a single batch
-  if (commands.length > 0) {
-    await deps.api.executeCommands(...commands)
-  }
-
-  trackBusinessEvent(context, 'READD_GOAL_PAGE_SUBMITTED', { assessmentUuid, goalUuid: activeGoal.uuid })
-
-  // Move goal to bottom of the list
+  // 3. Move goal to bottom of the list
   const goals = context.getData('goals') as DerivedGoal[]
 
   if (goals && goals.length > 1) {
@@ -129,7 +121,7 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
 
     // Only reorder if the goal isn't already at the bottom
     if (activeGoal.collectionIndex < maxCollectionIndex) {
-      await deps.api.executeCommand({
+      commands.push({
         type: 'ReorderCollectionItemCommand',
         collectionItemUuid: activeGoal.uuid,
         index: maxCollectionIndex,
@@ -138,6 +130,13 @@ export const readdGoalToPlan = (deps: SentencePlanEffectsDeps) => async (context
       })
     }
   }
+
+  // Execute all commands in a single batch
+  if (commands.length > 0) {
+    await deps.api.executeCommands(...commands)
+  }
+
+  trackBusinessEvent(context, 'READD_GOAL_PAGE_SUBMITTED', { assessmentUuid, goalUuid: activeGoal.uuid })
 
   await publishGoalsAddedEvent(deps, context, activeGoal.uuid)
 }

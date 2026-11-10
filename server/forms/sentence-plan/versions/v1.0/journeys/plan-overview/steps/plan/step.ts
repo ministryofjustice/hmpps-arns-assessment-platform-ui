@@ -30,7 +30,13 @@ import {
 } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
-import { hasPostAgreementStatus, isOasysAccess, isPrintAndShareEnabled, isReadOnlyAccess } from '../../../../guards'
+import {
+  hasAtLeastOneActiveGoal,
+  hasPostAgreementStatus,
+  isOasysAccess,
+  isPrintAndShareEnabled,
+  isReadOnlyAccess,
+} from '../../../../guards'
 
 /**
  * True when at least one goal appears in a tab a draft plan can show.
@@ -53,6 +59,7 @@ const showPrintAllGoalsButton = and(isPrintAndShareEnabled, or(hasPostAgreementS
 export const planStep = step({
   path: '/overview',
   title: 'Plan',
+  code: 'plan-overview',
   view: {
     locals: {
       headerPageHeading: Format(`%1 plan`, CaseData.ForenamePossessive),
@@ -68,7 +75,7 @@ export const planStep = step({
   },
   validWhen: [
     validation({
-      condition: Data('goals').each(Iterator.Some(Item().path('status').match(Condition.Equals('ACTIVE')))),
+      condition: hasAtLeastOneActiveGoal,
       message: 'To agree the plan, create a goal to work on now',
       details: { href: '#blank-plan-content' },
     }),
@@ -112,11 +119,7 @@ export const planStep = step({
       ],
     }),
     access({
-      effects: [
-        SentencePlanEffects.loadPlanTimeline(),
-        SentencePlanEffects.derivePlanLastUpdated(),
-        SentencePlanEffects.loadNotifications('plan-overview'),
-      ],
+      effects: [SentencePlanEffects.loadPlanTimeline(), SentencePlanEffects.derivePlanLastUpdated()],
       next: [
         redirect({
           when: Query('goalStatusTab').not.match(Condition.Array.IsIn(['current', 'future', 'achieved', 'removed'])),
@@ -125,8 +128,12 @@ export const planStep = step({
       ],
     }),
     // Audited after the tab redirect so a request without a tab is only recorded once, on the redirected page.
+    // Load notification to final render req to ensure the redirect above doesn't consume and clear notification before it could be seen
     access({
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') })],
+      effects: [
+        SentencePlanEffects.loadNotifications('plan-overview'),
+        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_OVERVIEW, { tab: Query('goalStatusTab') }),
+      ],
     }),
   ],
   onSubmission: [

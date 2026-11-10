@@ -35,4 +35,3 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: $RELEASE_NAME
-  alertSeverity: hmpps-arns-non-prod

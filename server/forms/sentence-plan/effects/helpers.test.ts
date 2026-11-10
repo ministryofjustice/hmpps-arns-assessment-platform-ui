@@ -41,11 +41,10 @@ describe('canAccessSanInfo()', () => {
     expect(canAccessSanInfo(context)).toBe(false)
   })
 
-  it('should return true when access is MPoP but the assessment-info feature flag is enabled', () => {
+  it('should return true when access is MPoP and the assessment has SAN_BETA flag and a CRN', () => {
     const context = createMockContext({
       data: {
         assessment: { flags: ['SAN_BETA'] },
-        featureFlags: { mpopAssessmentInfoEnabled: true },
       },
       session: { sessionDetails: { accessType: 'HMPPS_AUTH' }, caseDetails: { crn: 'X123456' } },
     })

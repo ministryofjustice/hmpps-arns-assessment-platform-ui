@@ -47,7 +47,7 @@ describe(`GET ${PRINT_PREVIEW_PDF_PATH}`, () => {
       .set('Cookie', [`${SESSION_COOKIE_NAME}=session-value`, 'other-cookie=not-forwarded'])
       .expect(200)
       .expect('Content-Type', 'application/pdf')
-      .expect('Content-Disposition', 'attachment; filename="sentence-plan.pdf"')
+      .expect('Content-Disposition', 'attachment; filename=sentence-plan.pdf')
 
     expect(response.body).toEqual(pdf)
     expect(renderPdfFromUrl).toHaveBeenCalledWith({

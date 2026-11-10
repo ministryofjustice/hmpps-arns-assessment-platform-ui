@@ -91,20 +91,18 @@ test.describe('About Person Tab', () => {
       await navigateToPlanOverviewViaMpop(page, crn)
     })
 
-    test('hides About tab in primary navigation', async ({ page }) => {
-      // The About nav item is omitted server-side in MPoP, so assert it is absent from the DOM.
+    test('show About tab in primary navigation', async ({ page }) => {
       const primaryNavigation = page.getByLabel('Primary navigation')
-      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toHaveCount(0)
+      await expect(primaryNavigation.getByRole('link', { name: /^About /i })).toBeVisible()
     })
 
-    test('redirects to plan overview when visiting About page directly', async ({ page }) => {
+    test('redirects to "About" page when visiting About page directly', async ({ page }) => {
       await page.goto(sentencePlanV1URLs.ABOUT_PERSON)
-      await expect(page).toHaveURL(/\/plan\/overview/)
+      await expect(page).toHaveURL(/\/about-person/)
     })
 
-    test('hides "view information from assessment" link on plan overview', async ({ page }) => {
-      // The assessment-info link is omitted server-side in MPoP, so assert it is absent from the DOM.
-      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toHaveCount(0)
+    test('show "view information from assessment" link on plan overview', async ({ page }) => {
+      await expect(page.getByRole('link', { name: /view information from .+'s assessment/i })).toBeVisible()
     })
   })
 

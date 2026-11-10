@@ -4,14 +4,13 @@ import {
   step,
   submit,
   Post,
-  when,
   Query,
   Format,
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
-import { redirectToOverviewIfReadOnly } from '../../../../guards'
+import { redirectToOverviewIfReadOnly, redirectUnlessAllActiveGoalsHaveSteps } from '../../../../guards'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
@@ -20,13 +19,12 @@ export const agreePlanStep = step({
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
-      backlink: when(Query('goalStatusTab').match(Condition.IsRequired()))
-        .then(Format('overview?goalStatusTab=%1', Query('goalStatusTab')))
-        .else('overview?goalStatusTab=current'),
+      backlink: Format('overview?goalStatusTab=%1', Query('goalStatusTab').nullish('current')),
     },
   },
   onAccess: [
     redirectToOverviewIfReadOnly(),
+    redirectUnlessAllActiveGoalsHaveSteps('overview'),
     access({
       effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_PLAN_AGREEMENT)],
     }),

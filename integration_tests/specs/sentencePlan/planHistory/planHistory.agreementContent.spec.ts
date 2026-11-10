@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, oneDayAgoMs } from '../sentencePlanUtils'
 
 test.describe('Plan History - Agreement event expanded content', () => {
   async function navigateToPlanHistory(page, handoverLink) {
@@ -98,7 +98,7 @@ test.describe('Plan History - Agreement event expanded content', () => {
         .extend(sentencePlanId)
         .withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
         .withPlanAgreements([
-          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: -86400000 },
+          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: oneDayAgoMs },
           { status: 'UPDATED_AGREED', createdBy: 'Test Practitioner', dateOffset: 0 },
         ])
         .save()
@@ -178,7 +178,7 @@ test.describe('Plan History - Agreement event expanded content', () => {
         .extend(sentencePlanId)
         .withGoal({ title: 'Test goal', areaOfNeed: 'accommodation', status: 'ACTIVE' })
         .withPlanAgreements([
-          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: -86400000 },
+          { status: 'COULD_NOT_ANSWER', createdBy: 'Test Practitioner', dateOffset: oneDayAgoMs },
           {
             status: 'UPDATED_DO_NOT_AGREE',
             detailsNo: `Person doesn't agree`,

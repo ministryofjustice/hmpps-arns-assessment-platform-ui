@@ -7,6 +7,8 @@ export default class AddStepsPage extends AbstractPage {
 
   readonly addStepButton: Locator
 
+  readonly reorderStepsButton: Locator
+
   readonly saveAndContinueButton: Locator
 
   readonly backLink: Locator
@@ -19,6 +21,7 @@ export default class AddStepsPage extends AbstractPage {
     super(page)
     this.pageHeading = page.locator('h1')
     this.addStepButton = page.getByRole('button', { name: /add another step/i })
+    this.reorderStepsButton = page.getByRole('button', { name: /reorder steps/i })
     this.saveAndContinueButton = page.getByRole('button', { name: /save and continue/i })
     this.backLink = page.locator('.govuk-back-link')
     this.goalContextInset = page.locator('.govuk-inset-text').filter({ hasText: 'Area of need' })
@@ -69,6 +72,10 @@ export default class AddStepsPage extends AbstractPage {
 
   async clickAddStep(): Promise<void> {
     await this.addStepButton.click()
+  }
+
+  async clickReorderSteps(): Promise<void> {
+    await this.reorderStepsButton.click()
   }
 
   async clickRemoveStep(index: number): Promise<void> {

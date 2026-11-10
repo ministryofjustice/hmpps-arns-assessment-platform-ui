@@ -130,7 +130,7 @@
               html: goalCard.textWithGoalContext("Move goal up", params.goalTitle) | trim,
               href: params.moveUpHref,
               classes: "govuk-button--secondary",
-              attributes: { "data-qa": "move-goal-up", "data-ai-id": "goal-reorder-up-button" }
+              attributes: { "data-qa": "move-goal-up", "data-ai-id": "goal-reorder-up-button", "data-scroll-restore-focus": ".goal-list__item", "data-scroll-restore-offset": "-1" }
             }) }}
           {% endif %}
           {% if params.showMoveDown and params.moveDownHref %}
@@ -138,7 +138,7 @@
               html: goalCard.textWithGoalContext("Move goal down", params.goalTitle) | trim,
               href: params.moveDownHref,
               classes: "govuk-button--secondary",
-              attributes: { "data-qa": "move-goal-down", "data-ai-id": "goal-reorder-down-button" }
+              attributes: { "data-qa": "move-goal-down", "data-ai-id": "goal-reorder-down-button", "data-scroll-restore-focus": ".goal-list__item", "data-scroll-restore-offset": "1" }
             }) }}
           {% endif %}
         </div>

@@ -32,7 +32,7 @@ generic-service:
     HMPPS_AUTH_URL: 'https://sign-in.hmpps.service.justice.gov.uk/auth'
     HMPPS_ARNS_HANDOVER_URL: 'https://arns-handover-service.hmpps.service.justice.gov.uk'
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api.prison.service.justice.gov.uk'
-    AAP_API_URL: 'https://arns-assessment-platform-api.hmpps.service.justice.gov.uk'
+    AAP_API_URL: 'http://hmpps-arns-assessment-platform-api.hmpps-arns-assessment-platform-prod.svc.cluster.local'
     COORDINATOR_API_URL: 'https://arns-coordinator-api.hmpps.service.justice.gov.uk'
     DELIUS_API_URL: 'https://sentence-plan-and-delius.hmpps.service.justice.gov.uk'
     ARNS_API_URL: 'https://assess-risks-and-needs.hmpps.service.justice.gov.uk'
@@ -59,4 +59,3 @@ generic-service:
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
-  alertSeverity: hmpps-arns-assessment-platform-prod

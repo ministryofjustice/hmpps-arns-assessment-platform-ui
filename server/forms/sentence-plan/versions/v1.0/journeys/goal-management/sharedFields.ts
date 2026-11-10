@@ -1,18 +1,25 @@
 import {
-  or,
   Answer,
+  Condition,
   Data,
   Format,
+  Generator,
   Item,
   Iterator,
+  or,
   Self,
-  validation,
-  Condition,
   Transformer,
-  Generator,
+  validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKRadioInput, GovUKCheckboxInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  GovUKCheckboxInput,
+  GovUKInsetText,
+  GovUKRadioInput,
+  GovUKTag,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { MOJDatePicker } from '@ministryofjustice/hmpps-forge/moj-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { CaseData } from '../../constants'
 
 export const relatedAreasOfNeed = GovUKCheckboxInput({
@@ -211,4 +218,71 @@ export const canStartNow = GovUKRadioInput({
       message: 'Select yes if they can start working on this goal now',
     }),
   ],
+})
+
+// Step status tags
+export const statusTag = [
+  GovUKTag({
+    text: 'Not started',
+    classes: 'govuk-tag--grey',
+    visibleWhen: Item().path('status').match(Condition.Equals('NOT_STARTED')),
+  }),
+  GovUKTag({
+    text: 'In progress',
+    visibleWhen: Item().path('status').match(Condition.Equals('IN_PROGRESS')),
+  }),
+  GovUKTag({
+    text: 'Completed',
+    classes: 'govuk-tag--green',
+    visibleWhen: Item().path('status').match(Condition.Equals('COMPLETED')),
+  }),
+  GovUKTag({
+    text: 'Cannot be done yet',
+    classes: 'govuk-tag--pink',
+    visibleWhen: Item().path('status').match(Condition.Equals('CANNOT_BE_DONE_YET')),
+  }),
+  GovUKTag({
+    text: 'No longer needed',
+    classes: 'govuk-tag--yellow',
+    visibleWhen: Item().path('status').match(Condition.Equals('NO_LONGER_NEEDED')),
+  }),
+]
+
+/**
+ * Inset text block summarising the goal context
+ *
+ * Shows:
+ * - Area of need (in bold)
+ * - Also relates to (only when the goal is related to other areas)
+ * - Goal text
+ *
+ * Area of need and "Also relates to" share a single paragraph (with a <br>)
+ * so the lines are adjacent — only "Goal" sits in its own paragraph below.
+ */
+export const areaOfNeedText = Data('activeGoal.areaOfNeedLabel').pipe(
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+export const relatedAreasOfNeedText = Data('activeGoal.relatedAreasOfNeedLabels').pipe(
+  Transformer.Array.Sort(),
+  Transformer.Array.Join(', '),
+  Transformer.String.ToLowerCase(),
+  Transformer.String.EscapeHtml(),
+)
+
+export const areaBlockContent = when(Data('activeGoal.relatedAreasOfNeedLabels').match(Condition.IsRequired()))
+  .then(
+    Format('<p>Area of need: <strong>%1</strong><br>Also relates to: %2</p>', areaOfNeedText, relatedAreasOfNeedText),
+  )
+  .else(Format('<p>Area of need: <strong>%1</strong></p>', areaOfNeedText))
+
+export const goalBlockContent = Format(
+  '<p>Goal: %1</p>',
+  Data('activeGoal.title').pipe(Transformer.String.EscapeHtml()),
+)
+
+export const goalContextInsetText = GovUKInsetText({
+  classes: 'govuk-!-margin-top-2',
+  blocks: [HtmlBlock({ content: areaBlockContent }), HtmlBlock({ content: goalBlockContent })],
 })

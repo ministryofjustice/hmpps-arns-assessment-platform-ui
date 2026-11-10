@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import PlanHistoryPage from '../../../pages/sentencePlan/planHistoryPage'
-import { handlePrivacyScreenIfPresent } from '../sentencePlanUtils'
+import { handlePrivacyScreenIfPresent, oneDayAgoMs } from '../sentencePlanUtils'
 
 test.describe('Plan History - Agreements', () => {
   test.describe('Could not answer then agreed scenario', () => {
@@ -25,7 +25,7 @@ test.describe('Plan History - Agreements', () => {
             status: 'COULD_NOT_ANSWER',
             createdBy: 'Initial Practitioner',
             detailsCouldNotAnswer: 'Person was not available to discuss the plan',
-            dateOffset: -86400000, // 1 day ago (older)
+            dateOffset: oneDayAgoMs,
           },
           {
             status: 'UPDATED_AGREED',

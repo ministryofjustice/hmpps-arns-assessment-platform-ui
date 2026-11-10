@@ -7,6 +7,7 @@ import {
   match,
   Post,
   redirect,
+  Request,
   step,
   submit,
   when,
@@ -15,7 +16,7 @@ import {
 import { pageLayout } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
-import { redirectIfGoalNotFound } from '../../../guards'
+import { redirectIfGoalNotFound, redirectUnlessGoalIsActiveOrFuture } from '../../../guards'
 
 /**
  * Add Steps page
@@ -66,11 +67,22 @@ export const addStepsStep = step({
         SentencePlanEffects.setActiveGoalContext(),
         SentencePlanEffects.setAreaDataFromActiveGoal(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.initializeStepEditSession(),
+      ],
+    }),
+
+    // Fresh visits only (GET) — add, remove and validation reloads are POSTs.
+    access({
+      when: Request.Method().match(Condition.Equals('GET')),
+      effects: [
+        SentencePlanEffects.discardStepEditSession(),
         SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_ADD_STEPS),
       ],
     }),
+    access({
+      effects: [SentencePlanEffects.initializeStepEditSession()],
+    }),
     redirectIfGoalNotFound('../../plan/overview'),
+    redirectUnlessGoalIsActiveOrFuture('../../plan/overview'),
   ],
 
   onSubmission: [
@@ -89,6 +101,38 @@ export const addStepsStep = step({
       validate: false,
       onAlways: {
         effects: [SentencePlanEffects.removeStepFromStepEditSession()],
+      },
+    }),
+
+    // Handle "Reorder steps" button after creating a new goal - save and show notification
+    submit({
+      when: and(
+        Post('action').match(Condition.Equals('reorderSteps')),
+        Data('navigationReferrer').match(Condition.Equals('add-goal')),
+      ),
+      validate: true,
+      onValid: {
+        effects: [
+          SentencePlanEffects.saveStepEditSession(),
+          SentencePlanEffects.sendAuditEvent(AuditEvent.ADD_STEPS),
+          SentencePlanEffects.addNotification({
+            type: 'success',
+            message: Format('You added a goal with steps to %1 plan', CaseData.ForenamePossessive),
+            target: 'plan-overview',
+            clearOtherNotifications: true,
+          }),
+        ],
+        next: [redirect({ goto: 'reorder-steps' })],
+      },
+    }),
+
+    // Handle "Reorder steps" button for an existing goal - save and redirect
+    submit({
+      when: Post('action').match(Condition.Equals('reorderSteps')),
+      validate: true,
+      onValid: {
+        effects: [SentencePlanEffects.saveStepEditSession(), SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_STEPS)],
+        next: [redirect({ goto: 'reorder-steps' })],
       },
     }),
 
