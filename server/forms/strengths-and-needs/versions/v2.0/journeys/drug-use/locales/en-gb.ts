@@ -51,11 +51,6 @@ export const english = {
       },
       validation: 'Select how often they’re using this drug',
     },
-    [Question.not_used_in_last_six_months_details]: {
-      text: 'Give details about %1 use of these drugs',
-      hint: 'For example, how often they used these drugs, when they stopped using, and if their use was an issue.',
-      validation: 'Enter details about their use of these drugs',
-    },
     [Question.drugs_injected]: {
       text: 'Which drugs has %1 injected?',
       hint: 'Select all that apply.',
@@ -71,7 +66,7 @@ export const english = {
       hint: 'Note any treatment or lifestyle changes that have helped them.',
     },
     [Question.drugs_anything_helped_stop_or_reduce_use_details]: {
-      validation: 'Enter details on what has/hasn\'t helped stop or reduce their drug use',
+      validation: "Enter details on what has/hasn't helped stop or reduce their drug use",
     },
     [Question.drugs_motivated_to_stop_or_reduce_use]: {
       text: 'Does %1 seem motivated to stop or reduce their drug use?',

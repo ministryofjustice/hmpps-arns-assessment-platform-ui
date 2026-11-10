@@ -4,12 +4,12 @@ import {
   ChainableExpr,
   Condition,
   Data,
-  Format, Literal,
+  Format,
+  Literal,
   not,
   or,
   Self,
   validation,
-  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
@@ -29,7 +29,6 @@ import {
   QuestionFormat,
   questionFormGroupOf,
   questionTemplate,
-  radioDetails,
   radioField,
   requiredValidationOf,
   revealedQuestion,
@@ -44,22 +43,10 @@ import { Option } from './constants/option'
 import { drugsList, fieldCodeString } from './constants'
 import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
-import {
-  characterCountField,
-  checkboxSummaryRow,
-  changeLinkActions,
-  optionalDetails,
-  requiredDetails,
-  summaryRow,
-  textSummaryRow,
-  yesNo,
-} from '../../constants/questionContent'
-import { isEditMode } from '../../guards'
+import { changeLinkActions, optionalDetails, requiredDetails, summaryRow, yesNo } from '../../constants/questionContent'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
 import { StrengthsAndNeedsConditions } from '../../../../conditions'
 
-const anyDrugUsedInLastSix = Data('drugsUsedInLastSix').match(Condition.IsRequired())
-const anyDrugUsedMoreThanSix = Data('drugsUsedMoreThanSix').match(Condition.IsRequired())
 const anyInjectableSelectedDrugs = Data('injectableSelectedDrugs').match(Condition.IsRequired())
 
 export const drugUsedInLastSixMonths = (drugValue: ChainableExpr) =>
@@ -219,10 +206,7 @@ export const drugHowOftenUsed = questionTemplate({
           },
         },
         items: content.options,
-        dependentWhen: or(
-          drugUsedInLastSixMonths(content.param),
-          drugUsedMoreThanSixMonths(content.param),
-        ),
+        dependentWhen: or(drugUsedInLastSixMonths(content.param), drugUsedMoreThanSixMonths(content.param)),
         validWhen: requiredValidationOf(content),
       }),
     collectionSummaryRow: content => ({
@@ -253,10 +237,7 @@ export const drugHowOftenUsedDetails = questionTemplate({
         formGroup: questionFormGroupOf(content.code),
         label: content.text,
         maxLength: CharacterLimit.c2000,
-        dependentWhen: or(
-          drugUsedInLastSixMonths(content.param),
-          drugUsedMoreThanSixMonths(content.param),
-        ),
+        dependentWhen: or(drugUsedInLastSixMonths(content.param), drugUsedMoreThanSixMonths(content.param)),
         validWhen: [
           validation({
             condition: Self().match(StrengthsAndNeedsConditions.HasMaxLength(CharacterLimit.c2000)),
@@ -397,7 +378,7 @@ const selectMisusedDrugs = question({
       { value: Option.solvents, text: contentFor('option.SOLVENTS') },
       { value: Option.steroids, text: contentFor('option.STEROIDS') },
       { value: Option.spice, text: contentFor('option.SPICE') },
-      { value: Option.other_drug,  text: commonContentFor('option.OTHER'), reveals: otherDrugNameRevealed },
+      { value: Option.other_drug, text: commonContentFor('option.OTHER'), reveals: otherDrugNameRevealed },
     ],
     validationMessage: contentFor('question.select_misused_drugs.validation'),
   },
@@ -414,26 +395,6 @@ const selectMisusedDrugs = question({
           }),
         ),
       },
-    }),
-  },
-})
-
-const moreThanSixMonthsDetails = question({
-  content: {
-    code: Question.not_used_in_last_six_months_details,
-    format: QuestionFormat.TEXT,
-    text: contentFor('question.not_used_in_last_six_months_details.text', CaseData.ForenamePossessive),
-    hint: contentFor('question.not_used_in_last_six_months_details.hint'),
-    validationMessage: contentFor('question.not_used_in_last_six_months_details.validation'),
-  },
-  displayModes: {
-    field: characterCountField({
-      maxLength: CharacterLimit.c2000,
-      dependentWhen: anyDrugUsedMoreThanSix,
-    }),
-    summaryRow: textSummaryRow({
-      changeHref: Step.drug_use_details.path,
-      visibleWhen: Answer(Question.not_used_in_last_six_months_details).match(Condition.IsRequired()),
     }),
   },
 })
@@ -475,20 +436,26 @@ const anythingHelpedStopOrReduce = question({
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: requiredDetails({ code: Question.drugs_anything_helped_stop_or_reduce_use_details, validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use_details.validation') }),
+        reveals: requiredDetails({
+          code: Question.drugs_anything_helped_stop_or_reduce_use_details,
+          validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use_details.validation'),
+        }),
       },
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
-        reveals: requiredDetails({ code: Question.drugs_anything_helped_stop_or_reduce_use_details, validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use_details.validation') }),
+        reveals: requiredDetails({
+          code: Question.drugs_anything_helped_stop_or_reduce_use_details,
+          validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use_details.validation'),
+        }),
       },
-    ]
+    ],
   },
   displayModes: {
     field: radioField(),
     summaryRow: summaryRow({
       visibleWhen: Answer(Question.drugs_anything_helped_stop_or_reduce_use).match(Condition.IsRequired()),
-      changeHref: Step.drug_use_reduce_use.path
+      changeHref: Step.drug_use_reduce_use.path,
     }),
   },
 })
@@ -512,7 +479,8 @@ const motivatedToStopOrReduce = question({
         text: contentFor('question.drugs_motivated_to_stop_or_reduce_use.option.FULL_MOTIVATION'),
       },
       {
-        value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN')
+        value: CommonOption.unknown,
+        text: commonContentFor('option.UNKNOWN'),
       },
     ],
     validationMessage: contentFor('question.drugs_motivated_to_stop_or_reduce_use.validation'),
@@ -725,7 +693,6 @@ export const drugUseSection = {
   questions: {
     drugUse,
     selectMisusedDrugs,
-    moreThanSixMonthsDetails,
     drugsInjected,
     anythingHelpedStopOrReduce,
     motivatedToStopOrReduce,
