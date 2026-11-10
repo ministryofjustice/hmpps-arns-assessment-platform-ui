@@ -1,23 +1,12 @@
-import {
-  Answer,
-  Condition,
-  Item,
-  Iterator,
-  Literal,
-  Transformer,
-  when,
-} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Item, Iterator, Transformer, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { SANGenerators } from '../../../../../../generators'
-import {
-  drugsLastInjected, drugUsedInLastSixMonths,
-  drugUseSection
-} from '../../section'
+import { drugsLastInjected, drugUsedInLastSixMonths, drugUseSection } from '../../section'
 import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
-import {CaseData} from "../../../../constants/formVersion";
-import {Option} from "../../constants/option";
+import { CaseData } from '../../../../constants/formVersion'
+import { Option } from '../../constants/option'
 
 const drugValueLower = Item().value().pipe(Transformer.String.ToLowerCase())
 
@@ -37,7 +26,8 @@ export const drugLastInjectedSection = TemplateWrapper({
                 heading: when(
                   Item()
                     .value()
-                    .match(Condition.Equals(Option.other_drug)))
+                    .match(Condition.Equals(Option.other_drug)),
+                )
                   .then(Answer(Question.other_drug_name).pipe(Transformer.String.EscapeHtml()))
                   .else(
                     SANGenerators.getTextFromListDefinition(
@@ -47,9 +37,7 @@ export const drugLastInjectedSection = TemplateWrapper({
                   ),
               },
               slots: {
-                fields: [
-                  drugsLastInjected.over(drugValueLower),
-                ],
+                fields: [drugsLastInjected.over(drugValueLower)],
               },
               visibleWhen: drugUsedInLastSixMonths(drugValueLower),
             }),

@@ -1,4 +1,5 @@
 import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
@@ -19,10 +20,7 @@ export const drugUseChangeUseStep = step({
       backlink: createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_use_reduce_use.path]),
     },
   },
-  blocks: [
-    drugUseSection.questions.drugUseChanges.displayModes.field,
-    saveButton,
-  ],
+  blocks: [drugUseSection.questions.drugUseChanges.displayModes.field, saveButton],
   onAccess: [auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.drug_use, Step.drug_use_change_use)],
   validWhen: [
     validation({
