@@ -14,6 +14,7 @@ import {
 import { GovUKBody, GovUKHeading, GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, HtmlBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+
 import { commonContentFor } from '../../../../locales'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
@@ -43,7 +44,7 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
   return GovUKSummaryList({
     card: {
       title: {
-        text: when(drugValue.match(Condition.Equals(CommonOption.other)))
+        text: when(drugValue.match(Condition.Equals(Option.other_drug)))
           .then(Answer(Question.other_drug_name))
           .else(
             SANGenerators.getTextFromListDefinition(
@@ -159,10 +160,6 @@ export const moreInformationHeading = GovUKHeading({
   visibleWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
 })
 
-export const drugsSummaryPartTwo = GovUKSummaryList({
-  rows: [drugUseSection.questions.moreThanSixMonthsDetails.displayModes.summaryRow],
-})
-
 export const drugsSummaryPartThree = GovUKSummaryList({
   rows: [
     drugUseSection.questions.anythingHelpedStopOrReduce.displayModes.summaryRow,
@@ -177,7 +174,6 @@ export const summary = HtmlBlock({
     usedInLastSixMonthsSummarySection,
     notUsedInLastSixMonthsSummarySection,
     moreInformationHeading,
-    drugsSummaryPartTwo,
     drugsSummaryPartThree,
   ],
 })

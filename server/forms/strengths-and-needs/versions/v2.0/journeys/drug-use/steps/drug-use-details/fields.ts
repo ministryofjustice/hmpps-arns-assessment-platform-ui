@@ -5,27 +5,25 @@ import {
   Data,
   Item,
   Iterator,
-  Literal, or,
+  Literal,
   Transformer,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKDetails, GovUKInsetText } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKDetails } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 
-import { CaseData } from '../../../../constants/formVersion'
 import { SANGenerators } from '../../../../../../generators'
 import {
   drugHowOftenUsed,
   drugHowOftenUsedDetails,
   drugUsedInLastSixMonths,
   drugUsedMoreThanSixMonths,
-  drugUseSection
+  drugUseSection,
 } from '../../section'
 import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
-import { CommonOption } from '../../../../constants/commonOption'
-import { Option } from '../../constants/option'
 import { drugsList } from '../../constants'
+import { Option } from '../../constants/option'
 
 // --- Conditions ---
 
@@ -55,7 +53,7 @@ export const usedInLastSixMonthsSection = TemplateWrapper({
                   Item()
                     .path('value')
                     .pipe(Transformer.String.EscapeHtml())
-                    .match(Condition.Equals(CommonOption.other)),
+                    .match(Condition.Equals(Option.other_drug)),
                 )
                   .then(Answer(Question.other_drug_name).pipe(Transformer.String.EscapeHtml()))
                   .else(
@@ -106,7 +104,7 @@ export const usedMoreThanSixMonthsSection = TemplateWrapper({
                   Item()
                     .path('value')
                     .pipe(Transformer.String.EscapeHtml())
-                    .match(Condition.Equals(CommonOption.other)),
+                    .match(Condition.Equals(Option.other_drug)),
                 )
                   .then(Answer(Question.other_drug_name).pipe(Transformer.String.EscapeHtml()))
                   .else(

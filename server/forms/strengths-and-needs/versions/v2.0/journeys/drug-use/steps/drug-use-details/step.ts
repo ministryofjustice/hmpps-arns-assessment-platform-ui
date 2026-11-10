@@ -1,5 +1,5 @@
 import {
-  access, Answer,
+  access,
   Condition,
   Post,
   redirect,
@@ -9,7 +9,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
-import {anyInjectedDrugUsedInLastSixMonths, drugUseSection} from '../../section'
+import { anyInjectedDrugUsedInLastSixMonths, drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
@@ -19,8 +19,6 @@ import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
-import {Question} from "../../constants/question";
-import {CommonOption} from "../../../../constants/commonOption";
 
 export const drugUseDetailsStep = step({
   path: `/${Step.drug_use_details.path}`,
