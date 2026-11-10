@@ -1,7 +1,7 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKCheckboxInput, GovUKSelectInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { sanVersionsDropdownOptions } from '../../../../scenarios/helpers'
+import { getFormVersions } from '../../../../../strengths-and-needs/constants/formConfigRegistry'
 
 /**
  * Scenario flags tab content
@@ -39,10 +39,7 @@ export const flagsTabContent = [
           code: 'maxUpliftVersion',
           label: 'Set the max uplift version',
           classes: 'govuk-radios--small',
-          items: [
-            { value: '', text: 'None' },
-            ...sanVersionsDropdownOptions.map(version => ({ value: version, text: version })),
-          ],
+          items: [{ value: '', text: 'None' }, ...getFormVersions.map(version => ({ value: version, text: version }))],
         }),
       },
       {
