@@ -119,6 +119,7 @@ export const english = {
     howOften: { text: 'How often' },
     howOftenDetails: { text: 'Details' },
     injected: { text: 'Injected' },
+    lastInjected: { text: 'Last injected' },
     more_information: 'More information',
   },
   option: {
