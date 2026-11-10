@@ -12,4 +12,5 @@ export interface HandoverContext {
   subject: HandoverSubjectDetails
   assessmentContext?: HandoverAssessmentContext
   sentencePlanContext?: HandoverSentencePlanContext
+  maxUpliftVersion?: string
 }

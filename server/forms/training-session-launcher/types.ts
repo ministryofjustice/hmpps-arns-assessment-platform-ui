@@ -76,6 +76,7 @@ export interface TrainingSessionLauncherData extends RandomizedFieldFlags {
   // Handover
   handoverLink?: string
   handoverApiFailure?: boolean
+  maxUpliftVersion?: string
 
   // Customise page
   scenario: ScenarioValues
