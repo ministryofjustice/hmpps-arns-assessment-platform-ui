@@ -2,7 +2,7 @@
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 {%- from "govuk/components/details/macro.njk" import govukDetails -%}
 
-{% set showDowntimeNotificationBanner = featureFlags.downtimeNotificationBanner and downtimeBanner %}
+{% set showDowntimeNotificationBanner = downtimeBanner %}
 
 {% set backlink = previousPageUrl %}
 {% set fullPageTitle = step.title + ' - ' + applicationName %}

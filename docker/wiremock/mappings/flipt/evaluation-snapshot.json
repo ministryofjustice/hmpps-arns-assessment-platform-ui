@@ -60,11 +60,11 @@
           "rollouts": []
         },
         {
-          "key": "sp-downtime-notification-banner",
-          "name": "sp-downtime-notification-banner",
-          "description": "Matches the application fallback",
+          "key": "sp-downtime-notification-banner-content",
+          "name": "sp-downtime-notification-banner-content",
+          "description": "Downtime banner is disabled by default",
           "enabled": false,
-          "type": "BOOLEAN_FLAG_TYPE",
+          "type": "VARIANT_FLAG_TYPE",
           "createdAt": "2026-01-01T00:00:00Z",
           "updatedAt": "2026-01-01T00:00:00Z",
           "rules": [],

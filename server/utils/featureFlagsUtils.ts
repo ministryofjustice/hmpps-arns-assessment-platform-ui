@@ -29,11 +29,6 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'supervisionPackageEnabled',
     fallbackState: false,
   },
-  DOWNTIME_NOTIFICATION_BANNER: {
-    fliptKey: 'sp-downtime-notification-banner',
-    nunjucksKey: 'downtimeNotificationBanner',
-    fallbackState: false,
-  },
 }
 
 export interface FeatureFlagConfig {

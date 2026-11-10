@@ -111,7 +111,7 @@ describe('plan header', () => {
   })
 
   describe('service downtime banner', () => {
-    it('renders the service downtime banner when feature flag is enabled', () => {
+    it('renders the service downtime banner when content is available', () => {
       const html = nunjucksEnv.render(template, {
         data: {
           caseData: {
@@ -119,9 +119,6 @@ describe('plan header', () => {
             crn: 'X000000',
             dateOfBirth: '1990-01-01',
           },
-        },
-        featureFlags: {
-          downtimeNotificationBanner: true,
         },
         downtimeBanner: { heading: 'Planned downtime', message: 'Unavailable during maintenance.' },
         headerPageHeading: "Joan's plan",
@@ -134,7 +131,7 @@ describe('plan header', () => {
       expect(html).toContain('Unavailable during maintenance.')
     })
 
-    it('does not render the service downtime banner when feature flag is false', () => {
+    it('does not render the service downtime banner when content is unavailable', () => {
       const html = nunjucksEnv.render(template, {
         data: {
           caseData: {
@@ -143,10 +140,6 @@ describe('plan header', () => {
             dateOfBirth: '1990-01-01',
           },
         },
-        featureFlags: {
-          downtimeNotificationBanner: false,
-        },
-        downtimeBanner: { heading: 'Planned downtime', message: 'Unavailable during maintenance.' },
         headerPageHeading: "Joan's plan",
       })
 

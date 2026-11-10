@@ -19,7 +19,6 @@ const context = {
   },
   step: { title: 'Privacy policy' },
   hideSessionTimeoutModal: true,
-  featureFlags: { downtimeNotificationBanner: true },
   downtimeBanner: { heading: 'Scheduled maintenance', message: 'The service will be unavailable tomorrow.' },
 }
 
@@ -33,16 +32,6 @@ describe.each(['sentence-plan/views/partials/plan-header.njk', 'platform/views/p
       expect(html).toContain(context.downtimeBanner.heading)
       expect(html).toContain(context.downtimeBanner.message)
       expect(html).toContain('govuk-!-display-none-print')
-    })
-
-    it('does not render when the boolean flag is disabled', () => {
-      const html = nunjucksEnv.render(template, {
-        ...context,
-        featureFlags: { downtimeNotificationBanner: false },
-      })
-
-      expect(html).not.toContain('data-qa="downtime-banner"')
-      expect(html).not.toContain(context.downtimeBanner.message)
     })
 
     it('does not render when valid content is unavailable', () => {

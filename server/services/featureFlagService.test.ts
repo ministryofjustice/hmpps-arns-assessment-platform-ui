@@ -66,10 +66,25 @@ describe('FeatureFlagService', () => {
     })
 
     it('uses fallbackUser when no user is provided and accepts a default variant attachment', async () => {
-      mockEvaluateVariant.mockReturnValue({ match: false, variantAttachment: JSON.stringify(content) })
+      mockEvaluateVariant.mockReturnValue({
+        match: false,
+        reason: 'DEFAULT_EVALUATION_REASON',
+        variantAttachment: JSON.stringify(content),
+      })
 
       expect(await featureFlagService.getDowntimeBannerContent()).toEqual(content)
       expect(mockEvaluateVariant).toHaveBeenCalledWith(expect.objectContaining({ entityId: 'fallbackUser' }))
+    })
+
+    it('hides the banner when disabled even if the SDK returns the default attachment', async () => {
+      mockEvaluateVariant.mockReturnValue({
+        match: false,
+        reason: 'FLAG_DISABLED_EVALUATION_REASON',
+        variantAttachment: JSON.stringify(content),
+      })
+
+      expect(await featureFlagService.getDowntimeBannerContent()).toBeUndefined()
+      expect(mockLogger.error).not.toHaveBeenCalled()
     })
 
     it('trims whitespace from the content', async () => {

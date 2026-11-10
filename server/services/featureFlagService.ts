@@ -80,6 +80,10 @@ export default class FeatureFlagService {
         entityId: userId || 'fallbackUser',
         context: {},
       })
+      if (result.reason === 'FLAG_DISABLED_EVALUATION_REASON') {
+        return undefined
+      }
+
       const attachment: unknown = JSON.parse(result.variantAttachment)
       const content = downtimeBannerContentSchema.safeParse(attachment)
 
