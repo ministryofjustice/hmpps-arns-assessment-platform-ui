@@ -6,3 +6,5 @@ export const formConfigsByVersion: Record<string, FormConfig> = {
   // TODO versioning ...v1FormConfig,
   ...v2FormConfig,
 }
+
+export const getFormVersions: string[] = Object.keys(formConfigsByVersion)
