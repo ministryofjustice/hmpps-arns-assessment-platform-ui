@@ -39,10 +39,7 @@ export const drugUseLastInjectedStep = step({
       message: 'This step is not user submitted',
     }),
   ],
-  blocks: [
-    drugLastInjectedSection,
-    saveButton,
-  ],
+  blocks: [drugLastInjectedSection, saveButton],
   onSubmission: [
     autosaveSubmit(Step.drug_use_last_injected.code, Section.drug_use),
     submit({
