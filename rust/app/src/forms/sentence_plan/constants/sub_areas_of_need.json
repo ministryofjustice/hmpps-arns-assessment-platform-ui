@@ -1,0 +1,11 @@
+[
+  {
+    "parentAreaOfNeedCrimKey": "thinkingBehaviourAndAttitudes",
+    "text": "Lifestyle and associates",
+    "value": "area_lifestyle_and_associates",
+    "crimNeedsKey": "lifestyleAndAssociates",
+    "handoverPrefix": "lifestyle",
+    "upperBound": 6,
+    "threshold": 1
+  }
+]

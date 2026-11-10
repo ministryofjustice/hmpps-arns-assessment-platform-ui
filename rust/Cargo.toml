@@ -1,0 +1,16 @@
+[workspace]
+resolver = "3"
+members = ["app"]
+
+# The Forge crates come from rusty-hmpps-forge (the Rust port of hmpps-forge), from git, tracking
+# main; Cargo.lock pins the commit (`cargo update -p forge-core` moves to the latest main).
+# Its vendored Runjucks carries Nunjucks parity fixes the Forge crates rely on, so this workspace
+# applies the same patch. (Stylesheets are built with esbuild + dart-sass, see app/build-assets.mjs.)
+[patch.crates-io]
+runjucks_core = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+
+[profile.dev.package.regex-automata]
+opt-level = 3
+
+[profile.dev.package.regex-syntax]
+opt-level = 3

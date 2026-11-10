@@ -1,0 +1,12 @@
+{%- from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner -%}
+
+{% set downtimeBannerHtml %}
+  <p class="govuk-notification-banner__heading">
+    Planned downtime.
+  </p>
+  <p class="govuk-body">Assess and plan will be unavailable from 6am on Thursday 5 November 2026 for 1 hour.</p>
+{% endset %}
+
+  {{ govukNotificationBanner({
+    html: downtimeBannerHtml
+  }) }}

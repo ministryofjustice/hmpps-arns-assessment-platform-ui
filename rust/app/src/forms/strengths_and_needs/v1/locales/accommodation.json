@@ -1,0 +1,184 @@
+{
+  "question": {
+    "short_term_accommodation_end_date": {
+      "text": "Enter expected end date (optional)"
+    },
+    "approved_premises_end_date": {
+      "text": "Enter expected end date (optional)"
+    },
+    "cas2_end_date": {
+      "text": "Enter expected end date (optional)"
+    },
+    "cas3_end_date": {
+      "text": "Enter expected end date (optional)"
+    },
+    "immigration_accommodation_end_date": {
+      "text": "Enter expected end date (optional)"
+    },
+    "type_of_settled_accommodation": {
+      "text": "Select the type of settled accommodation",
+      "option": {
+        "HOMEOWNER": "Homeowner",
+        "FRIENDS_OR_FAMILY": "Living with friends or family",
+        "RENTING_PRIVATELY": "Renting privately",
+        "RENTING_OTHER": "Renting from social, local authority or other",
+        "RESIDENTIAL_HEALTHCARE": "Residential healthcare",
+        "SUPPORTED_ACCOMMODATION": "Supported accommodation"
+      },
+      "validation": "Select the type of settled accommodation"
+    },
+    "type_of_temporary_accommodation": {
+      "text": "Select the type of temporary accommodation",
+      "option": {
+        "APPROVED_PREMISES": "Approved premises",
+        "CAS2": "Community Accommodation Service Tier 2 (CAS2)",
+        "CAS3": "Community Accommodation Service Tier 3 (CAS3)",
+        "IMMIGRATION": {
+          "text": "Immigration accommodation",
+          "hint": "<div class=\"govuk-grid-column-full\"><p class=\"govuk-hint\">This includes:</p><ul class=\"govuk-hint govuk-list govuk-list--bullet\"><li class=\" govuk-!-margin-bottom-5\">Schedule 10 - Home Office provides accommodation under the Immigration Act 2016</li><li>Schedule 4 - Home Office provides accommodation for those on immigration bail, prior to the Immigration Act 2016</li></ul></div>"
+        },
+        "SHORT_TERM": {
+          "text": "Short term accommodation",
+          "hint": "Includes living with friends or family."
+        }
+      },
+      "validation": "Select the type of temporary accommodation"
+    },
+    "type_of_no_accommodation": {
+      "text": "Select the type of no accommodation",
+      "option": {
+        "CAMPSITE": "Campsite",
+        "EMERGENCY_HOSTEL": "Emergency hostel",
+        "HOMELESS": "Homeless - includes squatting",
+        "ROUGH_SLEEPING": "Rough sleeping",
+        "SHELTER": "Shelter"
+      },
+      "validation": "Select the type of no accommodation"
+    },
+    "current_accommodation": {
+      "text": "What type of accommodation does %1 currently have?",
+      "option": {
+        "SETTLED": "Settled",
+        "TEMPORARY": "Temporary",
+        "NO_ACCOMMODATION": "No accommodation"
+      },
+      "validation": "Select the type of accommodation they currently have"
+    },
+    "living_with": {
+      "text": "Who is %1 living with?",
+      "option": {
+        "FAMILY": "Family",
+        "FRIENDS": "Friends",
+        "PARTNER": "Partner",
+        "PERSON_UNDER_18": "Person under 18 years old",
+        "ALONE": "Alone"
+      },
+      "validation": "Select who they are living with, or select 'Alone'"
+    },
+    "suitable_housing_location_concerns": {
+      "text": "What are the concerns with the location?",
+      "option": {
+        "CRIMINAL_ASSOCIATES": "Close to criminal associates",
+        "VICTIMISATION": "Close to someone who has victimised them",
+        "VICTIM_PROXIMITY": "Close to victim or possible victims",
+        "NEIGHBOUR_DIFFICULTY": "Difficulty with neighbours",
+        "AREA_SAFETY": "Safety of the area"
+      }
+    },
+    "suitable_housing_location": {
+      "text": "Is the location of %1 accommodation suitable?",
+      "validation": "Select if the location of the accommodation is suitable"
+    },
+    "suitable_housing_concerns": {
+      "text": "What are the concerns?",
+      "option": {
+        "FACILITIES": "Issues with the property - for example, poor kitchen or bathroom facilities",
+        "OVERCROWDING": "Overcrowding",
+        "EXPLOITATION": "Risk of their accommodation being exploited by others - for example, cuckooing",
+        "SAFETY": "Safety of accommodation",
+        "LIVES_WITH_VICTIM": "Victim lives with them",
+        "VICTIMISATION": "Victimised by someone living with them"
+      }
+    },
+    "unsuitable_housing_concerns": {
+      "text": "What are the concerns?"
+    },
+    "suitable_housing": {
+      "text": "Is %1 accommodation suitable?",
+      "hint": "This includes things like safety or having appropriate amenities.",
+      "option": {
+        "YES_WITH_CONCERNS": "Yes, with concerns"
+      },
+      "validation": "Select if the accommodation is suitable"
+    },
+    "accommodation_changes": {
+      "text": "Does %1 want to make changes to their accommodation?",
+      "hint": "%1 must answer this question.",
+      "validation": "Select if they want to make changes to their accommodation"
+    },
+    "suitable_housing_planned": {
+      "text": "Does %1 have future accommodation planned?",
+      "validation": "Select if they have future accommodation planned"
+    },
+    "future_accommodation_type": {
+      "text": "What is the type of future accommodation?",
+      "option": {
+        "AWAITING_ASSESSMENT": "Awaiting assessment",
+        "AWAITING_PLACEMENT": "Awaiting placement",
+        "BUYING_HOUSE": "Buy a house",
+        "LIVING_WITH_FRIENDS_OR_FAMILY": "Living with friends or family",
+        "RENT_PRIVATELY": "Rent privately",
+        "RENT_SOCIAL": "Rent from social, local authority or other",
+        "RESIDENTIAL_HEALTHCARE": "Residential healthcare",
+        "SUPPORTED_ACCOMMODATION": "Supported accommodation"
+      },
+      "validation": "Select the type of future accommodation"
+    },
+    "no_accommodation_reason": {
+      "text": "Why does %1 have no accommodation?",
+      "hint": "<div class=\"govuk-!-width-two-thirds\"><p class=\"govuk-hint\">Consider current and past homelessness issues.</p><p class=\"govuk-hint\">Select all that apply.</p></div>",
+      "option": {
+        "ALCOHOL_PROBLEMS": "Alcohol related problems",
+        "DRUG_PROBLEMS": "Drug related problems",
+        "FINANCIAL_DIFFICULTIES": "Financial difficulties",
+        "RISK_TO_OTHERS": "Left previous accommodation due to risk to others",
+        "SAFETY": "Left previous accommodation for their own safety",
+        "PRISON_RELEASE": "No accommodation when released from prison"
+      },
+      "validation": "Select why they have no accommodation"
+    },
+    "past_accommodation_details": {
+      "text": "What’s helped %1 stay in accommodation in the past? (optional)"
+    },
+    "accommodation_practitioner_analysis_strengths_or_protective_factors": {
+      "text": "Are there any strengths or protective factors related to %1 accommodation?",
+      "hint": "Include any strategies, people or support networks that helped.",
+      "validation": "Select if there are any strengths or protective factors"
+    },
+    "accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+      "validation": "Give details on strengths or protective factors related to their accommodation"
+    },
+    "accommodation_practitioner_analysis_risk_of_serious_harm": {
+      "text": "Is %1 accommodation linked to risk of serious harm?",
+      "validation": "Select if linked to risk of serious harm"
+    },
+    "accommodation_practitioner_analysis_risk_of_serious_harm_yes_details": {
+      "validation": "Give details on the risk of serious harm"
+    },
+    "accommodation_practitioner_analysis_risk_of_reoffending": {
+      "text": "Is %1 accommodation linked to risk of reoffending?",
+      "validation": "Select if linked to risk of reoffending"
+    },
+    "accommodation_practitioner_analysis_risk_of_reoffending_yes_details": {
+      "validation": "Give details on the risk of reoffending"
+    },
+    "living_with_partner_details": {
+      "hint": "Include name, age and gender."
+    },
+    "future_accommodation_type_other_details": {
+      "hint": "Include where and who with."
+    }
+  },
+  "expected_end_date": "Expected end date:",
+  "not_provided": "Not provided"
+}

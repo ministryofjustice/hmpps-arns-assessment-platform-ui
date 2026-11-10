@@ -1,0 +1,101 @@
+{% extends "../partials/layout.njk" %}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "govuk/components/details/macro.njk" import govukDetails -%}
+
+{% if status === 401 %}
+  {% set title = "You need to sign in" %}
+  {% set suggestions = [
+    "Your session may have expired.",
+    "Try signing in again."
+  ] %}
+{% elif status === 404 %}
+  {% set title = "Page not found" %}
+  {% set suggestions = [
+    "If you typed the web address, check it is correct.",
+    "If you pasted the web address, check you copied the entire address."
+  ] %}
+{% elif status >= 400 and status < 500 %}
+  {% set title = "There was an issue with your request" %}
+  {% set suggestions = [
+    "Try performing your request again.",
+    "If the request still fails, try again later."
+  ] %}
+{% else %}
+  {% set title = "Sorry, there is a problem with the service" %}
+  {% set suggestions = [
+    "Try reloading the page. You can do this by pressing F5 (on a PC), or Cmd + R (on a Mac).",
+    "If the page still does not load, try again later."
+  ] %}
+{% endif %}
+
+{% set pageTitle = title + " - " + applicationName %}
+{% set mainClasses = "app-container govuk-body" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">{{ title }}</h1>
+
+    {% if status !== 404 %}
+      <code>
+          Status code: {{ status }}
+      </code>
+    {% endif %}
+
+      <div class="govuk-!-margin-top-6">
+        {% if status === 404 %}
+          {% for suggestion in suggestions %}
+            <p class="govuk-body">{{ suggestion }}</p>
+          {% endfor %}
+        {% else %}
+          <ul class="govuk-list govuk-list--bullet">
+            {% for suggestion in suggestions %}
+              <li class="govuk-body-m">{{ suggestion }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if status !== 404 and stack %}
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+      <div class="govuk-grid-column-full">
+        <app-copy-code class="app-code-block">
+          <pre><code>{{ stack }}</code></pre>
+        </app-copy-code>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block govukFooter %}
+  {% set reportProblemHtml %}
+    <p class="govuk-body">
+      Copy this information and paste it into the
+      <a href="{{ serviceNowFormUrl }}" class="govuk-link govuk-link--no-visited-state" data-ai-id="service-now-form-link" target="_blank" rel="noopener noreferrer">ServiceNow form (opens in a new tab)</a>.
+    </p>
+    <span id="copy-alert" class="govuk-visually-hidden" aria-live="polite"></span>
+    <div class="app-report-problem__info">
+      <pre class="app-report-problem__details" id="report-problem-details">Request ID: {{ requestId or 'Unavailable' }}</pre>
+      <div class="app-report-problem__copy">
+        <button type="button" class="govuk-button govuk-button--secondary app-report-problem__copy-button copy-button" data-copy-target="report-problem-details">
+          Copy
+        </button>
+      </div>
+    </div>
+  {% endset %}
+
+  <div class="app-report-problem" id="report-a-problem" role="complementary" aria-label="Report a problem">
+    <div class="govuk-width-container">
+      {{ govukDetails({
+        summaryText: "Report a problem",
+        html: reportProblemHtml
+      }) }}
+    </div>
+  </div>
+
+  {{ pdsFooter({
+    baseUrl: "/sentence-plan"
+  }) }}
+{% endblock %}

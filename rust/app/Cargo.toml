@@ -1,0 +1,50 @@
+[package]
+name = "arns-assessment-platform-ui"
+version = "0.1.0"
+edition = "2024"
+description = "HMPPS ARNS Assessment Platform UI, served by forge-topcoat"
+publish = false
+
+[lib]
+name = "aap_ui"
+path = "src/lib.rs"
+
+[[bin]]
+name = "arns-assessment-platform-ui"
+path = "src/main.rs"
+
+[dependencies]
+forge-core = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+forge-runjucks = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+forge-govuk-components = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+forge-moj-components = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+forge-topcoat = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+forge-devtools = { git = "https://github.com/devkokov/rusty-hmpps-forge", branch = "main" }
+runjucks_core = "=0.1.9"
+topcoat = "=0.11.0"
+http = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "io-util", "time", "sync"] }
+indexmap = "2"
+regex = "1"
+chrono = { version = "0.4", features = ["serde"] }
+chrono-tz = "0.10"
+uuid = { version = "1", features = ["v4", "serde"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart"] }
+redis = { version = "0.32", features = ["tokio-comp", "tokio-rustls-comp", "connection-manager"] }
+base64 = "0.22"
+aws-config = { version = "1", features = ["behavior-version-latest"] }
+aws-sdk-sqs = "1"
+aws-sdk-sns = "1"
+rand = { version = "0.8", features = ["std_rng"] }
+futures = "0.3"
+sha2 = "0.10"
+
+[lints.clippy]
+# Pipeline stages return the response that stops a request as their error.
+result_large_err = "allow"
+# Ports of JS comparisons keep their NaN semantics (`!(a < b)` is not `a >= b`).
+neg_cmp_op_on_partial_ord = "allow"
+type_complexity = "allow"
+too_many_arguments = "allow"

@@ -1,0 +1,203 @@
+{
+  "question": {
+    "employment_type": {
+      "text": "What is the type of employment?",
+      "option": {
+        "FULL_TIME": "Full-time",
+        "PART_TIME": "Part-time",
+        "TEMPORARY_OR_CASUAL": "Temporary or casual",
+        "APPRENTICESHIP": "Apprenticeship"
+      }
+    },
+    "has_been_employed": {
+      "text": "Have they been employed before?",
+      "option": {
+        "YES": "Yes, has been employed before",
+        "NO": "No, has never been employed"
+      }
+    },
+    "employment_status": {
+      "text": "What is %1 current employment status?",
+      "option": {
+        "EMPLOYED": "Employed",
+        "SELF_EMPLOYED": "Self-employed",
+        "RETIRED": "Retired",
+        "CURRENTLY_UNAVAILABLE_FOR_WORK": "Currently unavailable for work",
+        "UNEMPLOYED_LOOKING_FOR_WORK": "Unemployed - actively looking for work",
+        "UNEMPLOYED_NOT_LOOKING_FOR_WORK": "Unemployed - not actively looking for work"
+      }
+    },
+    "employment_history": {
+      "text": "What is %1 employment history?",
+      "hint": "Include their current employment.",
+      "option": {
+        "STABLE": {
+          "text": "Continuous employment history",
+          "hint": "They may have had a break in employment due to things like redundancy, illness or caring for a family member."
+        },
+        "PERIODS_OF_INSTABILITY": "Generally in employment but changes jobs often",
+        "UNSTABLE": "Unstable employment history with regular periods of unemployment"
+      },
+      "validation": "Select their employment history"
+    },
+    "employment_area": {
+      "text": "What job sector does %1 work in? (optional)"
+    },
+    "employment_education_changes": {
+      "text": "Does %1 want to make changes to their employment and education?",
+      "hint": "%1 must answer this question.",
+      "validation": "Select if they want to make changes to their employment and education"
+    },
+    "employment_other_responsibilities": {
+      "text": "Does %1 have any additional day-to-day commitments?",
+      "hint": "Select all that apply.",
+      "option": {
+        "CARER": "Caring responsibilities",
+        "CHILD": "Child responsibilities",
+        "STUDYING": "Studying",
+        "VOLUNTEER": "Volunteering"
+      },
+      "validation": "Select if they have any additional day-to-day commitments, or select 'None'"
+    },
+    "education_highest_level_completed": {
+      "text": "Select the highest level of academic qualification %1 has completed",
+      "option": {
+        "ENTRY_LEVEL": {
+          "text": "Entry level",
+          "hint": "For example, entry level diploma."
+        },
+        "LEVEL_1": {
+          "text": "Level 1",
+          "hint": "For example, GCSE grades 3, 2, 1 or grades D, E, F, G."
+        },
+        "LEVEL_2": {
+          "text": "Level 2",
+          "hint": "For example, GCSE grades 9, 8, 7, 6, 5, 4 or grades A*, A, B, C."
+        },
+        "LEVEL_3": {
+          "text": "Level 3",
+          "hint": "For example, A level."
+        },
+        "LEVEL_4": {
+          "text": "Level 4",
+          "hint": "For example, higher apprenticeship."
+        },
+        "LEVEL_5": {
+          "text": "Level 5",
+          "hint": "For example, foundation degree."
+        },
+        "LEVEL_6": {
+          "text": "Level 6",
+          "hint": "For example, degree with honours."
+        },
+        "LEVEL_7": {
+          "text": "Level 7",
+          "hint": "For example, master’s degree."
+        },
+        "LEVEL_8": {
+          "text": "Level 8",
+          "hint": "For example, doctorate."
+        }
+      },
+      "validation": "Select the highest level of academic qualification completed"
+    },
+    "education_professional_or_vocational_qualifications": {
+      "text": "Does %1 have any professional or vocational qualifications?",
+      "validation": "Select if they have any professional or vocational qualifications"
+    },
+    "education_professional_or_vocational_qualifications_yes_details": {
+      "validation": "Enter details"
+    },
+    "education_transferable_skills": {
+      "text": "Does %1 have any skills that could help them in a job or to get a job?",
+      "option": {
+        "YES": {
+          "hint": "This includes any completed training, qualifications, work experience or transferable skills."
+        },
+        "YES_SOME_SKILLS": {
+          "text": "Some skills",
+          "hint": "This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable."
+        },
+        "NO": {
+          "hint": "This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry."
+        }
+      },
+      "validation": "Select if they have any skills that could help them in a job or to get a job"
+    },
+    "education_difficulties": {
+      "text": "Does %1 have difficulties with reading, writing or numeracy?",
+      "hint": "Select all that apply.",
+      "option": {
+        "READING": "Yes, with reading",
+        "WRITING": "Yes, with writing",
+        "NUMERACY": "Yes, with numeracy",
+        "NONE": "No difficulties"
+      },
+      "validation": "Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'"
+    },
+    "employment_experience": {
+      "text": "What is %1 overall experience of employment?",
+      "validation": "Select their overall experience of employment"
+    },
+    "education_experience": {
+      "text": "What is %1 experience of education?",
+      "validation": "Select their experience of education"
+    },
+    "education_difficulties_numeracy_severity": {
+      "text": "Select level of difficulty",
+      "validation": "Select level of difficulty"
+    },
+    "education_difficulties_writing_severity": {
+      "text": "Select level of difficulty",
+      "validation": "Select level of difficulty"
+    },
+    "education_difficulties_reading_severity": {
+      "text": "Select level of difficulty",
+      "validation": "Select level of difficulty"
+    },
+    "employment_history_stable_details": {
+      "hint": "Include what type of work they’ve done before."
+    },
+    "employment_history_periods_of_instability_details": {
+      "hint": "Include what type of work they’ve done before."
+    },
+    "employment_history_unstable_details": {
+      "hint": "Include what type of work they’ve done before."
+    },
+    "employment_history_unknown_details": {
+      "hint": "Include what type of work they’ve done before."
+    },
+    "employment_education_practitioner_analysis_strengths_or_protective_factors": {
+      "text": "Are there any strengths or protective factors related to %1 employment and education?",
+      "hint": "Include any strategies, people or support networks that helped.",
+      "validation": "Select if there are any strengths or protective factors"
+    },
+    "employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+      "validation": "Give details on strengths or protective factors related to their employment and education"
+    },
+    "employment_education_practitioner_analysis_risk_of_serious_harm": {
+      "text": "Is %1 employment and education linked to risk of serious harm?",
+      "validation": "Select if linked to risk of serious harm"
+    },
+    "employment_education_practitioner_analysis_risk_of_serious_harm_yes_details": {
+      "validation": "Give details on the risk of serious harm"
+    },
+    "employment_education_practitioner_analysis_risk_of_reoffending": {
+      "text": "Is %1 employment and education linked to risk of reoffending?",
+      "validation": "Select if linked to risk of reoffending"
+    },
+    "employment_education_practitioner_analysis_risk_of_reoffending_yes_details": {
+      "validation": "Give details on the risk of reoffending"
+    }
+  },
+  "option": {
+    "POSITIVE": "Positive",
+    "MOSTLY_POSITIVE": "Mostly positive",
+    "POSITIVE_AND_NEGATIVE": "Positive and negative",
+    "MOSTLY_NEGATIVE": "Mostly negative",
+    "NEGATIVE": "Negative",
+    "YES_SOME_SKILLS": "Some skills",
+    "SIGNIFICANT_DIFFICULTIES": "Significant difficulties",
+    "SOME_DIFFICULTIES": "Some difficulties"
+  }
+}

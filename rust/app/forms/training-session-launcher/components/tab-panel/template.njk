@@ -1,0 +1,56 @@
+<div class="{{ params.classes }}" id="{{ params.id }}" data-module="tab-panel"{% if params.queryParam %} data-query-param="{{ params.queryParam }}"{% endif %}>
+  <div class="tab-panel__layout">
+    {# Left sidebar - item list #}
+    <nav class="tab-panel__sidebar" aria-label="{{ params.sidebarTitle }}">
+      <h2 class="govuk-heading-s tab-panel__sidebar-title">{{ params.sidebarTitle }}</h2>
+
+      <ul class="tab-panel__list" role="tablist" aria-label="Select an option">
+        {% for item in params.items %}
+        <li class="tab-panel__list-item" role="presentation">
+          <button
+            type="button"
+            role="tab"
+            class="tab-panel__item-btn{% if item.id == params.selectedId %} tab-panel__item-btn--selected{% endif %}"
+            data-panel-id="{{ item.id }}"
+            aria-selected="{% if item.id == params.selectedId %}true{% else %}false{% endif %}"
+            aria-controls="{{ params.id }}-panel-{{ item.id }}"
+            id="{{ params.id }}-tab-{{ item.id }}"
+          >
+            <span class="tab-panel__item-label">{{ item.label }}</span>
+            {% if item.sublabel %}
+            <span class="tab-panel__item-sublabel govuk-body-s">{{ item.sublabel }}</span>
+            {% endif %}
+          </button>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {# Sidebar footer (optional) #}
+      {% if params.sidebarFooter and params.sidebarFooter.length %}
+      <div class="tab-panel__sidebar-footer">
+        {% for block in params.sidebarFooter %}
+          {{ block.html | safe }}
+        {% endfor %}
+      </div>
+      {% endif %}
+    </nav>
+
+    {# Right panel - content panels #}
+    <div class="tab-panel__panels">
+      {% for item in params.items %}
+      <section
+        id="{{ params.id }}-panel-{{ item.id }}"
+        class="tab-panel__panel{% if item.id == params.selectedId %} tab-panel__panel--active{% endif %}"
+        role="tabpanel"
+        aria-labelledby="{{ params.id }}-tab-{{ item.id }}"
+        {% if item.id != params.selectedId %}hidden{% endif %}
+      >
+        {# Render panel content blocks #}
+        {% for block in item.panel %}
+          {{ block.html | safe }}
+        {% endfor %}
+      </section>
+      {% endfor %}
+    </div>
+  </div>
+</div>

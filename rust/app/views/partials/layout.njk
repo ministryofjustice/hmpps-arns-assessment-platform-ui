@@ -1,0 +1,78 @@
+{%- extends "govuk/template.njk" -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "partials/macros/support-widget/macro.njk" import supportWidget -%}
+
+{% if backlink %}
+  {% set mainClasses = "govuk-main-wrapper--no-padding" %}
+{% else %}
+  {% set mainClasses = "" %}
+{% endif %}
+
+{%- block head -%}
+  {% if appInsightsConnectionString %}
+    <meta name="ai-connection-string" content="{{ appInsightsConnectionString }}">
+    <meta name="ai-request-id" content="{{ requestId }}">
+    <meta name="ai-telemetry-id" content="{{ telemetryId }}">
+    {% if targetService %}
+      <meta name="ai-target-service" content="{{ targetService }}">
+    {% endif %}
+    {% if user and user.authSource %}
+      <meta name="ai-entry-point" content="{{ user.authSource }}">
+    {% endif %}
+    {% if userContext %}
+      <meta name="ai-user-context" content="{{ userContext }}">
+    {% endif %}
+    {% if data and data.assessment and data.assessment.flags %}
+      <meta name="ai-user-type" content="{{ 'PRIVATE_BETA' if 'SAN_BETA' in data.assessment.flags else 'NATIONAL_ROLLOUT' }}">
+    {% endif %}
+    {% if data and data.goals %}
+      <meta name="ai-goals-active" content="{{ data.goals | countGoalsByStatus('ACTIVE') }}">
+      <meta name="ai-goals-future" content="{{ data.goals | countGoalsByStatus('FUTURE') }}">
+      <meta name="ai-goals-achieved" content="{{ data.goals | countGoalsByStatus('ACHIEVED') }}">
+      <meta name="ai-goals-removed" content="{{ data.goals | countGoalsByStatus('REMOVED') }}">
+      <meta name="ai-goals-total" content="{{ data.goals | length }}">
+      <meta name="ai-steps-total" content="{{ data.goals | countTotalSteps }}">
+      <meta name="ai-goals-with-multiple-steps" content="{{ data.goals | countGoalsWithMultipleSteps }}">
+      <meta name="ai-steps-person-on-probation" content="{{ data.goals | countStepsByActor('person_on_probation') }}">
+      <meta name="ai-steps-probation-practitioner" content="{{ data.goals | countStepsByActor('probation_practitioner') }}">
+      <meta name="ai-steps-prison-offender-manager" content="{{ data.goals | countStepsByActor('prison_offender_manager') }}">
+      <meta name="ai-steps-programme-staff" content="{{ data.goals | countStepsByActor('programme_staff') }}">
+      <meta name="ai-steps-partnership-agency" content="{{ data.goals | countStepsByActor('partnership_agency') }}">
+      <meta name="ai-steps-crs-provider" content="{{ data.goals | countStepsByActor('crs_provider') }}">
+      <meta name="ai-steps-someone-else" content="{{ data.goals | countStepsByActor('someone_else') }}">
+    {% endif %}
+  {% endif %}
+  <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
+{%- endblock -%}
+
+{% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
+
+{% block govukHeader %}
+  {% include "./header.njk" %}
+{% endblock %}
+
+{% block bodyStart %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      {% block formContent %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block govukFooter %}
+  {% block supportWidget %}
+    {{ supportWidget({}) }}
+  {% endblock %}
+
+  {{ super() }}
+{% endblock %}
+
+{%- block bodyEnd -%}
+  {% if not hideSessionTimeoutModal %}
+    {% include "./session-timeout-modal.njk" %}
+  {% endif %}
+  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
+{%- endblock -%}

@@ -1,0 +1,109 @@
+{
+  "question": {
+    "finance_income": {
+      "text": "Where does %1 currently get their money from?",
+      "hint": "",
+      "option": {
+        "CARERS_ALLOWANCE": "Carer’s allowance",
+        "DISABILITY_BENEFITS": {
+          "text": "Disability benefits",
+          "hint": "For example, Personal Independence Payment (PIP) (also known as Disability Living Allowance) or Severe Disablement Allowance."
+        },
+        "EMPLOYMENT": "Employment",
+        "FAMILY_OR_FRIENDS": "Family or friends",
+        "OFFENDING": "Offending",
+        "PENSION": "Pension",
+        "STUDENT_LOAN": "Student loan",
+        "Undeclared": "Undeclared (includes cash in hand)",
+        "WORK_RELATED_BENEFITS": {
+          "text": "Work related benefits",
+          "hint": "For example, Universal Credit or Jobseeker’s Allowance (JSA)."
+        },
+        "NO_MONEY": "No money"
+      },
+      "validation": "Select where they currently get their money from, or select 'No money'",
+      "summary": {
+        "option": {
+          "YES": "Yes, over reliant on friends and family for money",
+          "NO": "No, not over reliant on friends and family for money",
+          "UNKNOWN": "Unknown if they’re over reliant on friends and family for money"
+        }
+      }
+    },
+    "family_or_friends_details": {
+      "text": "Is %1 over reliant on family or friends for money?",
+      "validation": "Select if they are over reliant on family or friends for money"
+    },
+    "finance_bank_account": {
+      "text": "Does %1 have their own bank account?",
+      "validation": "Select if they have their own personal bank account"
+    },
+    "finance_money_management": {
+      "text": "How good is %1 at managing their money?",
+      "hint": "This includes things like budgeting, prioritising bills and paying rent.",
+      "option": {
+        "GOOD": "Able to manage their money well and is a strength",
+        "FAIRLY_GOOD": "Able to manage their money for everyday necessities",
+        "FAIRLY_BAD": "Unable to manage their money well",
+        "BAD": "Unable to manage their money which is creating other problems"
+      },
+      "validation": "Select how good they are at managing their money"
+    },
+    "finance_gambling": {
+      "text": "Is %1 affected by gambling?",
+      "option": {
+        "YES_THEIR_GAMBLING": "Yes, their own gambling",
+        "YES_SOMEONE_ELSES_GAMBLING": "Yes, someone else’s gambling"
+      },
+      "validation": "Select if they are affected by gambling"
+    },
+    "finance_debt": {
+      "text": "Is %1 affected by debt?",
+      "option": {
+        "YES_THEIR_DEBT": "Yes, their own debt",
+        "YES_SOMEONE_ELSES_DEBT": "Yes, someone else’s debt"
+      },
+      "validation": "Select if they are affected by debt"
+    },
+    "finance_changes": {
+      "text": "Does %1 want to make changes to their finances?",
+      "hint": "%1 must answer this question.",
+      "validation": "Select if they want to make changes to their finances"
+    },
+    "finance_practitioner_analysis_strengths_or_protective_factors": {
+      "text": "Are there any strengths or protective factors related to %1 finances?",
+      "hint": "Include any strategies, people or support networks that helped.",
+      "validation": "Select if there are any strengths or protective factors"
+    },
+    "finance_practitioner_analysis_strengths_or_protective_factors_yes_details": {
+      "validation": "Give details on strengths or protective factors related to their finances"
+    },
+    "finance_practitioner_analysis_risk_of_serious_harm": {
+      "text": "Are %1 finances linked to risk of serious harm?",
+      "validation": "Select if linked to risk of serious harm"
+    },
+    "finance_practitioner_analysis_risk_of_serious_harm_yes_details": {
+      "validation": "Give details on the risk of serious harm"
+    },
+    "finance_practitioner_analysis_risk_of_reoffending": {
+      "text": "Are %1 finances linked to risk of reoffending?",
+      "validation": "Select if linked to risk of reoffending"
+    },
+    "finance_practitioner_analysis_risk_of_reoffending_yes_details": {
+      "validation": "Give details on the risk of reoffending"
+    }
+  },
+  "common": {
+    "option": {
+      "DEBT_TO_OTHERS": "Debt to others",
+      "FORMAL_DEBT": "Formal debt"
+    },
+    "hint": {
+      "DEBT_TO_OTHERS": "Includes things like owing money to family, friends, other prisoners or loan sharks.",
+      "FORMAL_DEBT": "Includes things like credit cards, phone bills or rent arrears."
+    },
+    "validation": {
+      "select_type_of_debt": "Select type of debt"
+    }
+  }
+}

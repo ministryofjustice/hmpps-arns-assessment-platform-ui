@@ -1,0 +1,42 @@
+<div class="{{ params.classes }}">
+  {% if params.needs.length === 0 %}
+    <p class="govuk-body">No criminogenic needs data available.</p>
+  {% else %}
+    {% for need in params.needs %}
+      <div class="need-row">
+        <details class="govuk-details need-row__details">
+          <summary class="govuk-details__summary">
+            <span class="need-row__badge">
+              <span class="score-badge score-badge--{{ need.variant }}">{{ need.scoreDisplay }}</span>
+            </span>
+            <span class="govuk-details__summary-text">{{ need.name }}</span>
+          </summary>
+          <div class="govuk-details__text">
+            <dl class="govuk-summary-list govuk-summary-list--no-border">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Score</dt>
+                <dd class="govuk-summary-list__value">{{ need.scoreText }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Above threshold</dt>
+                <dd class="govuk-summary-list__value">{{ need.thresholdText }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Linked to harm</dt>
+                <dd class="govuk-summary-list__value">{{ need.linkedToHarmText }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Linked to reoffending</dt>
+                <dd class="govuk-summary-list__value">{{ need.linkedToReoffendingText }}</dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Strengths identified</dt>
+                <dd class="govuk-summary-list__value">{{ need.strengthsText }}</dd>
+              </div>
+            </dl>
+          </div>
+        </details>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>

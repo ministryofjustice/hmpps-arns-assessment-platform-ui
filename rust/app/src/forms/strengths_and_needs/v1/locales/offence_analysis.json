@@ -1,0 +1,191 @@
+{
+  "step": {
+    "offence_analysis": "Offence analysis",
+    "offence_analysis_summary": "Offence analysis summary",
+    "offence_analysis_victim": "Offence analysis victim"
+  },
+  "question": {
+    "offence_analysis_description_of_offence": {
+      "text": "Enter a brief description of the current index offence(s)",
+      "validation": "Enter a brief description of the current index offence(s)"
+    },
+    "offence_analysis_elements": {
+      "text": "Did the current index offence(s) have any of the following elements?",
+      "hint": "Select all that apply.",
+      "option": {
+        "ARSON": "Arson",
+        "DOMESTIC_ABUSE": "Domestic abuse",
+        "EXCESSIVE_OR_SADISTIC_VIOLENCE": "Excessive violence or sadistic violence",
+        "HATRED_OF_IDENTIFIABLE_GROUPS": "Hatred of identifiable groups",
+        "PHYSICAL_DAMAGE_TO_PROPERTY": "Physical damage to property",
+        "SEXUAL_ELEMENT": "Sexual element",
+        "VICTIM_TARGETED": "Victim targeted",
+        "VIOLENCE_OR_COERCION": "Violence, or threat of violence or coercion",
+        "WEAPON": "Weapon"
+      },
+      "validation": "Select if the offence(s) had any of the elements"
+    },
+    "offence_weapon_details": {
+      "text": "What was the weapon? (optional)",
+      "validation": "Weapon must be %1 characters or less"
+    },
+    "offence_analysis_reason": {
+      "text": "Why did the current index offence(s) happen?",
+      "validation": "Enter why the current index offence(s) happened"
+    },
+    "offence_analysis_motivations": {
+      "text": "Did the current index offence(s) involve any of the following motivations?",
+      "hint": "Select all that apply.",
+      "option": {
+        "ADDICTIONS_OR_PERCEIVED_NEEDS": "Addictions or perceived needs",
+        "PRESSURISED_BY_OTHERS": "Being pressurised or led into offending by others",
+        "EMOTIONAL_STATE": "Emotional state of %1",
+        "FINANCIAL_MOTIVATION": "Financial motivation",
+        "HATRED_OF_IDENTIFIABLE_GROUPS": "Hatred of identifiable groups",
+        "SEEKING_OR_EXERTING_POWER": "Seeking or exerting power",
+        "SEXUAL_MOTIVATION": "Sexual motivation",
+        "THRILL_SEEKING": "Thrill seeking"
+      },
+      "validation": "Select if the offence(s) involved any of the following motivations"
+    },
+    "offence_analysis_who_was_the_victim": {
+      "text": "Who was the offence committed against?",
+      "option": {
+        "ONE_OR_MORE_PERSON": "One or more people",
+        "OTHER": {
+          "hint": "For example, a business or the wider community."
+        }
+      },
+      "validation": "Select who the offence was committed against"
+    },
+    "offence_analysis_victim_relationship": {
+      "text": "Who is the victim?",
+      "option": {
+        "STRANGER": "A stranger",
+        "CRIMINAL_JUSTICE_STAFF": "Criminal justice staff",
+        "POP_PARENT_OR_STEP_PARENT": "%1 parent or step-parent",
+        "POP_PARTNER": "%1 partner",
+        "POP_EX_PARTNER": "%1 ex-partner",
+        "POP_CHILD_OR_STEP_CHILD": "%1 child or step-child",
+        "OTHER_FAMILY_MEMBER": "Other family member"
+      },
+      "validation": "Select who the victim is"
+    },
+    "offence_analysis_victim_age": {
+      "text": "What is the victim's approximate age?",
+      "option": {
+        "AGE_0_TO_4_YEARS": "0 to 4 years",
+        "AGE_5_TO_11_YEARS": "5 to 11 years",
+        "AGE_12_TO_15_YEARS": "12 to 15 years",
+        "AGE_16_TO_17_YEARS": "16 to 17 years",
+        "AGE_18_TO_20_YEARS": "18 to 20 years",
+        "AGE_21_TO_25_YEARS": "21 to 25 years",
+        "AGE_26_TO_49_YEARS": "26 to 49 years",
+        "AGE_50_TO_64_YEARS": "50 to 64 years",
+        "AGE_65_AND_OVER": "65 years and over"
+      },
+      "validation": "Select approximate age"
+    },
+    "offence_analysis_victim_sex": {
+      "text": "What is the victim's sex?",
+      "option": {
+        "MALE": "Male",
+        "FEMALE": "Female",
+        "INTERSEX": "Intersex"
+      },
+      "validation": "Select sex"
+    },
+    "offence_analysis_victim_race": {
+      "text": "What is the victim's ethnicity?",
+      "option_label": "Select the victim's ethnicity",
+      "option": {
+        "WHITE_ENGLISH_WELSH_SCOTTISH_NORTHERN_IRISH_OR_BRITISH": "White - English, Welsh, Scottish, Northern Irish or British",
+        "WHITE_IRISH": "White - Irish",
+        "WHITE_GYPSY_OR_IRISH_TRAVELLER": "White - Gypsy or Irish Traveller",
+        "WHITE_ROMA": "White - Roma",
+        "WHITE_ANY_OTHER_WHITE_BACKGROUND": "White - Any other white background",
+        "MIXED_WHITE_AND_BLACK_CARIBBEAN": "Mixed - White and Black Caribbean",
+        "MIXED_WHITE_AND_BLACK_AFRICAN": "Mixed - White and Black African",
+        "MIXED_WHITE_AND_ASIAN": "Mixed - White and Asian",
+        "MIXED_ANY_OTHER_MIXED_OR_MULTIPLE_ETHNIC_BACKGROUND_BACKGROUND": "Mixed - Any other mixed or multiple ethnic background",
+        "ASIAN_OR_ASIAN_BRITISH_INDIAN": "Asian or Asian British - Indian",
+        "ASIAN_OR_ASIAN_BRITISH_PAKISTANI": "Asian or Asian British - Pakistani",
+        "ASIAN_OR_ASIAN_BRITISH_BANGLADESHI": "Asian or Asian British - Bangladeshi",
+        "ASIAN_OR_ASIAN_BRITISH_CHINESE": "Asian or Asian British - Chinese",
+        "ASIAN_OR_ASIAN_BRITISH_ANY_OTHER_ASIAN_BACKGROUND": "Asian or Asian British - Any other Asian background",
+        "BLACK_OR_BLACK_BRITISH_CARIBBEAN": "Black or Black British - Caribbean",
+        "BLACK_OR_BLACK_BRITISH_AFRICAN": "Black or Black British - African",
+        "BLACK_OR_BLACK_BRITISH_ANY_OTHER_BLACK_BACKGROUND": "Black or Black British - Any other Black background",
+        "ARAB": "Arab",
+        "ANY_OTHER_ETHNIC_GROUP": "Any other ethnic group"
+      },
+      "validation": "Select the victim's ethnicity"
+    },
+    "offence_analysis_how_many_involved": {
+      "text": "How many other people were involved with committing the current index offence(s)?",
+      "option": {
+        "ONE": "1",
+        "TWO": "2",
+        "THREE": "3",
+        "FOUR": "4",
+        "FIVE": "5",
+        "SIX_TO_10": "6 to 10",
+        "ELEVEN_TO_15": "11 to 15",
+        "MORE_THAN_15": "More than 15"
+      },
+      "validation": "Select how many other people were involved in the offence"
+    },
+    "offence_analysis_impact_on_victims": {
+      "text": "Does %1 recognise the impact on the victims or wider community?",
+      "validation": "Select if they recognise the impact on the victim or consequences for others and the wider community"
+    },
+    "offence_analysis_leader": {
+      "text": "Was %1 the leader of the current index offence(s)?",
+      "validation": "Select if they were the leader"
+    },
+    "offence_analysis_accept_responsibility": {
+      "text": "Does %1 accept responsibility for the current index offence(s)?",
+      "validation": "Select if they accept responsibility for the current offence(s)"
+    },
+    "offence_analysis_escalation": {
+      "text": "Is there an escalation in seriousness from previous offending?",
+      "validation": "Select if the current offence(s) are an escalation in seriousness from previous offending"
+    },
+    "offence_analysis_perpetrator_of_domestic_abuse": {
+      "text": "Is there evidence that %1 has ever been a perpetrator of domestic abuse?",
+      "validation": "Select if there is any evidence that they have ever been perpetrator of domestic abuse"
+    },
+    "offence_analysis_perpetrator_of_domestic_abuse_type": {
+      "text": "Who was this committed against?"
+    },
+    "offence_analysis_victim_of_domestic_abuse": {
+      "text": "Is there evidence that %1 has ever been a victim of domestic abuse?",
+      "validation": "Select if there is evidence that they have ever been victim of domestic abuse"
+    },
+    "offence_analysis_victim_of_domestic_abuse_type": {
+      "text": "Who was this committed by?"
+    },
+    "offence_analysis_patterns_of_offending": {
+      "text": "What are the patterns of offending?",
+      "hint": "Analyse whether the current index offence(s) is (or are) part of a wider pattern of offending and identify any established or emerging themes. You do not need to list all previous convictions."
+    },
+    "offence_analysis_risk": {
+      "text": "Are the current or previous offences linked to risk of serious harm, risks to the individual or other risks?",
+      "validation": "Select if the offence is linked to risk of serious harm, risks to the individual or other risks"
+    }
+  },
+  "option": {
+    "FAMILY_MEMBER": "Family member",
+    "INTIMATE_PARTNER": "Intimate partner",
+    "FAMILY_MEMBER_AND_INTIMATE_PARTNER": "Family member and intimate partner"
+  },
+  "are_you_sure_you_want_to_delete": "Are you sure you want to delete the victim details?",
+  "victim_card_title": "%1 victim",
+  "validation": {
+    "select_an_option": "Select an option",
+    "add_one_or_more_victims": "Add one or more victims"
+  },
+  "fallback": {
+    "there_are_no_victims": "There are no victims."
+  }
+}
