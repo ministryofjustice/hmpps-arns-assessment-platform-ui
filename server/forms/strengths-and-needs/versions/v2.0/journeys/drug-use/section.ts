@@ -100,6 +100,11 @@ const lastUsedSummaryLabels = [
   { value: Option.more_than_six, text: contentFor('option.MORE_THAN_SIX') },
 ]
 
+const drugsLastInjectedOptions = [
+  { value: Option.last_six, text: contentFor('option.IN_THE_LAST_SIX') },
+  { value: Option.more_than_six, text: contentFor('option.MORE_THAN_SIX') },
+]
+
 export const drugLastUsed = questionTemplate({
   content: {
     code: drugValue => fieldCodeString(Question.drug_last_used, drugValue),
@@ -140,15 +145,12 @@ export const drugLastUsed = questionTemplate({
 
 export const drugsLastInjected = questionTemplate({
   content: {
-    code: drugValue => fieldCodeString(Question.drugs_injected, drugValue),
+    code: drugValue => fieldCodeString(Question.drugs_injected_months, drugValue),
     format: QuestionFormat.CHECKBOX,
     codeOver: drugValue => Format(Question.drugs_injected_value, drugValue),
     text: () => '',
     hint: commonContentFor('select_one_or_both'),
-    options: [
-      { value: Option.last_six, text: contentFor('option.IN_THE_LAST_SIX') },
-      { value: Option.more_than_six, text: contentFor('option.MORE_THAN_SIX') },
-    ],
+    options: drugsLastInjectedOptions,
     validationMessage: contentFor('question.drugs_injected_months.validation'),
   },
   displayModes: {
@@ -400,6 +402,27 @@ const selectMisusedDrugs = question({
   },
 })
 
+const injectedDrugAnswers = (drugValue: string) => {
+  return GovUKSummaryList({
+    classes: 'govuk-summary-list--no-border summary-answer-list',
+    rows: [
+      {
+        key: { text: contentFor('text.lastInjected.text') },
+        value: {
+          blocks: drugsLastInjectedOptions.map(option =>
+            GovUKBody({
+              text: option.text,
+              size: 's',
+              visibleWhen: Answer(Format(Question.drugs_injected_value, drugValue.toLowerCase())).match(Condition.Array.Contains(option.value)),
+            }),
+          ),
+        },
+        visibleWhen: Answer(Format(Question.drugs_injected_value, drugValue.toLowerCase())).match(Condition.IsRequired()),
+      },
+    ],
+  })
+}
+
 const drugsInjected = question({
   content: {
     code: Question.drugs_injected,
@@ -424,6 +447,28 @@ const drugsInjected = question({
   },
   displayModes: {
     field: checkboxField({ dependentWhen: anyInjectableSelectedDrugs }),
+    answerRow: (content): SummaryRow => ({
+      key: { html: content.text },
+      visibleWhen: Answer(content.code).match(Condition.IsRequired()),
+      value: {
+        blocks: [
+          GovUKBody({
+            text: commonContentFor('option.NONE'),
+            visibleWhen: Answer(content.code).match(Condition.Array.Contains(CommonOption.none)),
+          }),
+          ...drugsList
+            .filter(drug => drug.injectable)
+            .flatMap(drug => {
+              const chosen = Answer(content.code).match(Condition.Array.Contains(drug.value))
+
+              return [
+                GovUKBody({ text: drugName(drug.value), visibleWhen: chosen }),
+                { ...injectedDrugAnswers(drug.value), visibleWhen: chosen },
+              ]
+            }),
+        ],
+      },
+    }),
   },
 })
 
@@ -445,10 +490,6 @@ const anythingHelpedStopOrReduce = question({
       {
         value: CommonOption.no,
         text: commonContentFor('option.NO'),
-        reveals: requiredDetails({
-          code: Question.drugs_anything_helped_stop_or_reduce_use_details,
-          validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use_details.validation'),
-        }),
       },
     ],
   },
