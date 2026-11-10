@@ -10,14 +10,14 @@ import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
-import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const personalRelationshipsDomesticAbuseVictimByStep = step({
   path: `/${Step.personal_relationships_domestic_abuse_victim_by.path}`,
   title: sectionPageTitle(Section.personal_relationships_and_community),
   view: {
     locals: {
-      sectionTitleClass,
+      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([
         ...baseSanRoute,
         Section.personal_relationships_and_community.path,

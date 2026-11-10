@@ -10,12 +10,14 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const suitableHousingConcernsStep = step({
   path: `/${Step.community_suitable_housing_concerns.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
+      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([...baseSanRoute, Section.accommodation.path, Step.community_suitable_housing.path]),
     },
   },

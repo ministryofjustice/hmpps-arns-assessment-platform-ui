@@ -17,7 +17,7 @@ export const english = {
       validation: 'Select if the location of the accommodation is suitable',
     },
     [Question.community_suitable_housing_location_concerns]: {
-      text: 'What are the concerns with the location?',
+      text: 'Why is the location of %1 accommodation not suitable? (Optional)',
       option: {
         [Option.criminal_associates]: 'Close to criminal associates',
         [Option.victimisation]: 'Close to someone who has victimised them',
@@ -25,7 +25,6 @@ export const english = {
         [Option.neighbour_difficulty]: 'Difficulty with neighbours',
         [Option.area_safety]: 'Safety of the area',
       },
-      validation: 'Select if there are concerns with the location',
     },
     [Question.community_suitable_housing]: {
       text: 'Is %1 accommodation suitable?',
@@ -36,28 +35,38 @@ export const english = {
       validation: 'Select if the accommodation is suitable',
     },
     [Question.community_suitable_housing_concerns]: {
-      text: 'What are your concerns about the location of %1 accommodation?',
+      text: 'What are your concerns about the suitability of %1 accommodation? (Optional)',
       option: {
-        [Option.facilities]: 'Issues with the property - for example, poor kitchen or bathroom facilities',
+        [Option.facilities]: {
+          text: 'Issues with the property',
+          hint: 'For example, poor kitchen or bathroom facilities',
+        },
         [Option.overcrowding]: 'Overcrowding',
-        [Option.exploitation]: 'Risk of their accommodation being exploited by others - for example, cuckooing',
+        [Option.exploitation]: {
+          text: 'Risk of their accommodation being exploited by others',
+          hint: 'For example, cuckooing',
+        },
         [Option.safety]: 'Safety of accommodation',
         [Option.lives_with_victim]: 'Victim lives with them',
         [Option.victimisation]: 'Victimised by someone living with them',
       },
-      validation: 'Select if there are concerns with the accommodation',
     },
     [Question.community_unsuitable_housing_concerns]: {
-      text: 'What are the concerns?',
+      text: 'Why is %1 accommodation not suitable? (Optional)',
       option: {
-        [Option.facilities]: 'Issues with the property - for example, poor kitchen or bathroom facilities',
+        [Option.facilities]: {
+          text: 'Issues with the property',
+          hint: 'For example, poor kitchen or bathroom facilities',
+        },
         [Option.overcrowding]: 'Overcrowding',
-        [Option.exploitation]: 'Risk of their accommodation being exploited by others - for example, cuckooing',
+        [Option.exploitation]: {
+          text: 'Risk of their accommodation being exploited by others',
+          hint: 'For example, cuckooing',
+        },
         [Option.safety]: 'Safety of accommodation',
         [Option.lives_with_victim]: 'Victim lives with them',
         [Option.victimisation]: 'Victimised by someone living with them',
       },
-      validation: 'Select if there are concerns with the accommodation',
     },
     [Question.community_no_accommodation_reason]: {
       text: 'Why does %1 have no accommodation?',

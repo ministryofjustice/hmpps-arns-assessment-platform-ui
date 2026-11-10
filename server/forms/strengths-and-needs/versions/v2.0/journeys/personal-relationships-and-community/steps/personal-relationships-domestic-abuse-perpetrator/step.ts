@@ -20,14 +20,14 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 import { CommonOption } from '../../../../constants/commonOption'
-import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const personalRelationshipsDomesticAbusePerpetratorStep = step({
   path: `/${Step.personal_relationships_domestic_abuse_perpetrator.path}`,
   title: sectionPageTitle(Section.personal_relationships_and_community),
   view: {
     locals: {
-      sectionTitleClass,
+      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([
         ...baseSanRoute,
         Section.personal_relationships_and_community.path,
