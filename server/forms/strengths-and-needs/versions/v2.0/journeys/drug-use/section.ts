@@ -388,12 +388,13 @@ const selectMisusedDrugs = question({
       key: { html: content.text },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
       value: {
-        blocks: drugsList.map(drug =>
-          GovUKBody({
-            text: drugName(drug.value),
-            visibleWhen: Answer(content.code).match(Condition.Array.Contains(drug.value)),
-          }),
-        ),
+        blocks: drugsList.flatMap(drug => {
+          const chosen = Answer(content.code).match(Condition.Array.Contains(drug.value))
+          return [
+            GovUKBody({ text: drugName(drug.value), visibleWhen: chosen }),
+            { ...drugAnswers(drug.value), visibleWhen: chosen },
+          ]
+        }),
       },
     }),
   },
