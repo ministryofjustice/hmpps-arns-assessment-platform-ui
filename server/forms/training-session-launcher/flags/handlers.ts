@@ -67,7 +67,7 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
     },
   },
-
+  MAX_UPLIFT_VERSION: {},
   NEW_PERIOD_OF_SUPERVISION: {
     session: {
       modifyRequest: request => ({
