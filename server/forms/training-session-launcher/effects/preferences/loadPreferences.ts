@@ -167,7 +167,6 @@ function transformToDisplaySession(session: Session): DisplaySession {
     sanAssessmentVersionValue === undefined || sanAssessmentVersionValue === null
       ? ''
       : String(sanAssessmentVersionValue).trim()
-
   return {
     ...session,
     scenarioName: session.name,
@@ -221,7 +220,6 @@ function resolveSavedScenario(saved: SavedScenario): DisplayScenario {
     oasysAssessmentPk: values.oasysAssessmentPk || '',
     sentencePlanVersion,
     sanAssessmentVersion,
-
     displayNeeds: transformToDisplayNeeds(values),
     isCustom: true,
     rawScenario: {
