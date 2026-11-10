@@ -18,7 +18,7 @@
     "test:ci": "jest --runInBand",
     "test:coverage": "jest --coverage",
     "pact:test": "jest \"\\.pact\\.test\\.ts$\"",
-    "pact:publish": "pact-broker publish ./pacts",
+    "pact:publish": "pact-broker publish",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "npx playwright test",
     "int-test-ui": "npx playwright test --ui",
