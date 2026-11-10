@@ -150,7 +150,7 @@ test.describe('Questions', () => {
 
     await expect(accommodationPage.mainForm).toMatchAriaSnapshot(`
       - group "Is Test's accommodation suitable?":
-        - text: Is Test's accommodation suitable? This includes things like safety or having appropriate amenities.
+        - text: Is Test's accommodation suitable? This includes things like safety, who they are living with and having appropriate amenities.
         - radio "Yes"
         - text: "Yes"
         - radio "No"

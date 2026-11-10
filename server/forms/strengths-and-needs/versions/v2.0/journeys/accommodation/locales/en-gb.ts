@@ -28,7 +28,7 @@ export const english = {
     },
     [Question.community_suitable_housing]: {
       text: 'Is %1 accommodation suitable?',
-      hint: 'This includes things like safety or having appropriate amenities.',
+      hint: 'This includes things like safety, who they are living with and having appropriate amenities.',
       option: {
         [Option.yes_with_concerns]: 'Yes, with concerns',
       },
@@ -93,7 +93,11 @@ export const english = {
 
     [Question.accommodation_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 accommodation?',
-      hint: 'Include any strategies, people or support networks that helped.',
+      hint:
+        '<div class="govuk-!-width-two-thirds">' +
+        '<p class="govuk-hint">Include any strategies, people or support networks that helped.</p>' +
+        '<p class="govuk-hint">Also consider any future plans for accommodation.</p>' +
+        '</div>',
       validation: 'Select if there are any strengths or protective factors',
     },
     [Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details]: {

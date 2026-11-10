@@ -76,14 +76,14 @@ test.describe('Summary', () => {
           - definition:
             - link "Change Is the location of Test's accommodation suitable?":
               - /url: accommodation-community-suitable-housing-location#community_suitable_housing_location-question
-          - term: What are the concerns with the location of Test's accommodation not suitable? (Optional)
+          - term: Why is the location of Test's accommodation not suitable? (Optional)
           - definition:
             - paragraph: Close to criminal associates
             - paragraph: Close to someone who has victimised them
             - paragraph: Other
             - paragraph: location concerns other — free text answer.
           - definition:
-            - link "Change What are the concerns with the location of Test's accommodation not suitable? (Optional)":
+            - link "Change Why is the location of Test's accommodation not suitable? (Optional)":
               - /url: accommodation-community-suitable-housing-location-concerns#community_suitable_housing_location_concerns-question
           - term: Is Test's accommodation suitable?
           - definition:

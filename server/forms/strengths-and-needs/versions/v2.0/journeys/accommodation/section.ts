@@ -426,7 +426,7 @@ const strengthsOrProtectiveFactors = question({
       'question.accommodation_practitioner_analysis_strengths_or_protective_factors.text',
       CaseData.ForenamePossessive,
     ),
-    hint: contentFor('question.accommodation_practitioner_analysis_strengths_or_protective_factors.hint'),
+    hint: { html: contentFor('question.accommodation_practitioner_analysis_strengths_or_protective_factors.hint') },
     options: yesNo({
       yes: requiredDetails({
         code: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,

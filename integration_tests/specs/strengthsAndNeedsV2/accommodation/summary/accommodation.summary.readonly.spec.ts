@@ -69,7 +69,7 @@ test.describe('Summary read-only', () => {
           - term: Is the location of Test's accommodation suitable?
           - definition:
             - paragraph: "No"
-          - term: What are the concerns with the location of Test's accommodation not suitable? (Optional)
+          - term: Why is the location of Test's accommodation not suitable? (Optional)
           - definition:
             - paragraph: Close to criminal associates
             - paragraph: Close to someone who has victimised them
