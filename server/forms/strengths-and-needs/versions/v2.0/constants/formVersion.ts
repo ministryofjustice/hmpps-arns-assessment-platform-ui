@@ -16,4 +16,4 @@ export const CaseData = {
 export const formRootPath = '/strengths-and-needs'
 export const basePath = `${formRootPath}/${formVersion}`
 
-export const sectionTitleClass = 'govuk-body-l'
+export const sectionTitleClassV2 = 'govuk-body-l govuk-!-margin-bottom-1 govuk-!-margin-top-1'
