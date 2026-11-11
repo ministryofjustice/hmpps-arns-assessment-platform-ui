@@ -37,7 +37,7 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows employed or self employed questions', async ({
+  test('shows employed or self employed questions (all questions present, all question elements tested)', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -62,16 +62,63 @@ test.describe('Questions', () => {
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
-      - group "What is Test's employment history?"
-      - group "Does Test have any additional day-to-day commitments?"
-      - group "Does Test have any academic, professional or vocational qualifications?"
-      - group "Does Test have any skills that could help them in a job or to get a job?"
-      - group "Does Test have difficulties with reading, writing or numeracy?"
+      - group "What is Test's employment history?":
+        - text: What is Test's employment history? Include their current employment.
+        - radio "Continuous employment history"
+        - text: Continuous employment history They may have had a break in employment due to things like redundancy, illness or caring for a family member.
+        - radio "Generally in employment but changes jobs often"
+        - text: Generally in employment but changes jobs often
+        - radio "Unstable employment history with regular periods of unemployment"
+        - text: Unstable employment history with regular periods of unemployment
+        - radio "Unknown"
+        - text: Unknown
+      - group "Does Test have any additional day-to-day commitments?":
+        - text: Does Test have any additional day-to-day commitments? Select all that apply.
+        - checkbox "Caring responsibilities"
+        - text: Caring responsibilities
+        - checkbox "Child responsibilities"
+        - text: Child responsibilities
+        - checkbox "Studying"
+        - text: Studying
+        - checkbox "Volunteering"
+        - text: Volunteering
+        - checkbox "Other"
+        - text: Other
+        - checkbox "Unknown"
+        - text: Unknown or
+        - checkbox "No additional day-to-day commitments"
+        - text: No additional day-to-day commitments
+      - group "Does Test have any completed academic, professional or vocational qualifications?":
+        - text: Does Test have any completed academic, professional or vocational qualifications? For example, GCSEs, A levels, degrees, apprenticeships, trade qualifications, driving qualifications or professional certifications.
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+        - radio "Unknown"
+        - text: Unknown
+      - group "How would you describe Test skills for work?":
+        - text: How would you describe Test skills for work?
+        - radio "Strong work-related skills"
+        - text: Strong work-related skills Has completed training, work experience or transferable skills that could help them get or keep a job.
+        - radio "Some work-related skills"
+        - text: Some work-related skills Has limited work experience, partially completed training or skills that are not directly transferable.
+        - radio "No work-related skills"
+        - text: No work-related skills Has no skills or experience that could help them get a job.
+      - group "Does Test need support with reading, writing or numeracy?":
+        - text: Does Test need support with reading, writing or numeracy? Select all that apply.
+        - checkbox "Yes, with reading"
+        - text: Yes, with reading
+        - checkbox "Yes, with writing"
+        - text: Yes, with writing
+        - checkbox "Yes, with numeracy"
+        - text: Yes, with numeracy or
+        - checkbox "No support needed with reading, writing or numeracy"
+        - text: No support needed with reading, writing or numeracy
       - button "Save and continue"
     `)
   })
 
-  test('shows retired questions, no skills question', async ({
+  test('shows retired questions, no skills question (job skills questions not present)', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -99,8 +146,8 @@ test.describe('Questions', () => {
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "What is Test's employment history?"
       - group "Does Test have any additional day-to-day commitments?"
-      - group "Does Test have any academic, professional or vocational qualifications?"
-      - group "Does Test have difficulties with reading, writing or numeracy?"
+      - group "Does Test have any completed academic, professional or vocational qualifications?"
+      - group "Does Test need support with reading, writing or numeracy?"
       - button "Save and continue"
     `)
   })
@@ -138,7 +185,7 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows currently unavailable for work - has been employed questions', async ({
+  test('shows currently unavailable for work - has been employed questions (all questions present)', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -166,63 +213,16 @@ test.describe('Questions', () => {
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
-      - group "What is Test's employment history?":
-        - text: What is Test's employment history? Include their current employment.
-        - radio "Continuous employment history"
-        - text: Continuous employment history They may have had a break in employment due to things like redundancy, illness or caring for a family member.
-        - radio "Generally in employment but changes jobs often"
-        - text: Generally in employment but changes jobs often
-        - radio "Unstable employment history with regular periods of unemployment"
-        - text: Unstable employment history with regular periods of unemployment
-        - radio "Unknown"
-        - text: Unknown
-      - group "Does Test have any additional day-to-day commitments?":
-        - text: Does Test have any additional day-to-day commitments? Select all that apply.
-        - checkbox "Caring responsibilities"
-        - text: Caring responsibilities
-        - checkbox "Child responsibilities"
-        - text: Child responsibilities
-        - checkbox "Studying"
-        - text: Studying
-        - checkbox "Volunteering"
-        - text: Volunteering
-        - checkbox "Other"
-        - text: Other
-        - checkbox "Unknown"
-        - text: Unknown or
-        - checkbox "None"
-        - text: None
-      - group "Does Test have any academic, professional or vocational qualifications?":
-        - text: Does Test have any academic, professional or vocational qualifications?
-        - radio "Yes"
-        - text: "Yes"
-        - radio "No"
-        - text: "No"
-        - radio "Unknown"
-        - text: Unknown
-      - group "Does Test have any skills that could help them in a job or to get a job?":
-        - text: Does Test have any skills that could help them in a job or to get a job?
-        - radio "Yes"
-        - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
-        - radio "Some skills"
-        - text: Some skills This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.
-        - radio "No"
-        - text: No This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.
-      - group "Does Test have difficulties with reading, writing or numeracy?":
-        - text: Does Test have difficulties with reading, writing or numeracy? Select all that apply.
-        - checkbox "Yes, with reading"
-        - text: Yes, with reading
-        - checkbox "Yes, with writing"
-        - text: Yes, with writing
-        - checkbox "Yes, with numeracy"
-        - text: Yes, with numeracy or
-        - checkbox "No difficulties"
-        - text: No difficulties
+      - group "What is Test's employment history?"
+      - group "Does Test have any additional day-to-day commitments?"
+      - group "Does Test have any completed academic, professional or vocational qualifications?"
+      - group "How would you describe Test skills for work?"
+      - group "Does Test need support with reading, writing or numeracy?"
       - button "Save and continue"
     `)
   })
 
-  test('shows currently unavailable for work - never been employed questions', async ({
+  test('shows currently unavailable for work - never been employed questions (job history questions not present)', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -250,53 +250,15 @@ test.describe('Questions', () => {
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
-      - group "Does Test have any additional day-to-day commitments?":
-        - text: Does Test have any additional day-to-day commitments? Select all that apply.
-        - checkbox "Caring responsibilities"
-        - text: Caring responsibilities
-        - checkbox "Child responsibilities"
-        - text: Child responsibilities
-        - checkbox "Studying"
-        - text: Studying
-        - checkbox "Volunteering"
-        - text: Volunteering
-        - checkbox "Other"
-        - text: Other
-        - checkbox "Unknown"
-        - text: Unknown or
-        - checkbox "None"
-        - text: None
-      - group "Does Test have any academic, professional or vocational qualifications?":
-        - text: Does Test have any academic, professional or vocational qualifications?
-        - radio "Yes"
-        - text: "Yes"
-        - radio "No"
-        - text: "No"
-        - radio "Unknown"
-        - text: Unknown
-      - group "Does Test have any skills that could help them in a job or to get a job?":
-        - text: Does Test have any skills that could help them in a job or to get a job?
-        - radio "Yes"
-        - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
-        - radio "Some skills"
-        - text: Some skills This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.
-        - radio "No"
-        - text: No This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.
-      - group "Does Test have difficulties with reading, writing or numeracy?":
-        - text: Does Test have difficulties with reading, writing or numeracy? Select all that apply.
-        - checkbox "Yes, with reading"
-        - text: Yes, with reading
-        - checkbox "Yes, with writing"
-        - text: Yes, with writing
-        - checkbox "Yes, with numeracy"
-        - text: Yes, with numeracy or
-        - checkbox "No difficulties"
-        - text: No difficulties
+      - group "Does Test have any additional day-to-day commitments?"
+      - group "Does Test have any completed academic, professional or vocational qualifications?"
+      - group "How would you describe Test skills for work?"
+      - group "Does Test need support with reading, writing or numeracy?"
       - button "Save and continue"
     `)
   })
 
-  test('shows currently unemployed - has been employed questions', async ({
+  test('shows currently unemployed - has been employed questions (all questions present)', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -324,58 +286,11 @@ test.describe('Questions', () => {
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'employment history?')
 
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
-      - group "What is Test's employment history?":
-        - text: What is Test's employment history? Include their current employment.
-        - radio "Continuous employment history"
-        - text: Continuous employment history They may have had a break in employment due to things like redundancy, illness or caring for a family member.
-        - radio "Generally in employment but changes jobs often"
-        - text: Generally in employment but changes jobs often
-        - radio "Unstable employment history with regular periods of unemployment"
-        - text: Unstable employment history with regular periods of unemployment
-        - radio "Unknown"
-        - text: Unknown
-      - group "Does Test have any additional day-to-day commitments?":
-        - text: Does Test have any additional day-to-day commitments? Select all that apply.
-        - checkbox "Caring responsibilities"
-        - text: Caring responsibilities
-        - checkbox "Child responsibilities"
-        - text: Child responsibilities
-        - checkbox "Studying"
-        - text: Studying
-        - checkbox "Volunteering"
-        - text: Volunteering
-        - checkbox "Other"
-        - text: Other
-        - checkbox "Unknown"
-        - text: Unknown or
-        - checkbox "None"
-        - text: None
-      - group "Does Test have any academic, professional or vocational qualifications?":
-        - text: Does Test have any academic, professional or vocational qualifications?
-        - radio "Yes"
-        - text: "Yes"
-        - radio "No"
-        - text: "No"
-        - radio "Unknown"
-        - text: Unknown
-      - group "Does Test have any skills that could help them in a job or to get a job?":
-        - text: Does Test have any skills that could help them in a job or to get a job?
-        - radio "Yes"
-        - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
-        - radio "Some skills"
-        - text: Some skills This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.
-        - radio "No"
-        - text: No This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.
-      - group "Does Test have difficulties with reading, writing or numeracy?":
-        - text: Does Test have difficulties with reading, writing or numeracy? Select all that apply.
-        - checkbox "Yes, with reading"
-        - text: Yes, with reading
-        - checkbox "Yes, with writing"
-        - text: Yes, with writing
-        - checkbox "Yes, with numeracy"
-        - text: Yes, with numeracy or
-        - checkbox "No difficulties"
-        - text: No difficulties
+      - group "What is Test's employment history?"
+      - group "Does Test have any additional day-to-day commitments?"
+      - group "Does Test have any completed academic, professional or vocational qualifications?"
+      - group "How would you describe Test skills for work?"
+      - group "Does Test need support with reading, writing or numeracy?"
       - button "Save and continue"
     `)
   })
@@ -408,48 +323,10 @@ test.describe('Questions', () => {
     const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'day-to-day commitments')
 
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
-      - group "Does Test have any additional day-to-day commitments?":
-        - text: Does Test have any additional day-to-day commitments? Select all that apply.
-        - checkbox "Caring responsibilities"
-        - text: Caring responsibilities
-        - checkbox "Child responsibilities"
-        - text: Child responsibilities
-        - checkbox "Studying"
-        - text: Studying
-        - checkbox "Volunteering"
-        - text: Volunteering
-        - checkbox "Other"
-        - text: Other
-        - checkbox "Unknown"
-        - text: Unknown or
-        - checkbox "None"
-        - text: None
-      - group "Does Test have any academic, professional or vocational qualifications?":
-        - text: Does Test have any academic, professional or vocational qualifications?
-        - radio "Yes"
-        - text: "Yes"
-        - radio "No"
-        - text: "No"
-        - radio "Unknown"
-        - text: Unknown
-      - group "Does Test have any skills that could help them in a job or to get a job?":
-        - text: Does Test have any skills that could help them in a job or to get a job?
-        - radio "Yes"
-        - text: Yes This includes any completed training, qualifications, work experience or transferable skills.
-        - radio "Some skills"
-        - text: Some skills This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.
-        - radio "No"
-        - text: No This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.
-      - group "Does Test have difficulties with reading, writing or numeracy?":
-        - text: Does Test have difficulties with reading, writing or numeracy? Select all that apply.
-        - checkbox "Yes, with reading"
-        - text: Yes, with reading
-        - checkbox "Yes, with writing"
-        - text: Yes, with writing
-        - checkbox "Yes, with numeracy"
-        - text: Yes, with numeracy or
-        - checkbox "No difficulties"
-        - text: No difficulties
+      - group "Does Test have any additional day-to-day commitments?"
+      - group "Does Test have any completed academic, professional or vocational qualifications?"
+      - group "How would you describe Test skills for work?"
+      - group "Does Test need support with reading, writing or numeracy?"
       - button "Save and continue"
     `)
   })
@@ -489,18 +366,6 @@ test.describe('Questions', () => {
           question: Question.education_difficulties,
           value: [Option.reading, Option.writing, Option.numeracy],
         },
-        {
-          question: Question.education_difficulties_reading_severity,
-          value: Option.significant_difficulties,
-        },
-        {
-          question: Question.education_difficulties_writing_severity,
-          value: Option.some_difficulties,
-        },
-        {
-          question: Question.education_difficulties_numeracy_severity,
-          value: Option.some_difficulties,
-        },
       ])
       .withUserSubmittedSteps([Step.employment_status.code, Step.employment_education_details.code])
       .save()
@@ -518,22 +383,22 @@ test.describe('Questions', () => {
     await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
       - group "How much support does Test need with reading?":
         - text: How much support does Test need with reading?
-        - radio "Significant difficulties" [checked]
-        - text: Significant difficulties
-        - radio "Some difficulties"
-        - text: Some difficulties
+        - radio "Significant support needed"
+        - text: Significant support needed Has a substantial impact on day-to-day life and they are likely to need regular support.
+        - radio "Some support needed"
+        - text: Some support needed Can usually manage day-to-day reading but may need support with some written information.
       - group "How much support does Test need with writing?":
         - text: How much support does Test need with writing?
-        - radio "Significant difficulties"
-        - text: Significant difficulties
-        - radio "Some difficulties" [checked]
-        - text: Some difficulties
+        - radio "Significant support needed"
+        - text: Significant support needed Has a substantial impact on day-to-day life and they are likely to need regular support.
+        - radio "Some support needed"
+        - text: Some support needed Can usually manage day-to-day writing but may need support with spelling, grammar or completing longer writing tasks.
       - group "How much support does Test need with numeracy?":
         - text: How much support does Test need with numeracy?
-        - radio "Significant difficulties"
-        - text: Significant difficulties
-        - radio "Some difficulties" [checked]
-        - text: Some difficulties
+        - radio "Significant support needed"
+        - text: Significant support needed Has a substantial impact on day-to-day life and they are likely to need regular support.
+        - radio "Some support needed"
+        - text: Some support needed Can usually manage day-to-day numeracy but may need support with calculations, numbers or money-related tasks.
       - button "Save and continue"
     `)
   })
