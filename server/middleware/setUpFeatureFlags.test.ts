@@ -21,13 +21,50 @@ describe('setUpFeatureFlags', () => {
     jest.clearAllMocks()
   })
 
+  it.each(['user-123', undefined])('loads banner content for users when variant flag enabled', async userId => {
+    const content = { heading: 'Planned downtime', message: 'Maintenance.' }
+    const featureFlagService = {
+      evaluateBooleanFlags: jest.fn().mockResolvedValue({
+        booleanFeatureFlags: {},
+      }),
+      getDowntimeBannerContent: jest.fn().mockResolvedValue(content),
+    }
+    const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
+    const { req, res, next } = createMocks(userId)
+
+    await router.stack[0].handle(req, res, next)
+
+    expect(featureFlagService.getDowntimeBannerContent).toHaveBeenCalledWith(userId)
+    expect(res.locals.downtimeBanner).toEqual(content)
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('continues without banner content when content is unavailable', async () => {
+    const featureFlagService = {
+      evaluateBooleanFlags: jest.fn().mockResolvedValue({
+        booleanFeatureFlags: {},
+      }),
+      getDowntimeBannerContent: jest.fn().mockResolvedValue(undefined),
+    }
+    const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
+    const { req, res, next } = createMocks()
+
+    await router.stack[0].handle(req, res, next)
+
+    expect(res.locals.downtimeBanner).toBeUndefined()
+    expect(next).toHaveBeenCalled()
+  })
+
   it('should evaluate the configured boolean feature flags for the current user and store them in locals', async () => {
     const evaluateBooleanFlags = jest.fn().mockResolvedValue({
       booleanFeatureFlags: {
         smartSurveyInNationalRolloutEnabled: true,
       },
     })
-    const featureFlagService = { evaluateBooleanFlags }
+    const featureFlagService = {
+      evaluateBooleanFlags,
+      getDowntimeBannerContent: jest.fn().mockResolvedValue(undefined),
+    }
 
     const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
     const middleware = router.stack[0].handle
@@ -48,7 +85,10 @@ describe('setUpFeatureFlags', () => {
         smartSurveyInNationalRolloutEnabled: false,
       },
     })
-    const featureFlagService = { evaluateBooleanFlags }
+    const featureFlagService = {
+      evaluateBooleanFlags,
+      getDowntimeBannerContent: jest.fn().mockResolvedValue(undefined),
+    }
 
     const router = setUpFeatureFlags(featureFlagService as never) as unknown as { stack: MiddlewareStack }
     const middleware = router.stack[0].handle
