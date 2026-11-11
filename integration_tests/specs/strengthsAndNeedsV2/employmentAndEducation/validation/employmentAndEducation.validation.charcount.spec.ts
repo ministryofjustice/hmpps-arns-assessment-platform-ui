@@ -112,7 +112,7 @@ test.describe('Employment and education character counts', () => {
   }
 
   // a test per option, because each one reveals its own details field
-  for (const option of [Option.stable, Option.periods_of_instability, Option.unstable, CommonOption.unknown]) {
+  for (const option of [Option.stable, Option.periods_of_instability, Option.unstable]) {
     test(`employed: employment history ${option}`, async ({ page, openSection }) => {
       const section = await openSection(employment, answers, userSubmittedSteps)
       const employmentPage = new EmploymentAndEducationPage(page)

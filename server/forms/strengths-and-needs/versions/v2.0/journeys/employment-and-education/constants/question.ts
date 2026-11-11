@@ -8,7 +8,6 @@ export const Question = {
   community_employment_history_periods_of_instability_details:
     'community_employment_history_periods_of_instability_details',
   community_employment_history_unstable_details: 'community_employment_history_unstable_details',
-  community_employment_history_unknown_details: 'community_employment_history_unknown_details',
 
   // Other responsibilities
   community_employment_other_responsibilities: 'community_employment_other_responsibilities',
