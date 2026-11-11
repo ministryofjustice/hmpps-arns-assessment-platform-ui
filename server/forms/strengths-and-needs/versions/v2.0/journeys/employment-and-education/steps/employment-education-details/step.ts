@@ -18,14 +18,12 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
-import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const employmentEducationDetailsStep = step({
   path: `/${Step.employment_education_details.path}`,
   title: sectionPageTitle(Section.employment_and_education),
   view: {
     locals: {
-      sectionTitleClass: sectionTitleClassV2,
       backlink: when(notWorkingOrAvailableForWork)
         .then(createRoute([...baseSanRoute, Section.employment_and_education.path, Step.community_ever_had_a_job.path]))
         .else(createRoute([...baseSanRoute, Section.employment_and_education.path, Step.employment_status.path])),

@@ -105,35 +105,35 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Does Test have any additional day-to-day commitments?":
             - /url: employment-education-details#community_employment_other_responsibilities-question
-        - term: Does Test have any academic, professional or vocational qualifications?
+        - term: Does Test have any completed academic, professional or vocational qualifications?
         - definition:
           - paragraph: "Yes"
         - definition:
-          - link "Change Does Test have any academic, professional or vocational qualifications?":
+          - link "Change Does Test have any completed academic, professional or vocational qualifications?":
             - /url: employment-education-details#education_academic_professional_vocational_qualifications-question
-        - term: Does Test have any skills that could help them in a job or to get a job?
+        - term: How would you describe Test skills for work?
         - definition:
-          - paragraph: "Yes"
+          - paragraph: Strong work-related skills
           - paragraph: Transferable skills details — free text answer.
         - definition:
-          - link "Change Does Test have any skills that could help them in a job or to get a job?":
+          - link "Change How would you describe Test skills for work?":
             - /url: employment-education-details#education_transferable_skills-question
-        - term: Does Test have difficulties with reading, writing or numeracy?
+        - term: Does Test need support with reading, writing or numeracy?
         - definition:
           - paragraph: Yes, with reading
           - paragraph: Yes, with writing
         - definition:
-          - link "Change Does Test have difficulties with reading, writing or numeracy?":
+          - link "Change Does Test need support with reading, writing or numeracy?":
             - /url: employment-education-details#education_difficulties-question
         - term: How much support does Test need with reading?
         - definition:
-          - paragraph: Significant difficulties
+          - paragraph: Significant support needed
         - definition:
           - link "Change How much support does Test need with reading?":
             - /url: education-difficulties#education_difficulties_reading_severity-question
         - term: How much support does Test need with writing?
         - definition:
-          - paragraph: Some difficulties
+          - paragraph: Some support needed
         - definition:
           - link "Change How much support does Test need with writing?":
             - /url: education-difficulties#education_difficulties_writing_severity-question

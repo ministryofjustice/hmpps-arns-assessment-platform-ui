@@ -20,6 +20,16 @@ test.describe('Validation', () => {
     const { questions } = employmentAndEducationPage
 
     await employmentAndEducationPage.saveAndContinue.click()
+
+    await expect(employmentAndEducationPage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select their employment status":
+              - /url: "#community_employment_status"
+    `)
+
     await questions.community_employment_status.errorLink.click()
     await expect(questions.community_employment_status.input).toBeFocused()
   })
@@ -34,17 +44,30 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.community_employment_status, value: Option.currently_unavailable_for_work }]).save()
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_employment_status, value: Option.currently_unavailable_for_work }])
+      .withUserSubmittedSteps([Step.employment_status.code, Step.employment_education_details.code])
+      .save()
 
-    await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      Step.community_ever_had_a_job.path,
+    )
 
-    const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'current employment status')
-
+    const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'ever had a job?')
     const { questions } = employmentAndEducationPage
 
     await employmentAndEducationPage.saveAndContinue.click()
-    await EmploymentAndEducationPage.verifyOnPage(page, 'ever had a job?')
-    await employmentAndEducationPage.saveAndContinue.click()
+    await expect(employmentAndEducationPage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select if they have ever had a job":
+              - /url: "#community_ever_had_a_job"
+    `)
 
     await questions.community_ever_had_a_job.errorLink.click()
     await expect(questions.community_ever_had_a_job.input).toBeFocused()
@@ -56,11 +79,7 @@ test.describe('Validation', () => {
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([{ question: Question.community_employment_status, value: Option.employed_or_self_employed }])
-      .withUserSubmittedSteps([
-        Step.employment_status.code,
-        Step.employment_education_details.code,
-        Step.employment_education_summary.code,
-      ])
+      .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
     await EmploymentAndEducationPage.navigateTo(
@@ -84,16 +103,16 @@ test.describe('Validation', () => {
             - link "Select their employment history":
               - /url: "#community_employment_history"
           - listitem:
-            - link "Select if they have any additional day-to-day commitments, or select 'None'":
+            - link "Select if they have any additional day-to-day commitments, or select 'No additional day-to-day commitments'":
               - /url: "#community_employment_other_responsibilities"
           - listitem:
-            - link "Select if they have have any academic, professional or vocational qualifications":
+            - link "Select if they have any completed academic, professional or vocational qualifications":
               - /url: "#education_academic_professional_vocational_qualifications"
           - listitem:
-            - link "Select if they have any skills that could help them in a job or to get a job":
+            - link "Select how you would describe their skills for work":
               - /url: "#education_transferable_skills"
           - listitem:
-            - link "Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'":
+            - link "Select if they need support with reading, writing or numeracy, or select 'No support needed with reading, writing or numeracy'":
               - /url: "#education_difficulties"
     `)
 
@@ -139,13 +158,13 @@ test.describe('Validation', () => {
             - link "Select their employment history":
               - /url: "#community_employment_history"
           - listitem:
-            - link "Select if they have any additional day-to-day commitments, or select 'None'":
+            - link "Select if they have any additional day-to-day commitments, or select 'No additional day-to-day commitments'":
               - /url: "#community_employment_other_responsibilities"
           - listitem:
-            - link "Select if they have have any academic, professional or vocational qualifications":
+            - link "Select if they have any completed academic, professional or vocational qualifications":
               - /url: "#education_academic_professional_vocational_qualifications"
           - listitem:
-            - link "Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'":
+            - link "Select if they need support with reading, writing or numeracy, or select 'No support needed with reading, writing or numeracy'":
               - /url: "#education_difficulties"
     `)
 
@@ -197,16 +216,16 @@ test.describe('Validation', () => {
         - heading "There is a problem" [level=2]
         - list:
           - listitem:
-            - link "Select if they have any additional day-to-day commitments, or select 'None'":
+            - link "Select if they have any additional day-to-day commitments, or select 'No additional day-to-day commitments'":
               - /url: "#community_employment_other_responsibilities"
           - listitem:
-            - link "Select if they have have any academic, professional or vocational qualifications":
+            - link "Select if they have any completed academic, professional or vocational qualifications":
               - /url: "#education_academic_professional_vocational_qualifications"
           - listitem:
-            - link "Select if they have any skills that could help them in a job or to get a job":
+            - link "Select how you would describe their skills for work":
               - /url: "#education_transferable_skills"
           - listitem:
-            - link "Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'":
+            - link "Select if they need support with reading, writing or numeracy, or select 'No support needed with reading, writing or numeracy'":
               - /url: "#education_difficulties"
     `)
 
@@ -283,13 +302,13 @@ test.describe('Validation', () => {
         - heading "There is a problem" [level=2]
         - list:
           - listitem:
-            - link "Select level of difficulty":
+            - link "Select level of support needed":
               - /url: "#education_difficulties_reading_severity"
           - listitem:
-            - link "Select level of difficulty":
+            - link "Select level of support needed":
               - /url: "#education_difficulties_writing_severity"
           - listitem:
-            - link "Select level of difficulty":
+            - link "Select level of support needed":
               - /url: "#education_difficulties_numeracy_severity"
     `)
 
