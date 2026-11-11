@@ -6,7 +6,7 @@ export const Question = {
   other_drug_name: 'other_drug_name',
   how_often_used: 'how_often_used',
   how_often_used_value: 'how_often_used_%1',
-  how_often_used_details: 'how_often_used__%1_details',
+  how_often_used_details: 'how_often_used_%1_details',
   drugs_injected: 'drugs_injected',
   drugs_injected_value: 'drugs_injected_%1',
   drugs_injected_months: 'drugs_injected_months',

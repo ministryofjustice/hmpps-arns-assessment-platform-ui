@@ -186,46 +186,42 @@ const employment: Answer[] = [
 //   { question: 'finance_no_strengths_protective_factors_details', value: details('no finance strengths') },
 // ]
 
-// TODO Uncomment it during ACT-753 Drug framework
-// const drugUse: Answer[] = [
-//   { question: 'drug_use', value: 'YES' },
-//   { question: 'select_misused_drugs', value: ['CANNABIS', 'COCAINE', 'HEROIN', 'OTHER'] },
-//   { question: 'drug_last_used_cannabis', value: 'LAST_SIX' },
-//   { question: 'drug_last_used_cocaine', value: 'LAST_SIX' },
-//   // Used more than 6 months ago, so it is never asked when it was injected.
-//   { question: 'drug_last_used_heroin', value: 'MORE_THAN_SIX' },
-//   { question: 'other_drug_name', value: 'Ketamine' },
-//   { question: 'drug_last_used_other', value: 'LAST_SIX' },
-//   // Asked once per drug on a later step, so they read under the drug itself.
-//   { question: 'how_often_used_last_six_months_cannabis', value: 'DAILY' },
-//   { question: 'how_often_used_last_six_months_cannabis_details', value: details('cannabis frequency') },
-//   { question: 'how_often_used_last_six_months_cocaine', value: 'OCCASIONALLY' },
-//   { question: 'how_often_used_last_six_months_other', value: 'WEEKLY' },
-//   { question: 'not_used_in_last_six_months_details', value: details('used more than six months ago') },
-//   // Cocaine is injectable but not injected; heroin was, before the last 6 months.
-//   { question: 'drugs_injected', value: ['HEROIN', 'OTHER'] },
-//   { question: 'drugs_injected_other', value: ['LAST_SIX'] },
-//   { question: 'drugs_is_receiving_treatment', value: 'YES' },
-//   { question: 'drugs_is_receiving_treatment_yes_details', value: details('in treatment') },
-//   { question: 'drugs_reasons_for_use', value: ['ESCAPISM_OR_AVOIDANCE', 'PEER_PRESSURE', 'OTHER'] },
-//   { question: 'drugs_reasons_for_use_details', value: details('reasons for use') },
-//   { question: 'drugs_affected_their_life', value: ['FINANCES', 'HEALTH', 'RELATIONSHIPS'] },
-//   { question: 'drugs_affected_their_life_details', value: details('effect on life') },
-//   { question: 'drugs_anything_helped_stop_or_reduce_use', value: details('what has helped') },
-//   { question: 'drugs_what_could_help_not_use_drugs_in_future', value: details('what could help') },
-//   { question: 'drug_use_changes', value: 'MAKING_CHANGES' },
-//   { question: 'drug_use_changes_making_changes_details', value: details('making changes') },
-//   { question: 'drugs_practitioner_analysis_motivated_to_stop', value: 'PARTIAL_MOTIVATION' },
-//   { question: 'drug_use_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
-//   {
-//     question: 'drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details',
-//     value: details('drug strengths'),
-//   },
-//   { question: 'drug_use_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
-//   { question: 'drug_use_practitioner_analysis_risk_of_serious_harm_yes_details', value: details('drug serious harm') },
-//   { question: 'drug_use_practitioner_analysis_risk_of_reoffending', value: 'YES' },
-//   { question: 'drug_use_practitioner_analysis_risk_of_reoffending_yes_details', value: details('drug reoffending') },
-// ]
+const drugUse: Answer[] = [
+  { question: 'drug_use', value: 'YES' },
+  { question: 'select_misused_drugs', value: ['CANNABIS', 'COCAINE', 'HEROIN', 'OTHER_DRUG'] },
+  { question: 'drug_last_used_cannabis', value: 'LAST_SIX' },
+  { question: 'drug_last_used_cocaine', value: 'LAST_SIX' },
+  // Used more than 6 months ago, so it is never asked when it was injected.
+  { question: 'drug_last_used_heroin', value: 'MORE_THAN_SIX' },
+  { question: 'other_drug_name', value: 'Ketamine' },
+  { question: 'drug_last_used_other_drug', value: 'LAST_SIX' },
+  // Asked once per drug on a later step, so they read under the drug itself.
+  { question: 'how_often_used_cannabis', value: 'DAILY' },
+  { question: 'how_often_used_cannabis_details', value: details('cannabis frequency') },
+  { question: 'how_often_used_cocaine', value: 'OCCASIONALLY' },
+  { question: 'how_often_used_heroin', value: 'MONTHLY' },
+  { question: 'how_often_used_heroin_details', value: details('heroin frequency') },
+  { question: 'how_often_used_other_drug', value: 'WEEKLY' },
+  // Cocaine is injectable but not injected; heroin was, before the last 6 months.
+  { question: 'drugs_injected', value: ['HEROIN', 'OTHER_DRUG'] },
+  { question: 'drugs_injected_heroin', value: ['MORE_THAN_SIX'] },
+  { question: 'drugs_injected_other_drug', value: ['LAST_SIX', 'MORE_THAN_SIX'] },
+  { question: 'drugs_anything_helped_stop_or_reduce_use', value: 'YES' },
+  { question: 'drugs_anything_helped_stop_or_reduce_use_details', value: details('in treatment') },
+  { question: 'drugs_motivated_to_stop_or_reduce_use', value: 'PARTIAL_MOTIVATION' },
+  { question: 'drug_use_changes', value: 'MAKING_CHANGES' },
+  { question: 'drug_use_changes_making_changes_details', value: details('making changes') },
+  { question: 'drugs_practitioner_analysis_motivated_to_stop', value: 'PARTIAL_MOTIVATION' },
+  { question: 'drug_use_practitioner_analysis_strengths_or_protective_factors', value: 'YES' },
+  {
+    question: 'drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details',
+    value: details('drug strengths'),
+  },
+  { question: 'drug_use_practitioner_analysis_risk_of_serious_harm', value: 'YES' },
+  { question: 'drug_use_practitioner_analysis_risk_of_serious_harm_yes_details', value: details('drug serious harm') },
+  { question: 'drug_use_practitioner_analysis_risk_of_reoffending', value: 'YES' },
+  { question: 'drug_use_practitioner_analysis_risk_of_reoffending_yes_details', value: details('drug reoffending') },
+]
 
 const alcohol: Answer[] = [
   { question: AlcoholQuestion.alcohol_current_issues, value: AlcoholOption.significant },
@@ -536,7 +532,7 @@ const statuses: Record<string, string> = {
   [Section.accommodation.statusKey]: SectionComplete.yes,
   [Section.employment_and_education.statusKey]: SectionComplete.yes,
   // [Section.finance.statusKey]: SectionComplete.no,
-  // [Section.drug_use.statusKey]: SectionComplete.yes,
+  [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
   [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
   [Section.personal_relationships_and_community.statusKey]: SectionComplete.no,
@@ -563,7 +559,7 @@ test.describe('View all answers', () => {
         ...accommodation,
         ...employment,
         // ...finance,
-        // ...drugUse,
+        ...drugUse,
         ...alcohol,
         ...health,
         ...personal,
@@ -603,21 +599,36 @@ test.describe('View all answers', () => {
      * whitespace collapsed, since how they are laid out is not the point.
      */
 
-    // TODO Uncomment it during ACT-753 Drug framework
-    // expect(page.getByText('Cannabis', { exact: true })).toBeVisible()
-    // expect(page.getByText('Last used').first()).toBeVisible()
-    // expect(page.getByText('Used in the last 6 months').first()).toBeVisible()
-    // expect(page.getByText('How often').first()).toBeVisible()
-    // expect(page.getByText('Daily').first()).toBeVisible()
-    // expect(page.getByText('cannabis frequency — free')).toBeVisible()
-    // expect(page.getByText('Cocaine')).toBeVisible()
-    // expect(page.getByText('Last used').nth(1)).toBeVisible()
-    // expect(page.getByText('Used in the last 6 months').nth(1)).toBeVisible()
-    // expect(page.getByText('How often').nth(1)).toBeVisible()
-    // expect(page.getByText('Occasionally').first()).toBeVisible()
-    // expect(page.getByText('Heroin').first()).toBeVisible()
-    // expect(page.getByText('Last used').nth(2)).toBeVisible()
-    // expect(page.getByText('Used more than 6 months ago')).toBeVisible()
+    expect(page.getByText('Cannabis', { exact: true })).toBeVisible()
+    expect(page.getByText('Last used').first()).toBeVisible()
+    expect(page.getByText('Used in the last 6 months').first()).toBeVisible()
+    expect(page.getByText('How often').first()).toBeVisible()
+    expect(page.getByText('Daily').first()).toBeVisible()
+    expect(page.getByText('cannabis frequency')).toBeVisible()
+    expect(page.getByText('Cocaine')).toBeVisible()
+    expect(page.getByText('Last used').nth(1)).toBeVisible()
+    expect(page.getByText('Used in the last 6 months').nth(1)).toBeVisible()
+    expect(page.getByText('How often').nth(1)).toBeVisible()
+    expect(page.getByText('Occasionally').first()).toBeVisible()
+    expect(page.getByText('Heroin').first()).toBeVisible()
+    expect(page.getByText('Last used').nth(2)).toBeVisible()
+    expect(page.getByText('Used more than 6 months ago').first()).toBeVisible()
+    expect(page.getByText('How often').nth(2)).toBeVisible()
+    expect(page.getByText('Monthly').first()).toBeVisible()
+    expect(page.getByText('Ketamine').first()).toBeVisible()
+    expect(page.getByText('Last used').nth(3)).toBeVisible()
+    expect(page.getByText('Used in the last 6 months').nth(2)).toBeVisible()
+    expect(page.getByText('How often').nth(3)).toBeVisible()
+    expect(page.getByText('Weekly').first()).toBeVisible()
+
+    expect(page.getByText('Heroin').nth(1)).toBeVisible()
+    expect(page.getByText('Last injected').first()).toBeVisible()
+    expect(page.getByText('More than 6 months ago').first()).toBeVisible()
+    expect(page.getByText('Ketamine').nth(1)).toBeVisible()
+    expect(page.getByText('Last injected').nth(1)).toBeVisible()
+    expect(page.getByText('In the last 6 months').first()).toBeVisible()
+    expect(page.getByText('More than 6 months ago').nth(1)).toBeVisible()
+
     // A section stopped before its practitioner analysis shows none.
     const textHealthAndWellbeing = page.locator('div:has-text("Health and wellbeing") ~ dl').first()
     await expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
@@ -636,6 +647,8 @@ test.describe('View all answers', () => {
         'Accommodation\n' +
         'Incomplete\n' +
         'Employment and education\n' +
+        'Incomplete\n' +
+        'Drug use\n' +
         'Incomplete\n' +
         'Alcohol use\n' +
         'Incomplete\n' +
