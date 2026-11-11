@@ -79,7 +79,7 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
   }
 }
 
-export const expectSaveNavigationSucessAfterEditChanges = async (
+export const expectSucessAfterEditChanges = async (
   page: Page,
   url: string,
   link: ChangeLink,

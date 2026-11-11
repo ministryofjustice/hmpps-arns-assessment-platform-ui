@@ -5,7 +5,7 @@ import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/o
 import { offence } from '../../sanUtils'
 import {
   changeLink,
-  expectSaveNavigationSucessAfterEditChanges,
+  expectSucessAfterEditChanges,
   expectChangeLinksListed,
   expectEachChangeLinkToLandOnItsQuestion,
   Scenario,
@@ -154,7 +154,7 @@ test.describe('Offence analysis change links', () => {
         withVictim.userSubmittedSteps,
         withVictim.collections,
       )
-      await expectSaveNavigationSucessAfterEditChanges(
+      await expectSucessAfterEditChanges(
         page,
         `${section}/${victimSummaryPage}`,
         changeLink('offence-analysis-victim/edit/0', 'offence_analysis_victim_relationship'),

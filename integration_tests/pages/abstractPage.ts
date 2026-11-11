@@ -17,8 +17,6 @@ export default class AbstractPage {
 
   readonly saveAndContinue: Locator
 
-  readonly addAnotherVictim: Locator
-
   readonly summary: Locator
 
   readonly goToPractitionerAnalysis: Locator
@@ -40,7 +38,6 @@ export default class AbstractPage {
     this.signoutLink = page.getByText('Sign out')
     this.accountType = page.locator('.arns-common-header__menu-toggle-label, .arns-common-header__oasys-account-label')
     this.saveAndContinue = page.getByRole('button', { name: 'Save and continue' })
-    this.addAnotherVictim = page.getByRole('button', { name: 'Add another victim' })
     this.summary = page.getByRole('tabpanel', { name: 'Summary' })
     this.goToPractitionerAnalysis = page.getByRole('button', { name: 'Go to practitioner analysis' })
     this.practitionerAnalysisTab = page.getByRole('tab', { name: 'Practitioner analysis' })

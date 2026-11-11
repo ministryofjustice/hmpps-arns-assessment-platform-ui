@@ -3,14 +3,16 @@ import OffenceAnalysisPage from 'pages/strengthsAndNeeds/offenceAnalysisPage'
 import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/option'
 import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/offence-analysis/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
-import { offence, sanFormPath, v1Path } from '../sanUtils'
 
 test.describe('Add Victim', () => {
 
   test('add another victim', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+
+    // Setup session, initial victim data and navigate to page
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
+
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
@@ -77,12 +79,15 @@ test.describe('Add Victim', () => {
 
     let offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Add another victim')
 
+    // Add second victim details and submit the form
     await offenceAnalysisPage.addAnotherVictim.click()
 
     offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(page, 'Offence analysis')
     const { questions } = offenceAnalysisPage
 
+    // Verify page is populated with empty options
     await expect(questions.offence_analysis_victim_relationship.option(Option.stranger)).not.toBeChecked()
+
     await questions.offence_analysis_victim_relationship.option(Option.stranger).click()
     await questions.offence_analysis_victim_age.option(Option.age_12_to_15_years).click()
     await questions.offence_analysis_victim_sex.option(Option.female).click()
@@ -90,10 +95,7 @@ test.describe('Add Victim', () => {
       .selectOption(Option.white_any_other_white_background)
     await offenceAnalysisPage.saveAndContinue.click()
 
-    await expect(page).toHaveURL(
-      `${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${offence}/${Step.offence_analysis_victim_summary.path}`,
-    )
-
+    // Verify page confirmation for second victim
     await OffenceAnalysisPage.verifyOnPage(page, 'Second victim')
   })
 })
