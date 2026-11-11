@@ -62,10 +62,10 @@ const currentEmploymentStatus = question({
         text: contentFor('question.community_employment_status.option.UNEMPLOYED'),
       },
     ],
-    validationMessage: commonContentFor('select_one_option'),
+    validationMessage: contentFor('question.community_employment_status.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_status.path,
     }),
@@ -81,10 +81,10 @@ const everHadAJob = question({
       { value: CommonOption.yes, text: commonContentFor('option.YES') },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
     ],
-    validationMessage: commonContentFor('select_one_option'),
+    validationMessage: contentFor('question.community_ever_had_a_job.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_education_details.path,
       visibleWhen: notWorkingOrAvailableForWork,
@@ -105,7 +105,7 @@ const employmentHistory = question({
         hint: contentFor('question.community_employment_history.option.STABLE.hint'),
         reveals: optionalDetails({
           code: Question.community_employment_history_stable_details,
-          hint: contentFor('question.community_employment_history.hint'),
+          hint: contentFor('question.community_employment_history_stable_details.hint'),
         }),
       },
       {
@@ -121,16 +121,12 @@ const employmentHistory = question({
         text: contentFor('question.community_employment_history.option.UNSTABLE'),
         reveals: optionalDetails({
           code: Question.community_employment_history_unstable_details,
-          hint: contentFor('question.community_employment_history.hint'),
+          hint: contentFor('question.community_employment_history_unstable_details.hint'),
         }),
       },
       {
         value: CommonOption.unknown,
         text: commonContentFor('option.UNKNOWN'),
-        reveals: optionalDetails({
-          code: Question.community_employment_history_unknown_details,
-          hint: contentFor('question.community_employment_history.hint'),
-        }),
       },
     ],
     validationMessage: contentFor('question.community_employment_history.validation'),
@@ -178,7 +174,11 @@ const dayToDayCommitments = question({
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
       { divider: commonContentFor('or') },
-      { value: CommonOption.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' as const },
+      {
+        value: CommonOption.none,
+        text: contentFor('question.community_employment_other_responsibilities.option.NONE'),
+        behaviour: 'exclusive' as const,
+      },
     ],
     validationMessage: contentFor('question.community_employment_other_responsibilities.validation'),
   },
@@ -193,11 +193,16 @@ const academicProfessionalOrVocationalQualifications = question({
     code: Question.education_academic_professional_vocational_qualifications,
     format: QuestionFormat.RADIO,
     text: contentFor('question.education_academic_professional_vocational_qualifications.text', CaseData.Forename),
+    hint: contentFor('question.education_academic_professional_vocational_qualifications.hint'),
     options: [
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: optionalDetails({ code: Question.education_academic_professional_vocational_qualifications_details }),
+        reveals: requiredDetails({
+          code: Question.education_academic_professional_vocational_qualifications_details,
+          hint: contentFor('question.education_academic_professional_vocational_qualifications.option.YES.hint'),
+          validationMessage: commonContentFor('validation.enter_details'),
+        }),
       },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
@@ -218,7 +223,7 @@ const jobSkills = question({
     options: [
       {
         value: CommonOption.yes,
-        text: commonContentFor('option.YES'),
+        text: contentFor('question.education_transferable_skills.option.YES.text'),
         hint: contentFor('question.education_transferable_skills.option.YES.hint'),
         reveals: optionalDetails({ code: Question.education_transferable_skills_yes_details }),
       },
@@ -230,7 +235,7 @@ const jobSkills = question({
       },
       {
         value: CommonOption.no,
-        text: commonContentFor('option.NO'),
+        text: contentFor('question.education_transferable_skills.option.NO.text'),
         hint: contentFor('question.education_transferable_skills.option.NO.hint'),
       },
     ],
@@ -282,8 +287,16 @@ const readingDifficulties = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.education_difficulties_reading_severity.text', CaseData.Forename),
     options: [
-      { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
-      { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
+      {
+        value: Option.significant_difficulties,
+        text: contentFor('question.education_difficulties_reading_severity.options.SIGNIFICANT_DIFFICULTIES.text'),
+        hint: contentFor('question.education_difficulties_reading_severity.options.SIGNIFICANT_DIFFICULTIES.hint'),
+      },
+      {
+        value: Option.some_difficulties,
+        text: contentFor('question.education_difficulties_reading_severity.options.SOME_DIFFICULTIES.text'),
+        hint: contentFor('question.education_difficulties_reading_severity.options.SOME_DIFFICULTIES.hint'),
+      },
     ],
     validationMessage: contentFor('question.education_difficulties_reading_severity.validation'),
   },
@@ -302,8 +315,16 @@ const writingDifficulties = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.education_difficulties_writing_severity.text', CaseData.Forename),
     options: [
-      { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
-      { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
+      {
+        value: Option.significant_difficulties,
+        text: contentFor('question.education_difficulties_writing_severity.options.SIGNIFICANT_DIFFICULTIES.text'),
+        hint: contentFor('question.education_difficulties_writing_severity.options.SIGNIFICANT_DIFFICULTIES.hint'),
+      },
+      {
+        value: Option.some_difficulties,
+        text: contentFor('question.education_difficulties_writing_severity.options.SOME_DIFFICULTIES.text'),
+        hint: contentFor('question.education_difficulties_writing_severity.options.SOME_DIFFICULTIES.hint'),
+      },
     ],
     validationMessage: contentFor('question.education_difficulties_writing_severity.validation'),
   },
@@ -322,8 +343,16 @@ const numeracyDifficulties = question({
     format: QuestionFormat.RADIO,
     text: contentFor('question.education_difficulties_numeracy_severity.text', CaseData.Forename),
     options: [
-      { value: Option.significant_difficulties, text: contentFor('option.SIGNIFICANT_DIFFICULTIES') },
-      { value: Option.some_difficulties, text: contentFor('option.SOME_DIFFICULTIES') },
+      {
+        value: Option.significant_difficulties,
+        text: contentFor('question.education_difficulties_numeracy_severity.options.SIGNIFICANT_DIFFICULTIES.text'),
+        hint: contentFor('question.education_difficulties_numeracy_severity.options.SIGNIFICANT_DIFFICULTIES.hint'),
+      },
+      {
+        value: Option.some_difficulties,
+        text: contentFor('question.education_difficulties_numeracy_severity.options.SOME_DIFFICULTIES.text'),
+        hint: contentFor('question.education_difficulties_numeracy_severity.options.SOME_DIFFICULTIES.hint'),
+      },
     ],
     validationMessage: contentFor('question.education_difficulties_numeracy_severity.validation'),
   },
@@ -385,7 +414,7 @@ const changes = question({
     validationMessage: contentFor('question.employment_education_changes.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({ changeHref: Step.employment_changes.path }),
   },
 })

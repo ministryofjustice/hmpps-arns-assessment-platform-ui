@@ -4,7 +4,6 @@ import { employmentEducationSection } from '../../section'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
@@ -18,7 +17,6 @@ export const educationDifficultiesStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([
         ...baseSanRoute,
         Section.employment_and_education.path,

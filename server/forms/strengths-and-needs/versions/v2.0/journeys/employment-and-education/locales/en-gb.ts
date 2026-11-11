@@ -13,9 +13,11 @@ export const english = {
         [Option.currently_unavailable_for_work]: 'Currently unavailable for work',
         [Option.unemployed]: 'Unemployed',
       },
+      validation: 'Select their employment status',
     },
     [Question.community_ever_had_a_job]: {
       text: 'Has %1 ever had a job?',
+      validation: 'Select if they have ever had a job',
     },
     [Question.community_employment_history]: {
       text: 'What is %1 employment history?',
@@ -43,51 +45,90 @@ export const english = {
         [Option.child]: 'Child responsibilities',
         [Option.studying]: 'Studying',
         [Option.volunteer]: 'Volunteering',
+        [CommonOption.none]: 'No additional day-to-day commitments',
       },
-      validation: `Select if they have any additional day-to-day commitments, or select 'None'`,
+      validation: `Select if they have any additional day-to-day commitments, or select 'No additional day-to-day commitments'`,
     },
     [Question.education_transferable_skills]: {
-      text: 'Does %1 have any skills that could help them in a job or to get a job?',
+      text: 'How would you describe %1 skills for work?',
       option: {
         [CommonOption.yes]: {
-          hint: 'This includes any completed training, qualifications, work experience or transferable skills.',
+          text: 'Strong work-related skills',
+          hint: 'Has completed training, work experience or transferable skills that could help them get or keep a job.',
         },
         [Option.yes_some_skills]: {
-          text: 'Some skills',
-          hint: 'This includes partially completed training or qualifications, limited on the job experience or skills that are not directly transferable.',
+          text: 'Some work-related skills',
+          hint: 'Has limited work experience, partially completed training or skills that are not directly transferable.',
         },
         [CommonOption.no]: {
-          hint: 'This includes having no other qualifications, incomplete apprenticeships or no history of working in the same industry.',
+          text: 'No work-related skills',
+          hint: 'Has no skills or experience that could help them get a job.',
         },
       },
-      validation: 'Select if they have any skills that could help them in a job or to get a job',
+      validation: 'Select how you would describe their skills for work',
     },
     [Question.education_academic_professional_vocational_qualifications]: {
-      text: 'Does %1 have any academic, professional or vocational qualifications?',
-      validation: `Select if they have have any academic, professional or vocational qualifications`,
+      text: 'Does %1 have any completed academic, professional or vocational qualifications?',
+      hint: 'For  example, GCSEs, A levels, degrees, apprenticeships, trade qualifications, driving qualifications or professional certifications.',
+      option: {
+        [CommonOption.yes]: {
+          hint: 'Include the qualifications, subjects and grades, if known.',
+        },
+      },
+      validation: `Select if they have any completed academic, professional or vocational qualifications`,
     },
     [Question.education_difficulties]: {
-      text: 'Does %1 have difficulties with reading, writing or numeracy?',
+      text: 'Does %1 need support with reading, writing or numeracy?',
       hint: 'Select all that apply.',
       option: {
         [Option.reading]: 'Yes, with reading',
         [Option.writing]: 'Yes, with writing',
         [Option.numeracy]: 'Yes, with numeracy',
-        [CommonOption.none]: 'No difficulties',
+        [CommonOption.none]: 'No support needed with reading, writing or numeracy',
       },
-      validation: `Select if they have difficulties with reading, writing or numeracy, or select 'No difficulties'`,
+      validation: `Select if they need support with reading, writing or numeracy, or select 'No support needed with reading, writing or numeracy'`,
     },
     [Question.education_difficulties_reading_severity]: {
       text: 'How much support does %1 need with reading?',
-      validation: 'Select level of difficulty',
+      options: {
+        [Option.significant_difficulties]: {
+          text: 'Significant support needed',
+          hint: 'Has a substantial impact on day-to-day life and they are likely to need regular support.',
+        },
+        [Option.some_difficulties]: {
+          text: 'Some support needed',
+          hint: 'Can usually manage day-to-day reading but may need support with some written information.',
+        },
+      },
+      validation: 'Select level of support needed',
     },
     [Question.education_difficulties_writing_severity]: {
       text: 'How much support does %1 need with writing?',
-      validation: 'Select level of difficulty',
+      options: {
+        [Option.significant_difficulties]: {
+          text: 'Significant support needed',
+          hint: 'Has a substantial impact on day-to-day life and they are likely to need regular support.',
+        },
+        [Option.some_difficulties]: {
+          text: 'Some support needed',
+          hint: 'Can usually manage day-to-day writing but may need support with spelling, grammar or completing longer writing tasks.',
+        },
+      },
+      validation: 'Select level of support needed',
     },
     [Question.education_difficulties_numeracy_severity]: {
       text: 'How much support does %1 need with numeracy?',
-      validation: 'Select level of difficulty',
+      options: {
+        [Option.significant_difficulties]: {
+          text: 'Significant support needed',
+          hint: 'Has a substantial impact on day-to-day life and they are likely to need regular support.',
+        },
+        [Option.some_difficulties]: {
+          text: 'Some support needed',
+          hint: 'Can usually manage day-to-day numeracy but may need support with calculations, numbers or money-related tasks.',
+        },
+      },
+      validation: 'Select level of support needed',
     },
     [Question.community_employment_history_stable_details]: {
       hint: `Include what type of work they’ve done before.`,
@@ -98,12 +139,9 @@ export const english = {
     [Question.community_employment_history_unstable_details]: {
       hint: `Include what type of work they’ve done before.`,
     },
-    [Question.community_employment_history_unknown_details]: {
-      hint: `Include what type of work they’ve done before.`,
-    },
     [Question.employment_education_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 employment and education?',
-      hint: 'Include any strategies, people or support networks that helped.',
+      hint: 'Include any strategies, people or support networks that helped. Also consider any relevant soft skills.',
       validation: 'Select if there are any strengths or protective factors',
     },
     [Question.employment_education_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
