@@ -18,6 +18,11 @@ export const offenceAnalysisVictimStep = step({
       backlink: createRoute([...baseSanRoute, Section.offence_analysis.path]),
     },
   },
+  // The edit step shares these field codes, and forge clears the codes of any unreachable step.
+  // Until the victim summary is submitted, the walk stops before this step, so mark it as an entry.
+  reachability: {
+    entryWhen: true,
+  },
   blocks: [
     victimQuestions.victimType.displayModes.field,
     victimQuestions.victimAge.displayModes.field,
