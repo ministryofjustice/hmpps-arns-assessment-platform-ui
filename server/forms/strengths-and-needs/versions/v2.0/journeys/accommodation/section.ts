@@ -56,7 +56,7 @@ const currentAccommodation = question({
     validationMessage: contentFor('question.community_current_accommodation.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: (content): SummaryRow => ({
       key: { text: content.text },
       value: {
@@ -89,7 +89,7 @@ const settledAccommodation = question({
     validationMessage: contentFor('question.community_current_accommodation_settled.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_current_accommodation_settled.path,
       visibleWhen: hasAccommodation,
@@ -115,7 +115,7 @@ const suitableHousingLocation = question({
     validationMessage: contentFor('question.community_suitable_housing_location.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_suitable_housing_location.path,
       visibleWhen: hasAccommodation,
@@ -127,7 +127,8 @@ const suitableHousingLocationConcerns = question({
   content: {
     code: Question.community_suitable_housing_location_concerns,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.community_suitable_housing_location_concerns.text'),
+    text: contentFor('question.community_suitable_housing_location_concerns.text', CaseData.ForenamePossessive),
+    hint: commonContentFor('select_all_that_apply'),
     options: [
       {
         value: Option.criminal_associates,
@@ -158,10 +159,13 @@ const suitableHousingLocationConcerns = question({
         }),
       },
     ],
-    validationMessage: contentFor('question.community_suitable_housing_location_concerns.validation'),
   },
   displayModes: {
-    field: checkboxField({ dependentWhen: isNotSuitableHousingLocation, visibleWhen: isNotSuitableHousingLocation }),
+    field: checkboxField({
+      dependentWhen: isNotSuitableHousingLocation,
+      visibleWhen: isNotSuitableHousingLocation,
+      legendClasses: 'govuk-fieldset__legend--l',
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_suitable_housing_location_concerns.path,
       visibleWhen: isNotSuitableHousingLocation,
@@ -189,7 +193,7 @@ const suitableAccommodation = question({
     validationMessage: contentFor('question.community_suitable_housing.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_suitable_housing.path,
       visibleWhen: hasAccommodation,
@@ -206,7 +210,8 @@ const suitableAccommodationConcerns = question({
     options: [
       {
         value: Option.facilities,
-        text: contentFor('question.community_suitable_housing_concerns.option.FACILITIES'),
+        text: contentFor('question.community_suitable_housing_concerns.option.FACILITIES.text'),
+        hint: contentFor('question.community_suitable_housing_concerns.option.FACILITIES.hint'),
       },
       {
         value: Option.overcrowding,
@@ -214,7 +219,8 @@ const suitableAccommodationConcerns = question({
       },
       {
         value: Option.exploitation,
-        text: contentFor('question.community_suitable_housing_concerns.option.EXPLOITATION'),
+        text: contentFor('question.community_suitable_housing_concerns.option.EXPLOITATION.text'),
+        hint: contentFor('question.community_suitable_housing_concerns.option.EXPLOITATION.hint'),
       },
       {
         value: Option.safety,
@@ -237,12 +243,12 @@ const suitableAccommodationConcerns = question({
         }),
       },
     ],
-    validationMessage: contentFor('question.community_suitable_housing_concerns.validation'),
   },
   displayModes: {
     field: checkboxField({
       dependentWhen: isSuitableWithConcernsAccommodation,
       visibleWhen: isSuitableWithConcernsAccommodation,
+      legendClasses: 'govuk-fieldset__legend--l',
     }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_suitable_housing_concerns.path,
@@ -255,12 +261,13 @@ const unsuitableAccommodationConcerns = question({
   content: {
     code: Question.community_unsuitable_housing_concerns,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.community_unsuitable_housing_concerns.text'),
+    text: contentFor('question.community_unsuitable_housing_concerns.text', CaseData.ForenamePossessive),
     hint: commonContentFor('select_all_that_apply'),
     options: [
       {
         value: Option.facilities,
-        text: contentFor('question.community_unsuitable_housing_concerns.option.FACILITIES'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.FACILITIES.text'),
+        hint: contentFor('question.community_unsuitable_housing_concerns.option.FACILITIES.hint'),
       },
       {
         value: Option.overcrowding,
@@ -268,7 +275,8 @@ const unsuitableAccommodationConcerns = question({
       },
       {
         value: Option.exploitation,
-        text: contentFor('question.community_unsuitable_housing_concerns.option.EXPLOITATION'),
+        text: contentFor('question.community_unsuitable_housing_concerns.option.EXPLOITATION.text'),
+        hint: contentFor('question.community_unsuitable_housing_concerns.option.EXPLOITATION.hint'),
       },
       {
         value: Option.safety,
@@ -291,10 +299,13 @@ const unsuitableAccommodationConcerns = question({
         }),
       },
     ],
-    validationMessage: contentFor('question.community_unsuitable_housing_concerns.validation'),
   },
   displayModes: {
-    field: checkboxField({ dependentWhen: isNotSuitableAccommodation, visibleWhen: isNotSuitableAccommodation }),
+    field: checkboxField({
+      dependentWhen: isNotSuitableAccommodation,
+      visibleWhen: isNotSuitableAccommodation,
+      legendClasses: 'govuk-fieldset__legend--l',
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_suitable_housing_concerns.path,
       visibleWhen: isNotSuitableAccommodation,
@@ -345,7 +356,7 @@ const noAccommodationReason = question({
     validationMessage: contentFor('question.community_no_accommodation_reason.validation'),
   },
   displayModes: {
-    field: checkboxField(),
+    field: checkboxField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.community_no_accommodation_reason.path,
       visibleWhen: hasNoAccommodation,
@@ -402,7 +413,7 @@ const changes = question({
     validationMessage: contentFor('question.accommodation_changes.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({ changeHref: Step.accommodation_changes.path }),
   },
 })
@@ -415,7 +426,7 @@ const strengthsOrProtectiveFactors = question({
       'question.accommodation_practitioner_analysis_strengths_or_protective_factors.text',
       CaseData.ForenamePossessive,
     ),
-    hint: contentFor('question.accommodation_practitioner_analysis_strengths_or_protective_factors.hint'),
+    hint: { html: contentFor('question.accommodation_practitioner_analysis_strengths_or_protective_factors.hint') },
     options: yesNo({
       yes: requiredDetails({
         code: Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,

@@ -11,7 +11,7 @@ import { Step } from '../../constants/step'
 import { saveButton } from '../../../../constants/buttons'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 import { personalRelationshipsCommunitySection } from '../../section'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
@@ -26,7 +26,7 @@ export const personalRelationshipsChildrenInformationStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass,
+      sectionTitleClass: sectionTitleClassV2,
     },
   },
   blocks: [personalRelationshipsCommunitySection.questions.childrenDetails.displayModes.field, saveButton],

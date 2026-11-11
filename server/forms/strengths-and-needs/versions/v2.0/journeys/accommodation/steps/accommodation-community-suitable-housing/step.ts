@@ -18,12 +18,14 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const suitableHousingStep = step({
   path: `/${Step.community_suitable_housing.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
+      sectionTitleClass: sectionTitleClassV2,
       backlink: when(isNotSuitableHousingLocation)
         .then(
           createRoute([
