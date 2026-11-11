@@ -76,14 +76,14 @@ test.describe('Summary', () => {
           - definition:
             - link "Change Is the location of Test's accommodation suitable?":
               - /url: accommodation-community-suitable-housing-location#community_suitable_housing_location-question
-          - term: What are the concerns with the location?
+          - term: Why is the location of Test's accommodation not suitable? (Optional)
           - definition:
             - paragraph: Close to criminal associates
             - paragraph: Close to someone who has victimised them
             - paragraph: Other
             - paragraph: location concerns other — free text answer.
           - definition:
-            - link "Change What are the concerns with the location?":
+            - link "Change Why is the location of Test's accommodation not suitable? (Optional)":
               - /url: accommodation-community-suitable-housing-location-concerns#community_suitable_housing_location_concerns-question
           - term: Is Test's accommodation suitable?
           - definition:
@@ -91,14 +91,14 @@ test.describe('Summary', () => {
           - definition:
             - link "Change Is Test's accommodation suitable?":
               - /url: accommodation-community-suitable-housing#community_suitable_housing-question
-          - term: What are your concerns about the location of Test's accommodation?
+          - term: What are your concerns about the suitability of Test's accommodation? (Optional)
           - definition:
-            - paragraph: Issues with the property - for example, poor kitchen or bathroom facilities
+            - paragraph: Issues with the property
             - paragraph: Overcrowding
             - paragraph: Other
             - paragraph: housing concerns other — free text answer.
           - definition:
-            - link "Change What are your concerns about the location of Test's accommodation?":
+            - link "Change What are your concerns about the suitability of Test's accommodation? (Optional)":
               - /url: accommodation-community-suitable-housing-concerns#community_suitable_housing_concerns-question
           - term: Does Test want to make changes to their accommodation?
           - definition:

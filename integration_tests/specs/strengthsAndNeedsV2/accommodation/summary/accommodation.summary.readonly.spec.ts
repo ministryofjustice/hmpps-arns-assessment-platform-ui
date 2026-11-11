@@ -69,7 +69,7 @@ test.describe('Summary read-only', () => {
           - term: Is the location of Test's accommodation suitable?
           - definition:
             - paragraph: "No"
-          - term: What are the concerns with the location?
+          - term: Why is the location of Test's accommodation not suitable? (Optional)
           - definition:
             - paragraph: Close to criminal associates
             - paragraph: Close to someone who has victimised them
@@ -78,9 +78,9 @@ test.describe('Summary read-only', () => {
           - term: Is Test's accommodation suitable?
           - definition:
             - paragraph: "Yes, with concerns"
-          - term: What are your concerns about the location of Test's accommodation?
+          - term: What are your concerns about the suitability of Test's accommodation? (Optional)
           - definition:
-            - paragraph: Issues with the property - for example, poor kitchen or bathroom facilities
+            - paragraph: Issues with the property
             - paragraph: Overcrowding
             - paragraph: Other
             - paragraph: housing concerns other — free text answer.

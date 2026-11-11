@@ -10,12 +10,14 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const accommodationSettledStep = step({
   path: `/${Step.community_current_accommodation_settled.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
+      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([...baseSanRoute, Section.accommodation.path, Step.community_current_accommodation.path]),
     },
   },

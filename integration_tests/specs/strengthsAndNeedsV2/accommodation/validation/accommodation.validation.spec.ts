@@ -100,7 +100,7 @@ test.describe('Validation', () => {
     await questions.community_suitable_housing_location.errorLink.click()
     await expect(questions.community_suitable_housing_location.input).toBeFocused()
   })
-  test('validation community_suitable_housing_location_concerns', async ({
+  test('validation community_suitable_housing_location_concerns other details', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -122,23 +122,12 @@ test.describe('Validation', () => {
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_suitable_housing_location_concerns.path)
-    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What are the concerns with the location?')
+    const accommodationPage = await AccommodationPage.verifyOnPage(
+      page,
+      "Why is the location of Test's accommodation not suitable? (Optional)",
+    )
     const { questions } = accommodationPage
 
-    await accommodationPage.saveAndContinue.click()
-    await expect(accommodationPage.alert).toMatchAriaSnapshot(`
-        - alert:
-          - heading "There is a problem" [level=2]
-          - list:
-            - listitem:
-              - link "Select if there are concerns with the location":
-                - /url: "#community_suitable_housing_location_concerns"
-      `)
-
-    await questions.community_suitable_housing_location_concerns.errorLink.click()
-    await expect(questions.community_suitable_housing_location_concerns.input).toBeFocused()
-
-    // Check community_suitable_housing_location_concerns_other_details
     await questions.community_suitable_housing_location_concerns.option(CommonOption.other).check()
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`
@@ -152,7 +141,11 @@ test.describe('Validation', () => {
     await questions.community_suitable_housing_location_concerns_other_details.errorLink.click()
     await expect(questions.community_suitable_housing_location_concerns_other_details.input).toBeFocused()
   })
-  test('validation community_suitable_housing_concerns', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
+  test('validation community_suitable_housing_concerns other details', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+  }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -174,24 +167,10 @@ test.describe('Validation', () => {
     await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_suitable_housing_concerns.path)
     const accommodationPage = await AccommodationPage.verifyOnPage(
       page,
-      "What are your concerns about the location of Test's accommodation?",
+      "What are your concerns about the suitability of Test's accommodation? (Optional)",
     )
     const { questions } = accommodationPage
 
-    await accommodationPage.saveAndContinue.click()
-    await expect(accommodationPage.alert).toMatchAriaSnapshot(`
-        - alert:
-          - heading "There is a problem" [level=2]
-          - list:
-            - listitem:
-              - link "Select if there are concerns with the accommodation":
-                - /url: "#community_suitable_housing_concerns"
-      `)
-
-    await questions.community_suitable_housing_concerns.errorLink.click()
-    await expect(questions.community_suitable_housing_concerns.input).toBeFocused()
-
-    // Check community_suitable_housing_concerns_other_details
     await questions.community_suitable_housing_concerns.option(CommonOption.other).check()
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`
@@ -205,7 +184,7 @@ test.describe('Validation', () => {
     await questions.community_suitable_housing_concerns_other_details.errorLink.click()
     await expect(questions.community_suitable_housing_concerns_other_details.input).toBeFocused()
   })
-  test('validation community_unsuitable_housing_concerns', async ({
+  test('validation community_unsuitable_housing_concerns other details', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -229,23 +208,12 @@ test.describe('Validation', () => {
       .save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink, Step.community_suitable_housing_concerns.path)
-    const accommodationPage = await AccommodationPage.verifyOnPage(page, 'What are the concerns?')
+    const accommodationPage = await AccommodationPage.verifyOnPage(
+      page,
+      "Why is Test's accommodation not suitable? (Optional)",
+    )
     const { questions } = accommodationPage
 
-    await accommodationPage.saveAndContinue.click()
-    await expect(accommodationPage.alert).toMatchAriaSnapshot(`
-        - alert:
-          - heading "There is a problem" [level=2]
-          - list:
-            - listitem:
-              - link "Select if there are concerns with the accommodation":
-                - /url: "#community_unsuitable_housing_concerns"
-      `)
-
-    await questions.community_unsuitable_housing_concerns.errorLink.click()
-    await expect(questions.community_unsuitable_housing_concerns.input).toBeFocused()
-
-    // Check community_suitable_housing_concerns_other_details
     await questions.community_unsuitable_housing_concerns.option(CommonOption.other).check()
     await accommodationPage.saveAndContinue.click()
     await expect(accommodationPage.alert).toMatchAriaSnapshot(`

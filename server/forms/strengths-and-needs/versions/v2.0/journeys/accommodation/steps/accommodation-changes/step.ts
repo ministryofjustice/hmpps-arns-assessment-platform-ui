@@ -18,12 +18,14 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const accommodationChangesStep = step({
   path: `/${Step.accommodation_changes.path}`,
   title: sectionPageTitle(Section.accommodation),
   view: {
     locals: {
+      sectionTitleClass: sectionTitleClassV2,
       backlink: when(hasNoAccommodation)
         .then(createRoute([...baseSanRoute, Section.accommodation.path, Step.community_no_accommodation_reason.path]))
         .else(

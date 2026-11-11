@@ -5,7 +5,7 @@ import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { sectionPageTitle } from '../../../../locales'
-import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autoSaveAccommodationSubmit } from '../../../../autosaveAccommodation'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
@@ -16,7 +16,7 @@ export const currentAccommodationStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass,
+      sectionTitleClass: sectionTitleClassV2,
     },
   },
   blocks: [accommodationSection.questions.currentAccommodation.displayModes.field, saveButton],
