@@ -1,4 +1,5 @@
 import { expect, Page } from '@playwright/test'
+import { AnswerConfig } from 'builders/types'
 import { Answer, test } from './fixtures'
 
 export type ChangeLink = { step: string; question: string }
@@ -76,4 +77,31 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
       expect(top, 'question top on screen').toBeLessThan(viewportHeight)
     })
   }
+}
+
+export const expectSucessAfterEditChanges = async (
+  page: Page,
+  url: string,
+  link: ChangeLink,
+  answers: AnswerConfig[],
+) => {
+  await openPage(page, url)
+  const change = page.locator(`main a[href="${hrefOf(link)}"]`).first()
+  await expect(change, 'says what it changes, as visually hidden text').toHaveAccessibleName(/^Change\s+\S/)
+  await change.click()
+
+  await expect(page).toHaveURL(new RegExp(`/${link.step}#${link.question}-question$`))
+
+  const expectedAnswer = answers.find(ans => ans.question === link.question)
+  if (expectedAnswer) {
+    const locator = page.locator(`[id=${link.question}][value="${expectedAnswer.value}"]`)
+    const tagName = await locator.evaluate(elment => elment.tagName.toLowerCase())
+
+    if (tagName === 'select' || tagName === 'textarea') {
+      await expect(locator).toHaveValue(expectedAnswer.value.toString())
+    } else if (tagName === 'input') {
+      await expect(page.locator(`[id="${link.question}"][value="${expectedAnswer.value}"]`)).toBeChecked()
+    }
+  }
+
 }

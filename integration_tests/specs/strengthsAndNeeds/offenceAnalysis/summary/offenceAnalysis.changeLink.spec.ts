@@ -5,6 +5,7 @@ import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/o
 import { offence } from '../../sanUtils'
 import {
   changeLink,
+  expectSucessAfterEditChanges,
   expectChangeLinksListed,
   expectEachChangeLinkToLandOnItsQuestion,
   Scenario,
@@ -143,6 +144,21 @@ test.describe('Offence analysis change links', () => {
         `${section}/${summaryPage}`,
         withVictim.summaryChangeLinks,
         summaryTab,
+      )
+    })
+
+    test('save changes answers after clicking change link victim question', async ({ page, openSection }) => {
+      const section = await openSection(
+        offence,
+        withVictim.answers,
+        withVictim.userSubmittedSteps,
+        withVictim.collections,
+      )
+      await expectSucessAfterEditChanges(
+        page,
+        `${section}/${victimSummaryPage}`,
+        changeLink('offence-analysis-victim/edit/0', 'offence_analysis_victim_relationship'),
+        withVictim.collections,
       )
     })
   })
