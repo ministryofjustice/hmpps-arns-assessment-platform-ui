@@ -1,4 +1,4 @@
-// eslint-disable-next-line max-classes-per-file
+/* eslint-disable max-classes-per-file */
 import { test } from '@playwright/test'
 import type { User } from '../../server/interfaces/user'
 import type { SingleValue, MultiValue } from '../../server/interfaces/aap-api/dataModel'
