@@ -5,6 +5,7 @@ import type {
   HandoverSubjectDetails,
   AccessMode,
   Location,
+  YesNoNull,
 } from '@server/interfaces/handover-api/shared'
 import type { TestHandoverApiClient } from '../support/apis/TestHandoverApiClient'
 import type { CoordinatorAssociation } from './CoordinatorBuilder'
@@ -69,6 +70,8 @@ export class HandoverBuilderInstance {
 
   private planVersion: number | undefined
 
+  private sexuallyMotivatedOffenceHistory: YesNoNull | undefined
+
   // Generate unique user ID to avoid "duplicate key" errors in parallel tests
   private defaultPrincipal: HandoverPrincipalDetails = {
     identifier: generateUserId(),
@@ -116,6 +119,12 @@ export class HandoverBuilderInstance {
    */
   withPlanAccessMode(planAccessMode: AccessMode): this {
     this.principal.planAccessMode = planAccessMode
+
+    return this
+  }
+
+  withAccessMode(accessMode: AccessMode): this {
+    this.principal.accessMode = accessMode
 
     return this
   }
@@ -197,6 +206,17 @@ export class HandoverBuilderInstance {
   }
 
   /**
+   * Set sexually motivated offence history
+   * @param yesNo
+   * @returns
+   */
+  withSexuallyMotivatedOffenceHistory(yesNo: YesNoNull): this {
+    this.sexuallyMotivatedOffenceHistory = yesNo
+
+    return this
+  }
+
+  /**
    * Save the handover session via the handover API.
    */
   async save(): Promise<HandoverSession> {
@@ -214,6 +234,7 @@ export class HandoverBuilderInstance {
         gender: this.subject.gender ?? '1',
         dateOfBirth: this.subject.dateOfBirth ?? '1990-01-01',
         location: this.subject.location ?? 'COMMUNITY',
+        sexuallyMotivatedOffenceHistory: this.sexuallyMotivatedOffenceHistory,
         ...this.subject,
       }
 
@@ -226,6 +247,7 @@ export class HandoverBuilderInstance {
         subjectDetails,
         oasysAssessmentPk: this.association.oasysAssessmentPk,
         sentencePlanVersion: this.planVersion,
+        sexuallyMotivatedOffenceHistory: this.sexuallyMotivatedOffenceHistory,
       }
 
       const handoverResponse = await test.step('POST /handover (createHandoverLink)', () =>

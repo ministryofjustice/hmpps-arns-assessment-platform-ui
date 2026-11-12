@@ -23,6 +23,10 @@ import {
   redirectIfMergedMpopPlan,
   redirectToPrivacyUnlessAccepted,
 } from './guards'
+import config from '../../../../config'
+import { createPlatformPages } from '../../../platform'
+
+const feedbackUrl = config.nationalRolloutFeedbackUrl
 
 /**
  * Sentence Plan v1.0 Journey
@@ -41,12 +45,12 @@ export const sentencePlanV1Journey = journey({
   view: {
     template: 'sentence-plan/views/sentence-plan-step',
     locals: {
-      footerBaseUrl: '/platform',
       basePath: sentencePlanBasePath,
       hmppsHeaderServiceNameLink: sentencePlanOverviewPath,
       showAboutTab: canAccessSanContent,
       showPlanHistoryTab: hasPostAgreementStatus,
       showSupervisionPackageTab: canAccessSupervisionPackage,
+      feedbackUrl,
     },
   },
   data: {
@@ -92,6 +96,10 @@ export const sentencePlanV1Journey = journey({
       effects: [SentencePlanEffects.loadSupervisionPackage()],
     }),
   ],
-  steps: [aboutPersonStep, supervisionPackageStep],
+  steps: [
+    aboutPersonStep,
+    supervisionPackageStep,
+    ...createPlatformPages({ baseUrl: sentencePlanBasePath, feedbackUrl }),
+  ],
   children: [planOverviewJourney, goalManagementJourney],
 })

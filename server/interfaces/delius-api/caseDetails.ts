@@ -20,6 +20,7 @@ export interface CaseDetails {
   name: CaseDetailsName
   crn: string
   pnc?: string
+  gender?: string
   dateOfBirth: string
   nomisId: string
   region: string

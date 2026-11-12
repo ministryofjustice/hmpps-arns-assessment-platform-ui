@@ -10,7 +10,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, introText, goalCard, buttonGroup } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 import { redirectIfGoalNotFound, redirectIfPostAgreement } from '../../../guards'
 
@@ -38,7 +38,7 @@ export const confirmDeleteGoalStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_DELETE_GOAL),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_DELETE_GOAL),
       ],
     }),
     // Redirect if plan is no longer in draft (delete is only for draft plans)
@@ -56,7 +56,7 @@ export const confirmDeleteGoalStep = step({
       onAlways: {
         effects: [
           SentencePlanEffects.deleteActiveGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.DELETE_GOAL),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.DELETE_GOAL),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You deleted a goal from %1 plan', CaseData.ForenamePossessive),

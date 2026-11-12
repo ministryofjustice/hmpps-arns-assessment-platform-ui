@@ -1,5 +1,5 @@
 import { sendAuditEvent } from './sendAuditEvent'
-import { AuditEvent } from '../../../../services/auditService'
+import { SentencePlanAuditEvent } from '../../auditEvents'
 import type { SentencePlanContext, SentencePlanEffectsDeps } from '../types'
 
 interface MockContextOptions {
@@ -46,22 +46,27 @@ describe('sendAuditEvent', () => {
   it('should send audit event with correct context', async () => {
     const context = createMockContext({ activeGoalUuid: 'goal-789' })
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_PLAN_OVERVIEW)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW)
 
     expect(deps.auditService.send).toHaveBeenCalledWith({
-      action: AuditEvent.VIEW_PLAN_OVERVIEW,
+      action: SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW,
       who: 'test-user',
       subjectId: 'CRN-001',
       subjectType: 'CRN',
       correlationId: 'req-123',
-      details: { assessmentUuid: 'assessment-456', formVersion: 'v1.0', goalUuid: 'goal-789' },
+      details: {
+        form: 'sentence-plan',
+        assessmentUuid: 'assessment-456',
+        formVersion: 'v1.0',
+        goalUuid: 'goal-789',
+      },
     })
   })
 
   it('should include goalUuid from activeGoalUuid data', async () => {
     const context = createMockContext({ activeGoalUuid: 'goal-uuid-123' })
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_CHANGE_GOAL)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_CHANGE_GOAL)
 
     expect(deps.auditService.send).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -73,7 +78,7 @@ describe('sendAuditEvent', () => {
   it('should omit goalUuid when activeGoalUuid is not set', async () => {
     const context = createMockContext()
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_PLAN_OVERVIEW)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW)
 
     expect(deps.auditService.send).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -85,7 +90,7 @@ describe('sendAuditEvent', () => {
   it('should default who to "unknown" when user is not available', async () => {
     const context = createMockContext({ user: null })
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_PLAN_OVERVIEW)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW)
 
     expect(deps.auditService.send).toHaveBeenCalledWith(expect.objectContaining({ who: 'unknown' }))
   })
@@ -93,7 +98,7 @@ describe('sendAuditEvent', () => {
   it('should default correlationId to "unknown" when requestId is not available', async () => {
     const context = createMockContext({ requestId: null })
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_PLAN_OVERVIEW)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW)
 
     expect(deps.auditService.send).toHaveBeenCalledWith(expect.objectContaining({ correlationId: 'unknown' }))
   })
@@ -101,7 +106,7 @@ describe('sendAuditEvent', () => {
   it('should not set subjectType when crn is not available', async () => {
     const context = createMockContext({ crn: null })
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_PLAN_OVERVIEW)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW)
 
     expect(deps.auditService.send).toHaveBeenCalledWith(
       expect.objectContaining({ subjectId: undefined, subjectType: undefined }),
@@ -115,22 +120,22 @@ describe('sendAuditEvent', () => {
       getSession: jest.fn((): undefined => undefined),
     } as unknown as SentencePlanContext
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_PLAN_OVERVIEW)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW)
 
     expect(deps.auditService.send).toHaveBeenCalledWith({
-      action: AuditEvent.VIEW_PLAN_OVERVIEW,
+      action: SentencePlanAuditEvent.VIEW_PLAN_OVERVIEW,
       who: 'unknown',
       subjectId: undefined,
       subjectType: undefined,
       correlationId: 'unknown',
-      details: { assessmentUuid: undefined, formVersion: undefined, goalUuid: undefined },
+      details: { form: 'sentence-plan', assessmentUuid: undefined, formVersion: undefined, goalUuid: undefined },
     })
   })
 
   it('should merge additional details into the details object', async () => {
     const context = createMockContext({ activeGoalUuid: 'goal-123' })
 
-    await sendAuditEvent(deps)(context, AuditEvent.EDIT_GOAL, { planStatus: 'POST_AGREE' })
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.EDIT_GOAL, { planStatus: 'POST_AGREE' })
 
     expect(deps.auditService.send).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -142,7 +147,7 @@ describe('sendAuditEvent', () => {
   it('should not include additional details when not provided', async () => {
     const context = createMockContext({ activeGoalUuid: 'goal-123' })
 
-    await sendAuditEvent(deps)(context, AuditEvent.VIEW_CREATE_GOAL)
+    await sendAuditEvent(deps)(context, SentencePlanAuditEvent.VIEW_CREATE_GOAL)
 
     expect(deps.auditService.send).toHaveBeenCalledWith(
       expect.objectContaining({

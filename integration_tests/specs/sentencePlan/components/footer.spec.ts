@@ -22,11 +22,11 @@ test.describe('Footer', () => {
     const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
     await expect(planOverviewPage.footer.getByRole('link', { name: 'Accessibility' })).toHaveAttribute(
       'href',
-      '/platform/accessibility',
+      '/sentence-plan/v1.0/accessibility',
     )
     await expect(planOverviewPage.footer.getByRole('link', { name: 'Cookies policy' })).toHaveAttribute(
       'href',
-      '/platform/cookies-policy',
+      '/sentence-plan/v1.0/cookies-policy',
     )
     await expect(planOverviewPage.footer.getByRole('link', { name: 'Privacy policy' })).toBeHidden()
   })

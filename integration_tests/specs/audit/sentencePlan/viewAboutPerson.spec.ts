@@ -1,6 +1,6 @@
 import { test } from '../../../support/fixtures'
 import { sentencePlanV1URLs } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('View About Page', () => {
   test('visiting about page', async ({ page, auditQueue, openSentencePlan }) => {
@@ -8,7 +8,7 @@ test.describe('View About Page', () => {
 
     await page.goto(sentencePlanV1URLs.ABOUT_PERSON)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_ABOUT_PERSON)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_ABOUT_PERSON)
     expectAuditEvent(event)
   })
 })
