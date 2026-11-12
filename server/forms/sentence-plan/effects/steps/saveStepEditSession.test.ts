@@ -9,6 +9,11 @@ import type {
 } from '../types'
 import type { User } from '../../../../interfaces/user'
 
+// The telemetry package's Azure exporter loads an ESM-only dependency (https-proxy-agent 9) that Jest cannot require
+jest.mock('@ministryofjustice/hmpps-azure-telemetry', () => ({
+  telemetry: { trackEvent: jest.fn() },
+}))
+
 const user: User = {
   id: 'user-1',
   name: 'Fallback User',

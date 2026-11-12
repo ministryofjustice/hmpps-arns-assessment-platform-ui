@@ -1,4 +1,5 @@
 import express from 'express'
+import { telemetryMiddleware } from '@ministryofjustice/hmpps-azure-telemetry'
 
 import createError from 'http-errors'
 
@@ -98,6 +99,8 @@ export default function createApp(services: Services): express.Application {
   app.use(authorisationMiddleware([], services.deliusApiClient))
   app.use(setUpCsrf())
   app.use(setUpCurrentUser())
+  // Counter Corruption Unit uses App Insights as audit evidence, so tag every request span with who made it
+  app.use(telemetryMiddleware.addUserMetadataToTelemetry())
   app.use(setUpFeatureFlags(services.featureFlagService))
   app.use(setUpPreviousPageTracking())
 

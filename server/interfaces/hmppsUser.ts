@@ -1,3 +1,5 @@
+import { UUID } from 'crypto'
+
 export type AuthSource = 'OASYS' | 'HMPPS_AUTH' | 'NOT_SPECIFIED' | 'EXTERNAL'
 
 /**
@@ -7,6 +9,9 @@ export interface BaseUser {
   authSource: AuthSource
   username: string
   userId: string
+  // Created by HMPPS Auth on first sign-in and unique across all its auth sources.
+  // Absent for OASys users, whose token comes from the Handover service instead.
+  userUuid?: UUID
   name: string
   displayName: string
   userRoles: string[]
