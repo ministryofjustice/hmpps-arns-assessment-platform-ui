@@ -10,6 +10,12 @@ import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { GOTENBERG_RENDER_HEADER, GOTENBERG_RENDER_HEADER_VALUE } from '../../../../data/gotenbergClient'
 import { isPdfRenderRequest } from './guards'
 
+// guards.ts imports the effects index, which reaches the telemetry package. Its Azure exporter
+// loads an ESM-only dependency (https-proxy-agent 9) that Jest cannot require.
+jest.mock('@ministryofjustice/hmpps-azure-telemetry', () => ({
+  telemetry: { trackEvent: jest.fn() },
+}))
+
 describe('guards', () => {
   describe('isPdfRenderRequest', () => {
     const auditView = jest.fn()
