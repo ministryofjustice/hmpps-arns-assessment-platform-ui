@@ -1,6 +1,7 @@
 import { EffectRegistry } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { deriveDrugCategories } from './assessment/deriveDrugCategories'
 import { clearUnselectedDrugAnswers } from './assessment/clearUnselectedDrugAnswers'
+import { clearInapplicableLivingWithAnswers } from './assessment/clearInapplicableLivingWithAnswers'
 import { loadAssessment } from './assessment/loadAssessment'
 import { loadPreviousVersions } from './assessment/loadPreviousVersions'
 import { resolveHistoricVersion } from './assessment/resolveHistoricVersion'
@@ -38,6 +39,10 @@ export const StrengthsAndNeedsEffects = {
   saveCurrentStepAnswers: sanEffects.register('saveCurrentStepAnswers', saveCurrentStepAnswers),
   deriveDrugCategories: sanEffects.register('deriveDrugCategories', deriveDrugCategories),
   clearUnselectedDrugAnswers: sanEffects.register('clearUnselectedDrugAnswers', clearUnselectedDrugAnswers),
+  clearInapplicableLivingWithAnswers: sanEffects.register(
+    'clearInapplicableLivingWithAnswers',
+    clearInapplicableLivingWithAnswers,
+  ),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
   addItemToCollection: sanEffects.register('addItemToCollection', addItemToCollection),
   updateItemFromCollection: sanEffects.register('updateItemFromCollection', updateItemFromCollection),

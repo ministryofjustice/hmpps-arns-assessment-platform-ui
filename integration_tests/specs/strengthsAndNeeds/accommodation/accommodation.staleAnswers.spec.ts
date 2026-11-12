@@ -49,6 +49,8 @@ test.describe('Stale answers', () => {
     await accommodationPage.saveAndContinue.click()
     await expect(page).toHaveURL(`${accommodationUrl}${Step.accommodation_details.path}`)
 
+    expect(await storedAnswers(aapClient, sanAssessmentId)).not.toHaveProperty(Question.living_with)
+
     await page.goto(`${accommodationUrl}${Step.accommodation_summary.path}`)
     await expect(page).toHaveURL(`${accommodationUrl}${Step.accommodation_status.path}`)
 
