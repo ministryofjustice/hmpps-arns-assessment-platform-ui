@@ -61,6 +61,7 @@ export const suitableHousingStep = step({
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
         next: [
           redirect({
@@ -76,6 +77,7 @@ export const suitableHousingStep = step({
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.accommodation, Step.community_suitable_housing),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
     }),

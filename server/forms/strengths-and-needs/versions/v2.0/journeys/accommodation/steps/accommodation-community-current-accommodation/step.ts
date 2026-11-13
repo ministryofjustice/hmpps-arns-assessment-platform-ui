@@ -39,9 +39,10 @@ export const currentAccommodationStep = step({
       },
       onValid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,
@@ -55,9 +56,10 @@ export const currentAccommodationStep = step({
       },
       onInvalid: {
         effects: [
-          StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(false),
+          StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.accommodation,

@@ -1,13 +1,24 @@
-import { Condition, Format, Item, Iterator, Session, when } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { GovUKBody, GovUKTable, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
+import {
+  and,
+  Condition,
+  Data,
+  Format,
+  Item,
+  Iterator,
+  not,
+  Session,
+  Transformer,
+  when,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { GovUKBody, GovUKHeading, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { Fragment, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
+import { basePath } from '../../constants/formVersion'
 import { contentFor } from './locales'
 import { Section } from '../../constants/section'
 import { SANGenerators } from '../../../../generators'
 import { sentencePlanViewHistoricBasePath } from '../../constants/path'
 import { CaseData } from '../../../../constants/common'
-import { basePath } from '../../constants/formVersion'
 
 const { createRoute } = SANGenerators
 
@@ -22,7 +33,7 @@ const tableHeadColumns = [
   { text: contentFor('previous_versions_table_head_date') },
   { text: contentFor('previous_versions_table_head_assessment') },
   { text: contentFor('previous_versions_table_head_plan') },
-  { text: contentFor('previous_versions_table_head_status') },
+  // { text: contentFor('previous_versions_table_head_status') },
 ]
 
 const dateCell = {
@@ -46,7 +57,9 @@ const assessmentCell = {
             '<a class="button-as-link" href="%1" target="_blank">%2<span class="govuk-visually-hidden"> %3 %4</span></a>',
             createRoute([
               basePath,
+              // Opens in a new window, which isn't the OASys one
               'view-historic',
+              Data('assessmentUuid'),
               Item().path('assessmentVersionId'),
               Section.accommodation.sideNavHref,
             ]),
@@ -90,26 +103,56 @@ const planCell = {
   ],
 }
 
-const statusCell = {
-  classes: 'govuk-!-width-one-quarter',
-  blocks: [
-    GovUKTag({
-      classes: 'previous-version-status',
-      text: Item().path('assessmentVersionStatus').pipe(StrengthsAndNeedsTransformers.FormatVersionStatus()),
-    }),
-  ],
-}
+// const statusCell = {
+//   classes: 'govuk-!-width-one-quarter',
+//   blocks: [
+//     GovUKTag({
+//       classes: 'previous-version-status',
+//       text: Item().path('assessmentVersionStatus').pipe(StrengthsAndNeedsTransformers.FormatVersionStatus()),
+//     }),
+//   ],
+// }
 
-const tableRows = [dateCell, assessmentCell, planCell, statusCell]
+const tableRows = [
+  dateCell,
+  assessmentCell,
+  planCell,
+  // statusCell,
+]
 
-const createVersionTable = (caption: ResolvableString, sessionKey: 'countersignedVersions' | 'previousVersions') =>
-  GovUKTable({
-    caption,
-    captionClasses: versionTableCaptionClasses,
-    classes: versionTableClasses,
-    head: tableHeadColumns,
-    rows: Session(sessionKey).each(Iterator.Map(tableRows)),
+const createVersionTable = (caption: ResolvableString, sessionKey: 'countersignedVersions' | 'previousVersions') => {
+  const tableData = Session(`san.${sessionKey}`)
+  const hasRows = and(
+    tableData.match(Condition.Array.IsArray()),
+    tableData.pipe(Transformer.Array.Length()).match(Condition.Number.GreaterThan(0)),
+  )
+
+  return Fragment({
+    blocks: [
+      GovUKTable({
+        caption,
+        captionClasses: versionTableCaptionClasses,
+        classes: versionTableClasses,
+        head: tableHeadColumns,
+        attributes: { 'data-qa': 'previous-versions-table' },
+        rows: tableData.each(Iterator.Map(tableRows)),
+        visibleWhen: hasRows,
+      }),
+      Fragment({
+        blocks: [
+          GovUKHeading({
+            size: 'm',
+            text: caption,
+          }),
+          GovUKBody({
+            text: contentFor('no_versions'),
+          }),
+        ],
+        visibleWhen: not(hasRows),
+      }),
+    ],
   })
+}
 
 export const countersignedVersionTable = createVersionTable(
   contentFor('countersigned_versions_table_caption'),

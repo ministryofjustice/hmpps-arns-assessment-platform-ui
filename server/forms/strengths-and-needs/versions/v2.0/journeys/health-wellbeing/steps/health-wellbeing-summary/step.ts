@@ -33,6 +33,7 @@ export const healthWellbeingSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.health_and_wellbeing, SectionComplete.yes),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.MARK_SECTION_COMPLETE,
             Section.health_and_wellbeing,
@@ -45,6 +46,7 @@ export const healthWellbeingSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.health_and_wellbeing, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.health_and_wellbeing,

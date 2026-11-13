@@ -57,6 +57,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_involved_parties.code),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
       onValid: {
@@ -77,6 +78,7 @@ export const offenceAnalysisInvolvedPartiesStep = step({
       onInvalid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.offence_analysis,

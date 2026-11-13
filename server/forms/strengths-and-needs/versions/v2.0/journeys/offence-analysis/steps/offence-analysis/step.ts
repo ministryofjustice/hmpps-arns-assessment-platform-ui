@@ -55,6 +55,7 @@ export const offenceAnalysisStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis),
         ],
@@ -82,7 +83,7 @@ export const offenceAnalysisStep = step({
       onInvalid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
     }),

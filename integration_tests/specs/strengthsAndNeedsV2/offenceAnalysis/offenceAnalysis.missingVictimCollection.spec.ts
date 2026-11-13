@@ -7,7 +7,7 @@ import { Option } from '@server/forms/strengths-and-needs/versions/v2.0/journeys
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/offence-analysis/constants/step'
 import OffenceAnalysisPage from 'pages/strengthsAndNeedsV2/offenceAnalysisPage'
 import { test, TargetService } from '../../../support/fixtures'
-import { offence, sanFormPath, v2Path } from '../sanUtils'
+import { buildEditUrl, offence } from '../sanUtils'
 
 test.describe('Missing victim collection', () => {
   for (const resume of [false, true]) {
@@ -66,7 +66,7 @@ test.describe('Missing victim collection', () => {
       await offenceAnalysisPage.saveAndContinue.click()
 
       await expect(page).toHaveURL(
-        `${baseURL}${sanFormPath}${v2Path}/edit/${sanAssessmentId}/current${offence}/${Step.offence_analysis_involved_parties.path}`,
+        buildEditUrl(baseURL, sanAssessmentId, `${offence}/${Step.offence_analysis_involved_parties.path}`),
       )
       await expect(
         page.getByRole('group', {

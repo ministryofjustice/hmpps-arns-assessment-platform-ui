@@ -74,6 +74,7 @@ export const offenceAnalysisEditVictimStep = step({
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
       onValid: {
@@ -83,6 +84,7 @@ export const offenceAnalysisEditVictimStep = step({
             Params('itemId').pipe(Transformer.String.ToInt()),
           ),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.offence_analysis,

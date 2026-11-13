@@ -50,6 +50,7 @@ export const offenceAnalysisImpactStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.yes),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis_impact),
         ],
         next: [

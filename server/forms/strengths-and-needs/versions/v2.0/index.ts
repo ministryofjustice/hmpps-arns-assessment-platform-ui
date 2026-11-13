@@ -27,7 +27,8 @@ import config from '../../../../config'
 import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { previousVersionsStep } from './steps/previous-versions/step'
-import { configStep } from '../configStep'
+import { createConfigStep } from '../createConfigStep'
+import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
@@ -72,6 +73,9 @@ export const strengthsAndNeedsV2Journey = journey({
       previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
     },
   },
+  data: {
+    formVersion,
+  },
   onAccess: [
     // The URL mode and UUID must match the access
     ...routeGuards(),
@@ -87,7 +91,7 @@ export const strengthsAndNeedsV2Journey = journey({
     }),
     // Redirect to first page of v2 journey
     access({
-      // a 5-slug path means we are not in a section e.g. /strengths-and-needs/v1.0/edit/<assessmentUuid>/current
+      // a 5-slug path means we are not in a section e.g. /strengths-and-needs/v2.0/edit/<assessmentUuid>/current
       when: Request.Path().match(Condition.String.MatchesRegex('^/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$')),
       next: [redirect({ goto: `${Section.accommodation.sideNavHref}${resumeUrlAppend}` })],
     }),
@@ -96,7 +100,7 @@ export const strengthsAndNeedsV2Journey = journey({
     ...createPlatformPages({ baseUrl: basePath, feedbackUrl }),
     viewAllAnswersStep,
     previousVersionsStep,
-    configStep,
+    createConfigStep(formConfigsByVersion[formVersion]),
   ],
   children: [
     accommodationJourney,

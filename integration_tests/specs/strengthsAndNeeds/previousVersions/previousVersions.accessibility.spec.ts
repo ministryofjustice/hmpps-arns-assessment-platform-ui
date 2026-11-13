@@ -5,11 +5,12 @@ import PreviousVersionsPage from '../../../pages/strengthsAndNeeds/previousVersi
 import coordinatorApi from '../../../mockApis/coordinatorApi'
 
 test.describe('Accessibility', () => {
-  test('should be accessibile', async ({ page, createSession, baseURL }) => {
+  test('should be accessibile', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
 
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
     const today = new Date()
     const yesterday = new Date()
 

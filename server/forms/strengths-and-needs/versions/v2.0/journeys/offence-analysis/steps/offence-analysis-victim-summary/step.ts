@@ -63,7 +63,10 @@ export const offenceAnalysisVictimSummaryStep = step({
       when: Post('action').match(Condition.Equals('save')),
       validate: true,
       onAlways: {
-        effects: [StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code)],
+        effects: [
+          StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_victim_summary.code),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
+        ],
       },
       onValid: {
         effects: [
@@ -89,6 +92,7 @@ export const offenceAnalysisVictimSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
       onValid: {

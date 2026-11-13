@@ -2,7 +2,7 @@ import { Params } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { basePath } from './formVersion'
 
 // TODO: refactor how this is managed in sentence plan and export from there instead
-export const sentencePlanViewHistoricBasePath = 'sentence-plan/v1.0/plan/view-historic/'
+export const sentencePlanViewHistoricBasePath = 'sentence-plan/v2.0/plan/view-historic/'
 
 /** The `:versionUuid` route segment for the current (latest) version of the assessment */
 export const currentVersion = 'current'
