@@ -34,7 +34,7 @@ test.describe('Validation', () => {
     await expect(questions.community_employment_status.input).toBeFocused()
   })
 
-  test('validation has ever been employed option', async ({
+  test('validation has ever been employed (unavailable for work) option', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -66,11 +66,50 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select if they have ever had a job":
-              - /url: "#community_ever_had_a_job"
+              - /url: "#ever_had_a_job_unavailable"
     `)
 
-    await questions.community_ever_had_a_job.errorLink.click()
-    await expect(questions.community_ever_had_a_job.input).toBeFocused()
+    await questions.ever_had_a_job_unavailable.errorLink.click()
+    await expect(questions.ever_had_a_job_unavailable.input).toBeFocused()
+  })
+
+  test('validation has ever been employed (unemployed) option', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([{ question: Question.community_employment_status, value: Option.unemployed }])
+      .withUserSubmittedSteps([Step.employment_status.code, Step.employment_education_details.code])
+      .save()
+
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      Step.community_ever_had_a_job.path,
+    )
+
+    const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'ever had a job?')
+    const { questions } = employmentAndEducationPage
+
+    await employmentAndEducationPage.saveAndContinue.click()
+    await expect(employmentAndEducationPage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select if they have ever had a job":
+              - /url: "#ever_had_a_job_unemployed"
+    `)
+
+    await questions.ever_had_a_job_unemployed.errorLink.click()
+    await expect(questions.ever_had_a_job_unemployed.input).toBeFocused()
   })
 
   test('validation employed questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
@@ -190,7 +229,68 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.unemployed },
-        { question: Question.community_ever_had_a_job, value: CommonOption.no },
+        { question: Question.ever_had_a_job_unemployed, value: CommonOption.no },
+      ])
+      .withUserSubmittedSteps([Step.employment_status.code, Step.community_ever_had_a_job.code])
+      .save()
+
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      Step.employment_education_details.path,
+    )
+
+    const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(
+      page,
+      'any additional day-to-day commitments',
+    )
+
+    const { questions } = employmentAndEducationPage
+
+    await employmentAndEducationPage.saveAndContinue.click()
+    await expect(employmentAndEducationPage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select if they have any additional day-to-day commitments, or select 'No additional day-to-day commitments'":
+              - /url: "#community_employment_other_responsibilities"
+          - listitem:
+            - link "Select if they have any completed academic, professional or vocational qualifications":
+              - /url: "#education_academic_professional_vocational_qualifications"
+          - listitem:
+            - link "Select how you would describe their skills for work":
+              - /url: "#education_transferable_skills"
+          - listitem:
+            - link "Select if they need support with reading, writing or numeracy, or select 'No support needed with reading, writing or numeracy'":
+              - /url: "#education_difficulties"
+    `)
+
+    await questions.community_employment_other_responsibilities.errorLink.click()
+    await expect(questions.community_employment_other_responsibilities.input).toBeFocused()
+    await questions.education_academic_professional_vocational_qualifications.errorLink.click()
+    await expect(questions.education_academic_professional_vocational_qualifications.input).toBeFocused()
+    await questions.education_transferable_skills.errorLink.click()
+    await expect(questions.education_transferable_skills.input).toBeFocused()
+    await questions.education_difficulties.errorLink.click()
+    await expect(questions.education_difficulties.input).toBeFocused()
+  })
+
+  test('validation unavailable and never employed questions', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId).withAnswers([
+        { question: Question.community_employment_status, value: Option.currently_unavailable_for_work },
+        { question: Question.ever_had_a_job_unavailable, value: CommonOption.no },
       ])
       .withUserSubmittedSteps([Step.employment_status.code, Step.community_ever_had_a_job.code])
       .save()

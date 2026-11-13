@@ -18,7 +18,8 @@ export const questions = questionsOf({
 export const summary = GovUKSummaryList({
   rows: [
     employmentEducationSection.questions.currentEmploymentStatus.displayModes.summaryRow,
-    employmentEducationSection.questions.everHadAJob.displayModes.summaryRow,
+    employmentEducationSection.questions.everHadAJobUnemployed.displayModes.summaryRow,
+    employmentEducationSection.questions.everHadAJobUnavailable.displayModes.summaryRow,
     employmentEducationSection.questions.employmentHistory.displayModes.summaryRow,
     employmentEducationSection.questions.dayToDayCommitments.displayModes.summaryRow,
     employmentEducationSection.questions.academicProfessionalOrVocationalQualifications.displayModes.summaryRow,

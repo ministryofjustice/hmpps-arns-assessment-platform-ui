@@ -10,7 +10,7 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 import { createRoute } from '../../../../../../generators'
-import { baseSanRoute } from '../../../../../v1.0/constants/path'
+import { baseSanRoute } from '../../../../constants/path'
 
 export const hasEverHadAJobStep = step({
   path: `/${Step.community_ever_had_a_job.path}`,
@@ -22,7 +22,11 @@ export const hasEverHadAJobStep = step({
       backlink: createRoute([...baseSanRoute, Section.employment_and_education.path, Step.employment_status.path]),
     },
   },
-  blocks: [employmentEducationSection.questions.everHadAJob.displayModes.field, saveButton],
+  blocks: [
+    employmentEducationSection.questions.everHadAJobUnemployed.displayModes.field,
+    employmentEducationSection.questions.everHadAJobUnavailable.displayModes.field,
+    saveButton,
+  ],
   onAccess: [
     auditPageView(SanAuditEvent.VIEW_QUESTION_PAGE, Section.employment_and_education, Step.community_ever_had_a_job),
   ],

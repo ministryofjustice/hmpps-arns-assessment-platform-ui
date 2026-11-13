@@ -1,6 +1,7 @@
 export const Question = {
   community_employment_status: 'community_employment_status',
-  community_ever_had_a_job: 'community_ever_had_a_job',
+  ever_had_a_job_unavailable: 'ever_had_a_job_unavailable',
+  ever_had_a_job_unemployed: 'ever_had_a_job_unemployed',
 
   // Employment history
   community_employment_history: 'community_employment_history',
