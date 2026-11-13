@@ -26,11 +26,17 @@ export const isRetired = Answer(Question.community_employment_status).match(Cond
 
 export const notWorkingOrAvailableForWork = not(or(isEmployedOrSelfEmployed, isRetired))
 
+const isUnemployed = Answer(Question.community_employment_status).match(Condition.Equals(Option.unemployed))
+const isUnavailableForWork = Answer(Question.community_employment_status).match(
+  Condition.Equals(Option.currently_unavailable_for_work),
+)
+
 // The history and experience questions only apply once we know the person has
 // been employed before (or their employment status implies it).
 const hasBeenEmployed = or(
   isEmployedOrSelfEmployed,
-  Answer(Question.community_ever_had_a_job).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.ever_had_a_job_unavailable).match(Condition.Equals(CommonOption.yes)),
+  Answer(Question.ever_had_a_job_unemployed).match(Condition.Equals(CommonOption.yes)),
 )
 
 const hasBeenEmployedOrRetired = or(hasBeenEmployed, isRetired)
@@ -72,22 +78,50 @@ const currentEmploymentStatus = question({
   },
 })
 
-const everHadAJob = question({
+const everHadAJobUnemployed = question({
   content: {
-    code: Question.community_ever_had_a_job,
+    code: Question.ever_had_a_job_unemployed,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.community_ever_had_a_job.text', CaseData.Forename),
+    text: contentFor('question.ever_had_a_job_unemployed.text', CaseData.Forename),
     options: [
       { value: CommonOption.yes, text: commonContentFor('option.YES') },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
     ],
-    validationMessage: contentFor('question.community_ever_had_a_job.validation'),
+    validationMessage: contentFor('question.ever_had_a_job_unemployed.validation'),
   },
   displayModes: {
-    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
+    field: radioField({
+      dependentWhen: isUnemployed,
+      visibleWhen: isUnemployed,
+      legendClasses: 'govuk-fieldset__legend--l',
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.employment_education_details.path,
-      visibleWhen: notWorkingOrAvailableForWork,
+      visibleWhen: isUnemployed,
+    }),
+  },
+})
+
+const everHadAJobUnavailable = question({
+  content: {
+    code: Question.ever_had_a_job_unavailable,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.ever_had_a_job_unavailable.text', CaseData.Forename),
+    options: [
+      { value: CommonOption.yes, text: commonContentFor('option.YES') },
+      { value: CommonOption.no, text: commonContentFor('option.NO') },
+    ],
+    validationMessage: contentFor('question.ever_had_a_job_unavailable.validation'),
+  },
+  displayModes: {
+    field: radioField({
+      dependentWhen: isUnavailableForWork,
+      visibleWhen: isUnavailableForWork,
+      legendClasses: 'govuk-fieldset__legend--l',
+    }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.employment_education_details.path,
+      visibleWhen: isUnavailableForWork,
     }),
   },
 })
@@ -521,7 +555,8 @@ export const employmentEducationSection = {
   code: Section.employment_and_education.code,
   questions: {
     currentEmploymentStatus,
-    everHadAJob,
+    everHadAJobUnemployed,
+    everHadAJobUnavailable,
     employmentHistory,
     dayToDayCommitments,
     academicProfessionalOrVocationalQualifications,
