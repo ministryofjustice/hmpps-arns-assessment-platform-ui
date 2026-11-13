@@ -7,7 +7,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { PreviousVersionsResponse } from '../../../../interfaces/coordinator-api/previousVersions'
-import config from "../../../../config";
+import config from '../../../../config'
 
 /**
  * Previous versions list component.
