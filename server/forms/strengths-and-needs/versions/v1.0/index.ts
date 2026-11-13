@@ -16,7 +16,7 @@ import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
-import { basePath, formRootPath, formVersion } from './constants/formVersion'
+import { basePath, formVersion } from './constants/formVersion'
 import { commonContentFor } from './locales'
 import { healthWellbeingJourney } from './journeys/health-wellbeing'
 import { personalRelationshipsJourney } from './journeys/personal-relationships-and-community'
@@ -28,10 +28,10 @@ import { createPlatformPages, notAPlatformPage } from '../../../platform'
 import { viewAllAnswersStep } from './steps/view-all-answers/step'
 import { previousVersionsStep } from './steps/previous-versions/step'
 import { configStep } from '../configStep'
-import { formConfigsByVersion } from '../../constants/formConfigRegistry'
 import { StrengthsAndNeedsTransformers } from '../../transformers'
 import { createRoute } from '../../generators'
 import { baseSanRoute } from './constants/path'
+import { formRootPath, resumeUrlAppend } from '../../constants/common'
 
 const feedbackUrl = config.privateBetaFeedbackUrl
 
@@ -72,10 +72,6 @@ export const strengthsAndNeedsV1Journey = journey({
       previousVersionDate: Data('previousVersionDate').pipe(StrengthsAndNeedsTransformers.FormatFullDateTime()),
     },
   },
-  data: {
-    formVersion,
-    formConfig: formConfigsByVersion[formVersion],
-  },
   onAccess: [
     // The URL mode and UUID must match the access
     ...routeGuards(),
@@ -93,7 +89,7 @@ export const strengthsAndNeedsV1Journey = journey({
     access({
       // a 5-slug path means we are not in a section e.g. /strengths-and-needs/v1.0/edit/<assessmentUuid>/current
       when: Request.Path().match(Condition.String.MatchesRegex('^/[^/]+/[^/]+/[^/]+/[^/]+/[^/]+$')),
-      next: [redirect({ goto: Section.accommodation.sideNavHref })],
+      next: [redirect({ goto: `${Section.accommodation.sideNavHref}${resumeUrlAppend}` })],
     }),
   ],
   steps: [

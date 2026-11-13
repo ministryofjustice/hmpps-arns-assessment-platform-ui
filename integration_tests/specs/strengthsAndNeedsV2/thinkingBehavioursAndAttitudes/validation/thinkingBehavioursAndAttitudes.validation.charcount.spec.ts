@@ -1,8 +1,8 @@
-import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step'
-import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
-import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/option'
-import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
-import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeeds/thinkingBehavioursAndAttitudesPage'
+import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/step'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeedsV2/thinkingBehavioursAndAttitudesPage'
 import { expectTheLimitsOnThePage } from '../../characterCounts'
 import { test } from '../../fixtures'
 import { changeOptions, thinking } from '../../sanUtils'
@@ -25,7 +25,6 @@ const answers = [
   { question: Question.thinking_behaviours_attitudes_temper_management, value: CommonOption.no },
   { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.sometimes },
   { question: Question.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.yes },
-  { question: Question.thinking_behaviours_attitudes_positive_attitude, value: Option.negative_attitude_and_concerns },
   { question: Question.thinking_behaviours_attitudes_hostile_orientation, value: Option.some },
   { question: Question.thinking_behaviours_attitudes_supervision, value: Option.unsure_supervision },
   { question: Question.thinking_behaviours_attitudes_criminal_behaviour, value: Option.sometimes },

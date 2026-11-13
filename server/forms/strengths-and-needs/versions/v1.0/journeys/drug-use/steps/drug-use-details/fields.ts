@@ -12,7 +12,6 @@ import {
 import { GovUKDetails, GovUKInsetText } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 
-import { CaseData } from '../../../../constants/formVersion'
 import { SANGenerators } from '../../../../../../generators'
 import { drugHowOftenUsed, drugHowOftenUsedDetails, drugUsedInLastSixMonths, drugUseSection } from '../../section'
 import { contentFor } from '../../locales'
@@ -20,6 +19,7 @@ import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
 import { Option } from '../../constants/option'
 import { drugsList } from '../../constants'
+import { CaseData } from '../../../../../../constants/common'
 
 // --- Conditions ---
 

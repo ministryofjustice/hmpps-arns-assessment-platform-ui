@@ -1,6 +1,5 @@
 import { Answer, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
-import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import { checkboxField, question, QuestionFormat, radioField, SummaryRow } from '../../../../constants/questionContent'
 import { commonContentFor } from '../../locales'
@@ -18,6 +17,7 @@ import {
   requiredDetails,
   yesNo,
 } from '../../constants/questionContent'
+import { CaseData } from '../../../../constants/common'
 
 export const hasAccommodation = Answer(Question.community_current_accommodation).match(
   Condition.Equals(CommonOption.yes),

@@ -15,7 +15,7 @@ test.describe('Summary', () => {
       subject: { gender: '1' },
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
         { question: Question.alcohol_frequency, value: Option.multiple_times_a_month },
@@ -91,7 +91,7 @@ test.describe('Summary', () => {
       subject: { gender: '1' },
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
         { question: Question.alcohol_frequency, value: Option.multiple_times_a_month },

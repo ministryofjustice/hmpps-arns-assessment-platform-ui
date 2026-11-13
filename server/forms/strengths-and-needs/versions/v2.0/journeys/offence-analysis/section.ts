@@ -18,7 +18,7 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
-import { CaseData } from '../../constants/formVersion'
+import { CaseData } from '../../../../constants/common'
 import { CommonOption } from '../../constants/commonOption'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import { Section } from '../../constants/section'

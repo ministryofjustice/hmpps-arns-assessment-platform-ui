@@ -8,8 +8,9 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsSessionDetails } from '../../effects/types'
-import { basePath, formRootPath } from './constants/formVersion'
+import { basePath } from './constants/formVersion'
 import { isEditMode, isReadOnlyMode, routeGuards, showPreviousVersionsLink, showReturnToOasys } from './guards'
+import { formRootPath } from '../../constants/common'
 
 const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
 const versionUuid = 'e8f1a0a4-0000-4000-8000-000000000002'

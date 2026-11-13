@@ -19,7 +19,7 @@ test.describe('Stale answers', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.drug_use, value: CommonOption.yes },
         { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.cannabis] },

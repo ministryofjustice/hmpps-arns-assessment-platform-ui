@@ -4,7 +4,7 @@ import { expect } from '@playwright/test'
 import AccommodationPage from 'pages/strengthsAndNeedsV2/accommodationPage'
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/step'
 import { navigateToStrengthsAndNeeds } from 'specs/strengthsAndNeedsV2/sanUtils'
-import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {

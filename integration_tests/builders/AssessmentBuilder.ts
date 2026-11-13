@@ -1,5 +1,6 @@
 // eslint-disable-next-line max-classes-per-file
 import { test } from '@playwright/test'
+import { latestVersion } from '@server/forms/strengths-and-needs/constants/formVersion'
 import type { User } from '../../server/interfaces/user'
 import type { SingleValue, MultiValue } from '../../server/interfaces/aap-api/dataModel'
 import type {
@@ -87,7 +88,7 @@ export class AssessmentBuilderInstance {
 
   private definition: AssessmentDefinition = {
     assessmentType: 'DEFAULT',
-    formVersion: '1',
+    formVersion: latestVersion,
     identifiers: {},
     answers: {},
     properties: {},
@@ -106,7 +107,7 @@ export class AssessmentBuilderInstance {
   /**
    * Set the assessment type (e.g., 'SENTENCE_PLAN')
    */
-  ofType(assessmentType: string): this {
+  ofType(assessmentType: string = 'SAN_SP'): this {
     this.definition.assessmentType = assessmentType
 
     return this
@@ -115,7 +116,7 @@ export class AssessmentBuilderInstance {
   /**
    * Set the form version
    */
-  withFormVersion(version: string): this {
+  withFormVersion(version: string = latestVersion): this {
     this.definition.formVersion = version
 
     return this
@@ -232,6 +233,10 @@ export class AssessmentBuilderInstance {
         await this.client.backdateEvents(assessmentUuid, this.backdateEventsFrom, this.backdateEventsTo)
       }
 
+      if (this.definition.formVersion !== latestVersion) {
+        await this.updateFormVersion(this.definition.formVersion, assessmentUuid)
+      }
+
       return {
         uuid: assessmentUuid,
         collections: createdCollections,
@@ -262,6 +267,15 @@ export class AssessmentBuilderInstance {
     })
 
     return createResult.assessmentUuid
+  }
+
+  private async updateFormVersion(formVersion: string, assessmentUuid: string): Promise<void> {
+    await this.client.executeCommand({
+      type: 'UpdateFormVersionCommand',
+      user: this.user,
+      assessmentUuid,
+      version: formVersion,
+    })
   }
 
   private async createCollection(

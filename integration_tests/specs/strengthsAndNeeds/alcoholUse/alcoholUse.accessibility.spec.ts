@@ -7,7 +7,7 @@ test.describe('Accessibility', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
     await checkAccessibility(page, {

@@ -12,7 +12,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         {
           question: Question.personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
@@ -143,7 +143,7 @@ test.describe('Summary', () => {
       subject: { gender: '1' },
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         {
           question: Question.personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
@@ -216,7 +216,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         {
           question: Question.personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],

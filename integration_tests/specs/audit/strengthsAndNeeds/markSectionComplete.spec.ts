@@ -14,7 +14,7 @@ test.describe("Selects 'Mark as Complete' for each Criminogenic Needs section", 
     const { crn, handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(financeAnswers).save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withAnswers(financeAnswers).save()
 
     await walkToFinanceSummary(page, handoverLink, sanAssessmentId)
     await markSectionComplete(page)
