@@ -9,8 +9,4 @@ export default class EmploymentAndEducationPage extends StrengthsAndNeedsPage {
   static readonly firstStep = Step.employment_status.path
 
   readonly questions = this.questionsOf(Question)
-
-  // The form gives has_been_employed a separate question per employment status
-  readonly hasBeenEmployed = (status: string) =>
-    this.question(`${Question.community_ever_had_a_job}_${status.toLowerCase()}`)
 }

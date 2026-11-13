@@ -15,7 +15,11 @@ export const english = {
       },
       validation: 'Select their employment status',
     },
-    [Question.community_ever_had_a_job]: {
+    [Question.ever_had_a_job_unavailable]: {
+      text: 'Has %1 ever had a job?',
+      validation: 'Select if they have ever had a job',
+    },
+    [Question.ever_had_a_job_unemployed]: {
       text: 'Has %1 ever had a job?',
       validation: 'Select if they have ever had a job',
     },

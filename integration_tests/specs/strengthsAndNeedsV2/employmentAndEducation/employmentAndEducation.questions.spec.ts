@@ -152,13 +152,56 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows has ever had a job question', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows has ever had a job (unavailable for work) question', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId)
       .withAnswers([{ question: Question.community_employment_status, value: Option.currently_unavailable_for_work }])
+      .withUserSubmittedSteps([Step.employment_status.code])
+      .save()
+
+    await EmploymentAndEducationPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      Step.community_ever_had_a_job.path,
+    )
+
+    const employmentAndEducationPage = await EmploymentAndEducationPage.verifyOnPage(page, 'ever had a job?')
+
+    await expect(page).toHaveTitle(buildPageTitle(sanPageTitles.employmentAndEducation))
+
+    await expect(employmentAndEducationPage.mainForm).toMatchAriaSnapshot(`
+        - group "Has Test ever had a job?":
+          - text: Has Test ever had a job?
+          - radio "Yes"
+          - text: "Yes"
+          - radio "No"
+          - text: "No"
+        - button "Save and continue"
+    `)
+  })
+
+  test('shows has ever had a job (unemployed) question', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId)
+      .withAnswers([{ question: Question.community_employment_status, value: Option.unemployed }])
       .withUserSubmittedSteps([Step.employment_status.code])
       .save()
 
@@ -197,7 +240,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.currently_unavailable_for_work },
-        { question: Question.community_ever_had_a_job, value: CommonOption.yes },
+        { question: Question.ever_had_a_job_unavailable, value: CommonOption.yes },
       ])
       .withUserSubmittedSteps([Step.employment_status.code, Step.community_ever_had_a_job.code])
       .save()
@@ -234,7 +277,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.currently_unavailable_for_work },
-        { question: Question.community_ever_had_a_job, value: CommonOption.no },
+        { question: Question.ever_had_a_job_unavailable, value: CommonOption.no },
       ])
       .withUserSubmittedSteps([Step.employment_status.code, Step.community_ever_had_a_job.code])
       .save()
@@ -270,7 +313,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.unemployed },
-        { question: Question.community_ever_had_a_job, value: CommonOption.yes },
+        { question: Question.ever_had_a_job_unemployed, value: CommonOption.yes },
       ])
       .withUserSubmittedSteps([Step.employment_status.code, Step.community_ever_had_a_job.code])
       .save()
@@ -307,7 +350,7 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         { question: Question.community_employment_status, value: Option.unemployed },
-        { question: Question.community_ever_had_a_job, value: CommonOption.no },
+        { question: Question.ever_had_a_job_unemployed, value: CommonOption.no },
       ])
       .withUserSubmittedSteps([Step.employment_status.code, Step.community_ever_had_a_job.code])
       .save()
