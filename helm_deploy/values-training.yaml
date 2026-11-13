@@ -30,11 +30,11 @@ generic-service:
   env:
     INGRESS_URL: 'https://arns-assessment-platform-training.hmpps.service.justice.gov.uk'
     HMPPS_AUTH_URL: 'https://sign-in-dev.hmpps.service.justice.gov.uk/auth'
-    HMPPS_ARNS_HANDOVER_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/handover'
-    HMPPS_ARNS_HANDOVER_EXTERNAL_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
+    HMPPS_ARNS_HANDOVER_URL: 'http://hmpps-assess-risks-and-needs-handover-service.hmpps-arns-assessment-platform-training.svc.cluster.local'
+    HMPPS_ARNS_HANDOVER_EXTERNAL_URL: 'https://arns-handover-service-training.hmpps.service.justice.gov.uk'
     TOKEN_VERIFICATION_API_URL: 'https://token-verification-api-dev.prison.service.justice.gov.uk'
     AAP_API_URL: 'http://hmpps-arns-assessment-platform-api.hmpps-arns-assessment-platform-training.svc.cluster.local'
-    COORDINATOR_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/coordinator-api'
+    COORDINATOR_API_URL: 'http://hmpps-assess-risks-and-needs-coordinator-api.hmpps-arns-assessment-platform-training.svc.cluster.local'
     DELIUS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/delius'
     ARNS_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/arns-api'
     TIER_API_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/tier-api'
@@ -71,7 +71,8 @@ generic-service:
     t1-jump2022-1: 10.26.8.12/32
     accessibility-audit: 5.181.59.114/32
 
-# Delius, ARNS, Tier, Supervision Package, Handover and Coordinator calls go via Wiremock. Any CRN
+# Delius, ARNS, Tier and Supervision Package calls go via Wiremock. Handover and Coordinator are real copies deployed in
+# this namespace and are called directly. Any CRN
 # that is not one of the magic CRNs in helm_deploy/hmpps-arns-assessment-platform-ui/wiremock/mappings
 # is forwarded, unchanged, to the real API at the URL below. Only the magic CRNs get a canned response.
 wiremock:
@@ -128,8 +129,6 @@ wiremock:
     WIREMOCK_ARNS_API_URL: 'https://assess-risks-and-needs-test.hmpps.service.justice.gov.uk'
     WIREMOCK_TIER_API_URL: 'https://hmpps-tier-dev.hmpps.service.justice.gov.uk'
     WIREMOCK_SUPERVISION_PACKAGE_API_URL: 'https://supervision-packages-api-dev.hmpps.service.justice.gov.uk'
-    WIREMOCK_HANDOVER_URL: 'https://arns-handover-service-test.hmpps.service.justice.gov.uk'
-    WIREMOCK_COORDINATOR_API_URL: 'https://arns-coordinator-api-test.hmpps.service.justice.gov.uk'
 
 generic-prometheus-alerts:
   targetApplication: hmpps-arns-assessment-platform-ui
