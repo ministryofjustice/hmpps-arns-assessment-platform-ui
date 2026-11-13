@@ -20,11 +20,9 @@ import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import {
   characterCountDetails,
-  characterCountField,
   itemisedSummaryRow,
   optionalDetails,
   requiredDetails,
-  textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
 
@@ -36,7 +34,7 @@ const hasParentalResponsibilities = and(
       Condition.Array.Contains(Option.no_children),
     ),
   ),
-  Answer(Question.personal_relationships_community_any_parenting_responsibilities).match(
+  Answer(Question.community_personal_relationships_community_parental_responsibilities).match(
     Condition.Equals(CommonOption.yes),
   ),
 )
@@ -102,10 +100,7 @@ const childrenDetails = question({
       { divider: commonContentFor('or') },
       {
         value: Option.no_children,
-        text: contentFor(
-          'question.personal_relationships_community_children_details.option.NO_CHILDREN.text',
-          CaseData.ForenamePossessive,
-        ),
+        text: commonContentFor('option.NO'),
         behaviour: 'exclusive' as const,
       },
     ],
@@ -119,54 +114,84 @@ const childrenDetails = question({
 
 const anyParentingResponsibilities = question({
   content: {
-    code: Question.personal_relationships_community_any_parenting_responsibilities,
+    code: Question.community_personal_relationships_community_parental_responsibilities,
     format: QuestionFormat.RADIO,
     text: contentFor(
-      'question.personal_relationships_community_any_parenting_responsibilities.text',
+      'question.community_personal_relationships_community_parental_responsibilities.text',
       CaseData.Forename,
     ),
-    options: yesNo(),
+    options: [
+      {
+        value: CommonOption.yes,
+        text: commonContentFor('option.YES'),
+        reveals: optionalDetails({
+          code: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+        }),
+      },
+      {
+        value: CommonOption.no,
+        text: commonContentFor('option.NO'),
+        reveals: optionalDetails({
+          code: Question.community_personal_relationships_community_parental_responsibilities_no_details,
+        }),
+      },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
+    ],
     validationMessage: contentFor(
-      'question.personal_relationships_community_any_parenting_responsibilities.validation',
+      'question.community_personal_relationships_community_parental_responsibilities.validation',
     ),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_any_parenting_responsibilities.path }),
+    summaryRow: itemisedSummaryRow({
+      changeHref: Step.personal_relationships_any_parenting_responsibilities.path,
+      visibleWhen: hasParentalResponsibilities,
+    }),
   },
 })
 
 const parentalResponsibilities = question({
   content: {
-    code: Question.personal_relationships_community_parental_responsibilities,
+    code: Question.community_personal_relationships_community_manage_parental_responsibilities,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_parental_responsibilities.text', CaseData.Forename),
-    hint: contentFor('question.personal_relationships_community_parental_responsibilities.hint'),
+    text: contentFor(
+      'question.community_personal_relationships_community_manage_parental_responsibilities.text',
+      CaseData.Forename,
+    ),
+    hint: contentFor('question.community_personal_relationships_community_manage_parental_responsibilities.hint'),
     options: [
       {
         value: CommonOption.yes,
-        text: contentFor('question.personal_relationships_community_parental_responsibilities.option.YES.text'),
+        text: contentFor(
+          'question.community_personal_relationships_community_manage_parental_responsibilities.option.YES.text',
+        ),
         reveals: optionalDetails({
-          code: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          code: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
         }),
       },
       {
         value: Option.sometimes,
-        text: contentFor('question.personal_relationships_community_parental_responsibilities.option.SOMETIMES.text'),
+        text: contentFor(
+          'question.community_personal_relationships_community_manage_parental_responsibilities.option.SOMETIMES.text',
+        ),
         reveals: optionalDetails({
-          code: Question.personal_relationships_community_parental_responsibilities_sometimes_details,
+          code: Question.community_personal_relationships_community_manage_parental_responsibilities_sometimes_details,
         }),
       },
       {
         value: CommonOption.no,
-        text: contentFor('question.personal_relationships_community_parental_responsibilities.option.NO.text'),
+        text: contentFor(
+          'question.community_personal_relationships_community_manage_parental_responsibilities.option.NO.text',
+        ),
         reveals: optionalDetails({
-          code: Question.personal_relationships_community_parental_responsibilities_no_details,
+          code: Question.community_personal_relationships_community_manage_parental_responsibilities_no_details,
         }),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
-    validationMessage: contentFor('question.personal_relationships_community_parental_responsibilities.validation'),
+    validationMessage: contentFor(
+      'question.community_personal_relationships_community_manage_parental_responsibilities.validation',
+    ),
   },
   displayModes: {
     field: radioField({ dependentWhen: hasParentalResponsibilities, visibleWhen: hasParentalResponsibilities }),
@@ -234,6 +259,7 @@ const childhood = question({
       {
         value: Option.positive_childhood,
         text: contentFor('question.personal_relationships_community_childhood.option.POSITIVE_CHILDHOOD.text'),
+        hint: contentFor('question.personal_relationships_community_childhood.option.POSITIVE_CHILDHOOD.hint'),
         reveals: optionalDetails({
           code: Question.personal_relationships_community_childhood_positive_childhood_details,
         }),
@@ -241,6 +267,7 @@ const childhood = question({
       {
         value: Option.mixed_childhood,
         text: contentFor('question.personal_relationships_community_childhood.option.MIXED_CHILDHOOD.text'),
+        hint: contentFor('question.personal_relationships_community_childhood.option.MIXED_CHILDHOOD.hint'),
         reveals: optionalDetails({
           code: Question.personal_relationships_community_childhood_mixed_childhood_details,
         }),
@@ -253,6 +280,7 @@ const childhood = question({
           code: Question.personal_relationships_community_childhood_negative_childhood_details,
         }),
       },
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
     validationMessage: contentFor('question.personal_relationships_community_childhood.validation'),
   },
@@ -270,7 +298,6 @@ const childhoodBehaviour = question({
     hint: contentFor('question.personal_relationships_community_childhood_behaviour.hint'),
     options: yesNo({
       yes: optionalDetails({ code: Question.personal_relationships_community_childhood_behaviour_yes_details }),
-      no: optionalDetails({ code: Question.personal_relationships_community_childhood_behaviour_no_details }),
     }),
     validationMessage: contentFor('question.personal_relationships_community_childhood_behaviour.validation'),
   },
@@ -282,44 +309,48 @@ const childhoodBehaviour = question({
 
 const belonging = question({
   content: {
-    code: Question.personal_relationships_community_belonging,
-    format: QuestionFormat.TEXT,
-    text: contentFor('question.personal_relationships_community_belonging.text', CaseData.Forename),
-    hint: contentFor('question.personal_relationships_community_belonging.hint'),
+    code: Question.personal_relationships_community_sense_of_belonging,
+    format: QuestionFormat.RADIO,
+    text: contentFor('question.personal_relationships_community_sense_of_belonging.text', CaseData.Forename),
+    hint: contentFor('question.personal_relationships_community_sense_of_belonging.hint'),
+    options: yesNo({
+      yes: optionalDetails({
+        code: Question.personal_relationships_community_sense_of_belonging_yes_details,
+        hint: contentFor('question.personal_relationships_community_sense_of_belonging.option.YES.hint'),
+      }),
+    }),
+    validationMessage: contentFor('question.personal_relationships_community_sense_of_belonging.validation'),
   },
   displayModes: {
-    field: characterCountField({ maxLength: CharacterLimit.c2000 }),
-    summaryRow: textSummaryRow({
-      changeHref: Step.personal_relationships_community.path,
-      visibleWhen: Answer(Question.personal_relationships_community_belonging).match(Condition.IsRequired()),
-    }),
+    field: radioField(),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.personal_relationships_community.path }),
   },
 })
 
 const inRelationship = question({
   content: {
-    code: Question.personal_relationships_community_in_relationship,
+    code: Question.personal_relationships_community_relationship_status,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_in_relationship.text', CaseData.Forename),
+    text: contentFor('question.personal_relationships_community_relationship_status.text', CaseData.Forename),
     options: [
       {
         value: Option.in_relationship_living_together,
         text: contentFor(
-          'question.personal_relationships_community_in_relationship.option.IN_RELATIONSHIP_LIVING_TOGETHER.text',
+          'question.personal_relationships_community_relationship_status.option.IN_RELATIONSHIP_LIVING_TOGETHER.text',
         ),
       },
       {
         value: Option.in_relationship_not_living_together,
         text: contentFor(
-          'question.personal_relationships_community_in_relationship.option.IN_RELATIONSHIP_NOT_LIVING_TOGETHER.text',
+          'question.personal_relationships_community_relationship_status.option.IN_RELATIONSHIP_NOT_LIVING_TOGETHER.text',
         ),
       },
       {
         value: Option.no_relationship,
-        text: contentFor('question.personal_relationships_community_in_relationship.option.NO_RELATIONSHIP.text'),
+        text: commonContentFor('option.NO'),
       },
     ],
-    validationMessage: contentFor('question.personal_relationships_community_in_relationship.validation'),
+    validationMessage: contentFor('question.personal_relationships_community_relationship_status.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -338,6 +369,9 @@ const currentRelationship = question({
         text: contentFor(
           'question.personal_relationships_community_current_relationship.option.HAPPY_RELATIONSHIP.text',
         ),
+        hint: contentFor(
+          'question.personal_relationships_community_current_relationship.option.HAPPY_RELATIONSHIP.hint',
+        ),
         reveals: optionalDetails({
           code: Question.personal_relationships_community_current_relationship_happy_relationship_details,
         }),
@@ -347,6 +381,9 @@ const currentRelationship = question({
         text: contentFor(
           'question.personal_relationships_community_current_relationship.option.CONCERNS_HAPPY_RELATIONSHIP.text',
         ),
+        hint: contentFor(
+          'question.personal_relationships_community_current_relationship.option.CONCERNS_HAPPY_RELATIONSHIP.hint',
+        ),
         reveals: optionalDetails({
           code: Question.personal_relationships_community_current_relationship_concerns_happy_relationship_details,
         }),
@@ -355,6 +392,9 @@ const currentRelationship = question({
         value: Option.unhappy_relationship,
         text: contentFor(
           'question.personal_relationships_community_current_relationship.option.UNHAPPY_RELATIONSHIP.text',
+        ),
+        hint: contentFor(
+          'question.personal_relationships_community_current_relationship.option.UNHAPPY_RELATIONSHIP.hint',
         ),
         reveals: optionalDetails({
           code: Question.personal_relationships_community_current_relationship_unhappy_relationship_details,
@@ -432,11 +472,11 @@ const intimateRelationship = question({
 
 const domesticAbusePerpetrator = question({
   content: {
-    code: Question.personal_relationships_community_domestic_abuse_perpetrator,
+    code: Question.offence_analysis_perpetrator_of_domestic_abuse,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_domestic_abuse_perpetrator.text', CaseData.Forename),
+    text: contentFor('question.offence_analysis_perpetrator_of_domestic_abuse.text', CaseData.Forename),
     options: yesNo(),
-    validationMessage: contentFor('question.personal_relationships_community_domestic_abuse_perpetrator.validation'),
+    validationMessage: contentFor('question.offence_analysis_perpetrator_of_domestic_abuse.validation'),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
@@ -446,29 +486,28 @@ const domesticAbusePerpetrator = question({
 
 const domesticAbuseAgainst = question({
   content: {
-    code: Question.personal_relationships_community_domestic_abuse_against,
+    code: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.personal_relationships_community_domestic_abuse_against.text', CaseData.Forename),
+    text: contentFor('question.offence_analysis_perpetrator_of_domestic_abuse_victim.text', CaseData.Forename),
+    hint: commonContentFor('select_all_that_apply'),
     options: [
       {
         value: Option.family_member,
-        text: contentFor('question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER.text'),
+        text: contentFor('question.offence_analysis_perpetrator_of_domestic_abuse_victim.option.FAMILY_MEMBER.text'),
         reveals: requiredDetails({
-          code: Question.personal_relationships_community_domestic_abuse_against_family_details,
+          code: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_family_member_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_against.option.FAMILY_MEMBER.validation',
+            'question.offence_analysis_perpetrator_of_domestic_abuse_victim.option.FAMILY_MEMBER.validation',
           ),
         }),
       },
       {
         value: Option.intimate_partner,
-        text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_against.option.INTIMATE_PARTNER.text',
-        ),
+        text: contentFor('question.offence_analysis_perpetrator_of_domestic_abuse_victim.option.INTIMATE_PARTNER.text'),
         reveals: requiredDetails({
-          code: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          code: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_against.option.INTIMATE_PARTNER.validation',
+            'question.offence_analysis_perpetrator_of_domestic_abuse_victim.option.INTIMATE_PARTNER.validation',
           ),
         }),
       },
@@ -483,23 +522,21 @@ const domesticAbuseAgainst = question({
 
 const coerciveBehaviour = question({
   content: {
-    code: Question.personal_relationships_community_coercive_behaviour,
+    code: Question.controlling_coercive_behaviour,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_coercive_behaviour.text', CaseData.ForenamePossessive),
+    text: contentFor('question.controlling_coercive_behaviour.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.personal_relationships_community_coercive_behaviour_yes_details,
-        validationMessage: contentFor(
-          'question.personal_relationships_community_coercive_behaviour_yes_details.validation',
-        ),
+        code: Question.controlling_coercive_behaviour_yes_details,
+        validationMessage: contentFor('question.controlling_coercive_behaviour_yes_details.validation'),
         maxLength: CharacterLimit.c2000,
       }),
       no: optionalDetails({
-        code: Question.personal_relationships_community_coercive_behaviour_no_details,
+        code: Question.controlling_coercive_behaviour_no_details,
         maxLength: CharacterLimit.c2000,
       }),
     }),
-    validationMessage: contentFor('question.personal_relationships_community_coercive_behaviour.validation'),
+    validationMessage: contentFor('question.controlling_coercive_behaviour.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -511,21 +548,21 @@ const coerciveBehaviour = question({
 
 const strangulation = question({
   content: {
-    code: Question.personal_relationships_community_strangulation,
+    code: Question.evidence_of_strangulation,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_strangulation.text', CaseData.ForenamePossessive),
+    text: contentFor('question.evidence_of_strangulation.text', CaseData.ForenamePossessive),
     options: yesNo({
       yes: requiredDetails({
-        code: Question.personal_relationships_community_strangulation_yes_details,
-        validationMessage: contentFor('question.personal_relationships_community_strangulation_yes_details.validation'),
+        code: Question.evidence_of_strangulation_yes_details,
+        validationMessage: contentFor('question.evidence_of_strangulation.validation'),
         maxLength: CharacterLimit.c2000,
       }),
       no: optionalDetails({
-        code: Question.personal_relationships_community_strangulation_no_details,
+        code: Question.evidence_of_strangulation_no_details,
         maxLength: CharacterLimit.c2000,
       }),
     }),
-    validationMessage: contentFor('question.personal_relationships_community_strangulation.validation'),
+    validationMessage: contentFor('question.evidence_of_strangulation.validation'),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
@@ -537,11 +574,11 @@ const strangulation = question({
 
 const domesticAbuseVictim = question({
   content: {
-    code: Question.personal_relationships_community_domestic_abuse_victim,
+    code: Question.offence_analysis_victim_of_domestic_abuse,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_domestic_abuse_victim.text', CaseData.Forename),
+    text: contentFor('question.offence_analysis_victim_of_domestic_abuse.text', CaseData.Forename),
     options: yesNo(),
-    validationMessage: contentFor('question.personal_relationships_community_domestic_abuse_victim.validation'),
+    validationMessage: contentFor('question.offence_analysis_victim_of_domestic_abuse.validation'),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
@@ -551,34 +588,35 @@ const domesticAbuseVictim = question({
 
 const domesticAbuseVictimBy = question({
   content: {
-    code: Question.personal_relationships_community_domestic_abuse_victim_by,
+    code: Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse,
     format: QuestionFormat.CHECKBOX,
     text: contentFor(
-      'question.personal_relationships_community_domestic_abuse_victim_by.text',
+      'question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.text',
       CaseData.ForenamePossessive,
     ),
+    hint: commonContentFor('select_all_that_apply'),
     options: [
       {
         value: Option.family_member,
         text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_victim_by.option.FAMILY_MEMBER.text',
+          'question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.option.FAMILY_MEMBER.text',
         ),
         reveals: requiredDetails({
-          code: Question.personal_relationships_community_domestic_abuse_victim_by_family_member,
+          code: Question.offence_analysis_victim_of_domestic_abuse_family_member_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_victim_by.option.FAMILY_MEMBER.validation',
+            'question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.option.FAMILY_MEMBER.validation',
           ),
         }),
       },
       {
         value: Option.intimate_partner,
         text: contentFor(
-          'question.personal_relationships_community_domestic_abuse_victim_by.option.INTIMATE_PARTNER.text',
+          'question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.option.INTIMATE_PARTNER.text',
         ),
         reveals: requiredDetails({
-          code: Question.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
+          code: Question.offence_analysis_victim_of_domestic_abuse_intimate_partner_details,
           validationMessage: contentFor(
-            'question.personal_relationships_community_domestic_abuse_victim_by.option.INTIMATE_PARTNER.validation',
+            'question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.option.INTIMATE_PARTNER.validation',
           ),
         }),
       },

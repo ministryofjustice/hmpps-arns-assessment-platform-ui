@@ -18,25 +18,17 @@ export const english = {
           validation: 'Enter details of any children that live with them',
         },
         [Option.yes_children_not_living_with_pop]: {
-          text: 'Yes, children that do not live with them',
+          text: 'Yes, children they have regular contact with',
           label: enChildrenDetailsOptionLabel,
           validation: 'Enter details of any children that do not live with them',
         },
-        [Option.yes_children_visiting]: {
-          text: 'Yes, children that visit them regularly',
-          label: enChildrenDetailsOptionLabel,
-          validation: 'Enter details of any children that visit them regularly',
-        },
-        [Option.no_children]: {
-          text: 'No, there are no children in %1 life',
-        },
       },
     },
-    [Question.personal_relationships_community_any_parenting_responsibilities]: {
+    [Question.community_personal_relationships_community_parental_responsibilities]: {
       text: 'Does %1 have any parenting responsibilities?',
       validation: 'Select if they have parenting responsibilities',
     },
-    [Question.personal_relationships_community_parental_responsibilities]: {
+    [Question.community_personal_relationships_community_manage_parental_responsibilities]: {
       text: 'Is %1 able to manage their parenting responsibilities?',
       hint: 'If there are parenting concerns, it does not always mean there are child wellbeing concerns. They may just require some help or support.',
       validation: 'Select if they’re able to manage their parenting responsibilities',
@@ -75,82 +67,90 @@ export const english = {
       validation: 'Select their experience of childhood',
       option: {
         [Option.positive_childhood]: {
-          text: 'Positive experience',
+          text: 'Generally stable and supportive',
+          hint: 'No significant concerns identified about care, safety or family relationships.',
         },
         [Option.mixed_childhood]: {
-          text: 'Both positive and negative experience',
+          text: 'Some challenges or instability',
+          hint: 'Less severe or temporary challenges, disruption or concerns.',
         },
         [Option.negative_childhood]: {
-          text: 'Negative experience',
-          hint: 'This includes things like permanent or long-term separation from their parents or guardians, inconsistent care, neglect or abuse.',
+          text: 'Significant challenges or instability',
+          hint: 'Serious or longer-term experiences such as prolonged separation from parents or carers, inconsistent care, neglect or abuse. A single serious experience may also be significant.',
         },
       },
     },
     [Question.personal_relationships_community_childhood_behaviour]: {
-      text: 'Did %1 have any childhood behavioural problems?',
-      hint: 'Consider any adverse experiences and trauma, as well as neurodiversity that could lead to behavioural problems.',
-      validation: 'Select if they had childhood behavioural problems',
+      text: 'Is there evidence %1 had any childhood behavioural issues or challenges?',
+      hint: 'Consider any experiences, trauma or neurodivergent needs that may have influenced behaviour during childhood',
+      validation: 'Select if they had childhood behavioural issues or challenges',
     },
-    [Question.personal_relationships_community_belonging]: {
-      text: 'Is %1 part of any groups or communities that gives them a sense of belonging? (optional)',
-      hint: 'For example, online social media or community groups.',
+    [Question.personal_relationships_community_sense_of_belonging]: {
+      text: 'Are there any people, groups or communities that give %1 a sense of belonging?',
+      hint: 'Consider positive and negative influences.  This could include relationships with friends, neighbours, online communities, social groups, faith groups, extremist groups and gangs.',
+      option: {
+        [CommonOption.yes]: {
+          hint: 'Include any positive influences, sources of support, or relationships that may present risks or vulnerabilities.',
+        },
+      },
+      validation: 'Select if there are any people, groups or communities that give them a sense of belonging',
     },
-    [Question.personal_relationships_community_in_relationship]: {
-      text: 'Is %1 in a relationship?',
-      validation: 'Select if they are in a relationship',
+    [Question.personal_relationships_community_relationship_status]: {
+      text: 'Does %1 currently have a partner?',
+      validation: 'Select if they have a partner',
       option: {
         [Option.in_relationship_living_together]: {
-          text: 'In a relationship, living together',
+          text: 'Yes, living together',
         },
         [Option.in_relationship_not_living_together]: {
-          text: 'In a relationship, not living together',
-        },
-        [Option.no_relationship]: {
-          text: 'Not in a relationship',
+          text: 'Yes, not living together',
         },
       },
     },
     [Question.personal_relationships_community_current_relationship]: {
-      text: 'Is %1 happy with their current relationship status?',
-      validation: 'Select if they are happy with their current relationship status',
+      text: 'How would you describe %1 current relationship situation?',
+      validation: 'Select how you would describe their current relationship situation',
       option: {
         [Option.happy_relationship]: {
-          text: 'Happy and positive about their relationship status or their relationship is likely to act as a protective factor',
+          text: 'Positive and supportive',
+          hint: 'Their current relationship is positive and supportive, or they are content being single.',
         },
         [Option.concerns_happy_relationship]: {
-          text: 'Has some concerns about their relationship status but is overall happy',
+          text: 'Has some difficulties but remains supportive',
+          hint: 'There are some difficulties or concerns, but there remains some support, stability or contentment with the current situation.',
         },
         [Option.unhappy_relationship]: {
-          text: 'Unhappy about their relationship status or their relationship is unhealthy and directly linked to offending',
+          text: 'Difficult or unhealthy',
+          hint: 'Their current relationship is causing significant difficulties, is unhealthy, linked to offending, or they are preoccupied with being single.',
         },
       },
     },
     [Question.personal_relationships_community_intimate_relationship]: {
-      text: 'What is %1 history of intimate relationships?',
+      text: 'How would you describe %1 history of intimate relationships?',
       hint: 'An intimate relationship is one that involves physical and/or emotional closeness.',
-      validation: 'Select their history of intimate relationships',
+      validation: 'Select how you would describe their history of intimate relationships',
       option: {
         [Option.stable_relationships]: {
-          text: 'History of stable, supportive, positive and rewarding relationships',
-          hint: 'This includes if they do not have a history of relationships but appear capable of starting and maintaining one.',
+          text: 'Stable, supportive and rewarding',
+          hint: 'This includes having no history of intimate relationships, but they appear capable of starting and maintaining a heathy one.',
           detailsHint: enIntimateRelationshipDetailsHint,
         },
         [Option.positive_and_negative_relationships]: {
-          text: 'History of both positive and negative relationships',
+          text: 'Both healthy and unhealthy relationships',
           detailsHint: enIntimateRelationshipDetailsHint,
         },
         [Option.unstable_relationships]: {
-          text: 'History of unstable, unsupportive and destructive relationships',
-          hint: 'This includes if they are single and have never had a relationship but would like one.',
+          text: 'Unstable, unsupportive and destructive',
+          hint: 'Includes having no history of relationships and there are concerns about their ability to start or maintain one.',
           detailsHint: enIntimateRelationshipDetailsHint,
         },
       },
     },
-    [Question.personal_relationships_community_domestic_abuse_perpetrator]: {
+    [Question.offence_analysis_perpetrator_of_domestic_abuse]: {
       text: 'Is there evidence that %1 has been a perpetrator of domestic abuse?',
       validation: 'Select if there is evidence they have been a perpetrator of domestic abuse',
     },
-    [Question.personal_relationships_community_domestic_abuse_against]: {
+    [Question.offence_analysis_perpetrator_of_domestic_abuse_victim]: {
       text: 'Who did %1 abuse?',
       validation: 'Select who they abused',
       option: {
@@ -164,25 +164,25 @@ export const english = {
         },
       },
     },
-    [Question.personal_relationships_community_coercive_behaviour]: {
+    [Question.controlling_coercive_behaviour]: {
       text: 'Is there evidence of coercive behaviour?',
       validation: 'Select if there is evidence of coercive behaviour',
     },
-    [Question.personal_relationships_community_coercive_behaviour_yes_details]: {
+    [Question.controlling_coercive_behaviour_yes_details]: {
       validation: 'Give details on coercive behaviour',
     },
-    [Question.personal_relationships_community_strangulation]: {
+    [Question.evidence_of_strangulation]: {
       text: 'Is there evidence of strangulation?',
       validation: 'Select if there is evidence of strangulation',
     },
-    [Question.personal_relationships_community_strangulation_yes_details]: {
+    [Question.evidence_of_strangulation_yes_details]: {
       validation: 'Give details on strangulation',
     },
-    [Question.personal_relationships_community_domestic_abuse_victim]: {
+    [Question.offence_analysis_victim_of_domestic_abuse]: {
       text: 'Is there evidence that %1 has been a victim of domestic abuse?',
       validation: 'Select if there is evidence they have been a victim of domestic abuse',
     },
-    [Question.personal_relationships_community_domestic_abuse_victim_by]: {
+    [Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse]: {
       text: 'Who has abused them?',
       validation: 'Select who abused them',
       option: {
