@@ -17,7 +17,13 @@ function createMockContext(options: MockContextOptions = {}) {
   const crn = options.crn === undefined ? 'CRN-001' : (options.crn ?? undefined)
 
   const stateMap: Record<string, unknown> = { user, requestId }
-  const dataMap: Record<string, unknown> = { assessmentUuid, formVersion: 'v1.0' }
+  const dataMap: Record<string, unknown> = {
+    assessmentUuid,
+    formVersion: 'v2.0',
+    assessment: {
+      formVersion: 'v2.0',
+    },
+  }
 
   return {
     getState: jest.fn((key: string) => stateMap[key]),
@@ -52,7 +58,7 @@ describe('sendAuditEvent', () => {
       details: {
         form: 'strengths-and-needs',
         assessmentUuid: 'assessment-456',
-        formVersion: 'v1.0',
+        formVersion: 'v2.0',
         section: 'accommodation',
         page: 'accommodation_status',
       },

@@ -21,6 +21,9 @@ function createMockContext(options: MockContextOptions = {}) {
     assessmentUuid,
     activeGoalUuid: options.activeGoalUuid,
     formVersion: 'v1.0',
+    assessment: {
+      formVersion: 'v1.0',
+    },
   }
 
   return {
