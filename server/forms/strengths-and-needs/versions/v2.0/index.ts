@@ -12,7 +12,7 @@ import {
 import { accommodationJourney } from './journeys/accommodation'
 import { employmentJourney } from './journeys/employment-and-education'
 // import { financeJourney } from './journeys/finance'
-// import { drugUseJourney } from './journeys/drug-use'
+import { drugUseJourney } from './journeys/drug-use'
 import { alcoholUseJourney } from './journeys/alcohol-use'
 import { StrengthsAndNeedsEffects } from '../../effects'
 import { Section } from './constants/section'
@@ -102,7 +102,7 @@ export const strengthsAndNeedsV2Journey = journey({
     accommodationJourney,
     employmentJourney,
     // financeJourney,
-    // drugUseJourney,
+    drugUseJourney,
     alcoholUseJourney,
     healthWellbeingJourney,
     personalRelationshipsJourney,
