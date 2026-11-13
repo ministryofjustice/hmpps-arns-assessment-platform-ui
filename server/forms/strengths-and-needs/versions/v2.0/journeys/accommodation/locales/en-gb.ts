@@ -93,11 +93,7 @@ export const english = {
 
     [Question.accommodation_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 accommodation?',
-      hint:
-        '<div class="govuk-!-width-two-thirds">' +
-        '<p class="govuk-hint">Include any strategies, people or support networks that helped.</p>' +
-        '<p class="govuk-hint">Also consider any future plans for accommodation.</p>' +
-        '</div>',
+      hint: 'Include any strategies, people or support networks that helped. Also consider any future plans for accommodation',
       validation: 'Select if there are any strengths or protective factors',
     },
     [Question.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details]: {
