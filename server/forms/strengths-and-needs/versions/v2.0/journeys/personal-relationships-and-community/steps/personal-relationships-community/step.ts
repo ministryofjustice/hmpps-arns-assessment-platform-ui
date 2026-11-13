@@ -91,6 +91,7 @@ export const personalRelationshipsCommunityStep = step({
             Step.personal_relationships_community_summary.code,
             IsUserSubmitted.false,
           ),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.personal_relationships_and_community,
@@ -110,6 +111,7 @@ export const personalRelationshipsCommunityStep = step({
             Step.personal_relationships_community_summary.code,
             IsUserSubmitted.false,
           ),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.personal_relationships_and_community,

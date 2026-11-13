@@ -68,6 +68,7 @@ export const thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep = step({
             Step.thinking_behaviours_attitudes_summary.code,
             IsUserSubmitted.false,
           ),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,
@@ -88,6 +89,7 @@ export const thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep = step({
             Step.thinking_behaviours_attitudes_summary.code,
             IsUserSubmitted.false,
           ),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(
             SanAuditEvent.SAVE_QUESTION_PAGE,
             Section.thinking_behaviours_and_attitudes,

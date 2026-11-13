@@ -18,6 +18,7 @@ export const autoSaveVictimEditSubmit = (stepCode: string, victimsCollection: Co
       effects: [
         StrengthsAndNeedsEffects.updateItemFromCollection(victimsCollection, itemIndex, true),
         StrengthsAndNeedsEffects.setUserSubmitted(stepCode, IsUserSubmitted.false),
+        StrengthsAndNeedsEffects.commitPendingCommands(),
       ],
     },
   })

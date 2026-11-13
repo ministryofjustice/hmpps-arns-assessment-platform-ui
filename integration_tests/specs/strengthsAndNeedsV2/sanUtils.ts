@@ -10,7 +10,6 @@ import { TestAapApiClient } from '../../support/apis/TestAapApiClient'
 
 // strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
-// todo change to v2 path
 export const v2Path = '/v2.0'
 export const accommodation = Section.accommodation.path
 export const employment = Section.employment_and_education.path
@@ -21,6 +20,7 @@ export const alcohol = Section.alcohol_use.path
 export const personal = Section.personal_relationships_and_community.path
 export const thinking = Section.thinking_behaviours_and_attitudes.path
 export const finances = Section.finance.path
+export const previousVersions = '/previous-versions'
 export const viewAllAnswers = '/view-all-answers'
 
 // Page titles for san
@@ -113,6 +113,28 @@ export const navigateToStrengthsAndNeeds = async (
   await page.waitForURL(url => url.pathname.includes(expectedPath))
 }
 
+/**
+ * Helper to add ordinal suffixes (st, nd, rd, th)
+ */
+export const formatOrdinalDate = (date: Date): string => {
+  const day = date.getDate()
+  const suffix = (n: number) => {
+    if (n > 3 && n < 21) return 'th'
+    switch (n % 10) {
+      case 1:
+        return 'st'
+      case 2:
+        return 'nd'
+      case 3:
+        return 'rd'
+      default:
+        return 'th'
+    }
+  }
+  const month = date.toLocaleDateString('en-GB', { month: 'long' })
+  const year = date.getFullYear()
+  return `${day}${suffix(day)} ${month} ${year}`
+}
 /**
  * Navigates to a strengths and needs read-only.
  */

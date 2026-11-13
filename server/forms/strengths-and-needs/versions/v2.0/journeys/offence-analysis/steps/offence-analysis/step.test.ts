@@ -35,8 +35,9 @@ describe('offence analysis submission', () => {
       flags: [],
     }
     const executeCommand = jest.fn().mockResolvedValue(undefined)
+    const executeCommands = jest.fn().mockResolvedValue([])
     const deps = {
-      api: { executeCommand },
+      api: { executeCommand, executeCommands },
       auditService: { send: jest.fn() },
     } as unknown as StrengthsAndNeedsEffectsDeps
     const testEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
@@ -79,7 +80,8 @@ describe('offence analysis submission', () => {
       type: 'redirect',
       url: `${basePath}/${Step.offence_analysis_involved_parties.path}`,
     })
-    expect(executeCommand).toHaveBeenCalledWith(
+    expect(executeCommands).toHaveBeenCalledTimes(1)
+    expect(executeCommands.mock.calls[0]).toContainEqual(
       expect.objectContaining({ type: 'UpdateAssessmentAnswersCommand', assessmentUuid, user }),
     )
     expect(executeCommand).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'CreateCollectionCommand' }))

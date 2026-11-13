@@ -12,7 +12,6 @@ import {
 import { createRoute } from '../../generators'
 import { baseSanRoute, currentVersion } from './constants/path'
 import { formRootPath } from '../../constants/common'
-
 /**
  * Shared access predicates for strengths-and-needs steps.
  *

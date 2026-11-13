@@ -1,7 +1,6 @@
 import { InternalServerError } from 'http-errors'
 import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
-import { latestVersion } from '../../constants/formVersion'
 import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 
 const assessmentFor = (formVersion: string): AssessmentVersionQueryResult => ({
@@ -34,7 +33,7 @@ describe('UpdateOasysDataMappingHook', () => {
   )
 
   it('preserves the latest-version fallback when the assessment has no version', () => {
-    expect(new UpdateOasysDataMappingHook(assessmentFor('')).formConfig).toBe(formConfigsByVersion[latestVersion])
+    expect(new UpdateOasysDataMappingHook(assessmentFor('')).formConfig).toBe(formConfigsByVersion['v1.0'])
   })
 
   it('continues to fail explicitly for an unknown assessment version', () => {

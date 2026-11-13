@@ -13,6 +13,7 @@ export type PageQuestion = {
   errorLink: Locator
   error: Locator
   option: (value: string) => Locator
+  selectOption: (value: string) => Promise<string[]>
 }
 
 /** A section's questions, keyed by server question code. Templated codes (`..._%1`) take the value to fill in. */
@@ -26,6 +27,8 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
   static readonly firstStep: string
 
   readonly complete = this.page.locator('[data-complete="YES"]')
+
+  readonly pageHeading = this.page.getByRole('heading')
 
   readonly mainForm = this.page.getByTestId('main-form')
 
@@ -79,6 +82,7 @@ export default class StrengthsAndNeedsPage extends AbstractPage {
       errorLink: this.alert.locator(`a[href="#${code}"]`),
       error: this.page.locator(`#${code}-error`),
       option: value => root.locator(`input[value="${value}"]`),
+      selectOption: value => root.locator(`select`).selectOption(value),
     }
   }
 
