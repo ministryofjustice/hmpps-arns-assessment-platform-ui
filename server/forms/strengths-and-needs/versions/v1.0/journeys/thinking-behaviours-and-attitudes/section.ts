@@ -1,6 +1,5 @@
 import { Answer, Condition, Data, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 
-import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import {
   question,
@@ -16,6 +15,7 @@ import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
+import { CaseData } from '../../../../constants/common'
 
 // The three sexual harm questions are only asked (and summarised) once a risk
 // of sexual harm to others has been confirmed.

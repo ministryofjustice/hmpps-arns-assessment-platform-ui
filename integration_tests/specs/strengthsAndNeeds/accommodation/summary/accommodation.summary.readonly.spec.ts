@@ -15,7 +15,7 @@ test.describe('Summary read-only', () => {
       planAccessMode: 'READ_WRITE',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
         { question: Question.living_with, value: [Option.family] },
@@ -63,7 +63,7 @@ test.describe('Summary read-only', () => {
       planAccessMode: 'READ_WRITE',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
         { question: Question.living_with, value: [Option.family] },

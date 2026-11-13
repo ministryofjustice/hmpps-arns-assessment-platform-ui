@@ -1,6 +1,6 @@
 import { Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
 
-import { CaseData } from '../../constants/formVersion'
+import { CaseData } from '../../../../constants/common'
 import {
   checkboxField,
   question,

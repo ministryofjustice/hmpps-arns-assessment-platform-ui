@@ -102,6 +102,9 @@ export const createSessionFromCustomize =
     // Create in coordinator API and update preferences with response
     await createInCoordinatorAndUpdatePreferences(deps, context, session, preferencesId)
 
+    // Update the san form version if the flag is set and version is selected
+    await updateSanFormVersion(deps, session)
+
     // Store the session ID for use by subsequent effects or redirects
     context.setData('generatedSessionId', session.id)
 
@@ -123,3 +126,18 @@ export const createSessionFromCustomize =
     }
     userSession.notifications.push(notification)
   }
+
+async function updateSanFormVersion(deps: TrainingSessionLauncherEffectsDeps, session: Session) {
+  if (session.flags.includes('SAN_FORM_VERSION') && session.values.sanFormVersion) {
+    await deps.assessmentPlatformApiClient.executeCommand({
+      type: 'UpdateFormVersionCommand',
+      assessmentUuid: session.sanAssessmentId,
+      user: {
+        id: session.values.practitionerIdentifier,
+        name: session.values.practitionerDisplayName,
+        authSource: 'OASYS',
+      },
+      version: session.values.sanFormVersion,
+    })
+  }
+}

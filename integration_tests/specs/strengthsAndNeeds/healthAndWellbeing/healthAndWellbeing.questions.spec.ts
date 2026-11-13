@@ -17,7 +17,7 @@ test.describe('Questions', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await HealthAndWellbeingPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -55,7 +55,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.yes },
         { question: Question.health_wellbeing_physical_health_condition_yes_details, value: '' },
         { question: Question.health_wellbeing_mental_health_condition, value: Option.yes_ongoing_severe },
@@ -209,7 +209,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
       ])
