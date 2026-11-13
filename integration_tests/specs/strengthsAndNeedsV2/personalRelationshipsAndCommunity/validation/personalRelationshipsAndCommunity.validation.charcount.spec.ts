@@ -26,15 +26,23 @@ const answers = [
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_any_parenting_responsibilities,
+    question: Question.community_personal_relationships_community_parental_responsibilities,
     value: CommonOption.yes,
   },
   {
-    question: Question.personal_relationships_community_parental_responsibilities,
+    question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+    value: 'test',
+  },
+  {
+    question: Question.community_personal_relationships_community_parental_responsibilities_no_details,
+    value: 'test',
+  },
+  {
+    question: Question.community_personal_relationships_community_manage_parental_responsibilities,
     value: CommonOption.yes,
   },
   {
-    question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+    question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
     value: 'test',
   },
   {
@@ -62,11 +70,15 @@ const answers = [
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_belonging,
+    question: Question.personal_relationships_community_sense_of_belonging,
+    value: CommonOption.yes,
+  },
+  {
+    question: Question.personal_relationships_community_sense_of_belonging_yes_details,
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_in_relationship,
+    question: Question.personal_relationships_community_relationship_status,
     value: Option.in_relationship_living_together,
   },
   {
@@ -86,43 +98,43 @@ const answers = [
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+    question: Question.offence_analysis_perpetrator_of_domestic_abuse,
     value: CommonOption.yes,
   },
   {
-    question: Question.personal_relationships_community_domestic_abuse_against,
+    question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
     value: [Option.intimate_partner],
   },
   {
-    question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+    question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_coercive_behaviour,
+    question: Question.controlling_coercive_behaviour,
     value: CommonOption.yes,
   },
   {
-    question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+    question: Question.controlling_coercive_behaviour_yes_details,
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_strangulation,
+    question: Question.evidence_of_strangulation,
     value: CommonOption.yes,
   },
   {
-    question: Question.personal_relationships_community_strangulation_yes_details,
+    question: Question.evidence_of_strangulation_yes_details,
     value: 'test',
   },
   {
-    question: Question.personal_relationships_community_domestic_abuse_victim,
+    question: Question.offence_analysis_victim_of_domestic_abuse,
     value: CommonOption.yes,
   },
   {
-    question: Question.personal_relationships_community_domestic_abuse_victim_by,
+    question: Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse,
     value: [Option.intimate_partner],
   },
   {
-    question: Question.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
+    question: Question.offence_analysis_victim_of_domestic_abuse_intimate_partner_details,
     value: 'test',
   },
   { question: Question.personal_relationships_community_changes, value: CommonOption.made_changes },
@@ -176,6 +188,7 @@ const relationshipsAndChildhood = [
     family: Option.stable_relationship,
     childhood: Option.positive_childhood,
     behaviour: CommonOption.yes,
+    belonging: CommonOption.yes,
   },
   {
     name: 'mixed',
@@ -185,6 +198,7 @@ const relationshipsAndChildhood = [
     family: Option.mixed_relationship,
     childhood: Option.mixed_childhood,
     behaviour: CommonOption.no,
+    belonging: CommonOption.yes,
   },
   {
     name: 'negative',
@@ -194,6 +208,7 @@ const relationshipsAndChildhood = [
     family: Option.unstable_relationship,
     childhood: Option.negative_childhood,
     behaviour: CommonOption.no,
+    belonging: CommonOption.yes,
   },
 ]
 
@@ -222,6 +237,21 @@ test.describe('Personal relationships and community character counts', () => {
     await expectTheLimitsOnThePage(personalPage)
   })
 
+  for (const option of [CommonOption.yes, CommonOption.no]) {
+    test(`personal-relationships-any-parenting-responsibilities: parenting responsibilities ${option}`, async ({
+      page,
+      openSection,
+    }) => {
+      const section = await openSection(personal, answers, userSubmittedSteps)
+      const personalPage = new PersonalRelationshipsAndCommunityPage(page)
+      const { questions } = personalPage
+      await page.goto(`${section}/${Step.personal_relationships_any_parenting_responsibilities.path}`)
+
+      await questions.community_personal_relationships_community_parental_responsibilities.option(option).check()
+      await expectTheLimitsOnThePage(personalPage)
+    })
+  }
+
   // a test per set of options, because each one reveals its own details field
   for (const relationships of relationshipsAndChildhood) {
     test(`personal-relationships-community: ${relationships.name} relationships and childhood`, async ({
@@ -233,12 +263,15 @@ test.describe('Personal relationships and community character counts', () => {
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_community.path}`)
 
-      await questions.personal_relationships_community_current_relationship.option(relationships.current).check()
-      await questions.personal_relationships_community_intimate_relationship.option(relationships.intimate).check()
-      await questions.personal_relationships_community_parental_responsibilities.option(relationships.parenting).check()
+      await questions.community_personal_relationships_community_manage_parental_responsibilities
+        .option(relationships.parenting)
+        .check()
       await questions.personal_relationships_community_family_relationship.option(relationships.family).check()
       await questions.personal_relationships_community_childhood.option(relationships.childhood).check()
       await questions.personal_relationships_community_childhood_behaviour.option(relationships.behaviour).check()
+      await questions.personal_relationships_community_sense_of_belonging.option(relationships.behaviour).check()
+      await questions.personal_relationships_community_current_relationship.option(relationships.current).check()
+      await questions.personal_relationships_community_intimate_relationship.option(relationships.intimate).check()
 
       await expectTheLimitsOnThePage(personalPage)
     })
@@ -254,7 +287,7 @@ test.describe('Personal relationships and community character counts', () => {
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_domestic_abuse_against.path}`)
 
-      await questions.personal_relationships_community_domestic_abuse_against.option(option).check()
+      await questions.offence_analysis_perpetrator_of_domestic_abuse_victim.option(option).check()
 
       await expectTheLimitsOnThePage(personalPage)
     })
@@ -270,7 +303,7 @@ test.describe('Personal relationships and community character counts', () => {
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_domestic_abuse_against.path}`)
 
-      await questions.personal_relationships_community_coercive_behaviour.option(option).check()
+      await questions.controlling_coercive_behaviour.option(option).check()
 
       await expectTheLimitsOnThePage(personalPage)
     })
@@ -283,7 +316,7 @@ test.describe('Personal relationships and community character counts', () => {
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_strangulation.path}`)
 
-      await questions.personal_relationships_community_strangulation.option(option).check()
+      await questions.evidence_of_strangulation.option(option).check()
 
       await expectTheLimitsOnThePage(personalPage)
     })
@@ -299,7 +332,7 @@ test.describe('Personal relationships and community character counts', () => {
       const { questions } = personalPage
       await page.goto(`${section}/${Step.personal_relationships_domestic_abuse_victim_by.path}`)
 
-      await questions.personal_relationships_community_domestic_abuse_victim_by.option(option).check()
+      await questions.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.option(option).check()
 
       await expectTheLimitsOnThePage(personalPage)
     })

@@ -81,7 +81,7 @@ export const personalRelationshipsDomesticAbusePerpetratorStep = step({
         ],
         next: [
           redirect({
-            when: Answer(Question.personal_relationships_community_domestic_abuse_perpetrator).match(
+            when: Answer(Question.offence_analysis_perpetrator_of_domestic_abuse).match(
               Condition.Equals(CommonOption.yes),
             ),
             goto: Step.personal_relationships_domestic_abuse_against.path,

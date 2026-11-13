@@ -26,7 +26,7 @@ import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 import { Option } from '../../constants/option'
 
 const backlinkLogic: ChainableConditional = when(
-  Answer(Question.personal_relationships_community_domestic_abuse_perpetrator)
+  Answer(Question.offence_analysis_perpetrator_of_domestic_abuse)
     .match(Condition.Equals(CommonOption.no)),
 ).then(
     createRoute([
@@ -36,7 +36,7 @@ const backlinkLogic: ChainableConditional = when(
     ]),
   ).else(
     when(
-      Answer(Question.personal_relationships_community_domestic_abuse_against)
+      Answer(Question.offence_analysis_perpetrator_of_domestic_abuse_victim)
         .match(Condition.Array.Contains(Option.intimate_partner)),
     ).then(
         createRoute([
@@ -106,9 +106,7 @@ export const personalRelationshipsDomesticAbuseVictimStep = step({
         ],
         next: [
           redirect({
-            when: Answer(Question.personal_relationships_community_domestic_abuse_victim).match(
-              Condition.Equals(CommonOption.yes),
-            ),
+            when: Answer(Question.offence_analysis_victim_of_domestic_abuse).match(Condition.Equals(CommonOption.yes)),
             goto: Step.personal_relationships_domestic_abuse_victim_by.path,
           }),
           redirect({ goto: Step.personal_relationships_want_to_make_changes.path }),
