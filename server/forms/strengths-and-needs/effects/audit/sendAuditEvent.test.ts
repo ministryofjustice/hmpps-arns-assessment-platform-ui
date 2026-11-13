@@ -19,7 +19,6 @@ function createMockContext(options: MockContextOptions = {}) {
   const stateMap: Record<string, unknown> = { user, requestId }
   const dataMap: Record<string, unknown> = {
     assessmentUuid,
-    formVersion: 'v2.0',
     assessment: {
       formVersion: 'v2.0',
     },
