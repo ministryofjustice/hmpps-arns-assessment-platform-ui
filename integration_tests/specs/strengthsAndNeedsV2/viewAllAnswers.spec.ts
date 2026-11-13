@@ -304,16 +304,16 @@ const personal: Answer[] = [
     value: details('children not living with them'),
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_any_parenting_responsibilities,
+    question: PersonalRelationshipsQuestion.community_personal_relationships_community_parental_responsibilities,
     value: CommonOption.yes,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_parental_responsibilities,
+    question: PersonalRelationshipsQuestion.community_personal_relationships_community_manage_parental_responsibilities,
     value: PersonalRelationshipsOption.sometimes,
   },
   {
     question:
-      PersonalRelationshipsQuestion.personal_relationships_community_parental_responsibilities_sometimes_details,
+      PersonalRelationshipsQuestion.community_personal_relationships_community_manage_parental_responsibilities_sometimes_details,
     value: details('sometimes parental'),
   },
   {
@@ -341,13 +341,16 @@ const personal: Answer[] = [
     question: PersonalRelationshipsQuestion.personal_relationships_community_childhood_behaviour_yes_details,
     value: details('childhood behaviour'),
   },
-  { question: PersonalRelationshipsQuestion.personal_relationships_community_belonging, value: details('belonging') },
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_sense_of_belonging,
+    value: details('belonging'),
+  },
   {
     question: PersonalRelationshipsQuestion.personal_relationships_community_current_relationship,
     value: PersonalRelationshipsOption.concerns_happy_relationship,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_in_relationship,
+    question: PersonalRelationshipsQuestion.personal_relationships_community_relationship_status,
     value: PersonalRelationshipsOption.in_relationship_living_together,
   },
   {
@@ -365,41 +368,42 @@ const personal: Answer[] = [
     value: details('unstable relationships'),
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_perpetrator,
+    question: PersonalRelationshipsQuestion.offence_analysis_perpetrator_of_domestic_abuse,
     value: CommonOption.yes,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_against,
+    question: PersonalRelationshipsQuestion.offence_analysis_perpetrator_of_domestic_abuse_victim,
     value: PersonalRelationshipsOption.intimate_partner,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_against_partner_details,
+    question:
+      PersonalRelationshipsQuestion.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
     value: details('against intimate partner'),
   },
 
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_coercive_behaviour,
+    question: PersonalRelationshipsQuestion.controlling_coercive_behaviour,
     value: CommonOption.yes,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_coercive_behaviour_yes_details,
+    question: PersonalRelationshipsQuestion.controlling_coercive_behaviour_yes_details,
     value: details('coercive behaviour'),
   },
-  { question: PersonalRelationshipsQuestion.personal_relationships_community_strangulation, value: CommonOption.yes },
+  { question: PersonalRelationshipsQuestion.evidence_of_strangulation, value: CommonOption.yes },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_strangulation_yes_details,
+    question: PersonalRelationshipsQuestion.evidence_of_strangulation_yes_details,
     value: details('strangulation evidence'),
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_victim,
+    question: PersonalRelationshipsQuestion.offence_analysis_victim_of_domestic_abuse,
     value: CommonOption.yes,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_victim_by,
+    question: PersonalRelationshipsQuestion.offence_analysis_victim_of_domestic_abuse_who_committed_abuse,
     value: PersonalRelationshipsOption.intimate_partner,
   },
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
+    question: PersonalRelationshipsQuestion.offence_analysis_victim_of_domestic_abuse_intimate_partner_details,
     value: details('by intimate partner'),
   },
   {

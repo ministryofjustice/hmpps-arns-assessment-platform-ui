@@ -101,11 +101,11 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select if they have parenting responsibilities":
-              - /url: "#personal_relationships_community_any_parenting_responsibilities"
+              - /url: "#community_personal_relationships_community_parental_responsibilities"
     `)
 
-    await questions.personal_relationships_community_any_parenting_responsibilities.errorLink.click()
-    await expect(questions.personal_relationships_community_any_parenting_responsibilities.input).toBeFocused()
+    await questions.community_personal_relationships_community_parental_responsibilities.errorLink.click()
+    await expect(questions.community_personal_relationships_community_parental_responsibilities.input).toBeFocused()
   })
 
   test('validation personal relationships community questions', async ({
@@ -129,8 +129,12 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
+        },
+        {
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
         },
       ])
       .withUserSubmittedSteps([
@@ -149,7 +153,7 @@ test.describe('Validation', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'current relationship status',
+      'Is Test able to manage their parenting responsibilities?\n',
     )
 
     const { questions } = personalRelationshipsAndCommunityPage
@@ -162,7 +166,7 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select if they’re able to manage their parenting responsibilities":
-              - /url: "#personal_relationships_community_parental_responsibilities"
+              - /url: "#community_personal_relationships_community_manage_parental_responsibilities"
           - listitem:
             - link "Select what their current relationship is like with their family":
               - /url: "#personal_relationships_community_family_relationship"
@@ -170,29 +174,36 @@ test.describe('Validation', () => {
             - link "Select their experience of childhood":
               - /url: "#personal_relationships_community_childhood"
           - listitem:
-            - link "Select if they had childhood behavioural problems":
+            - link "Select if they had childhood behavioural issues or challenges":
               - /url: "#personal_relationships_community_childhood_behaviour"
           - listitem:
-            - link "Select if they are in a relationship":
-              - /url: "#personal_relationships_community_in_relationship"
+            - link "Select if there are any people, groups or communities that give them a sense of belonging":
+              - /url: "#personal_relationships_community_sense_of_belonging"
           - listitem:
-            - link "Select if they are happy with their current relationship status":
+            - link "Select if they have a partner":
+              - /url: "#personal_relationships_community_relationship_status"
+          - listitem:
+            - link "Select how you would describe their current relationship situation":
               - /url: "#personal_relationships_community_current_relationship"
           - listitem:
-            - link "Select their history of intimate relationships":
+            - link "Select how you would describe their history of intimate relationships":
               - /url: "#personal_relationships_community_intimate_relationship"
     `)
 
-    await questions.personal_relationships_community_parental_responsibilities.errorLink.click()
-    await expect(questions.personal_relationships_community_parental_responsibilities.input).toBeFocused()
+    await questions.community_personal_relationships_community_manage_parental_responsibilities.errorLink.click()
+    await expect(
+      questions.community_personal_relationships_community_manage_parental_responsibilities.input,
+    ).toBeFocused()
     await questions.personal_relationships_community_family_relationship.errorLink.click()
     await expect(questions.personal_relationships_community_family_relationship.input).toBeFocused()
     await questions.personal_relationships_community_childhood.errorLink.click()
     await expect(questions.personal_relationships_community_childhood.input).toBeFocused()
     await questions.personal_relationships_community_childhood_behaviour.errorLink.click()
     await expect(questions.personal_relationships_community_childhood_behaviour.input).toBeFocused()
-    await questions.personal_relationships_community_in_relationship.errorLink.click()
-    await expect(questions.personal_relationships_community_in_relationship.input).toBeFocused()
+    await questions.personal_relationships_community_sense_of_belonging.errorLink.click()
+    await expect(questions.personal_relationships_community_sense_of_belonging.input).toBeFocused()
+    await questions.personal_relationships_community_relationship_status.errorLink.click()
+    await expect(questions.personal_relationships_community_relationship_status.input).toBeFocused()
     await questions.personal_relationships_community_current_relationship.errorLink.click()
     await expect(questions.personal_relationships_community_current_relationship.input).toBeFocused()
     await questions.personal_relationships_community_intimate_relationship.errorLink.click()
@@ -220,15 +231,19 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -256,11 +271,15 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -310,11 +329,11 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select if there is evidence they have been a perpetrator of domestic abuse":
-              - /url: "#personal_relationships_community_domestic_abuse_perpetrator"
+              - /url: "#offence_analysis_perpetrator_of_domestic_abuse"
     `)
 
-    await questions.personal_relationships_community_domestic_abuse_perpetrator.errorLink.click()
-    await expect(questions.personal_relationships_community_domestic_abuse_perpetrator.input).toBeFocused()
+    await questions.offence_analysis_perpetrator_of_domestic_abuse.errorLink.click()
+    await expect(questions.offence_analysis_perpetrator_of_domestic_abuse.input).toBeFocused()
   })
 
   test('validation domestic violent against questions', async ({
@@ -338,15 +357,19 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -374,11 +397,15 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -398,7 +425,7 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
       ])
@@ -433,16 +460,16 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select at least one option":
-              - /url: "#personal_relationships_community_domestic_abuse_against"
+              - /url: "#offence_analysis_perpetrator_of_domestic_abuse_victim"
           - listitem:
             - link "Select if there is evidence of coercive behaviour":
-              - /url: "#personal_relationships_community_coercive_behaviour"
+              - /url: "#controlling_coercive_behaviour"
     `)
 
-    await questions.personal_relationships_community_domestic_abuse_against.errorLink.click()
-    await expect(questions.personal_relationships_community_domestic_abuse_against.input).toBeFocused()
-    await questions.personal_relationships_community_coercive_behaviour.errorLink.click()
-    await expect(questions.personal_relationships_community_coercive_behaviour.input).toBeFocused()
+    await questions.offence_analysis_perpetrator_of_domestic_abuse_victim.errorLink.click()
+    await expect(questions.offence_analysis_perpetrator_of_domestic_abuse_victim.input).toBeFocused()
+    await questions.controlling_coercive_behaviour.errorLink.click()
+    await expect(questions.controlling_coercive_behaviour.input).toBeFocused()
   })
 
   test('validation strangulation questions', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
@@ -461,15 +488,19 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -497,11 +528,15 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -521,23 +556,23 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
       ])
@@ -573,11 +608,11 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select if there is evidence of strangulation":
-              - /url: "#personal_relationships_community_strangulation"
+              - /url: "#evidence_of_strangulation"
     `)
 
-    await questions.personal_relationships_community_strangulation.errorLink.click()
-    await expect(questions.personal_relationships_community_strangulation.input).toBeFocused()
+    await questions.evidence_of_strangulation.errorLink.click()
+    await expect(questions.evidence_of_strangulation.input).toBeFocused()
   })
 
   test('validation domestic abuse victim questions', async ({
@@ -601,15 +636,19 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -637,11 +676,15 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -661,31 +704,31 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_strangulation,
+          question: Question.evidence_of_strangulation,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_strangulation_yes_details,
+          question: Question.evidence_of_strangulation_yes_details,
           value: 'test',
         },
       ])
@@ -722,11 +765,11 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select if there is evidence they have been a victim of domestic abuse":
-              - /url: "#personal_relationships_community_domestic_abuse_victim"
+              - /url: "#offence_analysis_victim_of_domestic_abuse"
     `)
 
-    await questions.personal_relationships_community_domestic_abuse_victim.errorLink.click()
-    await expect(questions.personal_relationships_community_domestic_abuse_victim.input).toBeFocused()
+    await questions.offence_analysis_victim_of_domestic_abuse.errorLink.click()
+    await expect(questions.offence_analysis_victim_of_domestic_abuse.input).toBeFocused()
   })
 
   test('validation domestic abuse victim by questions', async ({
@@ -750,15 +793,19 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -786,11 +833,15 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -810,35 +861,35 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_strangulation,
+          question: Question.evidence_of_strangulation,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_strangulation_yes_details,
+          question: Question.evidence_of_strangulation_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim,
+          question: Question.offence_analysis_victim_of_domestic_abuse,
           value: CommonOption.yes,
         },
       ])
@@ -876,11 +927,11 @@ test.describe('Validation', () => {
         - list:
           - listitem:
             - link "Select at least one option":
-              - /url: "#personal_relationships_community_domestic_abuse_victim_by"
+              - /url: "#offence_analysis_victim_of_domestic_abuse_who_committed_abuse"
     `)
 
-    await questions.personal_relationships_community_domestic_abuse_victim_by.errorLink.click()
-    await expect(questions.personal_relationships_community_domestic_abuse_victim_by.input).toBeFocused()
+    await questions.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.errorLink.click()
+    await expect(questions.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.input).toBeFocused()
   })
 
   test('validation want to make changes questions', async ({
@@ -904,15 +955,19 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -940,11 +995,15 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -964,43 +1023,43 @@ test.describe('Validation', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_strangulation,
+          question: Question.evidence_of_strangulation,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_strangulation_yes_details,
+          question: Question.evidence_of_strangulation_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim,
+          question: Question.offence_analysis_victim_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim_by,
+          question: Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
+          question: Question.offence_analysis_victim_of_domestic_abuse_intimate_partner_details,
           value: 'test',
         },
       ])
