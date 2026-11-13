@@ -2,9 +2,9 @@
 
 {% set downtimeBannerHtml %}
   <p class="govuk-notification-banner__heading">
-    Planned downtime.
+    {{ downtimeBanner.heading | escape }}
   </p>
-  <p class="govuk-body">Assess and plan will be unavailable from 6am on Thursday 5 November 2026 for 1 hour.</p>
+  <p class="govuk-body">{{ downtimeBanner.message | escape }}</p>
 {% endset %}
 
   {{ govukNotificationBanner({

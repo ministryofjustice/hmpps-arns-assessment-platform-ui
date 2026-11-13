@@ -8,4 +8,6 @@ export default class OffenceAnalysisPage extends StrengthsAndNeedsPage {
   static readonly firstStep = 'offence-analysis'
 
   readonly questions = this.questionsOf(OffenceAnalysisQuestions)
+
+  readonly addAnotherVictim = this.page.getByRole('button', { name: 'Add another victim' })
 }

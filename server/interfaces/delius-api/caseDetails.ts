@@ -21,7 +21,6 @@ export interface CaseDetails {
   crn: string
   pnc?: string
   gender?: string
-  tier: string
   dateOfBirth: string
   nomisId: string
   region: string

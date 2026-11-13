@@ -38,6 +38,7 @@ export const accommodationStatusStep = step({
       onValid: {
         effects: [
           StrengthsAndNeedsEffects.saveCurrentAccommodationStepAnswers(),
+          StrengthsAndNeedsEffects.clearInapplicableLivingWithAnswers(),
           StrengthsAndNeedsEffects.setSectionProgress(Section.accommodation, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_summary.code, IsUserSubmitted.false),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.accommodation_details.code, IsUserSubmitted.false),

@@ -31,7 +31,6 @@ export const setCaseDetailsFromHandoverContext = () => (context: AccessContext) 
     nomisId: subject.nomisId,
     location: subject.location,
     sexuallyMotivatedOffenceHistory: subject.sexuallyMotivatedOffenceHistory,
-    tier: '',
     region: '',
     sentences: [],
   }

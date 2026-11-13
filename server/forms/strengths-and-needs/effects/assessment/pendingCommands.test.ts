@@ -90,6 +90,7 @@ describe('SAN effects lists', () => {
     'saveCurrentStepAnswers',
     'saveCurrentAccommodationStepAnswers',
     'clearUnselectedDrugAnswers',
+    'clearInapplicableLivingWithAnswers',
     'setSectionProgress',
     'setUserSubmitted',
   ]
