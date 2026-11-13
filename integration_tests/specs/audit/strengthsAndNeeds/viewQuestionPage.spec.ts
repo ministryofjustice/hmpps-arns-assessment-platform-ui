@@ -4,8 +4,10 @@ import { expectSanAuditEvent, onPage, SanAuditEvent } from './helpers'
 
 test.describe('Views Question pages for each Criminogenic Needs section', () => {
   test('visiting a question page', async ({ page, createSession, strengthsAndNeedsBuilder, auditQueue }) => {
-    const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    const { crn, handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
 
@@ -24,7 +26,7 @@ test.describe('Views Question pages for each Criminogenic Needs section', () => 
     const { crn, handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`/strengths-and-needs/v1.0/edit/${sanAssessmentId}/current/finances/finance`)

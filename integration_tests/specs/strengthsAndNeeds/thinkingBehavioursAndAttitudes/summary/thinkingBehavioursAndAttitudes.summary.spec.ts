@@ -13,7 +13,7 @@ test.describe('Summary', () => {
       sexuallyMotivatedOffenceHistory: 'YES',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
         { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
@@ -186,7 +186,7 @@ test.describe('Summary', () => {
       sexuallyMotivatedOffenceHistory: 'YES',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
         { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
@@ -242,7 +242,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
         { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },

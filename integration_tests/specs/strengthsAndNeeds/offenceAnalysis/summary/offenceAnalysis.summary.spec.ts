@@ -9,7 +9,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         {
           question: 'offence_analysis_index_offence_description',
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',

@@ -12,7 +12,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
         { question: Question.employment_other_responsibilities, value: [CommonOption.none] },
@@ -99,7 +99,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
         { question: Question.employment_other_responsibilities, value: [CommonOption.none] },
@@ -135,7 +135,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.employment_status, value: Option.unemployed_not_looking_for_work },
         { question: Question.has_been_employed, value: CommonOption.no },
         { question: Question.employment_other_responsibilities, value: [CommonOption.none] },

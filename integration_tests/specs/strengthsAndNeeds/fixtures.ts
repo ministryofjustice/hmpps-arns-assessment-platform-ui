@@ -25,7 +25,7 @@ export const test = base.extend<{
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
       const builder = strengthsAndNeedsBuilder
-        .extend(sanAssessmentId)
+        .extend(sanAssessmentId, 'v1.0')
         .withAnswers(answers)
         .withUserSubmittedSteps(userSubmittedSteps)
 

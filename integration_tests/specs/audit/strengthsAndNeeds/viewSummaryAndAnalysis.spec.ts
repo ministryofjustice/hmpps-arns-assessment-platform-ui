@@ -14,7 +14,7 @@ test.describe('View Summary or Practitioner Analysis pages for each Criminogenic
     const { crn, handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(financeAnswers).save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withAnswers(financeAnswers).save()
 
     await walkToFinanceSummary(page, handoverLink, sanAssessmentId)
 
@@ -33,7 +33,7 @@ test.describe('View Summary or Practitioner Analysis pages for each Criminogenic
     const { crn, handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(financeAnswers).save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withAnswers(financeAnswers).save()
 
     await walkToFinanceSummary(page, handoverLink, sanAssessmentId)
     await markSectionComplete(page)

@@ -11,7 +11,7 @@ import { TestAapApiClient } from '../../support/apis/TestAapApiClient'
 // strengths and needs V2 URLs for use in playwright testing suits:
 export const sanFormPath = '/strengths-and-needs'
 // todo change to v2 path
-export const v2Path = '/v1.0'
+export const v2Path = '/v2.0'
 export const accommodation = Section.accommodation.path
 export const employment = Section.employment_and_education.path
 export const health = Section.health_and_wellbeing.path

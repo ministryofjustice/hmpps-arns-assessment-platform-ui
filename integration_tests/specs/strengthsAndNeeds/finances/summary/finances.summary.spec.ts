@@ -12,7 +12,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.finance_income, value: [Option.carers_allowance] },
         { question: Question.finance_bank_account, value: CommonOption.yes },
         { question: Question.finance_money_management, value: Option.good },
@@ -76,7 +76,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.finance_income, value: [Option.carers_allowance] },
         { question: Question.finance_bank_account, value: CommonOption.yes },
         { question: Question.finance_money_management, value: Option.good },
@@ -101,7 +101,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.finance_income, value: [Option.carers_allowance] },
         { question: Question.finance_bank_account, value: CommonOption.yes },
         { question: Question.finance_money_management, value: Option.good },

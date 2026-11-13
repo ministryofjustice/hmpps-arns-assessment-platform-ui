@@ -1,0 +1,16 @@
+import { Data, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+
+/**
+ * Centralised data accessors for case data.
+ * Use these throughout the form configuration so if paths change, we only update here.
+ */
+export const CaseData = {
+  Forename: Data('caseData.name.forename'),
+  ForenamePossessive: Data('caseData.name.forename').pipe(Transformer.String.Possessive()),
+  Surname: Data('caseData.name.surname'),
+  RiskOfSexualHarm: Data('caseData.r'),
+  Gender: Data('caseData.gender'),
+}
+
+export const formRootPath = '/strengths-and-needs'
+export const resumeUrlAppend = '?resume=true'

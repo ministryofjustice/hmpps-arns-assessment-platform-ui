@@ -2,11 +2,12 @@ import { Condition, Format, Item, Iterator, Session, when } from '@ministryofjus
 import { GovUKBody, GovUKTable, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
-import { basePath, CaseData } from '../../constants/formVersion'
 import { contentFor } from './locales'
 import { Section } from '../../constants/section'
 import { SANGenerators } from '../../../../generators'
 import { sentencePlanViewHistoricBasePath } from '../../constants/path'
+import { CaseData } from '../../../../constants/common'
+import { basePath } from '../../constants/formVersion'
 
 const { createRoute } = SANGenerators
 

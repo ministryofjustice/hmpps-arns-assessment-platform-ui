@@ -11,7 +11,7 @@ test.describe('Summary', () => {
       planAccessMode: 'READ_WRITE',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         {
           question: 'offence_analysis_index_offence_description',
           value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',

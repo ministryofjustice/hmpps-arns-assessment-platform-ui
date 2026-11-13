@@ -5,8 +5,10 @@ import { CommonAuditEvent, expectSanAuditEvent } from './helpers'
 
 test.describe('Selects tick box and Confirm button on Privacy Screen page', () => {
   test('confirming the privacy screen', async ({ page, createSession, strengthsAndNeedsBuilder, auditQueue }) => {
-    const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    const { crn, handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await page.goto(handoverLink)
     const privacyPage = await PrivacyScreenPage.verifyOnPage(page)

@@ -8,8 +8,8 @@ import { buildPageTitle, navigateToStrengthsAndNeeds, sanPageTitles } from '../s
 
 test.describe('Questions', () => {
   test('shows accommodation type', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
-    const { handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
 
@@ -35,7 +35,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.current_accommodation, value: Option.settled },
         { question: Question.type_of_settled_accommodation, value: Option.homeowner },
       ])
@@ -105,7 +105,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.current_accommodation, value: Option.temporary },
         { question: Question.type_of_temporary_accommodation, value: Option.approved_premises },
         { question: Question.approved_premises_end_date, value: '2030-01-01' },
@@ -130,7 +130,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.current_accommodation, value: Option.temporary }])
       .withUserSubmittedSteps([Step.accommodation_status.code]).save()
 
@@ -148,7 +148,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.current_accommodation, value: Option.no_accommodation },
         { question: Question.type_of_no_accommodation, value: Option.campsite },
       ])
