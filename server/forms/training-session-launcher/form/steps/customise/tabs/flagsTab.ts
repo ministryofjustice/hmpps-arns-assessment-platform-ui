@@ -43,6 +43,16 @@ export const flagsTabContent = [
         }),
       },
       {
+        value: 'SAN_FORM_VERSION',
+        text: 'SAN form version',
+        block: GovUKSelectInput({
+          code: 'sanFormVersion',
+          label: 'Set the san form version',
+          classes: 'govuk-radios--small',
+          items: [{ value: '', text: 'None' }, ...getFormVersions.map(version => ({ value: version, text: version }))],
+        }),
+      },
+      {
         value: 'NEW_PERIOD_OF_SUPERVISION',
         text: 'New Period of Supervision',
         hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',

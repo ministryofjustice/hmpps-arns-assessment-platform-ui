@@ -21,7 +21,7 @@ test.describe('Stale answers', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.current_accommodation, value: Option.temporary },
         { question: Question.type_of_temporary_accommodation, value: Option.short_term },

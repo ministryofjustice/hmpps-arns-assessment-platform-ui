@@ -90,6 +90,11 @@ export const scenarioFieldSchema = {
     group: 'subject',
     randomize: () => null,
   },
+  sanFormVersion: {
+    label: 'SAN form version',
+    group: 'subject',
+    randomize: () => null,
+  },
   // Practitioner details
   practitionerIdentifier: {
     label: 'Practitioner identifier',

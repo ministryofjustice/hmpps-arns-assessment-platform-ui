@@ -12,7 +12,7 @@ test.describe('Strengths and needs privacy screen', () => {
     baseURL,
   }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await page.goto(handoverLink)
 
@@ -34,12 +34,12 @@ test.describe('Strengths and needs privacy screen', () => {
     createSession,
     strengthsAndNeedsBuilder,
   }) => {
-    const { handoverLink } = await createSession({
+    const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
       accessMode: 'READ_ONLY',
       planAccessMode: 'READ_WRITE',
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await page.goto(handoverLink)
 

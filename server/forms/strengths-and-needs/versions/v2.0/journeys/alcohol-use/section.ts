@@ -1,6 +1,4 @@
 import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
-
-import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import {
   question,
@@ -16,6 +14,7 @@ import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 import { CharacterLimit } from '../../../../constants/characterLimit'
+import { CaseData } from '../../../../constants/common'
 
 const drankAlcohol = Answer(Question.alcohol_current_issues).not.match(Condition.Equals(Option.has_never_drank))
 const someOrSignificantIssues = or(

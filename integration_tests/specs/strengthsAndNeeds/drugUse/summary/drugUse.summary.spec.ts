@@ -16,7 +16,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_summary.code])
       .save()
@@ -44,7 +44,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_summary.code])
       .save()
@@ -62,7 +62,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.drug_use, value: CommonOption.no },
         { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.no },
         { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors_no_details, value: '' },

@@ -11,7 +11,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.employed }]).save()
+      .extend(sanAssessmentId, 'v1.0').withAnswers([{ question: Question.employment_status, value: Option.employed }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -34,7 +34,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.currently_unavailable_for_work }]).save()
+      .extend(sanAssessmentId, 'v1.0').withAnswers([{ question: Question.employment_status, value: Option.currently_unavailable_for_work }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -55,7 +55,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.employment_status, value: Option.unemployed_looking_for_work }]).save()
+      .extend(sanAssessmentId, 'v1.0').withAnswers([{ question: Question.employment_status, value: Option.unemployed_looking_for_work }]).save()
 
     await EmploymentAndEducationPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -76,7 +76,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.employment_status, value: Option.unemployed_not_looking_for_work }])
       .withUserSubmittedSteps([
         Step.employment_status.code,
@@ -99,7 +99,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.employment_status, value: Option.employed },
         { question: Question.employment_type, value: Option.full_time },
       ])
