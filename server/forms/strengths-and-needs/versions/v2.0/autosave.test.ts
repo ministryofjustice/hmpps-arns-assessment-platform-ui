@@ -1,0 +1,117 @@
+import { access, EffectRegistry, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { ForgeTestHarness, TestResult } from '@ministryofjustice/hmpps-forge/core/testing'
+import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { sanEffects } from '../../effects'
+import { sanGeneratorRegistry } from '../../generators'
+import { sanTransformers } from '../../transformers'
+import { sanConditions } from '../../conditions'
+import {
+  StrengthsAndNeedsContext,
+  StrengthsAndNeedsEffectsDeps,
+  StrengthsAndNeedsSessionDetails,
+} from '../../effects/types'
+import { Step } from './journeys/alcohol-use/constants/step'
+import { basePath, formVersion } from './constants/formVersion'
+import { autosaveAction } from './autosave'
+import { CaseDetails } from '../../../../interfaces/delius-api/caseDetails'
+import { AssessmentVersionQueryResult } from '../../../../interfaces/aap-api/queryResult'
+import { alcoholUseCurrentIssuesStep } from './journeys/alcohol-use/steps/alcohol-use-current-issues/step'
+import { Option } from './journeys/alcohol-use/constants/option'
+import { CommonOption } from './constants/commonOption'
+
+const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
+const user = { username: 'test.user', displayName: 'Test User' }
+
+const post = async (body: Record<string, unknown>, executeCommands = jest.fn().mockResolvedValue([])) => {
+  const deps = {
+    api: { executeCommand: jest.fn().mockResolvedValue(undefined), executeCommands },
+    auditService: { send: jest.fn() },
+  } as unknown as StrengthsAndNeedsEffectsDeps
+
+  const testEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
+  const seed = testEffects.register('Seed', () => async (context: StrengthsAndNeedsContext) => {
+    context.setData('assessmentUuid', assessmentUuid)
+    context.setData('sessionDetails', { accessMode: 'READ_WRITE' } as unknown as StrengthsAndNeedsSessionDetails)
+    context.setData('caseData', { name: { forename: 'Sam' } } as unknown as CaseDetails)
+    context.setData('assessment', { formVersion } as unknown as AssessmentVersionQueryResult)
+  })
+
+  const client = new ForgeTestHarness()
+    .registerGlobalComponents(govukComponents)
+    .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions], deps)
+    .registerPackage({
+      journey: journey({
+        code: 'strengths-and-needs-v2',
+        title: 'Strengths and needs',
+        path: basePath,
+        onAccess: [access({ effects: [seed()] })],
+        steps: [alcoholUseCurrentIssuesStep],
+      }),
+      forgePackage: true,
+    })
+    .createClient()
+
+  const result: TestResult = await client.post(`${basePath}/${Step.alcohol_use_current_issues.path}`, {
+    body,
+    state: { user },
+    params: { mode: 'edit' },
+    session: {},
+    headers: { 'accept-language': 'en-gb' },
+  })
+
+  return result
+}
+
+describe('autosave submit hook', () => {
+  it('accepts a part filled page without validating or redirecting', async () => {
+    const result = await post({
+      action: autosaveAction,
+      alcohol_current_issues: '',
+      alcohol_evidence_of_excess_drinking: '',
+      alcohol_past_issues: '',
+      alcohol_stopped_or_reduced_past: '',
+      alcohol_stopped_or_reduced: '',
+      alcohol_use_changes: '',
+    })
+
+    expect(result.type).toBe('render')
+    if (result.type === 'render') {
+      expect(result.getValidationErrorsByFieldCode('alcohol_current_issues')).toHaveLength(0)
+    }
+  })
+
+  it('leaves the save action to redirect as before', async () => {
+    const result = await post({
+      action: 'save',
+      alcohol_current_issues: 'SIGNIFICANT',
+    })
+
+    expect(result.type).toBe('redirect')
+  })
+
+  it('saves the whole page submission in one API call', async () => {
+    const executeCommands = jest.fn().mockResolvedValue([])
+
+    await post(
+      {
+        action: 'save',
+        alcohol_current_issues: Option.significant,
+        alcohol_evidence_of_excess_drinking: Option.yes_with_some_evidence,
+        alcohol_past_issues: CommonOption.yes,
+        alcohol_stopped_or_reduced_past: CommonOption.yes,
+        alcohol_stopped_or_reduced: CommonOption.yes,
+        alcohol_use_changes: CommonOption.made_changes,
+      },
+      executeCommands,
+    )
+
+    expect(executeCommands).toHaveBeenCalledTimes(1)
+    const commands = executeCommands.mock.calls[0]
+    expect(commands.map((command: { type: string }) => command.type)).toEqual([
+      'UpdateAssessmentPropertiesCommand',
+      'UpdateAssessmentAnswersCommand',
+      'UpdateAssessmentPropertiesCommand',
+    ])
+    expect(commands.filter((command: { hooks?: unknown[] }) => command.hooks)).toEqual([commands[2]])
+  })
+})

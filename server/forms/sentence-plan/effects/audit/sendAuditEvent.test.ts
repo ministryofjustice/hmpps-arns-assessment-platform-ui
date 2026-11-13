@@ -20,7 +20,9 @@ function createMockContext(options: MockContextOptions = {}) {
   const dataMap: Record<string, unknown> = {
     assessmentUuid,
     activeGoalUuid: options.activeGoalUuid,
-    formVersion: 'v1.0',
+    assessment: {
+      formVersion: 'v1.0',
+    },
   }
 
   return {

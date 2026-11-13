@@ -12,7 +12,7 @@ test.describe('Questions', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -36,7 +36,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.drug_use, value: CommonOption.yes }])
       .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
@@ -92,7 +92,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
+      .extend(sanAssessmentId, 'v1.0').withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
       .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
 
@@ -119,7 +119,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.drug_use, value: CommonOption.yes },
         { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.other_drug] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
@@ -178,7 +178,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.drug_use, value: CommonOption.yes },
         { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.benzodiazepines] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },

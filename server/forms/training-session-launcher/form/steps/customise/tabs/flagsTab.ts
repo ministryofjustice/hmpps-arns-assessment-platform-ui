@@ -1,6 +1,7 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { GovUKCheckboxInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { GovUKCheckboxInput, GovUKSelectInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { getFormVersions } from '../../../../../strengths-and-needs/constants/formConfigRegistry'
 
 /**
  * Scenario flags tab content
@@ -30,6 +31,26 @@ export const flagsTabContent = [
         value: 'SAN_BETA',
         text: 'SAN Private Beta',
         hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
+      },
+      {
+        value: 'MAX_UPLIFT_VERSION',
+        text: 'SAN Max uplift version',
+        block: GovUKSelectInput({
+          code: 'maxUpliftVersion',
+          label: 'Set the max uplift version',
+          classes: 'govuk-radios--small',
+          items: [{ value: '', text: 'None' }, ...getFormVersions.map(version => ({ value: version, text: version }))],
+        }),
+      },
+      {
+        value: 'SAN_FORM_VERSION',
+        text: 'SAN form version',
+        block: GovUKSelectInput({
+          code: 'sanFormVersion',
+          label: 'Set the san form version',
+          classes: 'govuk-radios--small',
+          items: [{ value: '', text: 'None' }, ...getFormVersions.map(version => ({ value: version, text: version }))],
+        }),
       },
       {
         value: 'NEW_PERIOD_OF_SUPERVISION',

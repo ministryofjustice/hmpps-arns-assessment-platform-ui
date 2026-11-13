@@ -1,4 +1,10 @@
 /**
  * Flags that can be set on training scenarios
  */
-export type TrainingScenarioFlag = 'SAN_BETA' | 'NEW_PERIOD_OF_SUPERVISION' | 'MERGED' | 'TIERING_ASSESSMENT'
+export type TrainingScenarioFlag =
+  | 'SAN_BETA'
+  | 'NEW_PERIOD_OF_SUPERVISION'
+  | 'MERGED'
+  | 'TIERING_ASSESSMENT'
+  | 'MAX_UPLIFT_VERSION'
+  | 'SAN_FORM_VERSION'

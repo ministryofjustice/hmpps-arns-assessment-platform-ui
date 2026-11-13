@@ -1,16 +1,16 @@
 import { createForgePackage, JourneyDefinition, journey, step } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { createConfigStep } from './createConfigStep'
-import { strengthsAndNeedsV1Journey } from './v1.0'
-import { formVersion } from './v1.0/constants/formVersion'
+import { strengthsAndNeedsV2Journey } from './v2.0'
+import { formVersion } from './v2.0/constants/formVersion'
 import { formConfigsByVersion } from '../constants/formConfigRegistry'
 import { FormConfig } from '../constants/formConfig'
 import { sanTransformers } from '../transformers'
-import { sendFormAuditEvent } from '../../shared/audit/sendFormAuditEvent'
+import { sendFormAuditEvent } from '../../shared'
 import AuditService from '../../../services/auditService'
 
-const v1Config = formConfigsByVersion[formVersion]
-const configuredStep = strengthsAndNeedsV1Journey.steps.find(candidate => candidate.path === '/config')
+const v2Config = formConfigsByVersion[formVersion]
+const configuredStep = strengthsAndNeedsV2Journey.steps.find(candidate => candidate.path === '/config')
 const ordinaryStep = step({
   path: '/ordinary',
   title: 'Ordinary step',
@@ -24,7 +24,7 @@ const createClient = (diagnosticStep = configuredStep) =>
     .registerPackage(
       createForgePackage({
         journey: journey({
-          ...strengthsAndNeedsV1Journey,
+          ...strengthsAndNeedsV2Journey,
           path: '/config-test',
           title: 'Config test',
           view: {},
@@ -48,7 +48,7 @@ describe('diagnostic configuration scope', () => {
       expect(definition.data ?? {}).not.toHaveProperty('formConfig')
       definition.steps?.forEach(candidate => {
         if (candidate.path === '/config') {
-          expect(candidate.data).toEqual({ formConfig: v1Config })
+          expect(candidate.data).toEqual({ formConfig: v2Config })
         } else {
           expect(candidate.data ?? {}).not.toHaveProperty('formConfig')
         }
@@ -56,8 +56,8 @@ describe('diagnostic configuration scope', () => {
       definition.children?.forEach(check)
     }
 
-    check(strengthsAndNeedsV1Journey)
-    expect(strengthsAndNeedsV1Journey.data).toEqual({ formVersion })
+    check(strengthsAndNeedsV2Journey)
+    expect(strengthsAndNeedsV2Journey.data).toEqual({ formVersion })
     expect(configuredStep).toBeDefined()
   })
 
@@ -69,10 +69,11 @@ describe('diagnostic configuration scope', () => {
 
     const auditService = new AuditService('test')
     const send = jest.spyOn(auditService, 'send').mockResolvedValue(undefined)
+
     await sendFormAuditEvent(
       auditService,
       {
-        getData: key => result.context.data[key],
+        getData: () => result.context.data,
         getState: () => undefined,
         getSession: () => ({}),
       },
@@ -86,9 +87,9 @@ describe('diagnostic configuration scope', () => {
     const client = createClient()
     const result = await get(client, 'config')
 
-    expect(result.context.data.formConfig).toEqual(v1Config)
+    expect(result.context.data.formConfig).toEqual(v2Config)
     expect(result.context.data.formVersion).toBe(formVersion)
-    expect(result.context.blocks[0].properties.content).toBe(JSON.stringify(v1Config, null, 2))
+    expect(result.context.blocks[0].properties.content).toBe(JSON.stringify(v2Config, null, 2))
     expect((await get(client, 'ordinary')).context.data).not.toHaveProperty('formConfig')
   })
 
@@ -104,13 +105,13 @@ describe('diagnostic configuration scope', () => {
     const client = createClient()
     const first = await get(client, 'config')
     const firstConfig = first.context.data.formConfig as FormConfig
-    expect(firstConfig).not.toBe(v1Config)
-    expect(firstConfig.fields).not.toBe(v1Config.fields)
+    expect(firstConfig).not.toBe(v2Config)
+    expect(firstConfig.fields).not.toBe(v2Config.fields)
     firstConfig.fields['request-only'] = { code: 'request-only' }
 
     const second = await get(client, 'config')
-    expect(second.context.data.formConfig).toEqual(v1Config)
+    expect(second.context.data.formConfig).toEqual(v2Config)
     expect(second.context.data.formConfig).not.toBe(firstConfig)
-    expect(v1Config.fields).not.toHaveProperty('request-only')
+    expect(v2Config.fields).not.toHaveProperty('request-only')
   })
 })

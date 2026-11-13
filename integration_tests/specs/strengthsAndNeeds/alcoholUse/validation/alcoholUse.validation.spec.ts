@@ -10,7 +10,7 @@ test.describe('Validation', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
     const alcoholUsePage = await AlcoholUsePage.verifyOnPage(page, 'Has Test ever drunk alcohol?')
@@ -40,7 +40,7 @@ test.describe('Validation', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
       .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
@@ -120,7 +120,7 @@ test.describe('Validation', () => {
         subject: { gender: '1' },
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId)
+        .extend(sanAssessmentId, 'v1.0')
         .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
         .withUserSubmittedSteps([Step.alcohol_use_status.code])
         .save()
@@ -152,7 +152,7 @@ test.describe('Validation', () => {
         subject: { gender: '2' },
       })
       await strengthsAndNeedsBuilder
-        .extend(sanAssessmentId)
+        .extend(sanAssessmentId, 'v1.0')
         .withAnswers([{ question: Question.alcohol_use, value: Option.yes_within_last_three_months }])
         .withUserSubmittedSteps([Step.alcohol_use_status.code])
         .save()

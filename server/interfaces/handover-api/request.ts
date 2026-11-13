@@ -9,6 +9,7 @@ export interface CreateHandoverLinkRequest {
   tieringAssessmentVersion?: number | null
   criminogenicNeedsData?: CriminogenicNeedsData
   sexuallyMotivatedOffenceHistory?: YesNoNull
+  maxUpliftVersion?: string | null
 }
 
 export interface UpdateHandoverContextRequest {

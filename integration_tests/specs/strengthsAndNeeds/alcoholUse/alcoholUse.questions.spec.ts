@@ -12,7 +12,7 @@ test.describe('Questions', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await AlcoholUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -43,7 +43,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.alcohol_use, value: Option.yes_within_last_three_months },
         { question: Question.alcohol_binge_drinking, value: CommonOption.yes },
@@ -220,7 +220,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.alcohol_use, value: Option.yes_not_in_last_three_months }])
       .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
@@ -321,7 +321,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([{ question: Question.alcohol_use, value: CommonOption.no }])
       .withUserSubmittedSteps([Step.alcohol_use_status.code])
       .save()
@@ -353,7 +353,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.alcohol_use, value: CommonOption.no },
         {
@@ -393,7 +393,7 @@ test.describe('Questions', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.alcohol_use, value: Option.yes_not_in_last_three_months },
         { question: Question.alcohol_past_issues, value: CommonOption.yes },

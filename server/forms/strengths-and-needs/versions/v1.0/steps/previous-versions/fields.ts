@@ -13,11 +13,12 @@ import {
 import { GovUKBody, GovUKHeading, GovUKTable } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { Fragment, ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
-import { basePath, CaseData } from '../../constants/formVersion'
+import { basePath } from '../../constants/formVersion'
 import { contentFor } from './locales'
 import { Section } from '../../constants/section'
 import { SANGenerators } from '../../../../generators'
 import { sentencePlanViewHistoricBasePath } from '../../constants/path'
+import { CaseData } from '../../../../constants/common'
 
 const { createRoute } = SANGenerators
 

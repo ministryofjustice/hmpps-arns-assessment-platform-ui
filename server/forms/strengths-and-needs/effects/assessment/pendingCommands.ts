@@ -6,6 +6,7 @@ import { sendFormAuditEvent } from '../../../shared'
 import { SAN_AUDIT_FORM } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
+import { latestVersion } from '../../constants/formVersion'
 
 export interface PendingCommand {
   command: UpdateAssessmentAnswersCommand | UpdateAssessmentPropertiesCommand
@@ -41,12 +42,16 @@ export const commitPendingCommands =
 
     const commands = pending.map(({ command }) => command)
 
+    const assessment = context.getData('assessment')
+    const formVersion = assessment.formVersion
+
     // The hook maps the whole assessment, so running it once on the last command
     // covers the batch and keeps the ~87 KB form config out of every other command.
     if (pending.some(({ mapToOasys }) => mapToOasys)) {
       commands[commands.length - 1] = {
         ...commands[commands.length - 1],
-        hooks: [new UpdateOasysDataMappingHook(context.getData('assessment'))],
+        // TODO Remove the check once the mapping work is done
+        hooks: formVersion === latestVersion ? [] : [new UpdateOasysDataMappingHook(assessment)],
       }
     }
 
