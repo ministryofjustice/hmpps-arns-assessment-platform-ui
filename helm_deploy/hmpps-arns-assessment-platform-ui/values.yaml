@@ -1,3 +1,6 @@
+grafanaDashboard:
+  enabled: true
+
 generic-service:
   nameOverride: hmpps-arns-assessment-platform-ui
   serviceAccountName: hmpps-arns-assessment-platform-service-account
