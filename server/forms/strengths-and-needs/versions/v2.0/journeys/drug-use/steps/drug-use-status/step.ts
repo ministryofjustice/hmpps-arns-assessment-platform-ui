@@ -14,7 +14,7 @@ import { Step } from '../../constants/step'
 import { Question } from '../../constants/question'
 import { CommonOption } from '../../../../constants/commonOption'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { sectionTitleClass } from '../../../../constants/formVersion'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 import { sectionPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { saveButton } from '../../../../constants/buttons'
@@ -27,7 +27,7 @@ export const drugUseStatusStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      sectionTitleClass,
+      sectionTitleClassV2,
     },
   },
   blocks: [drugUseSection.questions.drugUse.displayModes.field, saveButton],
