@@ -2,6 +2,8 @@ import { expect, type Page } from '@playwright/test'
 import PlanHistoryPage from '../../pages/sentencePlan/planHistoryPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import PrivacyScreenPage from '../../pages/sentencePlan/privacyScreenPage'
+import AgreePlanPage from '../../pages/sentencePlan/agreePlanPage'
+import { currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
 import { test, TargetService } from '../../support/fixtures'
 import { login } from '../../testUtils'
 import { sentencePlanV1URLs } from './sentencePlanUtils'
@@ -63,16 +65,30 @@ test.describe('MPoP access flow', () => {
       await expect(page.getByRole('link', { name: 'Sign out' })).toBeVisible()
     })
 
-    test('does not show Return to OASys button on plan overview', async ({
-      page,
-      createSession,
-      sentencePlanBuilder,
-    }) => {
+    test('does not show Return to OASys on plan overview', async ({ page, createSession, sentencePlanBuilder }) => {
       const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await sentencePlanBuilder.extend(sentencePlanId).save()
 
       await navigateToPlanOverviewViaMpop(page, crn)
 
+      await expect(returnToOasysButton(page)).toHaveCount(0)
+      await expect(page.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
+    })
+
+    test('does not show Return to OASys on the confirmation page', async ({
+      page,
+      createSession,
+      sentencePlanBuilder,
+    }) => {
+      const { sentencePlanId, crn } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
+      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
+
+      await navigateToPlanOverviewViaMpop(page, crn)
+      const overview = await PlanOverviewPage.verifyOnPage(page)
+      await overview.agreePlanButton.click()
+
+      await AgreePlanPage.verifyOnPage(page)
+      await expect(page.getByRole('link', { name: 'Return to OASys' })).toHaveCount(0)
       await expect(returnToOasysButton(page)).toHaveCount(0)
     })
 

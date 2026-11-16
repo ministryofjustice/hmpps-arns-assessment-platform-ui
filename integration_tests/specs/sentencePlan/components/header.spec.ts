@@ -26,13 +26,13 @@ test.describe('Header', () => {
     await expect(planOverviewPage.header).toMatchAriaSnapshot(`
             - paragraph: Test User
             - term: "CRN:"
-            - definition
+            - definition: /.+/
             - term: "PNC:"
-            - definition
+            - definition: "123"
             - term: "Date of birth:"
-            - definition
+            - definition: 1 January 1990
             - link "View previous versions":
-                - /url: /previous-versions/
+                - /url: /sentence-plan/v1.0/plan/previous-versions
             - heading "Test's plan" [level=1]
             - button "Return to OASys"
             - button "Create goal"

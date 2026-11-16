@@ -147,4 +147,58 @@ describe('plan header', () => {
       expect(html).not.toContain('govuk-notification-banner__content')
     })
   })
+
+  describe('draft plan confirmation feature flag', () => {
+    it('keeps the existing OASys button and Agree plan styling when disabled', () => {
+      const html = nunjucksEnv.render(template, {
+        basePath: '/sentence-plan/v1.0',
+        data: {
+          caseData: {
+            name: { forename: 'Joan', surname: 'Smith' },
+            crn: 'X000000',
+            dateOfBirth: '1990-01-01',
+          },
+          sessionDetails: { oasysRedirectUrl: 'https://oasys.example/return' },
+          featureFlags: { draftPlanConfirmationEnabled: false },
+        },
+        headerPageHeading: "Joan's plan",
+        buttons: {
+          showReturnToOasysButton: true,
+          showAgreePlanButton: true,
+        },
+      })
+
+      expect(html).toContain('data-ai-id="return-to-oasys-button"')
+      expect(html).toContain('class="govuk-button govuk-!-display-none-print"')
+      expect(html).toContain('Agree plan')
+      expect(html).not.toContain('data-ai-id="return-to-oasys-link"')
+    })
+
+    it('renders the OASys link and secondary Confirm plan button when enabled', () => {
+      const html = nunjucksEnv.render(template, {
+        basePath: '/sentence-plan/v1.0',
+        data: {
+          caseData: {
+            name: { forename: 'Joan', surname: 'Smith' },
+            crn: 'X000000',
+            dateOfBirth: '1990-01-01',
+          },
+          sessionDetails: { oasysRedirectUrl: 'https://oasys.example/return' },
+          featureFlags: { draftPlanConfirmationEnabled: true },
+        },
+        headerPageHeading: "Joan's plan",
+        buttons: {
+          showReturnToOasysLink: true,
+          showAgreePlanButton: true,
+        },
+      })
+
+      expect(html).toContain('href="https://oasys.example/return"')
+      expect(html).toContain('data-ai-id="return-to-oasys-link"')
+      expect(html).toContain('class="plan-header__subject-details__navigation-separator govuk-!-display-none-print"')
+      expect(html).toContain('class="govuk-button govuk-button--secondary govuk-!-display-none-print"')
+      expect(html).toContain('Confirm plan')
+      expect(html).not.toContain('Agree plan')
+    })
+  })
 })

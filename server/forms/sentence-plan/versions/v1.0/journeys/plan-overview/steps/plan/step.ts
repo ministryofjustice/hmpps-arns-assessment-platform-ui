@@ -15,6 +15,7 @@ import {
   Condition,
   Iterator,
   Transformer,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   blankPlanOverviewContent,
@@ -22,6 +23,7 @@ import {
   futureGoalsContent,
   goalsSection,
   planLastUpdatedMessage,
+  draftPlanLastUpdatedMessage,
   planAgreedMessage,
   planCreatedMessage,
   updateAgreementMessage,
@@ -33,6 +35,7 @@ import { CaseData } from '../../../../constants'
 import {
   hasAtLeastOneActiveGoal,
   hasPostAgreementStatus,
+  isDraftPlanConfirmationEnabled,
   isOasysAccess,
   isPrintAndShareEnabled,
   isReadOnlyAccess,
@@ -66,9 +69,13 @@ export const planStep = step({
       currentTab: Query('goalStatusTab'),
       buttons: {
         showPrintAllGoalsButton,
-        showReturnToOasysButton: isOasysAccess,
+        showReturnToOasysButton: and(
+          isOasysAccess,
+          not(and(isDraftPlanConfirmationEnabled, not(hasPostAgreementStatus))),
+        ),
+        showReturnToOasysLink: and(isOasysAccess, isDraftPlanConfirmationEnabled, not(hasPostAgreementStatus)),
         showCreateGoalButton: not(isReadOnlyAccess),
-        // Only show "Agree plan" while still in draft and when the user has edit access.
+        // Only show the confirmation action while still in draft and when the user has edit access.
         showAgreePlanButton: and(not(hasPostAgreementStatus), not(isReadOnlyAccess)),
       },
     },
@@ -76,7 +83,9 @@ export const planStep = step({
   validWhen: [
     validation({
       condition: hasAtLeastOneActiveGoal,
-      message: 'To agree the plan, create a goal to work on now',
+      message: when(isDraftPlanConfirmationEnabled)
+        .then('To confirm the plan, create a goal to work on now')
+        .else('To agree the plan, create a goal to work on now'),
       details: { href: '#blank-plan-content' },
     }),
     Data('goals')
@@ -94,6 +103,7 @@ export const planStep = step({
   reachability: { entryWhen: true },
   blocks: [
     planLastUpdatedMessage,
+    draftPlanLastUpdatedMessage,
     planAgreedMessage,
     planCreatedMessage,
     updateAgreementMessage,

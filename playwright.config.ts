@@ -31,6 +31,8 @@ export interface PlaywrightExtendedConfig {
 export default defineConfig<PlaywrightExtendedConfig>({
   outputDir: './test_results/playwright/test-output',
   testDir: './integration_tests/specs',
+  testMatch: process.env.TEST_DRAFT_PLAN_CONFIRMATION === 'true' ? '**/confirmPlan.spec.ts' : undefined,
+  testIgnore: process.env.TEST_DRAFT_PLAN_CONFIRMATION === 'true' ? [] : ['**/confirmPlan.spec.ts'],
   /* Maximum time one test can run for. (millis) */
   timeout: 3 * 60 * 1000,
   /* Maximum time test suite canm run for. (millis) */
