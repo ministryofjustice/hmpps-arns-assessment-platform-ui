@@ -5,7 +5,7 @@ import { SANGenerators } from '../../../../../../generators'
 import { drugLastUsed, drugUseSection } from '../../section'
 import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
-import { CaseData } from '../../../../constants/formVersion'
+import { CaseData } from '../../../../../../constants/common'
 import { Option } from '../../constants/option'
 
 const drugValueLower = Item().value().pipe(Transformer.String.ToLowerCase())
