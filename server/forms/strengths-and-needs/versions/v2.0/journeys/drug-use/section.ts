@@ -413,11 +413,15 @@ const injectedDrugAnswers = (drugValue: string) => {
             GovUKBody({
               text: option.text,
               size: 's',
-              visibleWhen: Answer(Format(Question.drugs_injected_value, drugValue.toLowerCase())).match(Condition.Array.Contains(option.value)),
+              visibleWhen: Answer(Format(Question.drugs_injected_value, drugValue.toLowerCase())).match(
+                Condition.Array.Contains(option.value),
+              ),
             }),
           ),
         },
-        visibleWhen: Answer(Format(Question.drugs_injected_value, drugValue.toLowerCase())).match(Condition.IsRequired()),
+        visibleWhen: Answer(Format(Question.drugs_injected_value, drugValue.toLowerCase())).match(
+          Condition.IsRequired(),
+        ),
       },
     ],
   })
@@ -455,12 +459,10 @@ const drugsInjected = question({
           GovUKBody({
             text: commonContentFor('option.NONE'),
             visibleWhen: Answer(content.code).match(Condition.Array.Contains(CommonOption.none)),
-          }),
-          ...drugsList
+          }),...drugsList
             .filter(drug => drug.injectable)
             .flatMap(drug => {
               const chosen = Answer(content.code).match(Condition.Array.Contains(drug.value))
-
               return [
                 GovUKBody({ text: drugName(drug.value), visibleWhen: chosen }),
                 { ...injectedDrugAnswers(drug.value), visibleWhen: chosen },
