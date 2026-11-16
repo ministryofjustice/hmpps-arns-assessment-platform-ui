@@ -53,6 +53,7 @@ export const drugUseLastUsedStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_last_used),
         ],
         next: [
@@ -66,6 +67,7 @@ export const drugUseLastUsedStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.drug_use, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.drug_use_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.drug_use, Step.drug_use_last_used),
         ],
       },
