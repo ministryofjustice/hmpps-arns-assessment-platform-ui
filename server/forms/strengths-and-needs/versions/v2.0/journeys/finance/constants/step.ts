@@ -1,8 +1,4 @@
 export const Step = {
-  finance: {
-    code: 'finance',
-    path: 'finance',
-  },
   finance_income: {
     code: 'finance_income',
     path: 'finance-income',

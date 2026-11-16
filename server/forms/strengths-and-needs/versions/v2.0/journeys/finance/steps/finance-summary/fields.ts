@@ -3,7 +3,11 @@ import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
 import { financeSection, hasFinancialConcerns } from '../../section'
-import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
+import {
+  goToPractitionerAnalysisButton,
+  markAsCompleteButton,
+  markAsCompleteButtonWhen,
+} from '../../../../constants/buttons'
 import { commonContentFor } from '../../../../locales'
 import { questionsOf } from '../../../../steps/view-all-answers/sections'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
@@ -31,6 +35,7 @@ export const summary = GovUKSummaryList({
 const summaryPanel = [
   summary,
   goToPractitionerAnalysisButton(Step.finance_summary.path, 'practitioner-analysis', hasFinancialConcerns),
+  markAsCompleteButtonWhen(not(hasFinancialConcerns)),
 ]
 
 export const summaryTab = HtmlBlock({

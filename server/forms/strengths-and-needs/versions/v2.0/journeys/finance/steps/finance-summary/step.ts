@@ -7,6 +7,7 @@ import { summaryPageTitle } from '../../../../locales'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
+import { hasFinancialConcerns } from '../../section'
 
 export const financeSummaryStep = step({
   path: `/${Step.finance_summary.path}`,
@@ -33,7 +34,15 @@ export const financeSummaryStep = step({
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.yes),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.finance_summary),
         ],
-        next: [redirect({ goto: `${Step.finance_analysis.path}#practitioner-analysis` })],
+        next: [
+          redirect({
+            when: hasFinancialConcerns,
+            goto: `${Step.finance_analysis.path}#practitioner-analysis`,
+          }),
+          redirect({
+            goto: Step.finance_analysis.path,
+          }),
+        ],
       },
       onInvalid: {
         effects: [

@@ -209,7 +209,7 @@ const moneyManagement = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_money_management.path }),
   },
 })
 
@@ -240,7 +240,7 @@ const debt = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_money_management.path }),
   },
 })
 
@@ -308,7 +308,7 @@ const changes = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.finance.path }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_changes.path }),
   },
 })
 

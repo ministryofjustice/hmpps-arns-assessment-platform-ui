@@ -19,6 +19,15 @@ export const markAsCompleteButton = block<GovUKButton>({
   visibleWhen: isEditMode,
 })
 
+export const markAsCompleteButtonWhen = (visibleWhen?: PredicateExpr) =>
+  block<GovUKButton>({
+    variant: 'govukButton',
+    text: commonContentFor('mark_as_complete'),
+    name: 'action',
+    value: 'save',
+    visibleWhen: visibleWhen ? and(isEditMode, visibleWhen) : isEditMode,
+  })
+
 export const goToPractitionerAnalysisButton = (
   sectionSummaryPath: string,
   anchor = 'practitioner-analysis',
