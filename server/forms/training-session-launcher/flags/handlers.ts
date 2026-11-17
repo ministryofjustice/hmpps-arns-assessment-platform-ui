@@ -133,6 +133,17 @@ function getDefaultAvailableServices(): TargetApplication[] {
 }
 
 /**
+ * Whether a target service may be offered at all in this environment, whatever the session flags say
+ */
+export function isTargetEnabled(target: TargetApplication): boolean {
+  if (target === 'strengths-and-needs') {
+    return config.forms.trainingSessionLauncher.sanTargetEnabled
+  }
+
+  return true
+}
+
+/**
  * Resolve handover configuration by merging all flag configs
  * Later flags override earlier flags for simple properties
  * urlParams are merged, modifyRequest functions are chained
@@ -161,7 +172,7 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
         : acc.availableServices
 
     return {
-      availableServices: filteredServices,
+      availableServices: filteredServices.filter(isTargetEnabled),
       urlParams: { ...acc.urlParams, ...handover.urlParams },
       modifyRequest: handover.modifyRequest
         ? req => handover.modifyRequest!(acc.modifyRequest(req))
