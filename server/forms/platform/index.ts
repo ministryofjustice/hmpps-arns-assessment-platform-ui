@@ -2,6 +2,7 @@ import { Condition, createForgePackage, journey, Request } from '@ministryofjust
 import { accessibilityStepPath, createAccessibilityStatementStep } from './steps/accessibility/step'
 import { cookiesPolicyStepPath, createCookiesPolicyStep } from './steps/cookies-policy/step'
 import { createPrivacyPolicyStep, privacyPolicyStepPath } from './steps/privacy-policy/step'
+import { sessionTimeoutStep } from './steps/session-timeout/step'
 import config from '../../config'
 
 const baseUrl = '/platform'
@@ -57,7 +58,7 @@ const platformPoliciesJourney = journey({
   title: 'Assess and plan',
   path: baseUrl,
   reachability: { disableReachabilityChecks: true },
-  steps: createPlatformPages({ baseUrl, feedbackUrl: config.nationalRolloutFeedbackUrl }),
+  steps: [...createPlatformPages({ baseUrl, feedbackUrl: config.nationalRolloutFeedbackUrl }), sessionTimeoutStep],
   view: {
     locals: {
       feedbackUrl: config.nationalRolloutFeedbackUrl,

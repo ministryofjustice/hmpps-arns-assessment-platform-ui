@@ -9,6 +9,7 @@ import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-fo
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
+import { getSessionTimeoutContent } from '../forms/platform/steps/session-timeout/sessionTimeoutContent'
 
 export default function nunjucksSetup(app?: express.Express) {
   if (app) {
@@ -72,6 +73,8 @@ export default function nunjucksSetup(app?: express.Express) {
 
   // Filters required by the MPoP components library's templates
   mpopNunjucksSetup(njkEnv)
+
+  njkEnv.addGlobal('sessionTimeoutContentFor', getSessionTimeoutContent)
 
   njkEnv.addFilter('possessive', possessive)
 

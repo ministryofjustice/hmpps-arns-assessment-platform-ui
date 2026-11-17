@@ -17,7 +17,7 @@ async function forceShowSessionTimeoutModal(page: Page) {
 }
 
 test.describe('Session Timeout Modal', () => {
-  test('Delete action redirects to unsaved-information-deleted page', async ({ page, openSentencePlan }) => {
+  test('Delete action redirects to the shared session timeout page', async ({ page, openSentencePlan }) => {
     await openSentencePlan()
 
     const modalPage = SessionTimeoutModalPage.getInstance(page)
@@ -30,11 +30,9 @@ test.describe('Session Timeout Modal', () => {
 
     await modalPage.deleteLink.click()
 
-    await expect(page).toHaveURL(/\/unsaved-information-deleted/)
+    await expect(page).toHaveURL(/\/platform\/session-timeout\?service=sentence-plan/)
     await expect(page.getByRole('heading', { name: 'Your unsaved information has been deleted' })).toBeVisible()
-    await expect(page.getByTestId('unsaved-information-deleted-content')).toContainText(
-      'This is to protect your information',
-    )
+    await expect(page.getByTestId('session-timeout-content')).toContainText('This is to protect your information')
     await expect(page.getByRole('button', { name: 'Go to the plan' })).toBeVisible()
   })
 
@@ -63,7 +61,7 @@ test.describe('Session Timeout Modal', () => {
     await PlanOverviewPage.verifyOnPage(page)
   })
 
-  test('countdown expires and automatically redirects to unsaved-information-deleted page', async ({
+  test('countdown expires and automatically redirects to the shared session timeout page', async ({
     page,
     makeAxeBuilder,
     openSentencePlan,
@@ -83,7 +81,7 @@ test.describe('Session Timeout Modal', () => {
       modal.handleSessionExpired()
     })
 
-    await expect(page).toHaveURL(/\/unsaved-information-deleted/)
+    await expect(page).toHaveURL(/\/platform\/session-timeout\?service=sentence-plan/)
     await expect(page.getByRole('heading', { name: 'Your unsaved information has been deleted' })).toBeVisible()
 
     // Accessibility
