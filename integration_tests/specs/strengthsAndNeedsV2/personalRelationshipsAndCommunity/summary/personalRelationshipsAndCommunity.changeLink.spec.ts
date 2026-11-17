@@ -30,11 +30,11 @@ const analysisPage = 'personal-relationships-community-analysis'
 const fullyAnswered: Scenario = {
   answers: [
     {
-      question: Question.personal_relationships_community_children_details,
+      question: Question.community_personal_relationships_community_children_details,
       value: [Option.yes_children_living_with_pop],
     },
     {
-      question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+      question: Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
       value: 'test',
     },
     {
@@ -176,7 +176,7 @@ const fullyAnswered: Scenario = {
   summaryChangeLinks: [
     changeLink(
       Step.personal_relationships_children_information.path,
-      Question.personal_relationships_community_children_details,
+      Question.community_personal_relationships_community_children_details,
     ),
     changeLink(
       Step.personal_relationships_any_parenting_responsibilities.path,

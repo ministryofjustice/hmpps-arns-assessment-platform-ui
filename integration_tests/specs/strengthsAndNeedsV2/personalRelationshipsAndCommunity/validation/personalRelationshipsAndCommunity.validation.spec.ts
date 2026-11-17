@@ -14,7 +14,7 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop, Option.yes_children_not_living_with_pop],
         },
       ])
@@ -38,19 +38,19 @@ test.describe('Validation', () => {
           - /children: equal
           - listitem:
             - link "Enter details of any children that live with them":
-              - /url: "#personal_relationships_community_children_details_yes_children_living_with_pop_details"
+              - /url: "#community_personal_relationships_community_children_details_yes_children_living_with_details"
           - listitem:
             - link "Enter details of any children that do not live with them":
-              - /url: "#personal_relationships_community_children_details_yes_children_not_living_with_pop_details"
+              - /url: "#community_personal_relationships_community_children_details_yes_children_not_living_with_details"
     `)
 
-    await questions.personal_relationships_community_children_details_yes_children_living_with_pop_details.errorLink.click()
+    await questions.community_personal_relationships_community_children_details_yes_children_living_with_details.errorLink.click()
     await expect(
-      questions.personal_relationships_community_children_details_yes_children_living_with_pop_details.input,
+      questions.community_personal_relationships_community_children_details_yes_children_living_with_details.input,
     ).toBeFocused()
-    await questions.personal_relationships_community_children_details_yes_children_not_living_with_pop_details.errorLink.click()
+    await questions.community_personal_relationships_community_children_details_yes_children_not_living_with_details.errorLink.click()
     await expect(
-      questions.personal_relationships_community_children_details_yes_children_not_living_with_pop_details.input,
+      questions.community_personal_relationships_community_children_details_yes_children_not_living_with_details.input,
     ).toBeFocused()
   })
 
@@ -67,11 +67,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
       ])
@@ -121,11 +122,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -223,11 +225,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -349,11 +352,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -447,7 +451,7 @@ test.describe('Validation', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Who did Test abuse',
+      'Who did Test commit domestic abuse against?',
     )
 
     const { questions } = personalRelationshipsAndCommunityPage
@@ -462,7 +466,7 @@ test.describe('Validation', () => {
             - link "Select at least one option":
               - /url: "#offence_analysis_perpetrator_of_domestic_abuse_victim"
           - listitem:
-            - link "Select if there is evidence of coercive behaviour":
+            - link "Select if there is evidence they have perpetrated controlling or coercive behaviour":
               - /url: "#controlling_coercive_behaviour"
     `)
 
@@ -480,11 +484,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -595,7 +600,7 @@ test.describe('Validation', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Is there evidence of strangulation?',
+      'Is there evidence that Test has perpetrated strangulation or suffocation?',
     )
 
     const { questions } = personalRelationshipsAndCommunityPage
@@ -607,7 +612,7 @@ test.describe('Validation', () => {
         - heading "There is a problem" [level=2]
         - list:
           - listitem:
-            - link "Select if there is evidence of strangulation":
+            - link "Select if there is evidence they have perpetrated strangulation or suffocation":
               - /url: "#evidence_of_strangulation"
     `)
 
@@ -628,11 +633,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -785,11 +791,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -914,7 +921,7 @@ test.describe('Validation', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Who has abused them?',
+      'Who committed the abuse against Test?',
     )
 
     const { questions } = personalRelationshipsAndCommunityPage
@@ -947,11 +954,12 @@ test.describe('Validation', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -1085,7 +1093,7 @@ test.describe('Validation', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Does Test want to make changes to their personal relationships and community?',
+      'Does Test want to make changes to their personal relationships?',
     )
 
     const { questions } = personalRelationshipsAndCommunityPage
@@ -1097,7 +1105,7 @@ test.describe('Validation', () => {
         - heading "There is a problem" [level=2]
         - list:
           - listitem:
-            - link "Select if they want to make changes to their personal relationships and community":
+            - link "Select if they want to make changes to their personal relationships":
               - /url: "#personal_relationships_community_changes"
     `)
 

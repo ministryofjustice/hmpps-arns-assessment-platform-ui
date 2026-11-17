@@ -14,11 +14,12 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -167,7 +168,7 @@ test.describe('Summary', () => {
           - paragraph: test
         - definition:
           - link "Change Are there any children in Test's life?":
-            - /url: personal-relationships-children-information#personal_relationships_community_children_details-question
+            - /url: personal-relationships-children-information#community_personal_relationships_community_children_details-question
         - term: Does Test have any parenting responsibilities?
         - definition:
           - paragraph: "Yes"
@@ -236,27 +237,26 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Is there evidence that Test has been a perpetrator of domestic abuse?":
             - /url: personal-relationships-domestic-abuse-perpetrator#offence_analysis_perpetrator_of_domestic_abuse-question
-        - term: Who did Test abuse?
+        - term: Who did Test commit domestic abuse against?
         - definition:
           - paragraph: Intimate partner
           - paragraph: test
         - definition:
-          - link "Change Who did Test abuse?":
+          - link "Change Who did Test commit domestic abuse against?":
             - /url: personal-relationships-domestic-abuse-against#offence_analysis_perpetrator_of_domestic_abuse_victim-question
-        - term: Is there evidence of coercive behaviour?
+        - term: Is there evidence that Test has perpetrated controlling or coercive behaviour?
         - definition:
           - paragraph: "Yes"
           - paragraph: test
         - definition:
-          - link "Change Is there evidence of coercive behaviour?":
+          - link "Change Is there evidence that Test has perpetrated controlling or coercive behaviour?":
             - /url: personal-relationships-domestic-abuse-against#controlling_coercive_behaviour-question
-        - term: Is there evidence of strangulation?
+        - term: Is there evidence that Test has perpetrated strangulation or suffocation?
         - definition:
           - paragraph: "Yes"
           - paragraph: test
-
         - definition:
-          - link "Change Is there evidence of strangulation?":
+          - link "Change Is there evidence that Test has perpetrated strangulation or suffocation?":
             - /url: personal-relationships-strangulation#evidence_of_strangulation-question
         - term: Is there evidence that Test has been a victim of domestic abuse?
         - definition:
@@ -264,19 +264,19 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Is there evidence that Test has been a victim of domestic abuse?":
             - /url: personal-relationships-domestic-abuse-victim#offence_analysis_victim_of_domestic_abuse-question
-        - term: Who has abused them?
+        - term: Who committed the abuse against Test?
         - definition:
           - paragraph: Intimate partner
           - paragraph: test
         - definition:
-          - link "Change Who has abused them?":
+          - link "Change Who committed the abuse against Test?":
             - /url: personal-relationships-domestic-abuse-victim-by#offence_analysis_victim_of_domestic_abuse_who_committed_abuse-question
-        - term: Does Test want to make changes to their personal relationships and community?
+        - term: Does Test want to make changes to their personal relationships?
         - definition:
           - paragraph: I have already made positive changes and want to maintain them
           - paragraph: Some details
         - definition:
-          - link "Change Does Test want to make changes to their personal relationships and community?":
+          - link "Change Does Test want to make changes to their personal relationships?":
             - /url: personal-relationships-want-to-make-changes#personal_relationships_community_changes-question
         - button "Go to practitioner analysis"
     `)
@@ -290,11 +290,12 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -446,11 +447,12 @@ test.describe('Summary', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {

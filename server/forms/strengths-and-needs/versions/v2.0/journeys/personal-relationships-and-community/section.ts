@@ -1,4 +1,4 @@
-import { and, Answer, Condition, not, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { CaseData } from '../../../../constants/common'
@@ -30,7 +30,7 @@ import {
 // has children or parenting responsibilities.
 const hasParentalResponsibilities = and(
   not(
-    Answer(Question.personal_relationships_community_children_details).match(
+    Answer(Question.community_personal_relationships_community_children_details).match(
       Condition.Array.Contains(Option.no_children),
     ),
   ),
@@ -58,49 +58,57 @@ const childrenDetailsRevealed = (content: {
 
 const childrenDetails = question({
   content: {
-    code: Question.personal_relationships_community_children_details,
+    code: Question.community_personal_relationships_community_children_details,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor('question.personal_relationships_community_children_details.text', CaseData.ForenamePossessive),
+    text: contentFor(
+      'question.community_personal_relationships_community_children_details.text',
+      CaseData.ForenamePossessive,
+    ),
     hint: {
-      html: contentFor('question.personal_relationships_community_children_details.hint', CaseData.Forename),
+      html: contentFor('question.community_personal_relationships_community_children_details.hint', CaseData.Forename),
     },
     options: [
       {
         value: Option.yes_children_living_with_pop,
         text: contentFor(
-          'question.personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.text',
+          'question.community_personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.text',
         ),
         reveals: childrenDetailsRevealed({
-          code: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          code: Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           text: contentFor(
-            'question.personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.label',
+            'question.community_personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.label',
             CaseData.Forename,
           ),
           validationMessage: contentFor(
-            'question.personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.validation',
+            'question.community_personal_relationships_community_children_details.option.YES_CHILDREN_LIVING_WITH_POP.validation',
           ),
         }),
       },
       {
         value: Option.yes_children_not_living_with_pop,
         text: contentFor(
-          'question.personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.text',
+          'question.community_personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.text',
         ),
         reveals: childrenDetailsRevealed({
-          code: Question.personal_relationships_community_children_details_yes_children_not_living_with_pop_details,
+          code: Question.community_personal_relationships_community_children_details_yes_children_not_living_with_details,
           text: contentFor(
-            'question.personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.label',
+            'question.community_personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.label',
             CaseData.Forename,
           ),
           validationMessage: contentFor(
-            'question.personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.validation',
+            'question.community_personal_relationships_community_children_details.option.YES_CHILDREN_NOT_LIVING_WITH_POP.validation',
           ),
         }),
       },
       { divider: commonContentFor('or') },
       {
         value: Option.no_children,
-        text: commonContentFor('option.NO'),
+        text: contentFor(
+          'question.community_personal_relationships_community_children_details.option.NO_CHILDREN.text',
+        ),
+        hint: contentFor(
+          'question.community_personal_relationships_community_children_details.option.NO_CHILDREN.hint',
+        ),
         behaviour: 'exclusive' as const,
       },
     ],
@@ -524,7 +532,7 @@ const coerciveBehaviour = question({
   content: {
     code: Question.controlling_coercive_behaviour,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.controlling_coercive_behaviour.text', CaseData.ForenamePossessive),
+    text: contentFor('question.controlling_coercive_behaviour.text', CaseData.Forename),
     options: yesNo({
       yes: requiredDetails({
         code: Question.controlling_coercive_behaviour_yes_details,
@@ -550,7 +558,7 @@ const strangulation = question({
   content: {
     code: Question.evidence_of_strangulation,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.evidence_of_strangulation.text', CaseData.ForenamePossessive),
+    text: contentFor('question.evidence_of_strangulation.text', CaseData.Forename),
     options: yesNo({
       yes: requiredDetails({
         code: Question.evidence_of_strangulation_yes_details,
@@ -590,10 +598,7 @@ const domesticAbuseVictimBy = question({
   content: {
     code: Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse,
     format: QuestionFormat.CHECKBOX,
-    text: contentFor(
-      'question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.text',
-      CaseData.ForenamePossessive,
-    ),
+    text: contentFor('question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
       {
@@ -685,10 +690,7 @@ const changes = question({
       { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
       { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
     ],
-    validationMessage: commonContentFor(
-      'validation.select_changes',
-      commonContentFor('sectionTitle.personal-relationships-and-community').pipe(Transformer.String.ToLowerCase()),
-    ),
+    validationMessage: contentFor('question.personal_relationships_community_changes.validation'),
   },
   displayModes: {
     field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),

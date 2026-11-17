@@ -30,8 +30,8 @@ test.describe('Questions', () => {
           - text: Yes, children that live with them
           - checkbox "Yes, children they have regular contact with"
           - text: Yes, children they have regular contact with or
-          - checkbox "No"
-          - text: No
+          - checkbox "No, there are no children in their life"
+          - text: No, there are no children in their life Includes having biological children that are not in their life.
         - button "Save and continue"
     `)
   })
@@ -48,11 +48,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
       ])
@@ -90,11 +91,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -157,7 +159,7 @@ test.describe('Questions', () => {
         - radio "Unknown"
         - text: Unknown
       - group "Is there evidence Test had any childhood behavioural issues or challenges?":
-        - text: Is there evidence Test had any childhood behavioural issues or challenges? Consider any experiences, trauma or neurodivergent needs that may have influenced behaviour during childhood
+        - text: Is there evidence Test had any childhood behavioural issues or challenges? Consider any experiences, trauma or neurodivergent needs that may have influenced behaviour during childhood.
         - radio "Yes"
         - text: "Yes"
         - radio "No"
@@ -185,7 +187,7 @@ test.describe('Questions', () => {
         - radio "Difficult or unhealthy"
         - text: Difficult or unhealthy Their current relationship is causing significant difficulties, is unhealthy, linked to offending, or they are preoccupied with being single.
       - group "How would you describe Test's history of intimate relationships?":
-        - text: How would you describe Test's history of intimate relationships? An intimate relationship is one that involves physical and/or emotional closeness.
+        - text: How would you describe Test's history of intimate relationships? An intimate relationship is one that involves physical or emotional closeness.
         - radio "Stable, supportive and rewarding"
         - text: Stable, supportive and rewarding This includes having no history of intimate relationships, but they appear capable of starting and maintaining a heathy one.
         - radio "Both healthy and unhealthy relationships"
@@ -208,11 +210,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -322,11 +325,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -420,18 +424,18 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Who did Test abuse',
+      'Who did Test commit domestic abuse against?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Who did Test abuse?":
-        - text: Who did Test abuse? Select all that apply.
+      - group "Who did Test commit domestic abuse against?":
+        - text: Who did Test commit domestic abuse against? Select all that apply.
         - checkbox "Family member"
         - text: Family member
         - checkbox "Intimate partner"
         - text: Intimate partner
-      - group "Is there evidence of coercive behaviour?":
-        - text: Is there evidence of coercive behaviour?
+      - group "Is there evidence that Test has perpetrated controlling or coercive behaviour?":
+        - text: Is there evidence that Test has perpetrated controlling or coercive behaviour?
         - radio "Yes"
         - text: Yes
         - radio "No"
@@ -447,11 +451,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -562,12 +567,12 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Is there evidence of strangulation?',
+      'Is there evidence that Test has perpetrated strangulation or suffocation?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Is there evidence of strangulation?":
-        - text: Is there evidence of strangulation?
+      - group "Is there evidence that Test has perpetrated strangulation or suffocation?":
+        - text: Is there evidence that Test has perpetrated strangulation or suffocation?
         - radio "Yes"
         - text: Yes
         - radio "No"
@@ -583,11 +588,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -728,11 +734,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -857,12 +864,12 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Who has abused them?',
+      'Who committed the abuse against Test?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Who has abused them?":
-        - text: Who has abused them? Select all that apply.
+      - group "Who committed the abuse against Test?":
+        - text: Who committed the abuse against Test? Select all that apply.
         - checkbox "Family member"
         - text: Family member
         - checkbox "Intimate partner"
@@ -878,11 +885,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
@@ -1016,12 +1024,12 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Does Test want to make changes to their personal relationships and community?',
+      'Does Test want to make changes to their personal relationships?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Does Test want to make changes to their personal relationships and community?":
-        - text: Does Test want to make changes to their personal relationships and community? Test must answer this question.
+      - group "Does Test want to make changes to their personal relationships?":
+        - text: Does Test want to make changes to their personal relationships? Test must answer this question.
         - radio "I have already made positive changes and want to maintain them"
         - text: I have already made positive changes and want to maintain them
         - radio "I am actively making changes"

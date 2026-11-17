@@ -8,7 +8,7 @@ const enIntimateRelationshipDetailsHint = 'Consider patterns and quality of any 
 
 export const english = {
   question: {
-    [Question.personal_relationships_community_children_details]: {
+    [Question.community_personal_relationships_community_children_details]: {
       text: 'Are there any children in %1 life?',
       hint: `This refers to any children (under 18 years) %1 has regular contact with, even if they do not have parental responsibility.<br><br> Select all that apply.`,
       option: {
@@ -21,6 +21,10 @@ export const english = {
           text: 'Yes, children they have regular contact with',
           label: enChildrenDetailsOptionLabel,
           validation: 'Enter details of any children that do not live with them',
+        },
+        [Option.no_children]: {
+          text: 'No, there are no children in their life',
+          hint: 'Includes having biological children that are not in their life.',
         },
       },
     },
@@ -82,7 +86,7 @@ export const english = {
     },
     [Question.personal_relationships_community_childhood_behaviour]: {
       text: 'Is there evidence %1 had any childhood behavioural issues or challenges?',
-      hint: 'Consider any experiences, trauma or neurodivergent needs that may have influenced behaviour during childhood',
+      hint: 'Consider any experiences, trauma or neurodivergent needs that may have influenced behaviour during childhood.',
       validation: 'Select if they had childhood behavioural issues or challenges',
     },
     [Question.personal_relationships_community_sense_of_belonging]: {
@@ -127,7 +131,7 @@ export const english = {
     },
     [Question.personal_relationships_community_intimate_relationship]: {
       text: 'How would you describe %1 history of intimate relationships?',
-      hint: 'An intimate relationship is one that involves physical and/or emotional closeness.',
+      hint: 'An intimate relationship is one that involves physical or emotional closeness.',
       validation: 'Select how you would describe their history of intimate relationships',
       option: {
         [Option.stable_relationships]: {
@@ -151,8 +155,8 @@ export const english = {
       validation: 'Select if there is evidence they have been a perpetrator of domestic abuse',
     },
     [Question.offence_analysis_perpetrator_of_domestic_abuse_victim]: {
-      text: 'Who did %1 abuse?',
-      validation: 'Select who they abused',
+      text: 'Who did %1 commit domestic abuse against?',
+      validation: 'Select who they commit domestic abuse against',
       option: {
         [Option.family_member]: {
           text: 'Family member',
@@ -165,15 +169,15 @@ export const english = {
       },
     },
     [Question.controlling_coercive_behaviour]: {
-      text: 'Is there evidence of coercive behaviour?',
-      validation: 'Select if there is evidence of coercive behaviour',
+      text: 'Is there evidence that %1 has perpetrated controlling or coercive behaviour?',
+      validation: 'Select if there is evidence they have perpetrated controlling or coercive behaviour',
     },
     [Question.controlling_coercive_behaviour_yes_details]: {
       validation: 'Give details on coercive behaviour',
     },
     [Question.evidence_of_strangulation]: {
-      text: 'Is there evidence of strangulation?',
-      validation: 'Select if there is evidence of strangulation',
+      text: 'Is there evidence that %1 has perpetrated strangulation or suffocation?',
+      validation: 'Select if there is evidence they have perpetrated strangulation or suffocation',
     },
     [Question.evidence_of_strangulation_yes_details]: {
       validation: 'Give details on strangulation',
@@ -183,8 +187,8 @@ export const english = {
       validation: 'Select if there is evidence they have been a victim of domestic abuse',
     },
     [Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse]: {
-      text: 'Who has abused them?',
-      validation: 'Select who abused them',
+      text: 'Who committed the abuse against %1?',
+      validation: 'Select who committed the abuse against them',
       option: {
         [Option.family_member]: {
           text: 'Family member',
@@ -197,7 +201,8 @@ export const english = {
       },
     },
     [Question.personal_relationships_community_changes]: {
-      text: 'Does %1 want to make changes to their personal relationships and community?',
+      text: 'Does %1 want to make changes to their personal relationships?',
+      validation: 'Select if they want to make changes to their personal relationships',
     },
     [Question.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 personal relationships and community?',

@@ -295,12 +295,12 @@ const health: Answer[] = [
 
 const personal: Answer[] = [
   {
-    question: PersonalRelationshipsQuestion.personal_relationships_community_children_details,
+    question: PersonalRelationshipsQuestion.community_personal_relationships_community_children_details,
     value: PersonalRelationshipsOption.yes_children_not_living_with_pop,
   },
   {
     question:
-      PersonalRelationshipsQuestion.personal_relationships_community_children_details_yes_children_not_living_with_pop_details,
+      PersonalRelationshipsQuestion.community_personal_relationships_community_children_details_yes_children_not_living_with_details,
     value: details('children not living with them'),
   },
   {

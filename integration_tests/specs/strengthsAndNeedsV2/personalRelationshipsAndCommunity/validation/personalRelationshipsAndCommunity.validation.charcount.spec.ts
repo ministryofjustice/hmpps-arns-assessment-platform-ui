@@ -18,11 +18,11 @@ import { changeOptions, personal } from '../../sanUtils'
 
 const answers = [
   {
-    question: Question.personal_relationships_community_children_details,
+    question: Question.community_personal_relationships_community_children_details,
     value: [Option.yes_children_living_with_pop],
   },
   {
-    question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+    question: Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
     value: 'test',
   },
   {
@@ -227,10 +227,10 @@ test.describe('Personal relationships and community character counts', () => {
     const { questions } = personalPage
     await page.goto(`${section}/${Step.personal_relationships_children_information.path}`)
 
-    await questions.personal_relationships_community_children_details
+    await questions.community_personal_relationships_community_children_details
       .option(Option.yes_children_living_with_pop)
       .check()
-    await questions.personal_relationships_community_children_details
+    await questions.community_personal_relationships_community_children_details
       .option(Option.yes_children_not_living_with_pop)
       .check()
 
