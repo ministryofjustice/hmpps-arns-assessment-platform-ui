@@ -14,6 +14,7 @@ on:
         options:
           - dev
           - test
+          - preprod
           - training
         default: 'dev'
       image_tag:
