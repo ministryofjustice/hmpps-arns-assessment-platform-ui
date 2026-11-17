@@ -93,14 +93,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   app.use(
     setUpAuthentication({
-      bypassPaths: [
-        '/training-session-launcher',
-        '/data-deletion-tool',
-        '/platform',
-        // Allow access to session timeout page even with expired session
-        // so we can show the "information deleted" message and re-auth link
-        '/sentence-plan/unsaved-information-deleted',
-      ],
+      bypassPaths: ['/training-session-launcher', '/data-deletion-tool', '/platform'],
     }),
   )
   app.use(authorisationMiddleware([], services.deliusApiClient))
