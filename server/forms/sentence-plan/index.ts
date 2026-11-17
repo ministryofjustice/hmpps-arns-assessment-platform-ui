@@ -6,7 +6,6 @@ import { sentencePlanComponents } from './components'
 import { sentencePlanTransformerRegistry } from './transformers'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
-import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
 import { mergedPlanWarningStep } from './steps/merged-plan-warning/step'
 import config from '../../config'
 
@@ -56,7 +55,7 @@ const sentencePlanRootJourney = journey({
   title: 'Sentence plan',
   path: '/sentence-plan',
   children: [sentencePlanV1Journey],
-  steps: [mergedPlanWarningStep, privacyScreenStep, unsavedInformationDeletedStep],
+  steps: [mergedPlanWarningStep, privacyScreenStep],
 })
 
 /**

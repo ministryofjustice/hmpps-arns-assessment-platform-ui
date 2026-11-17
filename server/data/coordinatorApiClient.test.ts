@@ -108,7 +108,7 @@ describe('CoordinatorApiClient', () => {
   })
 
   describe('getEntityAssessment()', () => {
-    it('should fetch assessment data with system auth', async () => {
+    it('should fetch AAP_SAN assessment data with system auth', async () => {
       // Arrange
       const entityUuid = '90a71d16-fecd-4e1a-85b9-98178bf0f8d0'
       const expectedResponse: EntityAssessmentResponse = {
@@ -135,7 +135,7 @@ describe('CoordinatorApiClient', () => {
 
       // Assert
       expect(result).toEqual(expectedResponse)
-      expect(mockGet).toHaveBeenCalledWith({ path: `/entity/${entityUuid}/ASSESSMENT` }, asSystem())
+      expect(mockGet).toHaveBeenCalledWith({ path: `/entity/${entityUuid}/AAP_SAN` }, asSystem())
     })
 
     it('should propagate 404 errors', async () => {
