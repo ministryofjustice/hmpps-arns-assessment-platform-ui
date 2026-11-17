@@ -1,6 +1,11 @@
 ---
 # Per environment values which override defaults in hmpps-arns-assessment-platform-ui/values.yaml
 
+# PR releases share a namespace with the main dev release - the dashboard ConfigMap
+# has a fixed name owned by that release, so ephemeral deploys must not render it
+grafanaDashboard:
+  enabled: false
+
 generic-service:
   nameOverride: $RELEASE_NAME
   replicaCount: 1
