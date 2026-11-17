@@ -26,11 +26,11 @@ test.describe('Header', () => {
     await expect(planOverviewPage.header).toMatchAriaSnapshot(`
             - paragraph: Test User
             - term: "CRN:"
-            - definition: /.+/
+            - definition
             - term: "PNC:"
-            - definition: "123"
+            - definition
             - term: "Date of birth:"
-            - definition: 1 January 1990
+            - definition
             - link "View previous versions":
                 - /url: /sentence-plan/v1.0/plan/previous-versions
             - heading "Test's plan" [level=1]

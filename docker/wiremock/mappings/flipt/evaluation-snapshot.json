@@ -62,7 +62,7 @@
         {
           "key": "sp-enable-draft-plan-confirmation",
           "name": "sp-enable-draft-plan-confirmation",
-          "description": "Matches the application fallback",
+          "description": "Temporary feature flag for agree/confirm plan updates",
           "enabled": false,
           "type": "BOOLEAN_FLAG_TYPE",
           "createdAt": "2026-01-01T00:00:00Z",

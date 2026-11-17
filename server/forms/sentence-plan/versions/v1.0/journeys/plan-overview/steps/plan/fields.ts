@@ -75,13 +75,10 @@ export const planLastUpdatedMessage = GovUKBody({
   ),
 })
 
-const hasAnyGoal = Data('goals').pipe(Transformer.Array.Length()).match(Condition.Number.GreaterThan(0))
-
 export const draftPlanLastUpdatedMessage = GovUKBody({
   visibleWhen: and(
     isDraftPlanConfirmationEnabled,
     Data('latestAgreementStatus').match(Condition.Equals('DRAFT')),
-    hasAnyGoal,
     Data('lastUpdatedDate').match(Condition.IsRequired()),
   ),
   text: Format(

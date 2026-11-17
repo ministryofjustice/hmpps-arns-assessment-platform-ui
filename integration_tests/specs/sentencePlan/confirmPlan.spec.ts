@@ -39,12 +39,6 @@ test.describe('Plan confirmation journey (draft confirmation flag on)', () => {
     await expect(overview.planCreatedMessage).not.toBeVisible()
   })
 
-  test('hides last updated for draft plans without goals', async ({ page, openSentencePlan }) => {
-    await openSentencePlan()
-    const overview = await PlanOverviewPage.verifyOnPage(page)
-    await expect(overview.planLastUpdatedMessage).toHaveCount(0)
-  })
-
   test.describe('access validation - plan overview errors', () => {
     test('shows error when clicking Confirm plan with no goals', async ({ page, openSentencePlan }) => {
       await openSentencePlan()

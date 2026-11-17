@@ -101,10 +101,4 @@ test.describe('Plan Overview - Agreement Status Messages', () => {
     await expect(planOverviewPage.planCreatedMessage).not.toBeVisible()
     await expect(planOverviewPage.planLastUpdatedMessage).not.toBeVisible()
   })
-
-  test('hides last updated for draft plans without goals', async ({ page, openSentencePlan }) => {
-    await openSentencePlan()
-    const overview = await PlanOverviewPage.verifyOnPage(page)
-    await expect(overview.planLastUpdatedMessage).toHaveCount(0)
-  })
 })
