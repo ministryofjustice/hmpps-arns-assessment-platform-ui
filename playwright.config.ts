@@ -30,7 +30,6 @@ export interface PlaywrightExtendedConfig {
  */
 export default defineConfig<PlaywrightExtendedConfig>({
   outputDir: './test_results/playwright/test-output',
-  testDir: './integration_tests/specs',
   /* Maximum time one test can run for. (millis) */
   timeout: 3 * 60 * 1000,
   /* Maximum time test suite canm run for. (millis) */
@@ -88,19 +87,26 @@ export default defineConfig<PlaywrightExtendedConfig>({
     },
   },
 
-  globalSetup: './integration_tests/specs/audit/globalSetup.ts',
+  globalSetup: process.env.COMPONENT_TEST ? undefined : './integration_tests/specs/audit/globalSetup.ts',
 
   projects: [
     {
       name: 'parallel',
+      testDir: './integration_tests/specs',
       grepInvert: /@serial/,
     },
     {
       name: 'serial',
+      testDir: './integration_tests/specs',
       grep: /@serial/,
       ...(!process.env.SHARD && { dependencies: ['parallel'] }),
       fullyParallel: false,
       workers: 1,
+    },
+    {
+      name: 'component',
+      testDir: './server',
+      testMatch: '**/*.ct.ts',
     },
   ],
   tsconfig: './integration_tests/tsconfig.json',

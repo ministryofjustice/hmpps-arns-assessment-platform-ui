@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
 import { navigateToPrivacyScreen } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { CommonAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Selects tick box and Confirm button on Privacy Screen page', () => {
   test('confirming privacy screen', async ({ page, createSession, sentencePlanBuilder, auditQueue }) => {
@@ -14,7 +14,7 @@ test.describe('Selects tick box and Confirm button on Privacy Screen page', () =
     await privacyPage.confirmAndContinue()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.CONFIRM_PRIVACY_SCREEN)
+    const event = await auditQueue.waitForAuditEvent(crn, CommonAuditEvent.CONFIRM_PRIVACY_SCREEN)
     expectAuditEvent(event, undefined, { expectAssessmentUuid: false, expectFormVersion: false })
   })
 })

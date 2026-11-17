@@ -42,7 +42,7 @@ describe('flag handlers', () => {
     it('should keep criminogenic needs when the mocks are off but SAN Private Beta is on', () => {
       const fixedValues = { useMockedCriminogenicNeeds: 'NO' } as const
 
-      const excludedFields = getExcludedFields(['SAN_PRIVATE_BETA'], fixedValues)
+      const excludedFields = getExcludedFields(['SAN_BETA'], fixedValues)
 
       expect(excludedFields.size).toBe(0)
     })

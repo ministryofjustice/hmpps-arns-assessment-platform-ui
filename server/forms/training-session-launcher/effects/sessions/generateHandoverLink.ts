@@ -73,9 +73,8 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     oasysAssessmentPk: values.oasysAssessmentPk,
   }
 
-  // Add version info based on target application
-  if (targetApplication === 'strengths-and-needs' && session.sanAssessmentVersion) {
-    request.assessmentVersion = session.sanAssessmentVersion
+  if (targetApplication === 'strengths-and-needs' && values.sanAssessmentVersion) {
+    request.assessmentVersion = values.sanAssessmentVersion
   }
 
   if (targetApplication === 'sentence-plan' && values.sentencePlanVersion) {
@@ -87,6 +86,28 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
   }
 
   return request
+}
+
+async function updateHandoverAssessmentContext(
+  deps: TrainingSessionLauncherEffectsDeps,
+  response: { handoverSessionId: string },
+  request: CreateHandoverLinkRequest,
+  session: Session,
+): Promise<void> {
+  if (!session.sanAssessmentId) {
+    return
+  }
+
+  await deps.handoverApiClient.updateContext(response.handoverSessionId, {
+    principal: request.user,
+    subject: request.subjectDetails,
+    assessmentContext: {
+      oasysAssessmentPk: session.values.oasysAssessmentPk,
+      assessmentId: session.sanAssessmentId,
+      assessmentVersion: session.sanAssessmentVersion,
+    },
+    criminogenicNeedsData: request.criminogenicNeedsData,
+  })
 }
 
 /**
@@ -138,6 +159,10 @@ export const generateHandoverLink =
     await registerTrainingStubs(deps.wiremockAdminClient, session.values, session.flags)
 
     const response = await deps.handoverApiClient.createHandoverLink(request)
+
+    if (targetApplication === 'strengths-and-needs' && session.flags.includes('SAN_BETA')) {
+      await updateHandoverAssessmentContext(deps, response, request, session)
+    }
 
     // Append clientId and any flag-based URL params to the handover link
     const clientId = getClientIdForTarget(targetApplication)

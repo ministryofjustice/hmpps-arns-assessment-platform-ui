@@ -1,8 +1,8 @@
 {
-  "name": "Coordinator API - Get Entity (ASSESSMENT)",
+  "name": "Coordinator API - Get Entity (AAP_SAN)",
   "request": {
     "method": "GET",
-    "urlPathPattern": "/coordinator-api/entity/[a-f0-9-]+/ASSESSMENT"
+    "urlPathPattern": "/coordinator-api/entity/[a-f0-9-]+/AAP_SAN"
   },
   "response": {
     "status": 200,

@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Delete a Goal', () => {
   test('confirming goal deletion', async ({ page, auditQueue, openSentencePlan }) => {
@@ -15,7 +15,7 @@ test.describe('Delete a Goal', () => {
     await page.getByRole('button', { name: 'Confirm' }).click()
     await expect(page).toHaveURL(/\/plan\/overview/)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.DELETE_GOAL)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.DELETE_GOAL)
     expectAuditEvent(event, goalUuid)
   })
 })

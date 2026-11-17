@@ -4,6 +4,7 @@ import prettierConfig from './prettier.config.mjs'
 export default [
   ...hmppsConfig({
     extraIgnorePaths: ['test_results/', 'server/forms/**/components/**/*.mjs'],
+    extraPathsAllowingDevDependencies: ['**/*.ct.ts', '**/*.fixtures.ts'],
   }),
   {
     ignores: ['test_results/**'],
@@ -33,7 +34,7 @@ export default [
     },
   },
   {
-    files: ['integration_tests/**/*.ts', 'playwright.config.ts'],
+    files: ['integration_tests/**/*.ts', '**/*.ct.ts', 'playwright.config.ts'],
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
@@ -44,6 +45,12 @@ export default [
           project: './integration_tests/tsconfig.json',
         },
       },
+    },
+  },
+  {
+    files: ['**/*.ct.ts', '**/*.fixtures.ts'],
+    rules: {
+      'no-empty-pattern': 'off',
     },
   },
   {
