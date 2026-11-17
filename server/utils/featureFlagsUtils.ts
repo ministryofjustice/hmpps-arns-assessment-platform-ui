@@ -29,9 +29,9 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'supervisionPackageEnabled',
     fallbackState: false,
   },
-  ENABLE_DRAFT_PLAN_CONFIRMATION: {
-    fliptKey: 'sp-enable-draft-plan-confirmation',
-    nunjucksKey: 'draftPlanConfirmationEnabled',
+  ENABLE_PLAN_AGREEMENT_UPDATES: {
+    fliptKey: 'sp-enable-plan-agreement-updates',
+    nunjucksKey: 'planAgreementUpdatesEnabled',
     fallbackState: false,
   },
 }

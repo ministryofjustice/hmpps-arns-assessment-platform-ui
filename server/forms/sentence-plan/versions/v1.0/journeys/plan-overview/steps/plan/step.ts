@@ -35,7 +35,7 @@ import { CaseData } from '../../../../constants'
 import {
   hasAtLeastOneActiveGoal,
   hasPostAgreementStatus,
-  isDraftPlanConfirmationEnabled,
+  isPlanAgreementUpdatesEnabled,
   isOasysAccess,
   isPrintAndShareEnabled,
   isReadOnlyAccess,
@@ -71,9 +71,9 @@ export const planStep = step({
         showPrintAllGoalsButton,
         showReturnToOasysButton: and(
           isOasysAccess,
-          not(and(isDraftPlanConfirmationEnabled, not(hasPostAgreementStatus))),
+          not(and(isPlanAgreementUpdatesEnabled, not(hasPostAgreementStatus))),
         ),
-        showReturnToOasysLink: and(isOasysAccess, isDraftPlanConfirmationEnabled, not(hasPostAgreementStatus)),
+        showReturnToOasysLink: and(isOasysAccess, isPlanAgreementUpdatesEnabled, not(hasPostAgreementStatus)),
         showCreateGoalButton: not(isReadOnlyAccess),
         // Only show the confirmation action while still in draft and when the user has edit access.
         showAgreePlanButton: and(not(hasPostAgreementStatus), not(isReadOnlyAccess)),
@@ -83,7 +83,7 @@ export const planStep = step({
   validWhen: [
     validation({
       condition: hasAtLeastOneActiveGoal,
-      message: when(isDraftPlanConfirmationEnabled)
+      message: when(isPlanAgreementUpdatesEnabled)
         .then('To confirm the plan, create a goal to work on now')
         .else('To agree the plan, create a goal to work on now'),
       details: { href: '#blank-plan-content' },

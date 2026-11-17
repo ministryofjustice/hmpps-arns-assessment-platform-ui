@@ -24,7 +24,7 @@ import {
   hasCouldNotAnswerStatus,
   hasPostAgreementStatus,
   isReadOnlyAccess,
-  isDraftPlanConfirmationEnabled,
+  isPlanAgreementUpdatesEnabled,
 } from '../../../../guards'
 
 const isMissingStepsOnAgreePlan = and(
@@ -77,7 +77,7 @@ export const planLastUpdatedMessage = GovUKBody({
 
 export const draftPlanLastUpdatedMessage = GovUKBody({
   visibleWhen: and(
-    isDraftPlanConfirmationEnabled,
+    isPlanAgreementUpdatesEnabled,
     Data('latestAgreementStatus').match(Condition.Equals('DRAFT')),
     Data('lastUpdatedDate').match(Condition.IsRequired()),
   ),
@@ -397,7 +397,7 @@ export const blankPlanOverviewContent = HtmlBlock({
       .then(
         Format(
           '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> %1</p>',
-          when(isDraftPlanConfirmationEnabled)
+          when(isPlanAgreementUpdatesEnabled)
             .then('To confirm the plan, create a goal to work on now')
             .else('To agree the plan, create a goal to work on now'),
         ),

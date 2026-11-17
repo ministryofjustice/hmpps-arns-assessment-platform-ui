@@ -15,7 +15,7 @@ import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import {
-  isDraftPlanConfirmationEnabled,
+  isPlanAgreementUpdatesEnabled,
   hasPostAgreementStatus,
   isOasysAccess,
   redirectToOverviewIfReadOnly,
@@ -24,7 +24,7 @@ import {
 
 export const agreePlanStep = step({
   path: '/agree-plan',
-  title: when(isDraftPlanConfirmationEnabled)
+  title: when(isPlanAgreementUpdatesEnabled)
     .then(Format('Have you shared this plan with %1?', CaseData.Forename))
     .else('Do they agree to this plan?'),
   reachability: { entryWhen: true },
@@ -33,7 +33,7 @@ export const agreePlanStep = step({
     locals: {
       backlink: Format('overview?goalStatusTab=%1', Query('goalStatusTab').nullish('current')),
       buttons: {
-        showReturnToOasysLink: and(isOasysAccess, isDraftPlanConfirmationEnabled, not(hasPostAgreementStatus)),
+        showReturnToOasysLink: and(isOasysAccess, isPlanAgreementUpdatesEnabled, not(hasPostAgreementStatus)),
       },
     },
   },

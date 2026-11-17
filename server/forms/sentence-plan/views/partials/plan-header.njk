@@ -157,11 +157,11 @@
                       form="main-form"
                       name="action"
                       value="agree-plan"
-                      class="govuk-button{% if data.featureFlags.draftPlanConfirmationEnabled %} govuk-button--secondary{% endif %} govuk-!-display-none-print"
+                      class="govuk-button{% if data.featureFlags.planAgreementUpdatesEnabled %} govuk-button--secondary{% endif %} govuk-!-display-none-print"
                       data-module="govuk-button"
                       id="agree-plan-button"
                       data-ai-id="agree-plan-button">
-                      {{ 'Confirm plan' if data.featureFlags.draftPlanConfirmationEnabled else 'Agree plan' }}
+                      {{ 'Confirm plan' if data.featureFlags.planAgreementUpdatesEnabled else 'Agree plan' }}
                     </button>
                   {% endif %}
                 </div>

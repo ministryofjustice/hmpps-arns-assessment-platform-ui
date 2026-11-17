@@ -60,8 +60,8 @@
           "rollouts": []
         },
         {
-          "key": "sp-enable-draft-plan-confirmation",
-          "name": "sp-enable-draft-plan-confirmation",
+          "key": "sp-enable-plan-agreement-updates",
+          "name": "sp-enable-plan-agreement-updates",
           "description": "Temporary feature flag for agree/confirm plan updates",
           "enabled": false,
           "type": "BOOLEAN_FLAG_TYPE",

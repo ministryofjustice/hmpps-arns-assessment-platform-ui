@@ -31,7 +31,7 @@ export const isReadOnlyAccess = Data('sessionDetails.planAccessMode').match(Cond
 
 export const isPrintAndShareEnabled = Data('featureFlags.printAndShareEnabled').match(Condition.Equals(true))
 
-export const isDraftPlanConfirmationEnabled = Data('featureFlags.draftPlanConfirmationEnabled').match(
+export const isPlanAgreementUpdatesEnabled = Data('featureFlags.planAgreementUpdatesEnabled').match(
   Condition.Equals(true),
 )
 

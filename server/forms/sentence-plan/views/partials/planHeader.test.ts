@@ -148,7 +148,7 @@ describe('plan header', () => {
     })
   })
 
-  describe('draft plan confirmation feature flag', () => {
+  describe('plan agreement updates feature flag', () => {
     it('keeps the existing OASys button and Agree plan styling when disabled', () => {
       const html = nunjucksEnv.render(template, {
         basePath: '/sentence-plan/v1.0',
@@ -159,7 +159,7 @@ describe('plan header', () => {
             dateOfBirth: '1990-01-01',
           },
           sessionDetails: { oasysRedirectUrl: 'https://oasys.example/return' },
-          featureFlags: { draftPlanConfirmationEnabled: false },
+          featureFlags: { planAgreementUpdatesEnabled: false },
         },
         headerPageHeading: "Joan's plan",
         buttons: {
@@ -184,7 +184,7 @@ describe('plan header', () => {
             dateOfBirth: '1990-01-01',
           },
           sessionDetails: { oasysRedirectUrl: 'https://oasys.example/return' },
-          featureFlags: { draftPlanConfirmationEnabled: true },
+          featureFlags: { planAgreementUpdatesEnabled: true },
         },
         headerPageHeading: "Joan's plan",
         buttons: {

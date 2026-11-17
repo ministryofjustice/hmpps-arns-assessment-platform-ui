@@ -11,7 +11,7 @@ import {
   sentencePlanV1URLs,
 } from './sentencePlanUtils'
 
-test.describe('Plan confirmation journey (draft confirmation flag on)', () => {
+test.describe('Plan confirmation journey (plan agreement updates flag on)', () => {
   const confirmationPageTitle = 'Have you shared this plan with Test?'
 
   test('displays the draft header with OASys navigation and a secondary Confirm plan button', async ({

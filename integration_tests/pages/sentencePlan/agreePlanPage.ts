@@ -38,10 +38,10 @@ export default class AgreePlanPage extends AbstractPage {
     return this.validation.errorSummary
   }
 
-  static async verifyOnPage(page: Page, draftPlanConfirmationEnabled = false): Promise<AgreePlanPage> {
+  static async verifyOnPage(page: Page, planAgreementUpdatesEnabled = false): Promise<AgreePlanPage> {
     const agreePlanPage = new AgreePlanPage(page)
     await expect(agreePlanPage.agreementQuestionLegend).toContainText(
-      draftPlanConfirmationEnabled ? 'Have you shared this plan with' : 'agree to this plan',
+      planAgreementUpdatesEnabled ? 'Have you shared this plan with' : 'agree to this plan',
     )
     return agreePlanPage
   }
