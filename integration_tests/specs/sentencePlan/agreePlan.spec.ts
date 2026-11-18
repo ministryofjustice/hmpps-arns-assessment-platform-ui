@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../support/fixtures'
+import { expectPlanAgreementUpdates } from '../../support/featureFlags'
 import AgreePlanPage from '../../pages/sentencePlan/agreePlanPage'
 import PlanOverviewPage from '../../pages/sentencePlan/planOverviewPage'
 import { currentGoals, currentGoalsWithCompletedSteps } from '../../builders/sentencePlanFactories'
@@ -12,9 +13,16 @@ import {
   sentencePlanV1URLs,
 } from './sentencePlanUtils'
 
-test.describe('Agree plan journey', () => {
+const agreementPageTitle = expectPlanAgreementUpdates
+  ? 'Have you shared this plan with Test?'
+  : sentencePlanPageTitles.agreePlan
+const noGoalsError = expectPlanAgreementUpdates
+  ? 'To confirm the plan, create a goal to work on now'
+  : 'To agree the plan, create a goal to work on now'
+
+test.describe('Plan agreement journey', () => {
   test.describe('access validation - plan overview errors', () => {
-    test('shows error when clicking Agree plan with no goals', async ({ page, createSession }) => {
+    test('shows an error when submitting a plan with no goals', async ({ page, createSession }) => {
       // Setup: create assessment with NO goals
       const { handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
       await navigateToSentencePlan(page, handoverLink)
@@ -35,14 +43,14 @@ test.describe('Agree plan journey', () => {
       const errorSummary = page.locator('.govuk-error-summary')
       await expect(errorSummary).toBeVisible()
       await expect(errorSummary).toContainText('There is a problem')
-      await expect(errorSummary).toContainText('To agree the plan, create a goal to work on now')
+      await expect(errorSummary).toContainText(noGoalsError)
 
       // Should also show inline error on the blank content section
       const inlineError = page.locator('#blank-plan-content .govuk-error-message')
-      await expect(inlineError).toContainText('To agree the plan, create a goal to work on now')
+      await expect(inlineError).toContainText(noGoalsError)
     })
 
-    test('shows error when clicking Agree plan with goals but no steps', async ({ page, openSentencePlan }) => {
+    test('shows an error when submitting a plan with goals but no steps', async ({ page, openSentencePlan }) => {
       // Setup: create assessment with goal but NO steps
       await openSentencePlan({
         plan: builder => builder.withGoals(currentGoals(1)),
@@ -90,29 +98,6 @@ test.describe('Agree plan journey', () => {
       await expect(errorSummary).toBeVisible()
       await expect(errorSummary).toContainText("Add steps to 'Current Goal 1'")
       await expect(errorSummary).toContainText("Add steps to 'Current Goal 2'")
-    })
-
-    test('can access Agree plan page when goals have steps', async ({
-      page,
-
-      openSentencePlan,
-    }) => {
-      await openSentencePlan({
-        plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
-      })
-
-      // Click the Agree plan button
-      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-      await planOverviewPage.agreePlanButton.click()
-
-      // Should successfully navigate to agree plan page
-      await expect(page).toHaveURL(/\/agree-plan/)
-
-      // ensure page title is correct
-      await expect(page).toHaveTitle(buildPageTitle(sentencePlanPageTitles.agreePlan))
-
-      // Verify we're on the agree plan page
-      await AgreePlanPage.verifyOnPage(page)
     })
   })
 
@@ -192,7 +177,7 @@ test.describe('Agree plan journey', () => {
       await agreePlanPage.clickSave()
 
       // ensure error page title is correct:
-      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.agreePlan))
+      await expect(page).toHaveTitle(buildErrorPageTitle(agreementPageTitle))
 
       // Should show inline validation error on the field
       const hasFieldError = await agreePlanPage.hasValidationError('plan_agreement_question')
@@ -223,7 +208,7 @@ test.describe('Agree plan journey', () => {
       await agreePlanPage.clickSave()
 
       // ensure error page title is correct:
-      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.agreePlan))
+      await expect(page).toHaveTitle(buildErrorPageTitle(agreementPageTitle))
 
       // Should show validation error for details field
       const hasFieldError = await agreePlanPage.hasValidationError('plan_agreement_details_no')
@@ -250,7 +235,7 @@ test.describe('Agree plan journey', () => {
       await agreePlanPage.clickSave()
 
       // ensure error page title is correct:
-      await expect(page).toHaveTitle(buildErrorPageTitle(sentencePlanPageTitles.agreePlan))
+      await expect(page).toHaveTitle(buildErrorPageTitle(agreementPageTitle))
 
       // Should show validation error for details field
       const hasFieldError = await agreePlanPage.hasValidationError('plan_agreement_details_could_not_answer')
@@ -259,18 +244,24 @@ test.describe('Agree plan journey', () => {
   })
 
   test.describe('agree plan happy paths', () => {
-    test('can agree to plan with Yes option', async ({
-      page,
-
-      openSentencePlan,
-    }) => {
+    test('submits a draft plan from the overview with the Yes option', async ({ page, openSentencePlan }) => {
       await openSentencePlan({
         plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
       })
 
-      // Navigate to agree plan page
-      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
+      const overview = await PlanOverviewPage.verifyOnPage(page)
+      await overview.agreePlanButton.click()
+
+      await expect(page).toHaveURL(/\/agree-plan/)
+      await expect(page).toHaveTitle(buildPageTitle(agreementPageTitle))
       const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
+
+      if (expectPlanAgreementUpdates) {
+        await expect(agreePlanPage.agreementQuestionLegend).toHaveText(agreementPageTitle)
+        const header = page.getByTestId('plan-header')
+        await expect(header.getByRole('link', { name: 'Return to OASys' })).toBeVisible()
+        await expect(header.getByRole('link', { name: 'View previous versions' })).toBeVisible()
+      }
 
       await agreePlanPage.selectAgreeYes()
       await agreePlanPage.enterNotes('Plan discussed and agreed during supervision session.')
@@ -285,6 +276,7 @@ test.describe('Agree plan journey', () => {
       const agreedMessage = page.locator('.govuk-body', { hasText: 'agreed to their plan on' })
       await expect(agreedMessage).toBeVisible()
       await expect(agreedMessage).toContainText('View plan history')
+      await expect(overview.agreePlanButton).toHaveCount(0)
     })
 
     test('can agree to plan with No option and details', async ({
@@ -356,34 +348,47 @@ test.describe('Agree plan journey', () => {
     })
   })
 
-  test.describe('agree plan button visibility', () => {
-    test('Agree plan button is visible for draft plans', async ({ page, openSentencePlan }) => {
+  test.describe('updated draft plan overview', () => {
+    test.skip(!expectPlanAgreementUpdates, 'Requires the plan agreement updates flag')
+
+    test('displays OASys navigation and a secondary Confirm plan button', async ({ page, openSentencePlan }) => {
+      await openSentencePlan()
+      const overview = await PlanOverviewPage.verifyOnPage(page)
+      await expect(overview.header.getByRole('link', { name: 'Return to OASys' })).toBeVisible()
+      await expect(overview.header.getByRole('link', { name: 'View previous versions' })).toBeVisible()
+      await expect(overview.header.getByRole('button', { name: 'Return to OASys' })).toHaveCount(0)
+      await expect(overview.agreePlanButton).toBeVisible()
+      await expect(overview.agreePlanButton).toHaveClass(/govuk-button--secondary/)
+    })
+
+    test('has no accessibility violations in the main content', async ({ page, openSentencePlan }) => {
       await openSentencePlan({
         plan: builder => builder.withGoals(currentGoalsWithCompletedSteps(1)),
       })
-
-      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-
-      // Agree plan button should be visible
-      await expect(planOverviewPage.agreePlanButton).toBeVisible()
+      const overview = await PlanOverviewPage.verifyOnPage(page)
+      await expect(overview.planLastUpdatedMessage).toBeVisible()
+      await checkAccessibility(page, { include: '#main-content' })
     })
 
-    test('Agree plan button is hidden after plan is agreed', async ({ page, createSession, sentencePlanBuilder }) => {
-      const { sentencePlanId, handoverLink } = await createSession({ targetService: TargetService.SENTENCE_PLAN })
-      await sentencePlanBuilder.extend(sentencePlanId).withGoals(currentGoalsWithCompletedSteps(1)).save()
-      await navigateToSentencePlan(page, handoverLink)
-
-      // Navigate to agree plan and agree
-      await page.goto(sentencePlanV1URLs.PLAN_AGREE)
-      const agreePlanPage = await AgreePlanPage.verifyOnPage(page)
-      await agreePlanPage.selectAgreeYes()
-      await agreePlanPage.clickSave()
-
-      // Verify we're back on plan overview
-      const planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
-
-      // Agree plan button should be hidden now
-      await expect(planOverviewPage.agreePlanButton).not.toBeVisible()
+    test('shows the draft last updated date and updater without a plan history link', async ({
+      page,
+      openSentencePlan,
+    }) => {
+      await openSentencePlan({
+        plan: builder =>
+          builder
+            .withGoal({
+              title: 'Find stable housing',
+              areaOfNeed: 'accommodation',
+              status: 'ACTIVE',
+              createdBy: 'Jane Smith',
+            })
+            .withEventsBackdated(new Date('2024-06-18T10:00:00Z'), new Date('2024-06-18T11:00:00Z')),
+      })
+      const overview = await PlanOverviewPage.verifyOnPage(page)
+      await expect(overview.planLastUpdatedMessage).toBeVisible()
+      await expect(overview.planLastUpdatedMessage).toHaveText('Last updated on 18 June 2024 by Jane Smith.')
+      await expect(overview.planLastUpdatedMessage.getByRole('link')).toHaveCount(0)
     })
   })
 })

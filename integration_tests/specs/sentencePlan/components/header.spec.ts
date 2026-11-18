@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import { test, TargetService } from '../../../support/fixtures'
+import { expectPlanAgreementUpdates } from '../../../support/featureFlags'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
 import { navigateToSentencePlan } from '../sentencePlanUtils'
 
@@ -31,12 +32,13 @@ test.describe('Header', () => {
             - definition
             - term: "Date of birth:"
             - definition
+            ${expectPlanAgreementUpdates ? '- link "Return to OASys"' : ''}
             - link "View previous versions":
-                - /url: /sentence-plan/v1.0/plan/previous-versions
+                - /url: /previous-versions/
             - heading "Test's plan" [level=1]
-            - button "Return to OASys"
+            ${expectPlanAgreementUpdates ? '' : '- button "Return to OASys"'}
             - button "Create goal"
-            - button "Agree plan"
+            - button "${expectPlanAgreementUpdates ? 'Confirm plan' : 'Agree plan'}"
         `)
   })
 

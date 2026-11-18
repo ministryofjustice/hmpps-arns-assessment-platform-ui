@@ -1,6 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import AbstractPage from '../abstractPage'
 import { ValidationHelper } from '../helpers'
+import { expectPlanAgreementUpdates } from '../../support/featureFlags'
 
 export default class AgreePlanPage extends AbstractPage {
   readonly agreementQuestionLegend: Locator
@@ -38,10 +39,10 @@ export default class AgreePlanPage extends AbstractPage {
     return this.validation.errorSummary
   }
 
-  static async verifyOnPage(page: Page, planAgreementUpdatesEnabled = false): Promise<AgreePlanPage> {
+  static async verifyOnPage(page: Page): Promise<AgreePlanPage> {
     const agreePlanPage = new AgreePlanPage(page)
     await expect(agreePlanPage.agreementQuestionLegend).toContainText(
-      planAgreementUpdatesEnabled ? 'Have you shared this plan with' : 'agree to this plan',
+      expectPlanAgreementUpdates ? 'Have you shared this plan with' : 'agree to this plan',
     )
     return agreePlanPage
   }
