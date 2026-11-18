@@ -36,6 +36,7 @@ export function buildCoordinatorRequest(session: Session): OasysCreateRequest {
       crn: values.crn,
     },
     newPeriodOfSupervision: 'N',
+    oasysData: values.oasysData,
   }
 
   return applyCreateSessionModifiers(flags, baseRequest)

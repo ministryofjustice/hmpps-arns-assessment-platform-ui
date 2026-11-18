@@ -1,7 +1,47 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
-import { GovUKCheckboxInput, GovUKSelectInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import {
+  GovUKCheckboxInput,
+  GovUKSelectInput,
+  GovUKTextareaInput,
+  GovUKTextInput,
+} from '@ministryofjustice/hmpps-forge/govuk-components'
 import { getFormVersions } from '../../../../../strengths-and-needs/constants/formConfigRegistry'
+
+const defaultOasysData: Record<string, any> = {
+  'o3-4': null,
+  'o4-3': null,
+  'o4-9': null,
+  'o8-1': null,
+  'o8-8': null,
+  'o9-2': null,
+  'o4-8': null,
+  'o10-1': null,
+  'o10.4': null,
+  'o6-9': null,
+  'o6-1': null,
+  'o6-3': null,
+  'o10-7_V2_CHILDHOOD': null,
+  'o6-8': null,
+  'o6-4': null,
+  'o11-7': null,
+  'o11-6': null,
+  'o11-9': null,
+  'o11-4': null,
+  'o11-2': null,
+  'o12-9': null,
+  'o12-4': null,
+  'o12-1': null,
+  'o1-30': null,
+  'o2-1': null,
+  'o2-8': null,
+  'o2-7': null,
+  'o2-7-1': null,
+  'o2-6': null,
+  'o2-11': null,
+  'o2-12': null,
+  'o2-99': null,
+}
 
 /**
  * Scenario flags tab content
@@ -50,6 +90,16 @@ export const flagsTabContent = [
           label: 'Set the san form version',
           classes: 'govuk-radios--small',
           items: [{ value: '', text: 'None' }, ...getFormVersions.map(version => ({ value: version, text: version }))],
+        }),
+      },
+      {
+        value: 'OASYS_DATA',
+        text: 'OASys data',
+        block: GovUKTextareaInput({
+          code: 'oasysData',
+          label: 'Set the OASys data for prepopulation',
+          rows: 14,
+          defaultValue: JSON.stringify(defaultOasysData, null, 4),
         }),
       },
       {
