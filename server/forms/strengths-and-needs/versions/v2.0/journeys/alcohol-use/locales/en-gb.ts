@@ -5,14 +5,15 @@ import { Option } from '../constants/option'
 export const english = {
   question: {
     [Question.alcohol_current_issues]: {
-      text: 'Does %1 have any current issues with alcohol?',
+      text: 'Is there evidence that %1 has had any issues with alcohol in the last 6 months?',
+      hint: 'Consider the frequency and amount of alcohol consumed, and whether alcohol is having a negative impact on health, relationships, finances, daily life or offending behaviour.',
       option: {
-        [Option.significant]: 'Significant',
-        [Option.some_problems]: 'Some problems',
-        [Option.no_current_problems]: 'No current problems',
-        [Option.has_never_drank]: 'Has never drank',
+        [Option.significant]: 'Yes, significant issues',
+        [Option.some_problems]: 'Yes, some problems',
+        [Option.no_current_problems]: 'No issues',
+        [Option.has_never_drank]: 'They have never drank alcohol',
       },
-      validation: 'Select how often',
+      validation: 'Select if there is evidence that they have had any issues with alcohol in the last 6 months',
     },
     [Question.alcohol_evidence_of_excess_drinking]: {
       text: 'Has %1 shown evidence of binge drinking or excessive alcohol use in the last 6 months?',
@@ -33,24 +34,15 @@ export const english = {
       text: 'Does %1 have any past issues with alcohol?',
       validation: 'Select if they have any past issues with alcohol',
     },
-    [Question.alcohol_past_issues_yes_details]: {
-      validation: 'Enter details',
-    },
     [Question.alcohol_stopped_or_reduced_past]: {
       text: 'Has anything helped %1 to stop or reduce drinking alcohol in the past?',
-      hint: 'Consider strategies, people or support networks that may have helped.',
+      hint: 'Consider strategies, treatment, people or support networks that may have helped.',
       validation: 'Select if anything has helped them to stop or reduce drinking alcohol in the past',
-    },
-    [Question.alcohol_stopped_or_reduced_past_yes_details]: {
-      validation: 'Enter details',
     },
     [Question.alcohol_stopped_or_reduced]: {
       text: 'Does anything help %1 to stop or reduce drinking alcohol?',
-      hint: 'Consider strategies, people or support networks that may have helped.',
-      validation: 'Select if anything has helped them to stop or reduce drinking alcohol in the past',
-    },
-    [Question.alcohol_stopped_or_reduced_yes_details]: {
-      validation: 'Enter details',
+      hint: 'Consider strategies, treatment, people or support networks that may help.',
+      validation: 'Select if anything helps them to stop or reduce drinking alcohol',
     },
     [Question.alcohol_use_changes]: {
       text: 'Does %1 want to make changes to their alcohol use?',

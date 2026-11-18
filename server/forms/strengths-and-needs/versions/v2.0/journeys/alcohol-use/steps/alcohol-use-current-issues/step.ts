@@ -18,6 +18,7 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const alcoholUseCurrentIssuesStep = step({
   path: `/${Step.alcohol_use_current_issues.path}`,
@@ -25,6 +26,7 @@ export const alcoholUseCurrentIssuesStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
+      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),
     },
   },
