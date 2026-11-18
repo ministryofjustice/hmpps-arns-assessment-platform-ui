@@ -7,4 +7,5 @@ export const previousVersions = PreviousVersions({
   previousVersions: Data('previousVersions'),
   showAssessmentColumn: Data('showAssessmentColumn'),
   sanAssessmentUuid: Data('sanAssessmentUuid'),
+  sanAssessmentVersion: Data('sanAssessmentVersion'),
 })
