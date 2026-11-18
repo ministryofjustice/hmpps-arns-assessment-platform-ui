@@ -12,9 +12,7 @@ import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
-import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
@@ -27,7 +25,6 @@ export const alcoholUseCurrentIssuesStep = step({
   view: {
     locals: {
       sectionTitleClass: sectionTitleClassV2,
-      backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),
     },
   },
   blocks: [alcoholUseSection.questions.currentIssues.displayModes.field, saveButton],
