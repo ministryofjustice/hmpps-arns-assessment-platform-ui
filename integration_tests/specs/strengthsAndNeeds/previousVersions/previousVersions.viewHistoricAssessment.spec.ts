@@ -18,11 +18,14 @@ test.describe('View Historic Assessment', () => {
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${previousVersions}`)
     const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
 
-    const [newPage] = await Promise.all([
+    const [newPage, link] = await Promise.all([
       page.waitForEvent('popup'),
-      previousVersionsPage.viewVersionOnDate('1st January 2026'),
+      previousVersionsPage.viewVersionOnDate('1st January 2026').then(viewlink => {
+        return viewlink
+      }),
     ])
 
+    expect(link).toContain('accommodation/accommodation-analysis')
     return { newPage }
   }
 

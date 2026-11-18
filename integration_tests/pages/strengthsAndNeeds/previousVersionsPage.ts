@@ -16,8 +16,10 @@ export default class PreviousVersionsPage extends StrengthsAndNeedsPage {
     this.previousVersionsLink = page.getByRole('link', { name: /View previous versions/i })
   }
 
-  async viewVersionOnDate(date: string): Promise<void> {
-    await this.table.last().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first().click()
+  async viewVersionOnDate(date: string): Promise<string | null> {
+    const link = this.table.last().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first()
+    await link.click()
+    return link.getAttribute('href')
   }
 
   async verifyOnPage(page: Page): Promise<PreviousVersionsPage> {
