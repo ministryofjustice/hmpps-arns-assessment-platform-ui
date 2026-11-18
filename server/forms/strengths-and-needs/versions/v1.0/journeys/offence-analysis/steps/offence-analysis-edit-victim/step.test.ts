@@ -1,6 +1,7 @@
 import { access, EffectRegistry, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ForgeTestHarness } from '@ministryofjustice/hmpps-forge/core/testing'
 import { govukComponents } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { mojComponents } from '@ministryofjustice/hmpps-forge/moj-components'
 import { sanEffects } from '../../../../../../effects'
 import { sanGeneratorRegistry } from '../../../../../../generators'
 import { sanTransformers } from '../../../../../../transformers'
@@ -76,6 +77,7 @@ const setUp = () => {
   })
   const client = new ForgeTestHarness()
     .registerGlobalComponents(govukComponents)
+    .registerGlobalComponents(mojComponents)
     .registerGlobalComponents([modalComponent])
     .registerGlobalFunctions([testEffects, sanEffects, sanGeneratorRegistry, sanTransformers, sanConditions], deps)
     .registerPackage({
