@@ -163,6 +163,7 @@ export type DisplaySession = Omit<Session, 'sentencePlanVersion' | 'sanAssessmen
   sentencePlanVersion: string
   sanAssessmentVersion: string
   availableServices: ServiceOption[]
+  oasysData: string
 }
 
 /**

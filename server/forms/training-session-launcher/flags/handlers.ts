@@ -114,6 +114,16 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
     },
   },
+  OASYS_DATA: {
+    session: {
+      beforeCreate: async (deps, context, session) => {
+        session.values.oasysData = JSON.parse(session.values.oasysData)
+      },
+      afterCreate: async (deps, context, session) => {
+        session.values.oasysData = JSON.stringify(session.values.oasysData, null, 4)
+      },
+    },
+  },
 }
 
 /**
