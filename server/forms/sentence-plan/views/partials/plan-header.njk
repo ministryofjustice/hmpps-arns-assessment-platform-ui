@@ -45,14 +45,26 @@
                 <dd>{{ person.dateOfBirth | formatSimpleDate }}</dd>
               </div>
             </dl>
-            {% if not hidePreviousVersions %}
+            {% if not hidePreviousVersions or buttons.showReturnToOasysLink %}
               <div class ="plan-header__subject-details__navigation-links" >
+                {% if buttons.showReturnToOasysLink %}
+                  <a href="{{ data.sessionDetails.oasysRedirectUrl }}"
+                     class="govuk-link--no-visited-state govuk-!-display-none-print"
+                     data-ai-id="return-to-oasys-link">
+                    Return to OASys
+                  </a>
+                {% endif %}
+                {% if not hidePreviousVersions and buttons.showReturnToOasysLink %}
+                  <span class="plan-header__subject-details__navigation-separator govuk-!-display-none-print" aria-hidden="true"></span>
+                {% endif %}
+                {% if not hidePreviousVersions %}
                 <a href="{{ basePath }}/plan/previous-versions"
                    class="govuk-link--no-visited-state govuk-!-display-none-print"
                    data-ai-id="view-previous-versions-link"
                    data-previous-versions-link>
                   View previous versions
                 </a>
+                {% endif %}
               </div>
             {% endif %}
           </div>
@@ -145,11 +157,11 @@
                       form="main-form"
                       name="action"
                       value="agree-plan"
-                      class="govuk-button govuk-!-display-none-print"
+                      class="govuk-button{% if data.featureFlags.planAgreementUpdatesEnabled %} govuk-button--secondary{% endif %} govuk-!-display-none-print"
                       data-module="govuk-button"
                       id="agree-plan-button"
                       data-ai-id="agree-plan-button">
-                      Agree plan
+                      {{ 'Confirm plan' if data.featureFlags.planAgreementUpdatesEnabled else 'Agree plan' }}
                     </button>
                   {% endif %}
                 </div>
