@@ -435,7 +435,7 @@ const drugsInjected = question({
     hint: commonContentFor('select_all_that_apply'),
     options: [
       { value: CommonOption.none, text: commonContentFor('option.NONE'), behaviour: 'exclusive' as const },
-      { divider: 'or' },
+      { divider: 'or', visibleWhen: anyInjectableSelectedDrugs },
       injectedDrugOption(Option.amphetamines, contentFor('option.AMPHETAMINES')),
       injectedDrugOption(Option.benzodiazepines, contentFor('option.BENZODIAZEPINES')),
       injectedDrugOption(Option.cocaine, contentFor('option.COCAINE')),
@@ -450,7 +450,7 @@ const drugsInjected = question({
     validationMessage: contentFor('question.drugs_injected.validation', CaseData.Forename),
   },
   displayModes: {
-    field: checkboxField({ dependentWhen: anyInjectableSelectedDrugs }),
+    field: checkboxField({}),
     answerRow: (content): SummaryRow => ({
       key: { html: content.text },
       visibleWhen: Answer(content.code).match(Condition.IsRequired()),
@@ -494,6 +494,7 @@ const anythingHelpedStopOrReduce = question({
         text: commonContentFor('option.NO'),
       },
     ],
+    validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use.validation'),
   },
   displayModes: {
     field: radioField(),
@@ -594,40 +595,6 @@ const drugUseChanges = question({
     summaryRow: summaryRow({
       changeHref: Step.drug_use_change_use.path,
       visibleWhen: Answer(Question.drug_use_changes).match(Condition.IsRequired()),
-    }),
-  },
-})
-
-const motivatedToStop = question({
-  content: {
-    code: Question.drugs_practitioner_analysis_motivated_to_stop,
-    format: QuestionFormat.RADIO,
-    text: contentFor('question.drugs_practitioner_analysis_motivated_to_stop.text', CaseData.Forename),
-    options: [
-      {
-        value: Option.no_motivation,
-        text: contentFor('question.drugs_practitioner_analysis_motivated_to_stop.option.NO_MOTIVATION'),
-      },
-      {
-        value: Option.partial_motivation,
-        text: contentFor('question.drugs_practitioner_analysis_motivated_to_stop.option.PARTIAL_MOTIVATION'),
-      },
-      {
-        value: Option.full_motivation,
-        text: contentFor('question.drugs_practitioner_analysis_motivated_to_stop.option.FULL_MOTIVATION'),
-      },
-      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
-    ],
-    validationMessage: contentFor('question.drugs_practitioner_analysis_motivated_to_stop.validation'),
-  },
-  displayModes: {
-    field: radioField({
-      dependentWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
-      visibleWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
-    }),
-    summaryRow: summaryRow({
-      changeHref: Step.drug_use_summary.path,
-      visibleWhen: Answer(Question.drug_use).match(Condition.Equals(CommonOption.yes)),
     }),
   },
 })
@@ -743,7 +710,6 @@ export const drugUseSection = {
     drugUseChanges,
   },
   practitionerAnalysis: {
-    motivatedToStop,
     strengthsOrProtectiveFactors,
     riskOfSeriousHarm,
     riskOfReoffending,

@@ -14,7 +14,6 @@ import { Section } from '../../../../constants/section'
 
 const practitionerAnalysisSummary = GovUKSummaryList({
   rows: [
-    drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.summaryRow,
     drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.summaryRow,
     drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.summaryRow,
     drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.summaryRow,
