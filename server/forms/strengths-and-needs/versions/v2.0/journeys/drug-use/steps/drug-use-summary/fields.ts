@@ -97,15 +97,6 @@ export const drugsSummaryCards = (drugValue: ChainableExpr) => {
                 ),
               ),
             }),
-            GovUKBody({
-              text: contentFor('option.MORE_THAN_SIX'),
-              visibleWhen: and(
-                Answer(Format(Question.drug_last_used_value, SANGenerators.getDrugValueLower(drugValue))).match(
-                  Condition.Equals(Option.more_than_six),
-                ),
-                Answer(Question.drugs_injected).match(Condition.Array.Contains(drugValue)),
-              ),
-            }),
           ],
         },
         actions: changeLinkActions(Step.drug_use_details.path, {

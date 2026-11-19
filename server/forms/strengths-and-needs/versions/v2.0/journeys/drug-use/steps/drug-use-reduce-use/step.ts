@@ -9,7 +9,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { anyInjectedDrugUsedInLastSixMonths, drugUseSection } from '../../section'
+import { anyDrugInjected, drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
@@ -25,7 +25,7 @@ export const drugUseReduceUseStep = step({
   title: sectionPageTitle(Section.drug_use),
   view: {
     locals: {
-      backlink: when(anyInjectedDrugUsedInLastSixMonths)
+      backlink: when(anyDrugInjected)
         .then(createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_use_last_injected.path]))
         .else(createRoute([...baseSanRoute, Section.drug_use.path, Step.drug_use_details.path])),
     },
