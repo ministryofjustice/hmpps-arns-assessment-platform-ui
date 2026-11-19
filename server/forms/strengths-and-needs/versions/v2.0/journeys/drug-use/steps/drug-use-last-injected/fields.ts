@@ -39,7 +39,6 @@ export const drugLastInjectedSection = TemplateWrapper({
               slots: {
                 fields: [drugsLastInjected.over(drugValueLower)],
               },
-              visibleWhen: drugUsedInLastSixMonths(drugValueLower),
             }),
           ),
         ),

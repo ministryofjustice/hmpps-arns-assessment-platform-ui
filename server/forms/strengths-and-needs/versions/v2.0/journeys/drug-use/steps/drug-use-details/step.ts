@@ -9,7 +9,7 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
 import { sectionDivider, usedInLastSixMonthsSection, usedMoreThanSixMonthsSection } from './fields'
-import { anyInjectedDrugUsedInLastSixMonths, drugUseSection } from '../../section'
+import { anyDrugInjected, drugUseSection } from '../../section'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
 import { baseSanRoute } from '../../../../constants/path'
@@ -66,7 +66,7 @@ export const drugUseDetailsStep = step({
         next: [
           redirect({
             goto: Step.drug_use_last_injected.path,
-            when: anyInjectedDrugUsedInLastSixMonths,
+            when: anyDrugInjected,
           }),
           redirect({
             goto: Step.drug_use_reduce_use.path,
