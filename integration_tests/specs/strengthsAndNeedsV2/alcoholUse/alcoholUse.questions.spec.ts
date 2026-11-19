@@ -75,12 +75,12 @@ test.describe('Questions', () => {
     await expect(alcoholUsePage.mainForm).toMatchAriaSnapshot(`
       - group "Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?":
         - text: Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?
-        - radio "No evidence of binge drinking or excessive alcohol use"
-        - text: No evidence of binge drinking or excessive alcohol use
-        - radio "Some evidence of binge drinking or excessive alcohol use"
-        - text: Some evidence of binge drinking or excessive alcohol use There is a pattern of alcohol use but has not caused any serious problems.
-        - radio "Evidence of binge drinking or excessive alcohol use"
-        - text: Evidence of binge drinking or excessive alcohol use There is a detrimental effect on other areas of their life and is often directly related to offending.
+        - radio "No evidence"
+        - text: No evidence
+        - radio "Yes, some evidence"
+        - text: Yes, some evidence There is a pattern of alcohol use but has not caused any serious problems.
+        - radio "Yes, significant evidence"
+        - text: Yes, significant evidence There is a detrimental effect on other areas of their life and is often directly related to offending.
       - group "Does Test have any past issues with alcohol?":
         - text: Does Test have any past issues with alcohol?
         - radio "Yes"
@@ -167,7 +167,7 @@ test.describe('Questions', () => {
 
     await expect(alcoholUsePage.mainForm).toMatchAriaSnapshot(`
       - group "Does anything help Test to stop or reduce drinking alcohol?":
-        - text: Does anything help Test to stop or reduce drinking alcohol? Consider strategies, treatment, people or support networks that may help.
+        - text: Does anything help Test to stop or reduce drinking alcohol? Consider strategies, treatment, people or support networks that may have helped.
         - radio "Yes"
         - text: Yes
         - radio "No"

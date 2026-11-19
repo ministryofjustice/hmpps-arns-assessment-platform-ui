@@ -18,13 +18,13 @@ export const english = {
     [Question.alcohol_evidence_of_excess_drinking]: {
       text: 'Has %1 shown evidence of binge drinking or excessive alcohol use in the last 6 months?',
       option: {
-        [Option.no_evidence]: 'No evidence of binge drinking or excessive alcohol use',
+        [Option.no_evidence]: 'No evidence',
         [Option.yes_with_some_evidence]: {
-          text: 'Some evidence of binge drinking or excessive alcohol use',
+          text: 'Yes, some evidence',
           hint: 'There is a pattern of alcohol use but has not caused any serious problems.',
         },
         [Option.yes_with_evidence]: {
-          text: 'Evidence of binge drinking or excessive alcohol use',
+          text: 'Yes, significant evidence',
           hint: 'There is a detrimental effect on other areas of their life and is often directly related to offending.',
         },
       },
@@ -41,7 +41,7 @@ export const english = {
     },
     [Question.alcohol_stopped_or_reduced]: {
       text: 'Does anything help %1 to stop or reduce drinking alcohol?',
-      hint: 'Consider strategies, treatment, people or support networks that may help.',
+      hint: 'Consider strategies, treatment, people or support networks that may have helped.',
       validation: 'Select if anything helps them to stop or reduce drinking alcohol',
     },
     [Question.alcohol_use_changes]: {
