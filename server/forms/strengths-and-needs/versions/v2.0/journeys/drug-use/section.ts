@@ -72,10 +72,9 @@ const injectedDrugConditions = drugsList
     )
   })
 
-export const anyInjectedDrugUsedInLastSixMonths = or(
-  injectedDrugConditions[0],
-  injectedDrugConditions[1],
-  ...injectedDrugConditions.slice(2),
+export const anyDrugInjected = and(
+  Answer(Question.drugs_injected).match(Condition.IsRequired()),
+  not(Answer(Question.drugs_injected).match(Condition.Array.Contains(CommonOption.none))),
 )
 
 // Answer-based twin of `anyDrugUsedInLastSix` for steps that run before the
@@ -166,7 +165,6 @@ export const drugsLastInjected = questionTemplate({
         },
         hint: content.hint,
         items: content.options,
-        dependentWhen: drugUsedInLastSixMonths(content.param),
         validWhen: requiredValidationOf(content),
       }),
     collectionSummaryRow: content => ({
