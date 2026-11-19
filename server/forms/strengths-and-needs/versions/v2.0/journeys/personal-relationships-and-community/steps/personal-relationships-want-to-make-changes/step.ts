@@ -25,7 +25,7 @@ import { CommonOption } from '../../../../constants/commonOption'
 import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 const backlinkLogic: ChainableConditional = when(
-  Answer(Question.personal_relationships_community_domestic_abuse_victim)
+  Answer(Question.offence_analysis_victim_of_domestic_abuse)
     .match(Condition.Equals(CommonOption.yes)),
 ).then(
     createRoute([

@@ -24,7 +24,7 @@ import { Question } from '../../constants/question'
 import { Option } from '../../constants/option'
 
 const backlinkLogic: ChainableConditional = when(
-  Answer(Question.personal_relationships_community_children_details)
+  Answer(Question.community_personal_relationships_community_children_details)
     .match(Condition.Equals(Option.no_children)),
 ).then(
     createRoute([
