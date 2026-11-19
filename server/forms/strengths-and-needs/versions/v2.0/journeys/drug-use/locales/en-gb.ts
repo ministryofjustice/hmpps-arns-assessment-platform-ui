@@ -64,9 +64,10 @@ export const english = {
     [Question.drugs_anything_helped_stop_or_reduce_use]: {
       text: 'Has anything helped %1 stop or reduce their drug use?',
       hint: 'Note any treatment or lifestyle changes that have helped them.',
+      validation: "Select if anything has helped them stop or reduce their drug use",
     },
     [Question.drugs_anything_helped_stop_or_reduce_use_details]: {
-      validation: "Enter details on what has/hasn't helped stop or reduce their drug use",
+      validation: "Enter details on what has helped stop or reduce their drug use",
     },
     [Question.drugs_motivated_to_stop_or_reduce_use]: {
       text: 'Does %1 seem motivated to stop or reduce their drug use?',
@@ -81,15 +82,6 @@ export const english = {
       text: 'Does %1 want to make changes to their drug use?',
       hint: '%1 must answer this question.',
       validation: 'Select if they want to make changes to their drug use',
-    },
-    [Question.drugs_practitioner_analysis_motivated_to_stop]: {
-      text: 'Does %1 seem motivated to stop or reduce their drug use?',
-      option: {
-        [Option.no_motivation]: 'Does not show motivation to stop or reduce',
-        [Option.partial_motivation]: 'Shows some motivation to stop or reduce',
-        [Option.full_motivation]: 'Motivated to stop or reduce',
-      },
-      validation: 'Select if they seem motivated to stop or reduce their drug use',
     },
     [Question.drug_use_practitioner_analysis_strengths_or_protective_factors]: {
       text: 'Are there any strengths or protective factors related to %1 drug use?',
