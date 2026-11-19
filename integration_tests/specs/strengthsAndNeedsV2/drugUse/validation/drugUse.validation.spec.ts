@@ -116,7 +116,10 @@ test.describe('Validation', () => {
         { question: Question.select_misused_drugs, value: [Option.amphetamines] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: Question.drugs_injected, value: [Option.amphetamines] },
       ])
       .withUserSubmittedSteps([
@@ -147,7 +150,10 @@ test.describe('Validation', () => {
         { question: Question.select_misused_drugs, value: [Option.amphetamines] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: Question.drugs_injected, value: [Option.amphetamines] },
         { question: forDrug(Question.drugs_injected_value, Option.amphetamines), value: [Option.last_six] },
       ])
@@ -212,7 +218,10 @@ test.describe('Validation', () => {
         { question: Question.select_misused_drugs, value: [Option.amphetamines] },
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: Question.drugs_injected, value: [Option.amphetamines] },
         { question: forDrug(Question.drugs_injected_value, Option.amphetamines), value: [Option.last_six] },
         { question: Question.drugs_anything_helped_stop_or_reduce_use, value: CommonOption.yes },
@@ -234,6 +243,8 @@ test.describe('Validation', () => {
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'want to make changes to their drug use')
 
     await drugUsePage.saveAndContinue.click()
-    await expect(drugUsePage.alert.getByRole('link', { name: 'Select if they want to make changes to their drug use' })).toBeVisible()
+    await expect(
+      drugUsePage.alert.getByRole('link', { name: 'Select if they want to make changes to their drug use' }),
+    ).toBeVisible()
   })
 })

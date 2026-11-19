@@ -9,12 +9,12 @@ import { forDrug, storedAnswers } from '../sanUtils'
 
 test.describe('Stale answers', () => {
   test('drug use types: deselecting a drug removes what was said about it', async ({
-                                                                                     page,
-                                                                                     createSession,
-                                                                                     strengthsAndNeedsBuilder,
-                                                                                     aapClient,
-                                                                                     baseURL,
-                                                                                   }) => {
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    aapClient,
+    baseURL,
+  }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -26,7 +26,10 @@ test.describe('Stale answers', () => {
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.cannabis), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: forDrug(Question.how_often_used_value, Option.cannabis), value: Option.daily },
         { question: forDrug(Question.how_often_used_details, Option.cannabis), value: 'cannabis usage details' },
         { question: Question.drugs_injected, value: [Option.amphetamines] },

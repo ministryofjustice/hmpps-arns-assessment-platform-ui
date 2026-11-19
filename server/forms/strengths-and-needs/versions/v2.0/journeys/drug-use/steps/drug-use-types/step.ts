@@ -10,7 +10,6 @@ import { saveButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
-import {clearUnselectedDrugAnswersV2} from "../../../../../../effects/assessment/clearUnselectedDrugAnswersV2";
 
 export const drugUseTypesStep = step({
   path: `/${Step.drug_use_types.path}`,

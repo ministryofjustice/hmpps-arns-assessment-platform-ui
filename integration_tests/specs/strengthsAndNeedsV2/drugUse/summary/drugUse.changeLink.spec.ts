@@ -27,33 +27,33 @@ const analysisPage = 'drug-use-analysis'
 
 const drugsUsedAndInjected: Scenario = {
   answers: [
-    {question: Question.drug_use, value: CommonOption.yes},
-    {question: Question.select_misused_drugs, value: [Option.cannabis, Option.cocaine, Option.heroin]},
-    {question: forDrug(Question.drug_last_used_value, Option.cannabis), value: Option.last_six},
-    {question: forDrug(Question.how_often_used_value, Option.cannabis), value: Option.daily},
-    {question: forDrug(Question.how_often_used_details, Option.cannabis), value: 'cannabis usage details'},
-    {question: forDrug(Question.drug_last_used_value, Option.cocaine), value: Option.last_six},
-    {question: forDrug(Question.how_often_used_value, Option.cocaine), value: Option.weekly},
-    {question: forDrug(Question.how_often_used_details, Option.cocaine), value: 'cocaine usage details'},
-    {question: forDrug(Question.drug_last_used_value, Option.heroin), value: Option.more_than_six},
-    {question: forDrug(Question.how_often_used_value, Option.heroin), value: Option.monthly},
-    {question: forDrug(Question.how_often_used_details, Option.heroin), value: 'heroin usage details'},
-    {question: Question.drugs_injected, value: [Option.cocaine]},
-    {question: forDrug(Question.drugs_injected_value, Option.cocaine), value: [Option.last_six]},
-    {question: Question.drugs_anything_helped_stop_or_reduce_use, value: CommonOption.yes},
-    {question: Question.drugs_anything_helped_stop_or_reduce_use_details, value: 'stop or reduce usage details'},
-    {question: Question.drugs_motivated_to_stop_or_reduce_use, value: Option.no_motivation},
-    {question: Question.drug_use_changes, value: CommonOption.made_changes},
-    {question: Question.drug_use_changes_made_changes_details, value: 'Support from family'},
-    {question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes},
+    { question: Question.drug_use, value: CommonOption.yes },
+    { question: Question.select_misused_drugs, value: [Option.cannabis, Option.cocaine, Option.heroin] },
+    { question: forDrug(Question.drug_last_used_value, Option.cannabis), value: Option.last_six },
+    { question: forDrug(Question.how_often_used_value, Option.cannabis), value: Option.daily },
+    { question: forDrug(Question.how_often_used_details, Option.cannabis), value: 'cannabis usage details' },
+    { question: forDrug(Question.drug_last_used_value, Option.cocaine), value: Option.last_six },
+    { question: forDrug(Question.how_often_used_value, Option.cocaine), value: Option.weekly },
+    { question: forDrug(Question.how_often_used_details, Option.cocaine), value: 'cocaine usage details' },
+    { question: forDrug(Question.drug_last_used_value, Option.heroin), value: Option.more_than_six },
+    { question: forDrug(Question.how_often_used_value, Option.heroin), value: Option.monthly },
+    { question: forDrug(Question.how_often_used_details, Option.heroin), value: 'heroin usage details' },
+    { question: Question.drugs_injected, value: [Option.cocaine] },
+    { question: forDrug(Question.drugs_injected_value, Option.cocaine), value: [Option.last_six] },
+    { question: Question.drugs_anything_helped_stop_or_reduce_use, value: CommonOption.yes },
+    { question: Question.drugs_anything_helped_stop_or_reduce_use_details, value: 'stop or reduce usage details' },
+    { question: Question.drugs_motivated_to_stop_or_reduce_use, value: Option.no_motivation },
+    { question: Question.drug_use_changes, value: CommonOption.made_changes },
+    { question: Question.drug_use_changes_made_changes_details, value: 'Support from family' },
+    { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
     {
       question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details,
       value: 'Some details',
     },
-    {question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes},
-    {question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details'},
-    {question: Question.drug_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes},
-    {question: Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details'},
+    { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+    { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
+    { question: Question.drug_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+    { question: Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
     changeLink('drug-use-status', 'drug_use'),
@@ -114,11 +114,7 @@ test.describe('Drug use change links', () => {
 
   test.describe('Practitioner analysis', () => {
     test('each change link lands on its question', async ({ page, openSection }) => {
-      const section = await openSection(
-        drugUse,
-        drugsUsedAndInjected.answers,
-        drugsUsedAndInjected.userSubmittedSteps,
-      )
+      const section = await openSection(drugUse, drugsUsedAndInjected.answers, drugsUsedAndInjected.userSubmittedSteps)
 
       await expectEachChangeLinkToLandOnItsQuestion(
         page,

@@ -34,15 +34,15 @@ const answers = [
   { question: Question.drugs_motivated_to_stop_or_reduce_use, value: Option.no_motivation },
   { question: Question.drug_use_changes, value: CommonOption.made_changes },
   { question: Question.drug_use_changes_made_changes_details, value: 'Support from family' },
-  {question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes},
+  { question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors, value: CommonOption.yes },
   {
     question: Question.drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: 'Some details',
   },
-  {question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes},
-  {question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details'},
-  {question: Question.drug_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes},
-  {question: Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details'},
+  { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
+  { question: Question.drug_use_practitioner_analysis_risk_of_serious_harm_yes_details, value: 'Some details' },
+  { question: Question.drug_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
+  { question: Question.drug_use_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
 ]
 
 const userSubmittedSteps = [
@@ -76,10 +76,7 @@ test.describe('Drug use character counts', () => {
     })
   })
 
-  test(`drug-use-details: how often each drug is used`, async ({
-    page,
-    openSection,
-  }) => {
+  test(`drug-use-details: how often each drug is used`, async ({ page, openSection }) => {
     const section = await openSection(drugUse, answers, userSubmittedSteps)
     const drugUsePage = new DrugUsePage(page)
     await page.goto(`${section}/${Step.drug_use_details.path}`)
@@ -87,10 +84,7 @@ test.describe('Drug use character counts', () => {
     await expectTheLimitsOnThePage(drugUsePage)
   })
 
-  test(`drug-use-reduce-use: anything helped stop or reduce their use`, async ({
-    page,
-    openSection,
-  }) => {
+  test(`drug-use-reduce-use: anything helped stop or reduce their use`, async ({ page, openSection }) => {
     const section = await openSection(drugUse, answers, userSubmittedSteps)
     const drugUsePage = new DrugUsePage(page)
     const { questions } = drugUsePage
