@@ -223,7 +223,10 @@ test.describe('Questions', () => {
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.other_drug), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: forDrug(Question.how_often_used_value, Option.other_drug), value: Option.daily },
         { question: forDrug(Question.how_often_used_details, Option.other_drug), value: 'other drug usage details' },
         { question: Question.drugs_injected, value: [Option.amphetamines] },
@@ -265,7 +268,10 @@ test.describe('Questions', () => {
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.other_drug), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: forDrug(Question.how_often_used_value, Option.other_drug), value: Option.daily },
         { question: forDrug(Question.how_often_used_details, Option.other_drug), value: 'other drug usage details' },
         { question: Question.drugs_injected, value: [Option.amphetamines] },
@@ -276,7 +282,7 @@ test.describe('Questions', () => {
         Step.drug_use_types.code,
         Step.drug_use_last_used.code,
         Step.drug_use_details.code,
-        Step.drug_use_last_injected.code
+        Step.drug_use_last_injected.code,
       ])
       .save()
 
@@ -317,7 +323,10 @@ test.describe('Questions', () => {
         { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.last_six },
         { question: forDrug(Question.drug_last_used_value, Option.other_drug), value: Option.last_six },
         { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
-        { question: forDrug(Question.how_often_used_details, Option.amphetamines), value: 'amphetamines usage details' },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
         { question: forDrug(Question.how_often_used_value, Option.other_drug), value: Option.daily },
         { question: forDrug(Question.how_often_used_details, Option.other_drug), value: 'other drug usage details' },
         { question: Question.drugs_injected, value: [Option.amphetamines] },
