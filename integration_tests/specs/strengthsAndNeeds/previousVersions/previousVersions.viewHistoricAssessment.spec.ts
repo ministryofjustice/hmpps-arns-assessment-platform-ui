@@ -25,7 +25,7 @@ test.describe('View Historic Assessment', () => {
       }),
     ])
 
-    expect(link).toContain('accommodation/accommodation-analysis')
+    await newPage.waitForLoadState()
     return { newPage }
   }
 
@@ -45,6 +45,7 @@ test.describe('View Historic Assessment', () => {
       await expect(newPage).toHaveTitle('Accommodation analysis - Strengths and needs')
 
       const historicAssessmentPage = await HistoricAssessmentPage.verifyOnPage(newPage, 'Employment and education')
+      expect(historicAssessmentPage.page.url()).toContain('accommodation/accommodation-analysis')
       await expect(historicAssessmentPage.returnToOasysButton).toBeHidden()
 
       await expect(historicAssessmentPage.alertHeading).toHaveCount(1)

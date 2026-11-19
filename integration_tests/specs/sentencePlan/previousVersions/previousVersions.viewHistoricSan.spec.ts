@@ -24,8 +24,9 @@ test.describe('View Historic Plan', () => {
       }),
     ])
 
-    expect(link).toMatch(/^\/?strengths-and-needs\/[^/]+\/view-historic\/.+/)
     await newPage.waitForLoadState()
+    expect(link).toMatch(/^\/?strengths-and-needs\/[^/]+\/view-historic\/.+/)
+
     const historicPlanPage = await HistoricPlanPage.verifyOnSanPage(newPage)
     return { historicPlanPage, newPage }
   }
