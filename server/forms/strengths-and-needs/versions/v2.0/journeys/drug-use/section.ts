@@ -5,7 +5,6 @@ import {
   Condition,
   Data,
   Format,
-  Literal,
   not,
   or,
   Self,
@@ -58,19 +57,6 @@ export const drugUsedMoreThanSixMonths = (drugValue: ChainableExpr) =>
 const lastSixMonthConditions = drugsList.map(drug =>
   Answer(fieldCodeString(Question.drug_last_used, drug.value)).match(Condition.Equals(Option.last_six)),
 )
-
-const injectedDrugConditions = drugsList
-  .filter(drug => {
-    const value = typeof drug === 'string' ? drug : drug.value
-    return value !== CommonOption.none
-  })
-  .map(drug => {
-    const drugValue = typeof drug === 'string' ? drug : drug.value
-    return and(
-      Answer(Question.drugs_injected).match(Condition.Array.Contains(drugValue)),
-      drugUsedInLastSixMonths(Literal(drugValue.toLowerCase())),
-    )
-  })
 
 export const anyDrugInjected = and(
   Answer(Question.drugs_injected).match(Condition.IsRequired()),

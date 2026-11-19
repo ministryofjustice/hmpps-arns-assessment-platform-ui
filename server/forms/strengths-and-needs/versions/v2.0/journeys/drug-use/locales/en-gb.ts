@@ -64,10 +64,10 @@ export const english = {
     [Question.drugs_anything_helped_stop_or_reduce_use]: {
       text: 'Has anything helped %1 stop or reduce their drug use?',
       hint: 'Note any treatment or lifestyle changes that have helped them.',
-      validation: "Select if anything has helped them stop or reduce their drug use",
+      validation: 'Select if anything has helped them stop or reduce their drug use',
     },
     [Question.drugs_anything_helped_stop_or_reduce_use_details]: {
-      validation: "Enter details on what has helped stop or reduce their drug use",
+      validation: 'Enter details on what has helped stop or reduce their drug use',
     },
     [Question.drugs_motivated_to_stop_or_reduce_use]: {
       text: 'Does %1 seem motivated to stop or reduce their drug use?',

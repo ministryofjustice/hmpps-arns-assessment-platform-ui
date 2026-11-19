@@ -2,7 +2,7 @@ import { Answer, Condition, Item, Iterator, Transformer, when } from '@ministryo
 import { CollectionBlock, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 
 import { SANGenerators } from '../../../../../../generators'
-import { drugsLastInjected, drugUsedInLastSixMonths, drugUseSection } from '../../section'
+import { drugsLastInjected, drugUseSection } from '../../section'
 import { contentFor } from '../../locales'
 import { Question } from '../../constants/question'
 import { CaseData } from '../../../../../../constants/common'
