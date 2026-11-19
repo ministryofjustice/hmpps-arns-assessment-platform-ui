@@ -12,12 +12,11 @@ import { alcoholUseSection } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
-import { baseSanRoute } from '../../../../constants/path'
 import { sectionPageTitle } from '../../../../locales'
-import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const alcoholUseCurrentIssuesStep = step({
   path: `/${Step.alcohol_use_current_issues.path}`,
@@ -25,7 +24,7 @@ export const alcoholUseCurrentIssuesStep = step({
   reachability: { entryWhen: true },
   view: {
     locals: {
-      backlink: createRoute([...baseSanRoute, Section.alcohol_use.path]),
+      sectionTitleClass: sectionTitleClassV2,
     },
   },
   blocks: [alcoholUseSection.questions.currentIssues.displayModes.field, saveButton],
