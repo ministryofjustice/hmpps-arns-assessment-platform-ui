@@ -63,6 +63,12 @@ export default class HistoricPlanPage extends SentencePlanPage {
     return historicPlan
   }
 
+  static async verifyOnSanPage(page: Page): Promise<HistoricPlanPage> {
+    const historicPlan = new HistoricPlanPage(page)
+    await expect(historicPlan.pageHeading).toContainText('Accommodation')
+    return historicPlan
+  }
+
   async clickCurrentGoalsTab(): Promise<void> {
     await this.currentGoalsTab.click()
   }

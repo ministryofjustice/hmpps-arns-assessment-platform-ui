@@ -30,6 +30,7 @@ function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
     personName: props.personName,
     versions: props.previousVersions,
     showAssessmentColumn: props.showAssessmentColumn ?? true,
+    sanAssessmentAccommodationLink: 'accommodation/accommodation-analysis',
     sanAssessmentUuid: props.sanAssessmentUuid,
     sanAssessmentVersion: props.sanAssessmentVersion ?? 1,
     tables: {

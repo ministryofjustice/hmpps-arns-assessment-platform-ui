@@ -18,6 +18,7 @@ import { contentFor } from './locales'
 import { Section } from '../../constants/section'
 import { SANGenerators } from '../../../../generators'
 import { sentencePlanViewHistoricBasePath } from '../../constants/path'
+import { Step } from '../../journeys/accommodation/constants/step'
 
 const { createRoute } = SANGenerators
 
@@ -60,7 +61,7 @@ const assessmentCell = {
               'view-historic',
               Data('assessmentUuid'),
               Item().path('assessmentVersionId'),
-              Section.accommodation.sideNavHref,
+              `${Section.accommodation.code}/${Step.accommodation_analysis.path}`,
             ]),
             contentFor('previous_versions_table_action_view'),
             contentFor('previous_versions_table_action_view_assessment_visually_hidden'),

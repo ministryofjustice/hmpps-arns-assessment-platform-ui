@@ -41,7 +41,7 @@
 
       {% set assessmentVersionLink %}
         {% if version.assessmentVersion %}
-          <a href="/strengths-and-needs/v{{ params.sanAssessmentVersion }}.0/view-historic/{{ params.sanAssessmentUuid }}/{{ version.assessmentVersion.uuid }}/accommodation/accommodation-status" class="govuk-link" rel="noreferrer noopener" target="_blank" data-ai-id="view-assessment-link" data-qa="assessment-link">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
+          <a href="/strengths-and-needs/v{{ params.sanAssessmentVersion }}.0/view-historic/{{ params.sanAssessmentUuid }}/{{ version.assessmentVersion.uuid }}/{{ params.sanAssessmentAccommodationLink }}" class="govuk-link" rel="noreferrer noopener" target="_blank" data-ai-id="view-assessment-link" data-qa="assessment-link">View<span class="govuk-visually-hidden"> assessment from {{ version.assessmentVersion.updatedAt }} (opens in new tab) </span></a>
         {% endif %}
       {% endset %}
 

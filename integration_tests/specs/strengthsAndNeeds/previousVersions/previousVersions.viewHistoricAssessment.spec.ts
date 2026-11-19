@@ -18,10 +18,15 @@ test.describe('View Historic Assessment', () => {
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${previousVersions}`)
     const previousVersionsPage = await PreviousVersionsPage.verifyOnPage(page, 'Previous versions')
 
-    const [newPage] = await Promise.all([
+    const [newPage, link] = await Promise.all([
       page.waitForEvent('popup'),
-      previousVersionsPage.viewVersionOnDate('1st January 2026'),
+      previousVersionsPage.viewVersionOnDate('1st January 2026').then(viewlink => {
+        return viewlink
+      }),
     ])
+
+    await newPage.waitForLoadState()
+    expect(link).toMatch(/^\/?strengths-and-needs\/[^/]+\/view-historic\/.+/)
 
     return { newPage }
   }
@@ -42,6 +47,7 @@ test.describe('View Historic Assessment', () => {
       await expect(newPage).toHaveTitle('Accommodation analysis - Strengths and needs')
 
       const historicAssessmentPage = await HistoricAssessmentPage.verifyOnPage(newPage, 'Employment and education')
+      expect(historicAssessmentPage.page.url()).toContain('accommodation/accommodation-analysis')
       await expect(historicAssessmentPage.returnToOasysButton).toBeHidden()
 
       await expect(historicAssessmentPage.alertHeading).toHaveCount(1)
