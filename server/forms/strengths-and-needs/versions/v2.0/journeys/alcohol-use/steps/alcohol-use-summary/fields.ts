@@ -2,13 +2,14 @@ import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govu
 import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
-import { alcoholUseSection } from '../../section'
+import { alcoholUseSection, noAlcoholIssues } from '../../section'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { commonContentFor } from '../../../../locales'
 import { questionsOf } from '../../../../steps/view-all-answers/sections'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { Section } from '../../../../constants/section'
+import { practitionerAnalysisNotRequired } from '../../../../constants/content'
 
 export const questions = questionsOf({
   section: Section.alcohol_use,
@@ -53,6 +54,7 @@ export const summaryTab = HtmlBlock({
               alcoholUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
               alcoholUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
               alcoholUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
+              practitionerAnalysisNotRequired(noAlcoholIssues),
               markAsCompleteButton,
             ],
           },

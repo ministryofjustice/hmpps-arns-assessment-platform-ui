@@ -6,9 +6,10 @@ import {
   step,
   submit,
   validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { alcoholUseSection } from '../../section'
+import { alcoholUseSection, someOrSignificantIssues } from '../../section'
 import { saveButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
 import { Section, SectionComplete } from '../../../../constants/section'
@@ -19,12 +20,16 @@ import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 import { CommonOption } from '../../../../constants/commonOption'
+import { sectionTitleBaseClass, sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const alcoholUseExcessiveDrinkingPastIssuesStep = step({
   path: `/${Step.alcohol_use_excessive_drinking_past_issues.path}`,
   title: sectionPageTitle(Section.alcohol_use),
   view: {
     locals: {
+      sectionTitleClass: when(someOrSignificantIssues)
+        .then(sectionTitleBaseClass)
+        .else(sectionTitleClassV2),
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path, Step.alcohol_use_current_issues.path]),
     },
   },

@@ -10,12 +10,14 @@ import { createRoute } from '../../../../../../generators'
 import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
 import { autosaveSubmit } from '../../../../autosave'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { sectionTitleClassV2 } from '../../../../constants/formVersion'
 
 export const alcoholUseChanges = step({
   path: `/${Step.alcohol_use_changes.path}`,
   title: sectionPageTitle(Section.alcohol_use),
   view: {
     locals: {
+      sectionTitleClass: sectionTitleClassV2,
       backlink: createRoute([...baseSanRoute, Section.alcohol_use.path, Step.alcohol_use_stopped_or_reduced.path]),
     },
   },

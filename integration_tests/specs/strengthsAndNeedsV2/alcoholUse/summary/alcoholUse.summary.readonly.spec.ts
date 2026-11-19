@@ -39,9 +39,9 @@ test.describe('Summary', () => {
 
     await expect(alcoholUsePage.summary).toMatchAriaSnapshot(`
       - tabpanel "Summary":
-        - term: Does Test have any current issues with alcohol?
+        - term: Is there evidence that Test has had any issues with alcohol in the last 6 months?
         - definition:
-          - paragraph: No current problems
+          - paragraph: No issues
         - term: Does Test have any past issues with alcohol?
         - definition:
           - paragraph: "Yes"
