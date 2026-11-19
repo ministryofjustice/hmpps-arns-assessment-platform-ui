@@ -96,7 +96,7 @@ const fullyAnswered: Scenario = {
     changeLink(Step.thinking_behaviours_attitudes.path, Question.thinking_behaviours_attitudes_hostile_orientation),
     changeLink(Step.thinking_behaviours_attitudes.path, Question.thinking_behaviours_attitudes_supervision),
     changeLink(Step.thinking_behaviours_attitudes.path, Question.thinking_behaviours_attitudes_criminal_behaviour),
-    changeLink(Step.thinking_behaviours_attitudes.path, Question.thinking_behaviours_attitudes_changes),
+    changeLink(Step.thinking_behaviours_attitudes_changes.path, Question.thinking_behaviours_attitudes_changes),
     changeLink(
       Step.thinking_behaviours_attitudes_risk_of_sexual_harm.path,
       Question.thinking_behaviours_attitudes_risk_sexual_harm,
@@ -116,6 +116,7 @@ const fullyAnswered: Scenario = {
   ],
   userSubmittedSteps: [
     Step.thinking_behaviours_attitudes.code,
+    Step.thinking_behaviours_attitudes_changes.code,
     Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
     Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
     Step.thinking_behaviours_attitudes_summary.code,

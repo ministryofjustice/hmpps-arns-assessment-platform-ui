@@ -8,6 +8,7 @@ import { sectionPageTitle, sectionStatusTag } from '../../locales'
 import { thinkingBehavioursAttitudesRiskOfSexualHarmStep } from './steps/thinking-behaviours-attitudes-risk-of-sexual-harm/step'
 import { isEditMode, redirectToAnalysisIfReadOnly } from '../../guards'
 import { Step } from './constants/step'
+import { thinkingBehavioursAttitudesChangesStep } from './steps/thinking-behaviours-attitudes-changes/step'
 
 /**
  * Thinking, Behaviours and Attitudes Journey
@@ -37,6 +38,7 @@ export const thinkingBehavioursAndAttitudesJourney = journey({
   },
   steps: [
     thinkingBehavioursAttitudesStep,
+    thinkingBehavioursAttitudesChangesStep,
     thinkingBehavioursAttitudesRiskOfSexualHarmStep,
     thinkingBehavioursAttitudesRiskOfSexualHarmDetailsStep,
     thinkingBehavioursAttitudesSummaryStep,

@@ -3,6 +3,10 @@ export const Step = {
     code: 'thinking_behaviours_attitudes',
     path: 'thinking-behaviours-attitudes',
   },
+  thinking_behaviours_attitudes_changes: {
+    code: 'thinking_behaviours_attitudes_changes',
+    path: 'thinking-behaviours-attitudes-changes',
+  },
   thinking_behaviours_attitudes_risk_of_sexual_harm: {
     code: 'thinking_behaviours_attitudes_risk_of_sexual_harm',
     path: 'thinking-behaviours-attitudes-risk-of-sexual-harm',
