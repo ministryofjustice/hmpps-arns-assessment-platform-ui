@@ -17,8 +17,8 @@ import { Step } from './constants/step'
  * Drug Use Journey
  *
  * Flow:
- * drug-use-status → (YES) → drug-use-types → drug-use-last-used → drug-use-details (Has injected for drug used in last 6 months) → drug-use-last-injected → drug-use-reduce-use → drug-use-change-use → drug-use-summary
- * drug-use-status → (YES) → drug-use-types → drug-use-last-used → drug-use-details (Has NOT injected for drug used in last 6 months) → drug-use-reduce-use → drug-use-change-use → drug-use-summary
+ * drug-use-status → (YES) → drug-use-types → drug-use-last-used → drug-use-details (Has injected drug) → drug-use-last-injected → drug-use-reduce-use → drug-use-change-use → drug-use-summary
+ * drug-use-status → (YES) → drug-use-types → drug-use-last-used → drug-use-details (Has NOT injected drug) → drug-use-reduce-use → drug-use-change-use → drug-use-summary
  * drug-use-status → (NO)  → drug-use-summary
  * drug-use-summary → drug-use-analysis
  */
