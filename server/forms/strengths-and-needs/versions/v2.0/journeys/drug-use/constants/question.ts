@@ -21,7 +21,6 @@ export const Question = {
   drug_use_changes_thinking_about_making_changes_details: 'drug_use_changes_thinking_about_making_changes_details',
   drug_use_changes_does_not_want_to_make_changes_details: 'drug_use_changes_does_not_want_to_make_changes_details',
   drug_use_changes_does_not_want_to_answer_details: 'drug_use_changes_does_not_want_to_answer_details',
-  drugs_practitioner_analysis_motivated_to_stop: 'drugs_practitioner_analysis_motivated_to_stop',
   drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details:
     'drug_use_practitioner_analysis_strengths_or_protective_factors_yes_details',
   drug_use_practitioner_analysis_strengths_or_protective_factors_no_details:

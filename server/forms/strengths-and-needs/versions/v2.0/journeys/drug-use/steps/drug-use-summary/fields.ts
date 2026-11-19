@@ -202,7 +202,6 @@ export const summaryTab = HtmlBlock({
           label: commonContentFor('practitioner_analysis'),
           panel: {
             blocks: [
-              drugUseSection.practitionerAnalysis.motivatedToStop.displayModes.field,
               drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
               drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
               drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
