@@ -26,6 +26,8 @@ test.describe('View Historic Assessment', () => {
     ])
 
     await newPage.waitForLoadState()
+    expect(link).toMatch(/^\/?strengths-and-needs\/[^/]+\/view-historic\/.+/)
+
     return { newPage }
   }
 
