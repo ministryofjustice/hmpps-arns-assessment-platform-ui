@@ -127,6 +127,42 @@ export const scenarioPresets: ScenarioPreset[] = [
       planAccessMode: 'READ_WRITE',
     },
   },
+  {
+    id: 'san-v2-community',
+    name: 'SAN v2 Community',
+    shortDescription: 'SAN and Sentence Plan training (community)',
+    description:
+      'Scenario configured for Strengths and Needs (SAN) and Sentence Plan training in a community/probation setting.',
+    flags: ['SAN_PRIVATE_BETA'],
+    fixedValues: {
+      givenName: 'Charlie',
+      familyName: 'Patterson',
+      dateOfBirth: '1995-07-19',
+      gender: '1',
+      location: 'COMMUNITY',
+      sexuallyMotivatedOffenceHistory: 'NO',
+      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
+    },
+  },
+  {
+    id: 'san-v2-prison',
+    name: 'SAN v2 Prison',
+    shortDescription: 'SAN and Sentence Plan training (prison)',
+    description: 'Scenario configured for Strengths and Needs (SAN) and Sentence Plan training in a prison setting.',
+    flags: ['SAN_PRIVATE_BETA'],
+    fixedValues: {
+      givenName: 'Phillip',
+      familyName: 'Jones',
+      dateOfBirth: '1985-10-27',
+      gender: '1',
+      pnc: '15/123457V',
+      location: 'PRISON',
+      sexuallyMotivatedOffenceHistory: 'NO',
+      accessMode: 'READ_WRITE',
+      planAccessMode: 'READ_WRITE',
+    },
+  },
 ]
 
 /**
