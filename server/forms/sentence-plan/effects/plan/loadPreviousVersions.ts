@@ -25,23 +25,30 @@ const hasPrivateBetaOasysAccess = (context: SentencePlanContext): boolean => {
  * Must be called after loading a plan.
  */
 export const loadPreviousVersions = (deps: SentencePlanEffectsDeps) => async (context: SentencePlanContext) => {
+  const user = context.getState('user')
+
   const assessmentUuid = context.getData('assessmentUuid')
 
   if (!assessmentUuid) {
     throw new InternalServerError('Assessment UUID is required to load previous versions')
   }
 
-  const sanAssessmentContext = context.getSession().handoverContext?.assessmentContext
-  const sanAssessmentUuid = sanAssessmentContext?.assessmentId
-  const sanAssessmentVersion = sanAssessmentContext?.assessmentVersion
+  const sanAssessmentUuid = context.getSession().handoverContext?.assessmentContext.assessmentId
 
-  if (sanAssessmentContext?.assessmentId) {
-    context.setData('sanAssessmentUuid', sanAssessmentUuid)
+  if (!sanAssessmentUuid) {
+    throw new InternalServerError('SAN assessment UUID is required')
   }
 
-  if (sanAssessmentContext?.assessmentVersion !== undefined) {
-    context.setData('sanAssessmentVersion', sanAssessmentVersion)
-  }
+  const assessment = await deps.api.executeQuery({
+    type: 'AssessmentVersionQuery',
+    user,
+    assessmentIdentifier: {
+      type: 'UUID',
+      uuid: sanAssessmentUuid,
+    },
+  })
+
+  context.setData('sanAssessmentVersion', assessment.formVersion)
 
   const showAssessmentColumn = hasPrivateBetaOasysAccess(context)
   context.setData('showAssessmentColumn', showAssessmentColumn)
