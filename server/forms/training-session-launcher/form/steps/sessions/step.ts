@@ -20,7 +20,7 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
  */
 export const sessionsStep = step({
   path: '/sessions',
-  title: 'Active Sessions',
+  title: 'Your sessions',
   reachability: { entryWhen: true },
 
   blocks: [
