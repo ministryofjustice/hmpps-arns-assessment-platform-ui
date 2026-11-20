@@ -5,8 +5,6 @@ import { Question } from '../../versions/v2.0/journeys/finance/constants/questio
 /**
  * AC 7: When a practitioner answers "No" to "Does [Name] have any financial issues or worries?"
  * the following downstream questions must be defaulted to NULL.
- *
- * TODO: Replace null-setting with the agreed default value logic once confirmed.
  */
 
 const DOWNSTREAM_QUESTIONS = [
@@ -53,7 +51,6 @@ export const clearFinanceConcernsDownstreamAnswers =
     if (context.getAnswer(Question.finance_concerns) !== CommonOption.no) {
       return
     }
-    // TODO: Replace with agreed default value logic once confirmed. Currently passing NULL.
     for (const code of DOWNSTREAM_QUESTIONS) {
       context.setAnswer(code, null)
     }

@@ -54,7 +54,6 @@ export const financeConcernsStep = step({
       onValid: {
         effects: [
           // AC 7: When "No", default all downstream finance questions to NULL.
-          // TODO: Replace with agreed default value logic once confirmed.
           StrengthsAndNeedsEffects.clearFinanceConcernsDownstreamAnswers(),
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.no),
