@@ -1,15 +1,15 @@
-import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { financeSection, hasDebt } from '../../section'
-import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
-import { saveButton } from '../../../../constants/buttons'
-import { sectionPageTitle } from '../../../../locales'
-import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
-import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
-import { createRoute } from '../../../../../../generators'
-import { baseSanRoute } from '../../../../constants/path'
+import {Condition, Post, redirect, step, submit, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import {financeSection, hasDebt} from '../../section'
+import {Step} from '../../constants/step'
+import {Section, SectionComplete} from '../../../../constants/section'
+import {saveButton} from '../../../../constants/buttons'
+import {sectionPageTitle} from '../../../../locales'
+import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
+import {autosaveSubmit} from '../../../../autosave'
+import {isUserSubmittedCondition, IsUserSubmitted} from '../../../../constants/userSubmitted'
+import {createRoute} from '../../../../../../generators'
+import {baseSanRoute} from '../../../../constants/path'
 
 export const financeMoneyManagementStep = step({
   path: `/${Step.finance_money_management.path}`,
@@ -46,6 +46,7 @@ export const financeMoneyManagementStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.finance_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance_money_management),
         ],
         next: [
@@ -63,6 +64,7 @@ export const financeMoneyManagementStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.finance_summary.code, IsUserSubmitted.false),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance_money_management),
         ],
       },

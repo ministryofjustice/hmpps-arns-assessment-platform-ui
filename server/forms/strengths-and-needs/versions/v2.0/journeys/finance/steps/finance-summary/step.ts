@@ -1,13 +1,13 @@
-import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { StrengthsAndNeedsEffects } from '../../../../../../effects'
-import { Step } from '../../constants/step'
-import { Section, SectionComplete } from '../../../../constants/section'
-import { summaryTab } from './fields'
-import { summaryPageTitle } from '../../../../locales'
-import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
-import { autosaveSubmit } from '../../../../autosave'
-import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
-import { hasFinancialConcerns } from '../../section'
+import {Condition, Post, redirect, step, submit, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
+import {StrengthsAndNeedsEffects} from '../../../../../../effects'
+import {Step} from '../../constants/step'
+import {Section, SectionComplete} from '../../../../constants/section'
+import {summaryTab} from './fields'
+import {summaryPageTitle} from '../../../../locales'
+import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
+import {autosaveSubmit} from '../../../../autosave'
+import {isUserSubmittedCondition} from '../../../../constants/userSubmitted'
+import {hasFinancialConcerns} from '../../section'
 
 export const financeSummaryStep = step({
   path: `/${Step.finance_summary.path}`,
@@ -32,6 +32,7 @@ export const financeSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.yes),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.MARK_SECTION_COMPLETE, Section.finance, Step.finance_summary),
         ],
         next: [
@@ -48,6 +49,7 @@ export const financeSummaryStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.finance, SectionComplete.no),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance_summary),
         ],
       },
