@@ -27,6 +27,8 @@ import { resolveEntryRoute } from './session/resolveEntryRoute'
 import { initializeSessionFromAccessV2 } from './session/initializeSessionFromAccessV2'
 import { setSectionProgressV2 } from './assessment/setSectionProgressV2'
 import { commitPendingCommands } from './assessment/pendingCommands'
+import { clearFinanceConcernsDownstreamAnswers } from './assessment/clearFinanceConcernsDownstreamAnswers'
+import { clearFinanceDebtTypeAnswers } from './assessment/clearFinanceDebtTypeAnswers'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -67,6 +69,11 @@ export const StrengthsAndNeedsEffects = {
     'saveCurrentAccommodationStepAnswers',
     saveCurrentAccommodationStepAnswers,
   ),
+  clearFinanceConcernsDownstreamAnswers: sanEffects.register(
+    'clearFinanceConcernsDownstreamAnswers',
+    clearFinanceConcernsDownstreamAnswers,
+  ),
+  clearFinanceDebtTypeAnswers: sanEffects.register('clearFinanceDebtTypeAnswers', clearFinanceDebtTypeAnswers),
 }
 
 export { CommonAuditEvent } from '../../shared'

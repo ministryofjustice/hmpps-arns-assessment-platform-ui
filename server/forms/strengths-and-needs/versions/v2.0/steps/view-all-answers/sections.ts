@@ -4,9 +4,9 @@ import { accommodationSection } from '../../journeys/accommodation/section'
 import { alcoholUseSection } from '../../journeys/alcohol-use/section'
 import { healthWellbeingSection } from '../../journeys/health-wellbeing/section'
 import { personalRelationshipsCommunitySection } from '../../journeys/personal-relationships-and-community/section'
+import { financeSection } from '../../journeys/finance/section'
 // import { drugUseSection } from '../../journeys/drug-use/section'
 import { employmentEducationSection } from '../../journeys/employment-and-education/section'
-// import { financeSection } from '../../journeys/finance/section'
 import { thinkingBehavioursAttitudesSection } from '../../journeys/thinking-behaviours-and-attitudes/section'
 import { offenceAnalysisSection } from '../../journeys/offence-analysis/section'
 
@@ -20,7 +20,7 @@ export interface ViewAllAnswersSection {
 export const viewAllAnswersSections: ViewAllAnswersSection[] = [
   { section: Section.accommodation, config: accommodationSection },
   { section: Section.employment_and_education, config: employmentEducationSection },
-  // { section: Section.finance, config: financeSection },
+  { section: Section.finance, config: financeSection },
   // { section: Section.drug_use, config: drugUseSection },
   { section: Section.alcohol_use, config: alcoholUseSection },
   { section: Section.health_and_wellbeing, config: healthWellbeingSection },

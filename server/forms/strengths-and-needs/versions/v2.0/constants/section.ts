@@ -19,7 +19,7 @@ export const Section = {
   finance: {
     code: 'finance',
     path: '/finances',
-    sideNavHref: `finances/finance`,
+    sideNavHref: `finances/finance-income`,
     statusKey: 'finance_section_complete',
   },
   drug_use: {

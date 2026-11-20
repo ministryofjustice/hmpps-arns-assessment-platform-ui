@@ -108,7 +108,7 @@ describe('view all answers', () => {
     expect(headings(await renderPage(), 2)).toEqual([
       'Accommodation',
       'Employment and education',
-      // 'Finances',
+      'Finances',
       // 'Drug use',
       'Alcohol use',
       'Health and wellbeing',
@@ -124,7 +124,7 @@ describe('view all answers', () => {
    * covers both the questions and the analysis.
    */
   it('shows a status against every section, complete only once the section is', async () => {
-    expect(tags(await renderPage())).toEqual(Array(7).fill('Incomplete'))
+    expect(tags(await renderPage())).toEqual(Array(8).fill('Incomplete'))
 
     const complete = await renderPage({}, { [Section.accommodation.statusKey]: SectionComplete.yes })
     expect(tags(complete).filter(tag => tag === 'Complete')).toHaveLength(1)
@@ -168,7 +168,7 @@ describe('view all answers', () => {
   //     how_often_used_last_six_months_cannabis_details: 'Most evenings.',
   //     drug_last_used_heroin: 'MORE_THAN_SIX',
   //   })
-
+  //
   //   // Each answer is paired with its own name, so a screen reader reads them together.
   //   expect(rows(result)).toEqual([
   //     'Has Sam ever misused drugs?',
@@ -188,7 +188,7 @@ describe('view all answers', () => {
   //     'Used more than 6 months ago',
   //   ])
   // })
-
+  //
   // it('shows a custom drug under the name it was given', async () => {
   //   const result = await renderPage({
   //     drug_use: 'YES',
@@ -196,7 +196,7 @@ describe('view all answers', () => {
   //     other_drug_name: 'Ketamine',
   //     drug_last_used_other_drug: 'LAST_SIX',
   //   })
-
+  //
   //   expect(bodyText(result)).toContain('Ketamine')
   // })
 
