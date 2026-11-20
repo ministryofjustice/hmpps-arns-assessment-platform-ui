@@ -1,7 +1,7 @@
 import config from '../../../../config'
 import { CreateHandoverLinkRequest } from '../../../../interfaces/handover-api/request'
 import { HandoverSubjectDetails } from '../../../../interfaces/handover-api/shared'
-import { resolveHandoverConfig } from '../../flags/handlers'
+import { isTargetEnabled, resolveHandoverConfig } from '../../flags/handlers'
 import { ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session, TargetApplication } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
@@ -115,6 +115,10 @@ export const generateHandoverLink =
 
     if (!trainingSessionId) {
       throw new Error('Cannot generate handover link: trainingSessionId is missing from POST data')
+    }
+
+    if (!isTargetEnabled(targetApplication)) {
+      throw new Error(`Cannot generate handover link: target '${targetApplication}' is not enabled in this environment`)
     }
 
     // Load session from preferences

@@ -1,7 +1,9 @@
-import { getExcludedFields } from './handlers'
+import config from '../../../config'
+import { getExcludedFields, resolveHandoverConfig } from './handlers'
 
 jest.mock('../../../config', () => ({
-  handoverTargets: {},
+  handoverTargets: { 'sentence-plan': {}, 'strengths-and-needs': {}, 'tiering-assessment': {} },
+  forms: { trainingSessionLauncher: { sanTargetEnabled: true } },
 }))
 
 // The scenarios modules pull in faker (ESM only), which Jest cannot load, so the pieces handlers.ts uses are stubbed
@@ -14,6 +16,26 @@ jest.mock('../scenarios/helpers', () => ({
 }))
 
 describe('flag handlers', () => {
+  describe('resolveHandoverConfig()', () => {
+    afterEach(() => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = true
+    })
+
+    it('should offer the SAN target for SAN Private Beta when the SAN target is enabled', () => {
+      const { availableServices } = resolveHandoverConfig(['SAN_PRIVATE_BETA'])
+
+      expect(availableServices).toEqual(['sentence-plan', 'strengths-and-needs'])
+    })
+
+    it('should not offer the SAN target for SAN Private Beta when the SAN target is disabled', () => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = false
+
+      const { availableServices } = resolveHandoverConfig(['SAN_PRIVATE_BETA', 'TIERING_ASSESSMENT'])
+
+      expect(availableServices).toEqual(['sentence-plan', 'tiering-assessment'])
+    })
+  })
+
   describe('getExcludedFields()', () => {
     it('should keep criminogenic needs for a scenario that does not set the mocks setting', () => {
       const flags: [] = []
