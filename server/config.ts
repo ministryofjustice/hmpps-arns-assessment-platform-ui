@@ -170,7 +170,7 @@ export default {
       agent: new AgentConfig(Number(get('WIREMOCK_ADMIN_TIMEOUT_RESPONSE', 5000))),
     },
   },
-  sanUrl: get('SAN_URL', 'http://localhost:3000/strengths-and-needs/v1.0', requiredInProduction),
+  sanUrl: get('SAN_URL', 'http://localhost:3000/strengths-and-needs/v2.0', requiredInProduction),
   sanLegacyUrl: get('SAN_LEGACY_URL', ''),
   sqs: {
     audit: auditConfig(),

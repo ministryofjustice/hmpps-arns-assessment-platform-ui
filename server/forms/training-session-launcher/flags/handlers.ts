@@ -67,7 +67,8 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
     },
   },
-
+  MAX_UPLIFT_VERSION: {},
+  SAN_FORM_VERSION: {},
   NEW_PERIOD_OF_SUPERVISION: {
     session: {
       modifyRequest: request => ({
@@ -111,6 +112,16 @@ const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
   TIERING_ASSESSMENT: {
     handover: {
       availableServices: Object.keys(config.handoverTargets) as TargetApplication[],
+    },
+  },
+  OASYS_DATA: {
+    session: {
+      beforeCreate: async (deps, context, session) => {
+        session.values.oasysData = JSON.parse(session.values.oasysData)
+      },
+      afterCreate: async (deps, context, session) => {
+        session.values.oasysData = JSON.stringify(session.values.oasysData, null, 4)
+      },
     },
   },
 }

@@ -47,6 +47,14 @@ export const scenarioDetailsBlock = TemplateWrapper({
             <dt>SAN Assessment Version</dt>
             <dd>{{sanAssessmentVersion}}</dd>
           </div>
+          <div class="scenario-picker__inline-summary-item">
+            <dt>SAN Assessment Id</dt>
+            <dd>{{sanAssessmentId}}</dd>
+          </div>
+          <div class="scenario-picker__inline-summary-item">
+            <dt>OASys Data</dt>
+            <dd><pre>{{oasysData}}</pre></dd>
+          </div>
         </dl>
 
         <h3 class="govuk-heading-s">Flags</h3>
@@ -68,6 +76,8 @@ export const scenarioDetailsBlock = TemplateWrapper({
     oasysAssessmentPk: Item().path('oasysAssessmentPk').pipe(Transformer.String.EscapeHtml()),
     sentencePlanVersion: Item().path('sentencePlanVersion').pipe(Transformer.String.EscapeHtml()),
     sanAssessmentVersion: Item().path('sanAssessmentVersion').pipe(Transformer.String.EscapeHtml()),
+    sanAssessmentId: Item().path('sanAssessmentId').pipe(Transformer.String.EscapeHtml()),
+    oasysData: Item().path('oasysData').pipe(Transformer.String.EscapeHtml()),
   },
   slots: {
     flags: [

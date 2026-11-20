@@ -1,11 +1,11 @@
-import { AssessmentBuilder } from './AssessmentBuilder'
-import type { AssessmentBuilderInstance, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
-import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
-import type { AnswerConfig, CreatedAssessment, DataConfig } from './types'
 import {
   IsUserSubmitted,
   isUserSubmittedCode,
-} from '../../server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
+} from '@server/forms/strengths-and-needs/versions/v1.0/constants/userSubmitted'
+import type { AssessmentBuilderInstance, CollectionBuilder, CollectionItemBuilder } from './AssessmentBuilder'
+import { AssessmentBuilder } from './AssessmentBuilder'
+import type { TestAapApiClient } from '../support/apis/TestAapApiClient'
+import type { AnswerConfig, CreatedAssessment, DataConfig } from './types'
 
 /**
  * Factory for creating StrengthsAndNeedsBuilder instances with a bound client.
@@ -17,19 +17,22 @@ import {
  */
 export function StrengthsAndNeedsBuilder(client: TestAapApiClient): StrengthsAndNeedsBuilderFactory {
   return {
-    fresh: () =>
+    fresh: (formVersion?: string, assessmentType?: string) =>
       new StrengthsAndNeedsBuilderInstance(
         client,
-        AssessmentBuilder(client).fresh().ofType('SAN_SP').withFormVersion('1.0'),
+        AssessmentBuilder(client).fresh().ofType(assessmentType).withFormVersion(formVersion),
       ),
-    extend: (sanAssessmentId: string) =>
-      new StrengthsAndNeedsBuilderInstance(client, AssessmentBuilder(client).extend(sanAssessmentId)),
+    extend: (sanAssessmentId: string, formVersion?: string) =>
+      new StrengthsAndNeedsBuilderInstance(
+        client,
+        AssessmentBuilder(client).extend(sanAssessmentId).withFormVersion(formVersion),
+      ),
   }
 }
 
 export interface StrengthsAndNeedsBuilderFactory {
-  fresh: () => StrengthsAndNeedsBuilderInstance
-  extend: (sanAssessmentId: string) => StrengthsAndNeedsBuilderInstance
+  fresh: (formVersion?: string, assessmentType?: string) => StrengthsAndNeedsBuilderInstance
+  extend: (sanAssessmentId: string, formVersion?: string) => StrengthsAndNeedsBuilderInstance
 }
 
 /**

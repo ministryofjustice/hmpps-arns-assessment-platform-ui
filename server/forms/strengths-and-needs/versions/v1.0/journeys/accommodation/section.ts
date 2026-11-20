@@ -1,7 +1,7 @@
 import { and, Answer, Condition, not, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKBody } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
-import { CaseData } from '../../constants/formVersion'
+import { CaseData } from '../../../../constants/common'
 import { CommonOption } from '../../constants/commonOption'
 import {
   checkboxDetails,

@@ -23,7 +23,7 @@ test.describe('User changes an answer', () => {
     const { crn, handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(settledAnswers).save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withAnswers(settledAnswers).save()
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
@@ -48,7 +48,7 @@ test.describe('User changes an answer', () => {
     const { crn, handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.extend(sanAssessmentId).withAnswers(settledAnswers).save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withAnswers(settledAnswers).save()
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)

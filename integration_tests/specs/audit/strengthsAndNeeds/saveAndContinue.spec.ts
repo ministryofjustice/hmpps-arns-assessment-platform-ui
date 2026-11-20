@@ -5,8 +5,10 @@ import { expectSanAuditEvent, onPage, SanAuditEvent } from './helpers'
 
 test.describe("Selects 'Save and Continue' for each Criminogenic Needs question page", () => {
   test('saving a question page', async ({ page, createSession, strengthsAndNeedsBuilder, auditQueue }) => {
-    const { crn, handoverLink } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    const { crn, handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.getByLabel('Settled').check()

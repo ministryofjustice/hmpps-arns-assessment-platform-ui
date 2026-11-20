@@ -73,8 +73,13 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     oasysAssessmentPk: values.oasysAssessmentPk,
   }
 
-  if (targetApplication === 'strengths-and-needs' && values.sanAssessmentVersion) {
-    request.assessmentVersion = values.sanAssessmentVersion
+  if (targetApplication === 'strengths-and-needs') {
+    if (values.sanAssessmentVersion) {
+      request.assessmentVersion = values.sanAssessmentVersion
+    }
+    if (session.flags.includes('MAX_UPLIFT_VERSION') && values.maxUpliftVersion) {
+      request.maxUpliftVersion = values.maxUpliftVersion
+    }
   }
 
   if (targetApplication === 'sentence-plan' && values.sentencePlanVersion) {

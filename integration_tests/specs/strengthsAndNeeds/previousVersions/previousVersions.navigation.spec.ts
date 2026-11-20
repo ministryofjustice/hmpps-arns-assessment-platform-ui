@@ -7,11 +7,13 @@ test.describe('Previous Versions - Navigation', () => {
   test('can navigate to previous versions where no previous version exists', async ({
     page,
     createSession,
+    strengthsAndNeedsBuilder,
     baseURL,
   }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${previousVersions}`)

@@ -24,12 +24,15 @@ import { saveCurrentAccommodationStepAnswers } from './assessment/saveCurrentAcc
 import { validateModeAndVersionUuidFromUrl } from './session/validateModeAndVersionUuidFromUrl'
 import { setUserSubmitted } from './assessment/setUserSubmitted'
 import { resolveEntryRoute } from './session/resolveEntryRoute'
+import { initializeSessionFromAccessV2 } from './session/initializeSessionFromAccessV2'
+import { setSectionProgressV2 } from './assessment/setSectionProgressV2'
 import { commitPendingCommands } from './assessment/pendingCommands'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
 export const StrengthsAndNeedsEffects = {
   initializeSessionFromAccess: sanEffects.register('initializeSessionFromAccess', initializeSessionFromAccess),
+  initializeSessionFromAccessV2: sanEffects.register('initializeSessionFromAccessV2', initializeSessionFromAccessV2),
   loadSessionData: sanEffects.register('loadSessionData', loadSessionData),
   setPrivacyAccepted: sanEffects.register('setPrivacyAccepted', setPrivacyAccepted),
   setDynamicBacklink: sanEffects.register('setDynamicBacklink', setDynamicBacklink),
@@ -44,6 +47,7 @@ export const StrengthsAndNeedsEffects = {
     clearInapplicableLivingWithAnswers,
   ),
   setSectionProgress: sanEffects.register('setSectionProgress', setSectionProgress),
+  setSectionProgressV2: sanEffects.register('setSectionProgressV2', setSectionProgressV2),
   addItemToCollection: sanEffects.register('addItemToCollection', addItemToCollection),
   updateItemFromCollection: sanEffects.register('updateItemFromCollection', updateItemFromCollection),
   removeItemFromCollection: sanEffects.register('removeItemFromCollection', removeItemFromCollection),

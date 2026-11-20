@@ -58,3 +58,5 @@ export const checkLinkOpensInCurrentTab = async (link: Locator) => {
   await expect(link).toBeVisible()
   await expect(link).toHaveClass(/govuk-link--no-visited-state/)
 }
+
+export const details = (label: string) => `${label} — free text answer.`

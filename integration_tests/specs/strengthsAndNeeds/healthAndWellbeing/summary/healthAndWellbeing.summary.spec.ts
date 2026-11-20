@@ -12,7 +12,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_head_injury_or_illness, value: CommonOption.no },
@@ -119,7 +119,7 @@ test.describe('Summary', () => {
       subject: { gender: '1' },
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_head_injury_or_illness, value: CommonOption.no },
@@ -156,7 +156,7 @@ test.describe('Summary', () => {
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId).withAnswers([
+      .extend(sanAssessmentId, 'v1.0').withAnswers([
         { question: Question.health_wellbeing_physical_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_mental_health_condition, value: CommonOption.no },
         { question: Question.health_wellbeing_head_injury_or_illness, value: CommonOption.no },

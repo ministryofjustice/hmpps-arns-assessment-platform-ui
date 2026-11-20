@@ -12,7 +12,7 @@ import { offenceAnalysisSection } from '../journeys/offence-analysis/section'
 import { Section } from './section'
 
 const sectionStatusKeys = Object.values(Section).map(section => section.statusKey)
-
+export const goLiveDate: string = '09/05/2007'
 /**
  * Built independently of the journey/effects module graph so it can be
  * imported by code (e.g. UpdateOasysDataMappingHook) without introducing a
@@ -33,5 +33,6 @@ export const v1FormConfig = {
       offenceAnalysisSection,
     ],
     sectionStatusKeys,
+    goLiveDate,
   ),
 }

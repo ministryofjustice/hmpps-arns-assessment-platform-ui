@@ -22,7 +22,7 @@ const autosavedValue = (request: Request) => {
 test.describe('Autosave', () => {
   test('autosaves once editing stops', async ({ page, baseURL, createSession, strengthsAndNeedsBuilder }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
     const form = await openOffenceAnalysis(page, baseURL, handoverLink, sanAssessmentId)
 
     const sent: string[] = []
@@ -46,7 +46,7 @@ test.describe('Autosave', () => {
     strengthsAndNeedsBuilder,
   }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
     const form = await openOffenceAnalysis(page, baseURL, handoverLink, sanAssessmentId)
 
     // enter a value to test
@@ -68,12 +68,12 @@ test.describe('Autosave', () => {
   })
 
   test('is off in a read-only session', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
-    const { handoverLink } = await createSession({
+    const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
       accessMode: 'READ_ONLY',
       planAccessMode: 'READ_WRITE',
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     // A read only session is redirected to the section's analysis page.
     await navigateToStrengthsAndNeeds(page, handoverLink, 'accommodation-analysis')

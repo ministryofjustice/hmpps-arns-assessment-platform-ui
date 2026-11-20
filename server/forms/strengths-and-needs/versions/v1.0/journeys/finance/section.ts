@@ -1,6 +1,5 @@
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
-import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import {
   checkboxDetails,
@@ -20,6 +19,7 @@ import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { CharacterLimit } from '../../../../constants/characterLimit'
 import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
+import { CaseData } from '../../../../constants/common'
 
 const overReliantOnFamilyOrFriendsRevealed = revealedQuestion({
   content: {
