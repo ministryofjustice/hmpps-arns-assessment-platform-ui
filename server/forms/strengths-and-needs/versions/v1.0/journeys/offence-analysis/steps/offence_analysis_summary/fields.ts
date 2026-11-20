@@ -1,9 +1,13 @@
 import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
+import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { commonContentFor } from '../../../../locales'
 import { offenceAnalysisSection } from '../../section'
 import { questionsOf } from '../../../../steps/view-all-answers/sections'
 import { victimCards } from '../offence-analysis-victim-summary/fields'
 import { Section } from '../../../../constants/section'
+import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 
 export const questions = questionsOf({
   section: Section.offence_analysis,
@@ -29,15 +33,25 @@ export const offenceAnalysisSummary = GovUKSummaryList({
   ],
 })
 
-export const offenceAnalysisSummaryTab = GovUKTabs({
-  id: 'summaries',
-  items: [
-    {
-      id: 'summary',
-      label: commonContentFor('summary'),
-      panel: {
-        blocks: [offenceAnalysisSummary, victimCards],
-      },
-    },
+export const offenceAnalysisSummaryTab = HtmlBlock({
+  content: [
+    MOJBanner({
+      bannerType: 'information',
+      text: commonContentFor('section_has_not_been_started'),
+      visibleWhen: not(anyAnswered(questions)),
+    }),
+    GovUKTabs({
+      id: 'summaries',
+      items: [
+        {
+          id: 'summary',
+          label: commonContentFor('summary'),
+          panel: {
+            blocks: [offenceAnalysisSummary, victimCards],
+          },
+        },
+      ],
+      visibleWhen: anyAnswered(questions),
+    }),
   ],
 })

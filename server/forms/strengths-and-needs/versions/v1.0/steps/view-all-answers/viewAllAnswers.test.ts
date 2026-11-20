@@ -226,6 +226,12 @@ describe('view all answers', () => {
     expect(headings(result, 3)).toEqual(['Summary', 'Practitioner analysis'])
   })
 
+  it('treats a section with only a checkbox question answered as started', async () => {
+    const result = await renderPage({ personal_relationships_community_children_details: ['NO_CHILDREN'] })
+
+    expect(headings(result, 3)).toEqual(['Summary'])
+  })
+
   describe('back link tests', () => {
     const backlinkFor = async (previousPageUrl?: string, fallback = Section.accommodation.sideNavHref) => {
       const context = {
