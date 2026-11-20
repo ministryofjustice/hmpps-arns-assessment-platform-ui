@@ -28,10 +28,10 @@ test.describe('Questions', () => {
           - text: Are there any children in Test's life? This refers to any children (under 18 years) Test has regular contact with, even if they do not have parental responsibility. Select all that apply.
           - checkbox "Yes, children that live with them"
           - text: Yes, children that live with them
-          - checkbox "Yes, children that do not live with them"
-          - text: Yes, children that do not live with them or
-          - checkbox "No, there are no children in Test's life"
-          - text: No, there are no children in Test's life
+          - checkbox "Yes, children they have regular contact with"
+          - text: Yes, children they have regular contact with or
+          - checkbox "No, there are no children in their life"
+          - text: No, there are no children in their life Includes having biological children that are not in their life.
         - button "Save and continue"
     `)
   })
@@ -48,11 +48,12 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
       ])
@@ -90,16 +91,21 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
+        },
+        {
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
         },
       ])
       .withUserSubmittedSteps([
@@ -144,45 +150,50 @@ test.describe('Questions', () => {
         - text: Unknown
       - group "What was Test's experience of their childhood?":
         - text: What was Test's experience of their childhood? Childhood is the period up to and including 18 years old.
-        - radio "Positive experience"
-        - text: Positive experience
-        - radio "Both positive and negative experience"
-        - text: Both positive and negative experience
-        - radio "Negative experience"
-        - text: Negative experience This includes things like permanent or long-term separation from their parents or guardians, inconsistent care, neglect or abuse.
-      - group "Did Test have any childhood behavioural problems?":
-        - text: Did Test have any childhood behavioural problems? Consider any adverse experiences and trauma, as well as neurodiversity that could lead to behavioural problems.
+        - radio "Generally stable and supportive"
+        - text: Generally stable and supportive No significant concerns identified about care, safety or family relationships.
+        - radio "Some challenges or instability"
+        - text: Some challenges or instability Less severe or temporary challenges, disruption or concerns.
+        - radio "Significant challenges or instability"
+        - text: Significant challenges or instability Serious or longer-term experiences such as prolonged separation from parents or carers, inconsistent care, neglect or abuse. A single serious experience may also be significant.
+        - radio "Unknown"
+        - text: Unknown
+      - group "Is there evidence Test had any childhood behavioural issues or challenges?":
+        - text: Is there evidence Test had any childhood behavioural issues or challenges? Consider any experiences, trauma or neurodivergent needs that may have influenced behaviour during childhood.
         - radio "Yes"
         - text: "Yes"
         - radio "No"
         - text: "No"
-      - text: Is Test part of any groups or communities that gives them a sense of belonging? (optional) For example, online social media or community groups.
-      - textbox "Is Test part of any groups or communities that gives them a sense of belonging? (optional)"
-      - text: You can enter up to 2000 characters You have 2,000 characters remaining
-      - group "Is Test in a relationship?":
-        - text: Is Test in a relationship?
-        - radio "In a relationship, living together"
-        - text: In a relationship, living together
-        - radio "In a relationship, not living together"
-        - text: In a relationship, not living together
-        - radio "Not in a relationship"
-        - text: Not in a relationship
-      - group "Is Test happy with their current relationship status?":
-        - text: Is Test happy with their current relationship status?
-        - radio "Happy and positive about their relationship status or their relationship is likely to act as a protective factor"
-        - text: Happy and positive about their relationship status or their relationship is likely to act as a protective factor
-        - radio "Has some concerns about their relationship status but is overall happy"
-        - text: Has some concerns about their relationship status but is overall happy
-        - radio "Unhappy about their relationship status or their relationship is unhealthy and directly linked to offending"
-        - text: Unhappy about their relationship status or their relationship is unhealthy and directly linked to offending
-      - group "What is Test's history of intimate relationships?":
-        - text: What is Test's history of intimate relationships? An intimate relationship is one that involves physical and/or emotional closeness.
-        - radio "History of stable, supportive, positive and rewarding relationships"
-        - text: History of stable, supportive, positive and rewarding relationships This includes if they do not have a history of relationships but appear capable of starting and maintaining one.
-        - radio "History of both positive and negative relationships"
-        - text: History of both positive and negative relationships
-        - radio "History of unstable, unsupportive and destructive relationships"
-        - text: History of unstable, unsupportive and destructive relationships This includes if they are single and have never had a relationship but would like one.
+      - group "Are there any people, groups or communities that give Test a sense of belonging?":
+        - text: Are there any people, groups or communities that give Test a sense of belonging? Consider positive and negative influences. This could include relationships with friends, neighbours, online communities, social groups, faith groups, extremist groups and gangs.
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+      - group "Does Test currently have a partner?":
+        - text: Does Test currently have a partner?
+        - radio "Yes, living together"
+        - text: Yes, living together
+        - radio "Yes, not living together"
+        - text: Yes, not living together
+        - radio "No"
+        - text: No
+      - group "How would you describe Test current relationship situation?":
+        - text: How would you describe Test current relationship situation?
+        - radio "Positive and supportive"
+        - text: Positive and supportive Their current relationship is positive and supportive, or they are content being single.
+        - radio "Has some difficulties but remains supportive"
+        - text: Has some difficulties but remains supportive There are some difficulties or concerns, but there remains some support, stability or contentment with the current situation.
+        - radio "Difficult or unhealthy"
+        - text: Difficult or unhealthy Their current relationship is causing significant difficulties, is unhealthy, linked to offending, or they are preoccupied with being single.
+      - group "How would you describe Test's history of intimate relationships?":
+        - text: How would you describe Test's history of intimate relationships? An intimate relationship is one that involves physical or emotional closeness.
+        - radio "Stable, supportive and rewarding"
+        - text: Stable, supportive and rewarding This includes having no history of intimate relationships, but they appear capable of starting and maintaining a heathy one.
+        - radio "Both healthy and unhealthy relationships"
+        - text: Both healthy and unhealthy relationships
+        - radio "Unstable, unsupportive and destructive"
+        - text: Unstable, unsupportive and destructive Includes having no history of relationships and there are concerns about their ability to start or maintain one.
       - button "Save and continue"
     `)
   })
@@ -199,23 +210,28 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -243,11 +259,15 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -305,23 +325,28 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -349,11 +374,15 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -373,7 +402,7 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
       ])
@@ -395,18 +424,18 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Who did Test abuse',
+      'Who did Test commit domestic abuse against?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Who did Test abuse?":
-        - text: Who did Test abuse?
+      - group "Who did Test commit domestic abuse against?":
+        - text: Who did Test commit domestic abuse against? Select all that apply.
         - checkbox "Family member"
         - text: Family member
         - checkbox "Intimate partner"
         - text: Intimate partner
-      - group "Is there evidence of coercive behaviour?":
-        - text: Is there evidence of coercive behaviour?
+      - group "Is there evidence that Test has perpetrated controlling or coercive behaviour?":
+        - text: Is there evidence that Test has perpetrated controlling or coercive behaviour?
         - radio "Yes"
         - text: Yes
         - radio "No"
@@ -422,23 +451,28 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -466,11 +500,15 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -490,23 +528,23 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
       ])
@@ -529,12 +567,12 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Is there evidence of strangulation?',
+      'Is there evidence that Test has perpetrated strangulation or suffocation?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Is there evidence of strangulation?":
-        - text: Is there evidence of strangulation?
+      - group "Is there evidence that Test has perpetrated strangulation or suffocation?":
+        - text: Is there evidence that Test has perpetrated strangulation or suffocation?
         - radio "Yes"
         - text: Yes
         - radio "No"
@@ -550,23 +588,28 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -594,11 +637,15 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -618,31 +665,31 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_strangulation,
+          question: Question.evidence_of_strangulation,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_strangulation_yes_details,
+          question: Question.evidence_of_strangulation_yes_details,
           value: 'test',
         },
       ])
@@ -687,23 +734,28 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -731,11 +783,15 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -755,35 +811,35 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_strangulation,
+          question: Question.evidence_of_strangulation,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_strangulation_yes_details,
+          question: Question.evidence_of_strangulation_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim,
+          question: Question.offence_analysis_victim_of_domestic_abuse,
           value: CommonOption.yes,
         },
       ])
@@ -808,12 +864,12 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Who has abused them?',
+      'Who committed the abuse against Test?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Who has abused them?":
-        - text: Who has abused them?
+      - group "Who committed the abuse against Test?":
+        - text: Who committed the abuse against Test? Select all that apply.
         - checkbox "Family member"
         - text: Family member
         - checkbox "Intimate partner"
@@ -829,23 +885,28 @@ test.describe('Questions', () => {
     await strengthsAndNeedsBuilder
       .extend(sanAssessmentId).withAnswers([
         {
-          question: Question.personal_relationships_community_children_details,
+          question: Question.community_personal_relationships_community_children_details,
           value: [Option.yes_children_living_with_pop],
         },
         {
-          question: Question.personal_relationships_community_children_details_yes_children_living_with_pop_details,
+          question:
+            Question.community_personal_relationships_community_children_details_yes_children_living_with_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_any_parenting_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities,
+          question: Question.community_personal_relationships_community_parental_responsibilities_yes_details,
+          value: 'test',
+        },
+        {
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_parental_responsibilities_yes_details,
+          question: Question.community_personal_relationships_community_manage_parental_responsibilities_yes_details,
           value: 'test',
         },
         {
@@ -873,11 +934,15 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_belonging,
+          question: Question.personal_relationships_community_sense_of_belonging,
+          value: CommonOption.yes,
+        },
+        {
+          question: Question.personal_relationships_community_sense_of_belonging_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_in_relationship,
+          question: Question.personal_relationships_community_relationship_status,
           value: Option.in_relationship_living_together,
         },
         {
@@ -897,43 +962,43 @@ test.describe('Questions', () => {
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_perpetrator,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_against_partner_details,
+          question: Question.offence_analysis_perpetrator_of_domestic_abuse_victim_intimate_partner_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour,
+          question: Question.controlling_coercive_behaviour,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_coercive_behaviour_yes_details,
+          question: Question.controlling_coercive_behaviour_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_strangulation,
+          question: Question.evidence_of_strangulation,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_strangulation_yes_details,
+          question: Question.evidence_of_strangulation_yes_details,
           value: 'test',
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim,
+          question: Question.offence_analysis_victim_of_domestic_abuse,
           value: CommonOption.yes,
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim_by,
+          question: Question.offence_analysis_victim_of_domestic_abuse_who_committed_abuse,
           value: [Option.intimate_partner],
         },
         {
-          question: Question.personal_relationships_community_domestic_abuse_victim_by_intimate_partner,
+          question: Question.offence_analysis_victim_of_domestic_abuse_intimate_partner_details,
           value: 'test',
         },
       ])
@@ -959,12 +1024,12 @@ test.describe('Questions', () => {
 
     const personalRelationshipsAndCommunityPage = await PersonalRelationshipsAndCommunityPage.verifyOnPage(
       page,
-      'Does Test want to make changes to their personal relationships and community?',
+      'Does Test want to make changes to their personal relationships?',
     )
 
     await expect(personalRelationshipsAndCommunityPage.mainForm).toMatchAriaSnapshot(`
-      - group "Does Test want to make changes to their personal relationships and community?":
-        - text: Does Test want to make changes to their personal relationships and community? Test must answer this question.
+      - group "Does Test want to make changes to their personal relationships?":
+        - text: Does Test want to make changes to their personal relationships? Test must answer this question.
         - radio "I have already made positive changes and want to maintain them"
         - text: I have already made positive changes and want to maintain them
         - radio "I am actively making changes"

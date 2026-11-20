@@ -95,6 +95,11 @@ export const scenarioFieldSchema = {
     group: 'subject',
     randomize: () => null,
   },
+  oasysData: {
+    label: 'OASys data',
+    group: 'subject',
+    randomize: () => null,
+  },
   // Practitioner details
   practitionerIdentifier: {
     label: 'Practitioner identifier',

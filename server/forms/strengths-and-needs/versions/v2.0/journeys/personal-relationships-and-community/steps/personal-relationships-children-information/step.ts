@@ -71,7 +71,7 @@ export const personalRelationshipsChildrenInformationStep = step({
         ],
         next: [
           redirect({
-            when: Answer(Question.personal_relationships_community_children_details).match(
+            when: Answer(Question.community_personal_relationships_community_children_details).match(
               Condition.Array.Contains(Option.no_children),
             ),
             goto: Step.personal_relationships_community.path,

@@ -1,4 +1,4 @@
-import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { and, Answer, Condition, not, or, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { CommonOption } from '../../constants/commonOption'
 import {
   question,
@@ -17,17 +17,23 @@ import { CharacterLimit } from '../../../../constants/characterLimit'
 import { CaseData } from '../../../../constants/common'
 
 const drankAlcohol = Answer(Question.alcohol_current_issues).not.match(Condition.Equals(Option.has_never_drank))
-const someOrSignificantIssues = or(
+export const someOrSignificantIssues = or(
   Answer(Question.alcohol_current_issues).match(Condition.Equals(Option.some_problems)),
   Answer(Question.alcohol_current_issues).match(Condition.Equals(Option.significant)),
 )
 const noCurrentIssues = Answer(Question.alcohol_current_issues).match(Condition.Equals(Option.no_current_problems))
+
+export const noAlcoholIssues = or(
+  not(drankAlcohol),
+  and(noCurrentIssues, Answer(Question.alcohol_past_issues).match(Condition.Equals(CommonOption.no))),
+)
 
 const currentIssues = question({
   content: {
     code: Question.alcohol_current_issues,
     format: QuestionFormat.RADIO,
     text: contentFor('question.alcohol_current_issues.text', CaseData.Forename),
+    hint: contentFor('question.alcohol_current_issues.hint'),
     options: [
       {
         value: Option.significant,
@@ -49,7 +55,7 @@ const currentIssues = question({
     validationMessage: contentFor('question.alcohol_current_issues.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_current_issues.path,
     }),
@@ -100,9 +106,8 @@ const pastIssues = question({
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: requiredDetails({
+        reveals: optionalDetails({
           code: Question.alcohol_past_issues_yes_details,
-          validationMessage: contentFor('question.alcohol_past_issues_yes_details.validation'),
         }),
       },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
@@ -110,7 +115,11 @@ const pastIssues = question({
     validationMessage: contentFor('question.alcohol_past_issues.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      legendClasses: when(someOrSignificantIssues)
+        .then('govuk-fieldset__legend--m')
+        .else('govuk-fieldset__legend--l'),
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_excessive_drinking_past_issues.path,
       visibleWhen: drankAlcohol,
@@ -128,9 +137,8 @@ const stoppedOrReducedPast = question({
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: requiredDetails({
+        reveals: optionalDetails({
           code: Question.alcohol_stopped_or_reduced_past_yes_details,
-          validationMessage: contentFor('question.alcohol_stopped_or_reduced_past_yes_details.validation'),
         }),
       },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
@@ -138,7 +146,11 @@ const stoppedOrReducedPast = question({
     validationMessage: contentFor('question.alcohol_stopped_or_reduced_past.validation'),
   },
   displayModes: {
-    field: radioField({ dependentWhen: noCurrentIssues, visibleWhen: noCurrentIssues }),
+    field: radioField({
+      legendClasses: 'govuk-fieldset__legend--l',
+      dependentWhen: noCurrentIssues,
+      visibleWhen: noCurrentIssues,
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_stopped_or_reduced.path,
       visibleWhen: noCurrentIssues,
@@ -156,9 +168,8 @@ const stoppedOrReduced = question({
       {
         value: CommonOption.yes,
         text: commonContentFor('option.YES'),
-        reveals: requiredDetails({
+        reveals: optionalDetails({
           code: Question.alcohol_stopped_or_reduced_yes_details,
-          validationMessage: contentFor('question.alcohol_stopped_or_reduced_yes_details.validation'),
         }),
       },
       { value: CommonOption.no, text: commonContentFor('option.NO') },
@@ -166,7 +177,11 @@ const stoppedOrReduced = question({
     validationMessage: contentFor('question.alcohol_stopped_or_reduced.validation'),
   },
   displayModes: {
-    field: radioField({ dependentWhen: someOrSignificantIssues, visibleWhen: someOrSignificantIssues }),
+    field: radioField({
+      legendClasses: 'govuk-fieldset__legend--l',
+      dependentWhen: someOrSignificantIssues,
+      visibleWhen: someOrSignificantIssues,
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_stopped_or_reduced.path,
       visibleWhen: someOrSignificantIssues,
@@ -223,7 +238,7 @@ const changes = question({
     validationMessage: contentFor('question.alcohol_use_changes.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_changes.path,
       visibleWhen: drankAlcohol,
@@ -258,9 +273,13 @@ const strengthsOrProtectiveFactors = question({
     ),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: not(noAlcoholIssues),
+      visibleWhen: not(noAlcoholIssues),
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_summary.path,
+      visibleWhen: not(noAlcoholIssues),
     }),
   },
 })
@@ -289,9 +308,13 @@ const riskOfSeriousHarm = question({
     validationMessage: contentFor('question.alcohol_use_practitioner_analysis_risk_of_serious_harm.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: not(noAlcoholIssues),
+      visibleWhen: not(noAlcoholIssues),
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_summary.path,
+      visibleWhen: not(noAlcoholIssues),
     }),
   },
 })
@@ -320,9 +343,13 @@ const riskOfReoffending = question({
     validationMessage: contentFor('question.alcohol_use_practitioner_analysis_risk_of_reoffending.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: not(noAlcoholIssues),
+      visibleWhen: not(noAlcoholIssues),
+    }),
     summaryRow: itemisedSummaryRow({
       changeHref: Step.alcohol_use_summary.path,
+      visibleWhen: not(noAlcoholIssues),
     }),
   },
 })

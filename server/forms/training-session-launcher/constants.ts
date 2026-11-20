@@ -8,3 +8,4 @@ export type TrainingScenarioFlag =
   | 'TIERING_ASSESSMENT'
   | 'MAX_UPLIFT_VERSION'
   | 'SAN_FORM_VERSION'
+  | 'OASYS_DATA'

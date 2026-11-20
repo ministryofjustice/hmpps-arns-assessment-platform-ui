@@ -182,6 +182,7 @@ function transformToDisplaySession(session: Session): DisplaySession {
     sentencePlanVersion,
     sanAssessmentVersion,
     availableServices: computeAvailableServices(session),
+    oasysData: values.oasysData || '',
   }
 }
 

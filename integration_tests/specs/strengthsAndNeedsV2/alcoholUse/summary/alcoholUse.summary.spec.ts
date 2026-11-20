@@ -43,15 +43,15 @@ test.describe('Summary', () => {
 
     await expect(alcoholUsePage.summary).toMatchAriaSnapshot(`
       - tabpanel "Summary":
-        - term: Does Test have any current issues with alcohol?
+        - term: Is there evidence that Test has had any issues with alcohol in the last 6 months?
         - definition:
-          - paragraph: Significant
+          - paragraph: Yes, significant issues
         - definition:
-          - link "Change Does Test have any current issues with alcohol?":
+          - link "Change Is there evidence that Test has had any issues with alcohol in the last 6 months?":
             - /url: alcohol-use-current-issues#alcohol_current_issues-question
         - term: Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?
         - definition:
-          - paragraph: Some evidence of binge drinking or excessive alcohol use
+          - paragraph: Yes, some evidence
         - definition:
           - link "Change Has Test shown evidence of binge drinking or excessive alcohol use in the last 6 months?":
             - /url: alcohol-use-excessive-drinking-past-issues#alcohol_evidence_of_excess_drinking-question

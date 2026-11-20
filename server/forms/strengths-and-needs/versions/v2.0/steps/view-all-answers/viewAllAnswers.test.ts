@@ -133,7 +133,7 @@ describe('view all answers', () => {
   it('shows only the questions that have been answered', async () => {
     const result = await renderPage({ alcohol_current_issues: 'SIGNIFICANT' })
 
-    expect(rows(result)).toEqual(['Does Sam have any current issues with alcohol?'])
+    expect(rows(result)).toEqual(['Is there evidence that Sam has had any issues with alcohol in the last 6 months?'])
   })
 
   it('shows answers with notes', async () => {
