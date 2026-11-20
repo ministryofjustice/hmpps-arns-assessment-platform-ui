@@ -87,17 +87,30 @@ const offendingActivities = question({
     options: [
       {
         value: Option.no_offending_activities,
-        text: contentFor('question.thinking_behaviours_attitudes_offending_activities.option.NO_OFFENDING_ACTIVITIES'),
+        text: contentFor(
+          'question.thinking_behaviours_attitudes_offending_activities.option.NO_OFFENDING_ACTIVITIES.text',
+        ),
+        hint: contentFor(
+          'question.thinking_behaviours_attitudes_offending_activities.option.NO_OFFENDING_ACTIVITIES.hint',
+        ),
       },
       {
         value: Option.sometimes_offending_activities,
         text: contentFor(
-          'question.thinking_behaviours_attitudes_offending_activities.option.SOMETIMES_OFFENDING_ACTIVITIES',
+          'question.thinking_behaviours_attitudes_offending_activities.option.SOMETIMES_OFFENDING_ACTIVITIES.text',
+        ),
+        hint: contentFor(
+          'question.thinking_behaviours_attitudes_offending_activities.option.SOMETIMES_OFFENDING_ACTIVITIES.hint',
         ),
       },
       {
         value: Option.yes_offending_activities,
-        text: contentFor('question.thinking_behaviours_attitudes_offending_activities.option.YES_OFFENDING_ACTIVITIES'),
+        text: contentFor(
+          'question.thinking_behaviours_attitudes_offending_activities.option.YES_OFFENDING_ACTIVITIES.text',
+        ),
+        hint: contentFor(
+          'question.thinking_behaviours_attitudes_offending_activities.option.YES_OFFENDING_ACTIVITIES.hint',
+        ),
       },
     ],
     validationMessage: contentFor('question.thinking_behaviours_attitudes_offending_activities.validation'),
@@ -116,17 +129,20 @@ const peerPressure = question({
     options: [
       {
         value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.YES'),
+        text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.YES.hint'),
         reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_peer_pressure_yes_details }),
       },
       {
         value: Option.some,
-        text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.SOME'),
+        text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.SOME.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.SOME.hint'),
         reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_peer_pressure_some_details }),
       },
       {
         value: CommonOption.no,
-        text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.NO'),
+        text: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.NO.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_peer_pressure.option.NO.hint'),
         reveals: optionalDetails({ code: Question.thinking_behaviours_attitudes_peer_pressure_no_details }),
       },
     ],
@@ -197,18 +213,22 @@ const manipulativePredatoryBehaviour = question({
     code: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour,
     format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.text', CaseData.Forename),
+    hint: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.hint'),
     options: [
       {
         value: CommonOption.no,
-        text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.NO'),
+        text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.NO.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.NO.hint'),
       },
       {
         value: Option.some,
-        text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.SOME'),
+        text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.SOME.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.SOME.hint'),
       },
       {
         value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.YES'),
+        text: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.option.YES.hint'),
       },
     ],
     validationMessage: contentFor('question.thinking_behaviours_attitudes_manipulative_predatory_behaviour.validation'),
@@ -227,11 +247,13 @@ const temperManagement = question({
     options: [
       {
         value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.YES'),
+        text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_temper_management.option.YES.hint'),
       },
       {
         value: Option.sometimes,
-        text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.SOMETIMES'),
+        text: contentFor('question.thinking_behaviours_attitudes_temper_management.option.SOMETIMES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_temper_management.option.SOMETIMES.hint'),
       },
       {
         value: CommonOption.no,
@@ -309,16 +331,18 @@ const hostileOrientation = question({
     options: [
       {
         value: CommonOption.no,
-        text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.NO'),
+        text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.NO.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.NO.hint'),
       },
       {
         value: Option.some,
-        text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.SOME'),
+        text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.SOME.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.SOME.hint'),
       },
       {
         value: CommonOption.yes,
         text: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.YES.text'),
-        html: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.YES.html'),
+        hint: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.option.YES.hint'),
       },
     ],
     validationMessage: contentFor('question.thinking_behaviours_attitudes_hostile_orientation.validation'),
@@ -337,15 +361,18 @@ const supervision = question({
     options: [
       {
         value: Option.yes_supervision,
-        text: contentFor('question.thinking_behaviours_attitudes_supervision.option.YES_SUPERVISION'),
+        text: contentFor('question.thinking_behaviours_attitudes_supervision.option.YES_SUPERVISION.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_supervision.option.YES_SUPERVISION.hint'),
       },
       {
         value: Option.unsure_supervision,
-        text: contentFor('question.thinking_behaviours_attitudes_supervision.option.UNSURE_SUPERVISION'),
+        text: contentFor('question.thinking_behaviours_attitudes_supervision.option.UNSURE_SUPERVISION.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_supervision.option.UNSURE_SUPERVISION.hint'),
       },
       {
         value: Option.no_supervision,
-        text: contentFor('question.thinking_behaviours_attitudes_supervision.option.NO_SUPERVISION'),
+        text: contentFor('question.thinking_behaviours_attitudes_supervision.option.NO_SUPERVISION.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_supervision.option.NO_SUPERVISION.hint'),
       },
     ],
     validationMessage: contentFor('question.thinking_behaviours_attitudes_supervision.validation'),
@@ -442,8 +469,8 @@ const changes = question({
     validationMessage: contentFor('question.thinking_behaviours_attitudes_changes.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({ changeHref: Step.thinking_behaviours_attitudes.path }),
+    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.thinking_behaviours_attitudes_changes.path }),
   },
 })
 
@@ -475,7 +502,7 @@ const riskSexualHarm = question({
     validationMessage: contentFor('question.thinking_behaviours_attitudes_risk_sexual_harm.validation'),
   },
   displayModes: {
-    field: radioField({ legendClasses: 'govuk-fieldset__legend--l' }),
+    field: radioField(),
     summaryRow: itemisedSummaryRow({ changeHref: Step.thinking_behaviours_attitudes_risk_of_sexual_harm.path }),
   },
 })
@@ -485,14 +512,17 @@ const sexualPreoccupation = question({
     code: Question.thinking_behaviours_attitudes_sexual_preoccupation,
     format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.text', CaseData.Forename),
+    hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.hint'),
     options: [
       {
         value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES'),
+        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES.hint'),
       },
       {
         value: Option.sometimes,
-        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.SOMETIMES'),
+        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.SOMETIMES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.SOMETIMES.hint'),
       },
       {
         value: CommonOption.no,
@@ -530,7 +560,10 @@ const offenceRelatedSexualInterest = question({
       {
         value: Option.some_offence_related_sexual_interest,
         text: contentFor(
-          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.SOME_OFFENCE_RELATED_SEXUAL_INTEREST',
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.SOME_OFFENCE_RELATED_SEXUAL_INTEREST.text',
+        ),
+        hint: contentFor(
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.SOME_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
         ),
       },
       {
@@ -560,18 +593,22 @@ const emotionalIntimacy = question({
     code: Question.thinking_behaviours_attitudes_emotional_intimacy,
     format: QuestionFormat.RADIO,
     text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.text', CaseData.Forename),
+    hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.hint'),
     options: [
       {
         value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES'),
+        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES.hint'),
       },
       {
         value: Option.sometimes,
-        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.SOMETIMES'),
+        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.SOMETIMES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.SOMETIMES.hint'),
       },
       {
         value: CommonOption.no,
-        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO'),
+        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO.hint'),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
