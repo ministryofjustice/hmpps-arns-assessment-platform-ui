@@ -1,16 +1,16 @@
-import {Answer, Condition, or} from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 
-import {CommonOption} from '../../constants/commonOption'
-import {checkboxField, question, QuestionFormat, radioField} from '../../../../constants/questionContent'
-import {commonContentFor} from '../../locales'
-import {contentFor} from './locales'
-import {Question} from './constants/question'
-import {Step} from './constants/step'
-import {Option} from './constants/option'
-import {Section} from '../../constants/section'
-import {CharacterLimit} from '../../../../constants/characterLimit'
-import {itemisedSummaryRow, optionalDetails, requiredDetails, yesNo} from '../../constants/questionContent'
-import {CaseData} from "../../../../constants/common";
+import { CommonOption } from '../../constants/commonOption'
+import { checkboxField, question, QuestionFormat, radioField } from '../../../../constants/questionContent'
+import { commonContentFor } from '../../locales'
+import { contentFor } from './locales'
+import { Question } from './constants/question'
+import { Step } from './constants/step'
+import { Option } from './constants/option'
+import { Section } from '../../constants/section'
+import { CharacterLimit } from '../../../../constants/characterLimit'
+import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
+import { CaseData } from '../../../../constants/common'
 
 export const hasFamilyOrFriendsIncome = Answer(Question.finance_income).match(
   Condition.Array.Contains(Option.family_or_friends),
@@ -79,7 +79,7 @@ const financialConcerns = question({
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({changeHref: Step.finance_concerns.path}),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_concerns.path }),
   },
 })
 
@@ -120,7 +120,7 @@ const typeOfDebt = (content: {
       validationMessage: contentFor('common.validation.select_type_of_debt'),
     },
     displayModes: {
-      field: checkboxField({dependentWhen: content.visibleWhen, visibleWhen: content.visibleWhen}),
+      field: checkboxField({ dependentWhen: content.visibleWhen, visibleWhen: content.visibleWhen }),
       summaryRow: itemisedSummaryRow({
         changeHref: Step.finance_debt.path,
         visibleWhen: content.visibleWhen,
@@ -135,21 +135,21 @@ const income = question({
     text: contentFor('question.finance_income.text', CaseData.Forename),
     hint: commonContentFor('select_all_that_apply'),
     options: [
-      {value: Option.carers_allowance, text: contentFor('question.finance_income.option.CARERS_ALLOWANCE')},
+      { value: Option.carers_allowance, text: contentFor('question.finance_income.option.CARERS_ALLOWANCE') },
       {
         value: Option.disability_benefits,
         text: contentFor('question.finance_income.option.DISABILITY_BENEFITS.text'),
         hint: contentFor('question.finance_income.option.DISABILITY_BENEFITS.hint'),
       },
-      {value: Option.employment, text: contentFor('question.finance_income.option.EMPLOYMENT')},
+      { value: Option.employment, text: contentFor('question.finance_income.option.EMPLOYMENT') },
       {
         value: Option.family_or_friends,
         text: contentFor('question.finance_income.option.FAMILY_OR_FRIENDS'),
       },
-      {value: Option.offending, text: contentFor('question.finance_income.option.OFFENDING')},
-      {value: Option.pension, text: contentFor('question.finance_income.option.PENSION')},
-      {value: Option.student_loan, text: contentFor('question.finance_income.option.STUDENT_LOAN')},
-      {value: Option.undeclared, text: contentFor('question.finance_income.option.Undeclared')},
+      { value: Option.offending, text: contentFor('question.finance_income.option.OFFENDING') },
+      { value: Option.pension, text: contentFor('question.finance_income.option.PENSION') },
+      { value: Option.student_loan, text: contentFor('question.finance_income.option.STUDENT_LOAN') },
+      { value: Option.undeclared, text: contentFor('question.finance_income.option.Undeclared') },
       {
         value: Option.work_related_benefits,
         text: contentFor('question.finance_income.option.WORK_RELATED_BENEFITS.text'),
@@ -158,22 +158,22 @@ const income = question({
       {
         value: CommonOption.other,
         text: commonContentFor('option.OTHER'),
-        reveals: optionalDetails({code: Question.finance_income_other_details}),
+        reveals: optionalDetails({ code: Question.finance_income_other_details }),
       },
-      {value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN'), behaviour: 'exclusive' as const},
-      {divider: commonContentFor('or')},
+      { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN'), behaviour: 'exclusive' as const },
+      { divider: commonContentFor('or') },
       {
         value: Option.no_money,
         text: contentFor('question.finance_income.option.NO_MONEY'),
         behaviour: 'exclusive' as const,
-        reveals: optionalDetails({code: Question.finance_income_no_money_details}),
+        reveals: optionalDetails({ code: Question.finance_income_no_money_details }),
       },
     ],
     validationMessage: contentFor('question.finance_income.validation'),
   },
   displayModes: {
     field: checkboxField(),
-    summaryRow: itemisedSummaryRow({changeHref: Step.finance_income.path}),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_income.path }),
   },
 })
 
@@ -187,29 +187,29 @@ const moneyManagement = question({
       {
         value: Option.good,
         text: contentFor('question.finance_money_management.option.GOOD'),
-        reveals: optionalDetails({code: Question.finance_money_management_good_details}),
+        reveals: optionalDetails({ code: Question.finance_money_management_good_details }),
       },
       {
         value: Option.fairly_good,
         text: contentFor('question.finance_money_management.option.FAIRLY_GOOD'),
-        reveals: optionalDetails({code: Question.finance_money_management_fairly_good_details}),
+        reveals: optionalDetails({ code: Question.finance_money_management_fairly_good_details }),
       },
       {
         value: Option.fairly_bad,
         text: contentFor('question.finance_money_management.option.FAIRLY_BAD'),
-        reveals: optionalDetails({code: Question.finance_money_management_fairly_bad_details}),
+        reveals: optionalDetails({ code: Question.finance_money_management_fairly_bad_details }),
       },
       {
         value: Option.bad,
         text: contentFor('question.finance_money_management.option.BAD'),
-        reveals: optionalDetails({code: Question.finance_money_management_bad_details}),
+        reveals: optionalDetails({ code: Question.finance_money_management_bad_details }),
       },
     ],
     validationMessage: contentFor('question.finance_money_management.validation'),
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({changeHref: Step.finance_money_management.path}),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_money_management.path }),
   },
 })
 
@@ -227,20 +227,20 @@ const debt = question({
         value: Option.yes_someone_elses_debt,
         text: contentFor('question.finance_debt.option.YES_SOMEONE_ELSES_DEBT'),
       },
-      {divider: commonContentFor('or')},
-      {value: CommonOption.no, text: commonContentFor('option.NO'), behaviour: 'exclusive' as const},
+      { divider: commonContentFor('or') },
+      { value: CommonOption.no, text: commonContentFor('option.NO'), behaviour: 'exclusive' as const },
       {
         value: CommonOption.unknown,
         text: commonContentFor('option.UNKNOWN'),
         behaviour: 'exclusive' as const,
-        reveals: optionalDetails({code: Question.finance_debt_unknown_details}),
+        reveals: optionalDetails({ code: Question.finance_debt_unknown_details }),
       },
     ],
     validationMessage: contentFor('question.finance_debt.validation'),
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({changeHref: Step.finance_money_management.path}),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_money_management.path }),
   },
 })
 
@@ -268,47 +268,47 @@ const changes = question({
       {
         value: CommonOption.made_changes,
         text: commonContentFor('option.MADE_CHANGES'),
-        reveals: optionalDetails({code: Question.finance_changes_made_changes_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_made_changes_details }),
       },
       {
         value: CommonOption.making_changes,
         text: commonContentFor('option.MAKING_CHANGES'),
-        reveals: optionalDetails({code: Question.finance_changes_making_changes_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_making_changes_details }),
       },
       {
         value: CommonOption.want_to_make_changes,
         text: commonContentFor('option.WANT_TO_MAKE_CHANGES'),
-        reveals: optionalDetails({code: Question.finance_changes_want_to_make_changes_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_want_to_make_changes_details }),
       },
       {
         value: CommonOption.needs_help_to_make_changes,
         text: commonContentFor('option.NEEDS_HELP_TO_MAKE_CHANGES'),
-        reveals: optionalDetails({code: Question.finance_changes_needs_help_to_make_changes_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_needs_help_to_make_changes_details }),
       },
       {
         value: CommonOption.thinking_about_making_changes,
         text: commonContentFor('option.THINKING_ABOUT_MAKING_CHANGES'),
-        reveals: optionalDetails({code: Question.finance_changes_thinking_about_making_changes_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_thinking_about_making_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_make_changes,
         text: commonContentFor('option.DOES_NOT_WANT_TO_MAKE_CHANGES'),
-        reveals: optionalDetails({code: Question.finance_changes_does_not_want_to_make_changes_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_does_not_want_to_make_changes_details }),
       },
       {
         value: CommonOption.does_not_want_to_answer,
         text: commonContentFor('option.DOES_NOT_WANT_TO_ANSWER'),
-        reveals: optionalDetails({code: Question.finance_changes_does_not_want_to_answer_details}),
+        reveals: optionalDetails({ code: Question.finance_changes_does_not_want_to_answer_details }),
       },
-      {divider: commonContentFor('or')},
-      {value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename)},
-      {value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE')},
+      { divider: commonContentFor('or') },
+      { value: CommonOption.not_present, text: commonContentFor('option.NOT_PRESENT', CaseData.Forename) },
+      { value: CommonOption.not_applicable, text: commonContentFor('option.NOT_APPLICABLE') },
     ],
     validationMessage: contentFor('question.finance_changes.validation'),
   },
   displayModes: {
     field: radioField(),
-    summaryRow: itemisedSummaryRow({changeHref: Step.finance_changes.path}),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_changes.path }),
   },
 })
 

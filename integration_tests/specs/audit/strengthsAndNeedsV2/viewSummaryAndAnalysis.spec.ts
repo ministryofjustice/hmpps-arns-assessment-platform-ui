@@ -2,13 +2,7 @@ import { expect } from '@playwright/test'
 import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
 import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/finance/constants/step'
 import { test, TargetService } from '../../../support/fixtures'
-import {
-  expectSanAuditEvent,
-  markSectionComplete,
-  onPage,
-  SanAuditEvent,
-  walkToFinanceSummary,
-} from './helpers'
+import { expectSanAuditEvent, markSectionComplete, onPage, SanAuditEvent, walkToFinanceSummary } from './helpers'
 
 test.describe('Views Summary or Practitioner Analysis pages for each Criminogenic Needs section', () => {
   test('visiting the finance section summary page', async ({

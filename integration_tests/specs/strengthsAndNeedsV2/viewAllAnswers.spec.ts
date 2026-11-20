@@ -1,44 +1,20 @@
-import {expect, Page} from '@playwright/test'
-import {Section, SectionComplete} from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
-import {
-  Question as AlcoholQuestion
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/question'
-import {
-  Question as AccommodationQuestion
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
-import {
-  Question as HealthQuestion
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/question'
-import {
-  Question as PersonalRelationshipsQuestion
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/question'
-import {
-  Question as ThinkingBehavioursQuestion
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/question'
-import {
-  Question as EmploymentQuestion
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/question'
-import {CommonOption} from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
-import {
-  Option as AccommodationOption
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
-import {
-  Option as AlcoholOption
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
-import {
-  Option as HealthOption
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
-import {
-  Option as ThinkingBehavioursOption
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/option'
-import {
-  Option as EmploymentOption
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/option'
-import {
-  Option as PersonalRelationshipsOption
-} from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
+import { expect, Page } from '@playwright/test'
+import { Section, SectionComplete } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
+import { Question as AlcoholQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/question'
+import { Question as AccommodationQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/question'
+import { Question as HealthQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/question'
+import { Question as PersonalRelationshipsQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/question'
+import { Question as ThinkingBehavioursQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import { Question as EmploymentQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/question'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
+import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
+import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
+import { Option as HealthOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/health-wellbeing/constants/option'
+import { Option as ThinkingBehavioursOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/option'
+import { Option as EmploymentOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/option'
+import { Option as PersonalRelationshipsOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/option'
 
-import {details} from 'testUtils'
+import { details } from 'testUtils'
 import {
   buildEditUrl,
   checkAccessibility,
@@ -46,14 +22,14 @@ import {
   sanPageTitles,
   viewAllAnswers,
 } from './sanUtils'
-import {test, TargetService} from '../../support/fixtures'
+import { test, TargetService } from '../../support/fixtures'
 
 type Answer = { question: string; value: string | string[] }
 
 const accommodation: Answer[] = [
-  {question: AccommodationQuestion.community_current_accommodation, value: CommonOption.yes},
-  {question: AccommodationQuestion.community_current_accommodation_settled, value: CommonOption.yes},
-  {question: AccommodationQuestion.community_suitable_housing_location, value: CommonOption.no},
+  { question: AccommodationQuestion.community_current_accommodation, value: CommonOption.yes },
+  { question: AccommodationQuestion.community_current_accommodation_settled, value: CommonOption.yes },
+  { question: AccommodationQuestion.community_suitable_housing_location, value: CommonOption.no },
   {
     question: AccommodationQuestion.community_suitable_housing_location_concerns,
     value: [AccommodationOption.criminal_associates, AccommodationOption.victimisation, CommonOption.other],
@@ -62,7 +38,7 @@ const accommodation: Answer[] = [
     question: AccommodationQuestion.community_suitable_housing_location_concerns_other_details,
     value: details('location concerns other'),
   },
-  {question: AccommodationQuestion.community_suitable_housing, value: CommonOption.no},
+  { question: AccommodationQuestion.community_suitable_housing, value: CommonOption.no },
   {
     question: AccommodationQuestion.community_suitable_housing_concerns,
     value: [AccommodationOption.facilities, AccommodationOption.overcrowding, CommonOption.other],
@@ -71,7 +47,7 @@ const accommodation: Answer[] = [
     question: AccommodationQuestion.community_suitable_housing_concerns_other_details,
     value: details('housing concerns other'),
   },
-  {question: AccommodationQuestion.accommodation_changes, value: CommonOption.making_changes},
+  { question: AccommodationQuestion.accommodation_changes, value: CommonOption.making_changes },
   {
     question: AccommodationQuestion.accommodation_changes_making_changes_details,
     value: details('actively making changings'),
@@ -85,12 +61,12 @@ const accommodation: Answer[] = [
     question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: details('accommodation strengths'),
   },
-  {question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no},
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
   {
     question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm_no_details,
     value: details('no serious harm'),
   },
-  {question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes},
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
   {
     question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending_yes_details,
     value: details('reoffending risk'),
@@ -104,12 +80,12 @@ const accommodation: Answer[] = [
     question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: details('accommodation strengths'),
   },
-  {question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no},
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm, value: CommonOption.no },
   {
     question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_serious_harm_no_details,
     value: details('no serious harm'),
   },
-  {question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes},
+  { question: AccommodationQuestion.accommodation_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
   {
     question: AccommodationQuestion.accommodation_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: details('reoffending risk'),
@@ -117,8 +93,8 @@ const accommodation: Answer[] = [
 ]
 
 const employment: Answer[] = [
-  {question: EmploymentQuestion.community_employment_status, value: EmploymentOption.employed_or_self_employed},
-  {question: EmploymentQuestion.community_employment_history, value: EmploymentOption.stable},
+  { question: EmploymentQuestion.community_employment_status, value: EmploymentOption.employed_or_self_employed },
+  { question: EmploymentQuestion.community_employment_history, value: EmploymentOption.stable },
   {
     question: EmploymentQuestion.community_employment_history_stable_details,
     value: details('Stable employment details'),
@@ -139,8 +115,8 @@ const employment: Answer[] = [
     question: EmploymentQuestion.community_employment_other_responsibilities_other_details,
     value: details('Other responsibilities details'),
   },
-  {question: EmploymentQuestion.education_academic_professional_vocational_qualifications, value: CommonOption.yes},
-  {question: EmploymentQuestion.education_transferable_skills, value: CommonOption.yes},
+  { question: EmploymentQuestion.education_academic_professional_vocational_qualifications, value: CommonOption.yes },
+  { question: EmploymentQuestion.education_transferable_skills, value: CommonOption.yes },
   {
     question: EmploymentQuestion.education_transferable_skills_yes_details,
     value: details('Transferable skills details'),
@@ -188,25 +164,25 @@ const employment: Answer[] = [
 ]
 
 const finance: Answer[] = [
-  {question: 'finance_income', value: ['EMPLOYMENT', 'FAMILY_OR_FRIENDS', 'OTHER']},
+  { question: 'finance_income', value: ['EMPLOYMENT', 'FAMILY_OR_FRIENDS', 'OTHER'] },
   // An optioned reveal inside a multi-select option.
-  {question: 'finance_income_family_or_friends_details', value: 'YES'},
-  {question: 'finance_income_other_details', value: details('other income')},
-  {question: 'finance_bank_account', value: 'NO'},
-  {question: 'finance_money_management', value: 'FAIRLY_BAD'},
-  {question: 'finance_money_management_fairly_bad_details', value: details('fairly bad with money')},
-  {question: 'finance_gambling', value: 'YES_THEIR_GAMBLING'},
-  {question: 'finance_gambling_yes_their_gambling_details', value: details('their gambling')},
+  { question: 'finance_income_family_or_friends_details', value: 'YES' },
+  { question: 'finance_income_other_details', value: details('other income') },
+  { question: 'finance_bank_account', value: 'NO' },
+  { question: 'finance_money_management', value: 'FAIRLY_BAD' },
+  { question: 'finance_money_management_fairly_bad_details', value: details('fairly bad with money') },
+  { question: 'finance_gambling', value: 'YES_THEIR_GAMBLING' },
+  { question: 'finance_gambling_yes_their_gambling_details', value: details('their gambling') },
   // Two levels of reveal: radio -> checkbox -> details.
-  {question: 'finance_debt', value: 'YES_THEIR_DEBT'},
-  {question: 'yes_type_of_debt', value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT']},
-  {question: 'yes_type_of_debt_debt_to_others_details', value: details('debt to others')},
-  {question: 'yes_type_of_debt_formal_debt_details', value: details('formal debt')},
-  {question: 'finance_changes', value: 'THINKING_ABOUT_MAKING_CHANGES'},
-  {question: 'finance_changes_thinking_about_making_changes_details', value: details('thinking about it')},
+  { question: 'finance_debt', value: 'YES_THEIR_DEBT' },
+  { question: 'yes_type_of_debt', value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT'] },
+  { question: 'yes_type_of_debt_debt_to_others_details', value: details('debt to others') },
+  { question: 'yes_type_of_debt_formal_debt_details', value: details('formal debt') },
+  { question: 'finance_changes', value: 'THINKING_ABOUT_MAKING_CHANGES' },
+  { question: 'finance_changes_thinking_about_making_changes_details', value: details('thinking about it') },
   // Analysis left deliberately partial.
-  {question: 'finance_strengths_protective_factors', value: 'NO'},
-  {question: 'finance_no_strengths_protective_factors_details', value: details('no finance strengths')},
+  { question: 'finance_strengths_protective_factors', value: 'NO' },
+  { question: 'finance_no_strengths_protective_factors_details', value: details('no finance strengths') },
 ]
 
 // TODO Uncomment it during ACT-753 Drug framework
@@ -251,15 +227,15 @@ const finance: Answer[] = [
 // ]
 
 const alcohol: Answer[] = [
-  {question: AlcoholQuestion.alcohol_current_issues, value: AlcoholOption.significant},
-  {question: AlcoholQuestion.alcohol_evidence_of_excess_drinking, value: AlcoholOption.yes_with_evidence},
-  {question: AlcoholQuestion.alcohol_past_issues, value: CommonOption.yes},
-  {question: AlcoholQuestion.alcohol_past_issues_yes_details, value: details('past alcohol issues')},
-  {question: AlcoholQuestion.alcohol_stopped_or_reduced_past, value: CommonOption.yes},
-  {question: AlcoholQuestion.alcohol_stopped_or_reduced_past_yes_details, value: details('has cut down before')},
-  {question: AlcoholQuestion.alcohol_stopped_or_reduced, value: CommonOption.yes},
-  {question: AlcoholQuestion.alcohol_stopped_or_reduced_yes_details, value: details('has cut down before')},
-  {question: AlcoholQuestion.alcohol_use_changes, value: CommonOption.does_not_want_to_make_changes},
+  { question: AlcoholQuestion.alcohol_current_issues, value: AlcoholOption.significant },
+  { question: AlcoholQuestion.alcohol_evidence_of_excess_drinking, value: AlcoholOption.yes_with_evidence },
+  { question: AlcoholQuestion.alcohol_past_issues, value: CommonOption.yes },
+  { question: AlcoholQuestion.alcohol_past_issues_yes_details, value: details('past alcohol issues') },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced_past, value: CommonOption.yes },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced_past_yes_details, value: details('has cut down before') },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced, value: CommonOption.yes },
+  { question: AlcoholQuestion.alcohol_stopped_or_reduced_yes_details, value: details('has cut down before') },
+  { question: AlcoholQuestion.alcohol_use_changes, value: CommonOption.does_not_want_to_make_changes },
   {
     question: AlcoholQuestion.alcohol_use_changes_does_not_want_to_make_changes_details,
     value: details('does not want to change'),
@@ -272,12 +248,12 @@ const alcohol: Answer[] = [
     question: AlcoholQuestion.alcohol_use_practitioner_analysis_strengths_or_protective_factors_no_details,
     value: details('no alcohol strengths'),
   },
-  {question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes},
+  { question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_serious_harm, value: CommonOption.yes },
   {
     question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_serious_harm_yes_details,
     value: details('alcohol serious harm'),
   },
-  {question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes},
+  { question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_reoffending, value: CommonOption.yes },
   {
     question: AlcoholQuestion.alcohol_use_practitioner_analysis_risk_of_reoffending_yes_details,
     value: details('alcohol reoffending'),
@@ -287,33 +263,33 @@ const alcohol: Answer[] = [
 // Deliberately stops before the practitioner analysis, so that heading and its
 // list should be absent for this section.
 const health: Answer[] = [
-  {question: HealthQuestion.health_wellbeing_physical_health_condition, value: CommonOption.yes},
-  {question: HealthQuestion.health_wellbeing_physical_health_condition_yes_details, value: 'health conditions'},
-  {question: HealthQuestion.health_wellbeing_any_mental_health_conditions, value: CommonOption.yes},
-  {question: HealthQuestion.health_wellbeing_mental_health_condition, value: HealthOption.yes_ongoing_severe},
+  { question: HealthQuestion.health_wellbeing_physical_health_condition, value: CommonOption.yes },
+  { question: HealthQuestion.health_wellbeing_physical_health_condition_yes_details, value: 'health conditions' },
+  { question: HealthQuestion.health_wellbeing_any_mental_health_conditions, value: CommonOption.yes },
+  { question: HealthQuestion.health_wellbeing_mental_health_condition, value: HealthOption.yes_ongoing_severe },
   {
     question: HealthQuestion.health_wellbeing_mental_health_condition_yes_ongoing_severe_details,
     value: 'severe mental health',
   },
-  {question: HealthQuestion.health_wellbeing_psychiatric_treatment, value: HealthOption.pending_treatment},
-  {question: HealthQuestion.health_wellbeing_learning_difficulties, value: HealthOption.yes_some_difficulties},
+  { question: HealthQuestion.health_wellbeing_psychiatric_treatment, value: HealthOption.pending_treatment },
+  { question: HealthQuestion.health_wellbeing_learning_difficulties, value: HealthOption.yes_some_difficulties },
   {
     question: HealthQuestion.health_wellbeing_learning_difficulties_yes_some_difficulties_details,
     value: 'slight learning impact',
   },
-  {question: HealthQuestion.health_wellbeing_coping_day_to_day_life, value: HealthOption.yes_some_difficulties},
-  {question: HealthQuestion.health_wellbeing_gambling, value: HealthOption.yes_their_gambling},
-  {question: HealthQuestion.health_wellbeing_gambling_yes_their_gambling_details, value: 'their gambling'},
-  {question: HealthQuestion.health_wellbeing_attitude_towards_self, value: HealthOption.some_negative_aspects},
-  {question: HealthQuestion.health_wellbeing_self_harmed, value: CommonOption.yes},
-  {question: HealthQuestion.health_wellbeing_self_harmed_yes_details, value: 'self harm'},
-  {question: HealthQuestion.health_wellbeing_attempted_suicide_or_suicidal_thoughts, value: CommonOption.yes},
+  { question: HealthQuestion.health_wellbeing_coping_day_to_day_life, value: HealthOption.yes_some_difficulties },
+  { question: HealthQuestion.health_wellbeing_gambling, value: HealthOption.yes_their_gambling },
+  { question: HealthQuestion.health_wellbeing_gambling_yes_their_gambling_details, value: 'their gambling' },
+  { question: HealthQuestion.health_wellbeing_attitude_towards_self, value: HealthOption.some_negative_aspects },
+  { question: HealthQuestion.health_wellbeing_self_harmed, value: CommonOption.yes },
+  { question: HealthQuestion.health_wellbeing_self_harmed_yes_details, value: 'self harm' },
+  { question: HealthQuestion.health_wellbeing_attempted_suicide_or_suicidal_thoughts, value: CommonOption.yes },
   {
     question: HealthQuestion.health_wellbeing_attempted_suicide_or_suicidal_thoughts_yes_details,
     value: 'suicidal thoughts',
   },
-  {question: HealthQuestion.health_wellbeing_changes, value: CommonOption.made_changes},
-  {question: HealthQuestion.health_wellbeing_changes_made_changes_details, value: 'made changes'},
+  { question: HealthQuestion.health_wellbeing_changes, value: CommonOption.made_changes },
+  { question: HealthQuestion.health_wellbeing_changes_made_changes_details, value: 'made changes' },
 ]
 
 const personal: Answer[] = [
@@ -345,7 +321,7 @@ const personal: Answer[] = [
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_family_relationship_mixed_relationship_details,
+      PersonalRelationshipsQuestion.personal_relationships_community_family_relationship_mixed_relationship_details,
     value: details('mixed family'),
   },
   {
@@ -364,7 +340,9 @@ const personal: Answer[] = [
     question: PersonalRelationshipsQuestion.personal_relationships_community_childhood_behaviour_yes_details,
     value: details('childhood behaviour'),
   },
-  {question: PersonalRelationshipsQuestion.personal_relationships_community_sense_of_belonging, value: details('belonging'),
+  {
+    question: PersonalRelationshipsQuestion.personal_relationships_community_sense_of_belonging,
+    value: details('belonging'),
   },
   {
     question: PersonalRelationshipsQuestion.personal_relationships_community_current_relationship,
@@ -376,7 +354,7 @@ const personal: Answer[] = [
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_current_relationship_concerns_happy_relationship_details,
+      PersonalRelationshipsQuestion.personal_relationships_community_current_relationship_concerns_happy_relationship_details,
     value: details('happy but concerns'),
   },
   {
@@ -385,7 +363,7 @@ const personal: Answer[] = [
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_intimate_relationship_unstable_relationships_details,
+      PersonalRelationshipsQuestion.personal_relationships_community_intimate_relationship_unstable_relationships_details,
     value: details('unstable relationships'),
   },
   {
@@ -410,7 +388,7 @@ const personal: Answer[] = [
     question: PersonalRelationshipsQuestion.controlling_coercive_behaviour_yes_details,
     value: details('coercive behaviour'),
   },
-  {question: PersonalRelationshipsQuestion.evidence_of_strangulation, value: CommonOption.yes},
+  { question: PersonalRelationshipsQuestion.evidence_of_strangulation, value: CommonOption.yes },
   {
     question: PersonalRelationshipsQuestion.evidence_of_strangulation_yes_details,
     value: details('strangulation evidence'),
@@ -437,12 +415,12 @@ const personal: Answer[] = [
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors,
     value: CommonOption.yes,
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details,
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: details('relationship strengths'),
   },
   {
@@ -451,7 +429,7 @@ const personal: Answer[] = [
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details,
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_serious_harm_no_details,
     value: details('no relationship serious harm'),
   },
   {
@@ -460,7 +438,7 @@ const personal: Answer[] = [
   },
   {
     question:
-    PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details,
+      PersonalRelationshipsQuestion.personal_relationships_community_practitioner_analysis_risk_of_reoffending_no_details,
     value: details('no relationship reoffending'),
   },
 ]
@@ -470,7 +448,7 @@ const thinking: Answer[] = [
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_consequences,
     value: ThinkingBehavioursOption.sometimes,
   },
-  {question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.no},
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.no },
   {
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_offending_activities,
     value: ThinkingBehavioursOption.yes_offending_activities,
@@ -495,12 +473,12 @@ const thinking: Answer[] = [
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_manipulative_predatory_behaviour,
     value: 'SOME',
   },
-  {question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_temper_management, value: CommonOption.no},
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_temper_management, value: CommonOption.no },
   {
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_violence_controlling_behaviour,
     value: ThinkingBehavioursOption.sometimes,
   },
-  {question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.yes},
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.yes },
   {
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_hostile_orientation,
     value: ThinkingBehavioursOption.some,
@@ -513,8 +491,8 @@ const thinking: Answer[] = [
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_criminal_behaviour,
     value: ThinkingBehavioursOption.sometimes,
   },
-  {question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_changes, value: CommonOption.not_applicable},
-  {question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes},
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_changes, value: CommonOption.not_applicable },
+  { question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
   {
     question: ThinkingBehavioursQuestion.thinking_behaviours_attitudes_sexual_preoccupation,
     value: ThinkingBehavioursOption.sometimes,
@@ -529,12 +507,12 @@ const thinking: Answer[] = [
   },
   {
     question:
-    ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors,
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors,
     value: CommonOption.yes,
   },
   {
     question:
-    ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details,
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details,
     value: details('thinking strengths'),
   },
   {
@@ -543,7 +521,7 @@ const thinking: Answer[] = [
   },
   {
     question:
-    ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details,
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details,
     value: details('thinking serious harm'),
   },
   {
@@ -552,7 +530,7 @@ const thinking: Answer[] = [
   },
   {
     question:
-    ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details,
+      ThinkingBehavioursQuestion.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details,
     value: details('thinking reoffending'),
   },
 ]
@@ -605,14 +583,14 @@ test.describe('View all answers', () => {
 
     // Every section, and a status against each.
     // TODO Uncomment for each section work
-    await expect(page.getByText(`${sanPageTitles.accommodation}\nComplete`, {exact: true})).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.employmentAndEducation}\nComplete`, {exact: true})).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.finances}\nIncomplete`, {exact: true})).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, {exact: true})).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, {exact: true})).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.personal}\nIncomplete`, {exact: true})).toBeVisible()
-    await expect(page.getByText(`${sanPageTitles.thinking}\nComplete`, {exact: true})).toBeVisible()
-    expect(page.getByText('Offence analysis\nIncomplete', {exact: true})).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.accommodation}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.employmentAndEducation}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.finances}\nIncomplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.personal}\nIncomplete`, { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.thinking}\nComplete`, { exact: true })).toBeVisible()
+    expect(page.getByText('Offence analysis\nIncomplete', { exact: true })).toBeVisible()
 
     // Each selected option is followed by what it revealed
 
@@ -648,8 +626,8 @@ test.describe('View all answers', () => {
     await expect(textHealthAndWellbeing).not.toContainText('Practitioner analysis')
   })
 
-  test('shows only what has been answered', async ({page, createSession, strengthsAndNeedsBuilder, baseURL}) => {
-    const {handoverLink, sanAssessmentId} = await createSession({targetService: TargetService.STRENGTHS_AND_NEEDS})
+  test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(buildEditUrl(baseURL, sanAssessmentId, viewAllAnswers))
@@ -657,21 +635,21 @@ test.describe('View all answers', () => {
     // Nothing answered: the sections, their statuses, and nothing else.
     expect(await pageText(page)).toContain(
       'Back\n' +
-      "Test's strengths and needs\n" +
-      'Accommodation\n' +
-      'Incomplete\n' +
-      'Employment and education\n' +
-      'Incomplete\n' +
-      'Finances\n' +
-      'Incomplete\n' +
-      'Alcohol use\n' +
-      'Incomplete\n' +
-      'Health and wellbeing\n' +
-      'Incomplete\n' +
-      'Personal relationships and community\n' +
-      'Incomplete\n' +
-      'Thinking, behaviours and attitudes\n' +
-      'Incomplete',
+        "Test's strengths and needs\n" +
+        'Accommodation\n' +
+        'Incomplete\n' +
+        'Employment and education\n' +
+        'Incomplete\n' +
+        'Finances\n' +
+        'Incomplete\n' +
+        'Alcohol use\n' +
+        'Incomplete\n' +
+        'Health and wellbeing\n' +
+        'Incomplete\n' +
+        'Personal relationships and community\n' +
+        'Incomplete\n' +
+        'Thinking, behaviours and attitudes\n' +
+        'Incomplete',
     )
 
     await strengthsAndNeedsBuilder
@@ -689,34 +667,34 @@ test.describe('View all answers', () => {
           question: AccommodationQuestion.community_no_accommodation_reason_other_details,
           value: details('other reason for no'),
         },
-        {question: AlcoholQuestion.alcohol_current_issues, value: 'SIGNIFICANT'},
-        {question: AlcoholQuestion.alcohol_evidence_of_excess_drinking, value: 'YES_WITH_EVIDENCE'},
-        {question: AlcoholQuestion.alcohol_past_issues, value: 'YES'},
-        {question: AlcoholQuestion.alcohol_past_issues_yes_details, value: details('past alcohol issues')},
-        {question: AlcoholQuestion.alcohol_stopped_or_reduced_past, value: 'YES'},
+        { question: AlcoholQuestion.alcohol_current_issues, value: 'SIGNIFICANT' },
+        { question: AlcoholQuestion.alcohol_evidence_of_excess_drinking, value: 'YES_WITH_EVIDENCE' },
+        { question: AlcoholQuestion.alcohol_past_issues, value: 'YES' },
+        { question: AlcoholQuestion.alcohol_past_issues_yes_details, value: details('past alcohol issues') },
+        { question: AlcoholQuestion.alcohol_stopped_or_reduced_past, value: 'YES' },
         {
           question: AlcoholQuestion.alcohol_stopped_or_reduced_past_yes_details,
           value: details('has cut down before'),
         },
-        {question: AlcoholQuestion.alcohol_stopped_or_reduced, value: 'YES'},
-        {question: AlcoholQuestion.alcohol_stopped_or_reduced_yes_details, value: details('has cut down before')},
-        {question: AlcoholQuestion.alcohol_use_changes, value: 'DOES_NOT_WANT_TO_MAKE_CHANGES'},
+        { question: AlcoholQuestion.alcohol_stopped_or_reduced, value: 'YES' },
+        { question: AlcoholQuestion.alcohol_stopped_or_reduced_yes_details, value: details('has cut down before') },
+        { question: AlcoholQuestion.alcohol_use_changes, value: 'DOES_NOT_WANT_TO_MAKE_CHANGES' },
         {
           question: AlcoholQuestion.alcohol_use_changes_does_not_want_to_make_changes_details,
           value: details('does not want to change'),
         },
-        {question: AlcoholQuestion.alcohol_use_practitioner_analysis_strengths_or_protective_factors, value: 'NO'},
+        { question: AlcoholQuestion.alcohol_use_practitioner_analysis_strengths_or_protective_factors, value: 'NO' },
       ])
       .save()
 
     await page.goto(buildEditUrl(baseURL, sanAssessmentId, viewAllAnswers))
 
-    await expect(page.getByRole('heading', {name: 'Accommodation'})).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Accommodation' })).toBeVisible()
     await expect(
-      page.getByText('Does Test currently have somewhere to live?\nNo', {exact: true}).first(),
+      page.getByText('Does Test currently have somewhere to live?\nNo', { exact: true }).first(),
     ).toBeVisible()
-    await expect(page.getByText('Drug related problems', {exact: true})).toBeVisible()
-    await expect(page.getByText('Other', {exact: true})).toBeVisible()
+    await expect(page.getByText('Drug related problems', { exact: true })).toBeVisible()
+    await expect(page.getByText('Other', { exact: true })).toBeVisible()
     await expect(page.getByText('other reason for no')).toBeVisible()
     await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
     await expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
@@ -730,8 +708,8 @@ test.describe('View all answers', () => {
 })
 
 test.describe('Accessibility', () => {
-  test('should be accessible', async ({baseURL, createSession, page}) => {
-    const {handoverLink, sanAssessmentId} = await createSession({targetService: TargetService.STRENGTHS_AND_NEEDS})
+  test('should be accessible', async ({ baseURL, createSession, page }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(buildEditUrl(baseURL, sanAssessmentId, viewAllAnswers))
     await checkAccessibility(page, {
@@ -740,15 +718,15 @@ test.describe('Accessibility', () => {
     })
   })
 
-  test('print should be accessible', async ({baseURL, createSession, page, strengthsAndNeedsBuilder}) => {
-    const {handoverLink, sanAssessmentId} = await createSession({targetService: TargetService.STRENGTHS_AND_NEEDS})
+  test('print should be accessible', async ({ baseURL, createSession, page, strengthsAndNeedsBuilder }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(buildEditUrl(baseURL, sanAssessmentId, viewAllAnswers))
 
     // Unfortunately this is not reflected in the Playwright UI
-    await page.emulateMedia({media: 'print'})
+    await page.emulateMedia({ media: 'print' })
 
     await checkAccessibility(page, {
       // https://github.com/alphagov/govuk-design-system-backlog/issues/59#issuecomment-2854891330
@@ -759,12 +737,12 @@ test.describe('Accessibility', () => {
 
 test.describe('View all answers print view', () => {
   test('shows the print cover page and header only when printing', async ({
-                                                                            baseURL,
-                                                                            page,
-                                                                            createSession,
-                                                                            strengthsAndNeedsBuilder,
-                                                                          }) => {
-    const {handoverLink, sanAssessmentId} = await createSession({targetService: TargetService.STRENGTHS_AND_NEEDS})
+    baseURL,
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+  }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await strengthsAndNeedsBuilder.fresh().save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
@@ -778,7 +756,7 @@ test.describe('View all answers print view', () => {
     await expect(printHeader).toBeHidden()
 
     // Unfortunately this is not reflected in the Playwright UI
-    await page.emulateMedia({media: 'print'})
+    await page.emulateMedia({ media: 'print' })
 
     // Printing produces a report cover containing the practitioner attribution and
     // classification header, while retaining the assessment content after the cover.

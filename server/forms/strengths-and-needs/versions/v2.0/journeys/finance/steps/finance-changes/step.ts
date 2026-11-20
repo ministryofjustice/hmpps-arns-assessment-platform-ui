@@ -7,17 +7,17 @@ import {
   validation,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {financeSection, hasDebt} from '../../section'
-import {Step} from '../../constants/step'
-import {Section, SectionComplete} from '../../../../constants/section'
-import {saveButton} from '../../../../constants/buttons'
-import {sectionPageTitle} from '../../../../locales'
-import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
-import {autosaveSubmit} from '../../../../autosave'
-import {isUserSubmittedCondition, IsUserSubmitted} from '../../../../constants/userSubmitted'
-import {createRoute} from '../../../../../../generators'
-import {baseSanRoute} from '../../../../constants/path'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { financeSection, hasDebt } from '../../section'
+import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { sectionPageTitle } from '../../../../locales'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
 
 export const financeChangesStep = step({
   path: `/${Step.finance_changes.path}`,

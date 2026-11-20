@@ -1,13 +1,13 @@
-import {Condition, Post, redirect, step, submit, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {Step} from '../../constants/step'
-import {Section, SectionComplete} from '../../../../constants/section'
-import {summaryTab} from './fields'
-import {summaryPageTitle} from '../../../../locales'
-import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
-import {autosaveSubmit} from '../../../../autosave'
-import {isUserSubmittedCondition} from '../../../../constants/userSubmitted'
-import {hasFinancialConcerns} from '../../section'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { summaryTab } from './fields'
+import { summaryPageTitle } from '../../../../locales'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition } from '../../../../constants/userSubmitted'
+import { hasFinancialConcerns } from '../../section'
 
 export const financeSummaryStep = step({
   path: `/${Step.finance_summary.path}`,

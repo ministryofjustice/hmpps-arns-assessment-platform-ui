@@ -1,20 +1,20 @@
-import {Condition, Post, redirect, step, submit, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {financeSection, hasDebt} from '../../section'
-import {Step} from '../../constants/step'
-import {Section, SectionComplete} from '../../../../constants/section'
-import {saveButton} from '../../../../constants/buttons'
-import {sectionPageTitle} from '../../../../locales'
-import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
-import {autosaveSubmit} from '../../../../autosave'
-import {isUserSubmittedCondition, IsUserSubmitted} from '../../../../constants/userSubmitted'
-import {createRoute} from '../../../../../../generators'
-import {baseSanRoute} from '../../../../constants/path'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { financeSection, hasDebt } from '../../section'
+import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { sectionPageTitle } from '../../../../locales'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
 
 export const financeDebtStep = step({
   path: `/${Step.finance_debt.path}`,
   title: sectionPageTitle(Section.finance),
-  reachability: {entryWhen: hasDebt},
+  reachability: { entryWhen: hasDebt },
   view: {
     locals: {
       backlink: createRoute([...baseSanRoute, Section.finance.path, Step.finance_money_management.path]),
@@ -49,7 +49,7 @@ export const financeDebtStep = step({
           StrengthsAndNeedsEffects.commitPendingCommands(),
           auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.finance, Step.finance_debt),
         ],
-        next: [redirect({goto: Step.finance_changes.path})],
+        next: [redirect({ goto: Step.finance_changes.path })],
       },
       onInvalid: {
         effects: [

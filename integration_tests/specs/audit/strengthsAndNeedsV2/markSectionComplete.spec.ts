@@ -1,12 +1,6 @@
 import { expect } from '@playwright/test'
 import { TargetService, test } from '../../../support/fixtures'
-import {
-  expectSanAuditEvent,
-  inSection,
-  markSectionComplete,
-  SanAuditEvent,
-  walkToFinanceSummary,
-} from './helpers'
+import { expectSanAuditEvent, inSection, markSectionComplete, SanAuditEvent, walkToFinanceSummary } from './helpers'
 
 test.describe("Selects 'Mark as Complete' for each Criminogenic Needs section", () => {
   test('marking a section complete', async ({ page, createSession, strengthsAndNeedsBuilder, auditQueue }) => {

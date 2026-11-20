@@ -8,19 +8,19 @@ import {
   validation,
   when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {financeSection, hasFamilyOrFriendsIncome} from '../../section'
-import {Step} from '../../constants/step'
-import {Section, SectionComplete} from '../../../../constants/section'
-import {saveButton} from '../../../../constants/buttons'
-import {sectionPageTitle} from '../../../../locales'
-import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
-import {autosaveSubmit} from '../../../../autosave'
-import {isUserSubmittedCondition, IsUserSubmitted} from '../../../../constants/userSubmitted'
-import {createRoute} from '../../../../../../generators'
-import {baseSanRoute} from '../../../../constants/path'
-import {Question} from '../../constants/question'
-import {CommonOption} from '../../../../constants/commonOption'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { financeSection, hasFamilyOrFriendsIncome } from '../../section'
+import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { sectionPageTitle } from '../../../../locales'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
+import { Question } from '../../constants/question'
+import { CommonOption } from '../../../../constants/commonOption'
 
 const answeredNo = Answer(Question.finance_concerns).match(Condition.Equals(CommonOption.no))
 

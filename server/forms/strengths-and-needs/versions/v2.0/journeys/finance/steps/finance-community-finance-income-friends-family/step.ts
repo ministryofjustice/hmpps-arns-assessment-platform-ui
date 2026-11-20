@@ -1,20 +1,20 @@
-import {Condition, Post, redirect, step, submit, validation} from '@ministryofjustice/hmpps-forge/core/authoring'
-import {StrengthsAndNeedsEffects} from '../../../../../../effects'
-import {financeSection, hasFamilyOrFriendsIncome} from '../../section'
-import {Step} from '../../constants/step'
-import {Section, SectionComplete} from '../../../../constants/section'
-import {saveButton} from '../../../../constants/buttons'
-import {sectionPageTitle} from '../../../../locales'
-import {auditPageAction, auditPageView, SanAuditEvent} from '../../../../audit'
-import {autosaveSubmit} from '../../../../autosave'
-import {isUserSubmittedCondition, IsUserSubmitted} from '../../../../constants/userSubmitted'
-import {createRoute} from '../../../../../../generators'
-import {baseSanRoute} from '../../../../constants/path'
+import { Condition, Post, redirect, step, submit, validation } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { StrengthsAndNeedsEffects } from '../../../../../../effects'
+import { financeSection, hasFamilyOrFriendsIncome } from '../../section'
+import { Step } from '../../constants/step'
+import { Section, SectionComplete } from '../../../../constants/section'
+import { saveButton } from '../../../../constants/buttons'
+import { sectionPageTitle } from '../../../../locales'
+import { auditPageAction, auditPageView, SanAuditEvent } from '../../../../audit'
+import { autosaveSubmit } from '../../../../autosave'
+import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
+import { createRoute } from '../../../../../../generators'
+import { baseSanRoute } from '../../../../constants/path'
 
 export const overReliantOnFamilyOrFriendsStep = step({
   path: `/${Step.community_finance_income_friends_family.path}`,
   title: sectionPageTitle(Section.finance),
-  reachability: {entryWhen: hasFamilyOrFriendsIncome},
+  reachability: { entryWhen: hasFamilyOrFriendsIncome },
   view: {
     locals: {
       backlink: createRoute([...baseSanRoute, Section.finance.path, Step.finance_income.path]),
