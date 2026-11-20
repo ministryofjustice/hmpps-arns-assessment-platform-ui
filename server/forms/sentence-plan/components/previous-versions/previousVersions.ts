@@ -7,7 +7,6 @@ import {
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
 import { PreviousVersionsResponse } from '../../../../interfaces/coordinator-api/previousVersions'
-import config from '../../../../config'
 
 /**
  * Previous versions list component.
@@ -18,6 +17,8 @@ export interface PreviousVersions extends BlockDefinition {
   personName: ResolvableString
   previousVersions: ResolvableObject<PreviousVersionsResponse>
   showAssessmentColumn?: ResolvableBoolean
+  sanAssessmentUuid: ResolvableString
+  sanAssessmentVersion: ResolvableString
 }
 
 /**
@@ -28,7 +29,9 @@ function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
     personName: props.personName,
     versions: props.previousVersions,
     showAssessmentColumn: props.showAssessmentColumn ?? true,
-    sanUrl: config.sanUrl,
+    sanAssessmentUuid: props.sanAssessmentUuid,
+    sanAssessmentVersion: props.sanAssessmentVersion,
+    sanAssessmentAccomodationLink: '/accommodation/accommodation-status',
     tables: {
       allVersions: {
         tableHeading: 'All versions',
