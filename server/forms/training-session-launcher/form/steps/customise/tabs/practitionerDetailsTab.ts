@@ -9,14 +9,14 @@ import { RandomizableField } from '../../../../components'
  */
 export const practitionerDetailsTabContent = [
   HtmlBlock({
-    content: '<h2 class="govuk-heading-m">Practitioner Details</h2>',
+    content: '<h2 class="govuk-heading-m">Practitioner details</h2>',
   }),
 
   HtmlBlock({
     content: `
       <p class="govuk-body">
-        These details identify the practitioner accessing the training session.
-        Check "Randomise" to generate a new value each time the scenario is loaded.
+        These details identify the practitioner using the training session.
+        Select "Random" next to a field to get a new value each time a session is started.
       </p>
     `,
   }),
@@ -27,7 +27,7 @@ export const practitionerDetailsTabContent = [
     field: GovUKTextInput({
       code: 'practitionerIdentifier',
       label: 'Practitioner identifier',
-      hint: 'Unique identifier for the practitioner',
+      hint: 'A unique ID for the practitioner, such as a staff code',
       classes: 'govuk-input--width-20',
       defaultValue: Data('scenario.practitionerIdentifier'),
     }),
@@ -50,12 +50,12 @@ export const practitionerDetailsTabContent = [
     randomize: Data('accessMode_isRandomized'),
     field: GovUKRadioInput({
       code: 'accessMode',
-      label: 'Access mode (general)',
-      hint: 'Controls overall access mode for the practitioner',
+      label: 'Access mode',
+      hint: 'Whether the practitioner can change the assessment or only view it',
       defaultValue: Data('scenario.accessMode'),
       items: [
-        { value: 'READ_WRITE', text: 'Read and Write' },
-        { value: 'READ_ONLY', text: 'Read Only' },
+        { value: 'READ_WRITE', text: 'Read and write' },
+        { value: 'READ_ONLY', text: 'Read only' },
       ],
     }),
   }),
@@ -66,11 +66,11 @@ export const practitionerDetailsTabContent = [
     field: GovUKRadioInput({
       code: 'planAccessMode',
       label: 'Plan access mode',
-      hint: 'Controls whether the practitioner can edit or only view the plan',
+      hint: 'Whether the practitioner can change the plan or only view it',
       defaultValue: Data('scenario.planAccessMode'),
       items: [
-        { value: 'READ_WRITE', text: 'Read and Write' },
-        { value: 'READ_ONLY', text: 'Read Only' },
+        { value: 'READ_WRITE', text: 'Read and write' },
+        { value: 'READ_ONLY', text: 'Read only' },
       ],
     }),
   }),

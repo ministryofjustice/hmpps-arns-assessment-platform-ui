@@ -40,7 +40,7 @@ export const scenarioDetailsBlock = TemplateWrapper({
             <dd>{{oasysAssessmentPk}}</dd>
           </div>
           <div class="scenario-picker__inline-summary-item">
-            <dt>Sentence Plan Version</dt>
+            <dt>Sentence plan version</dt>
             <dd>{{sentencePlanVersion}}</dd>
           </div>
         </dl>
@@ -49,7 +49,7 @@ export const scenarioDetailsBlock = TemplateWrapper({
         {{slot:flags}}
       </section>
       <section class="scenario-picker__section">
-        <h3 class="govuk-heading-s">Criminogenic Needs</h3>
+        <h3 class="govuk-heading-s">Criminogenic needs</h3>
         {{slot:needs}}
       </section>
     </div>
