@@ -30,6 +30,18 @@ describe('scenario presets', () => {
     expect(new Set(ids).size).toBe(ids.length)
   })
 
+  it.each(scenarioPresets.map(preset => [preset.id, preset] as const))(
+    'should say where %s starts in its sublabel, matching the services its flags offer',
+    (_id, preset) => {
+      const { availableServices } = resolveHandoverConfig(preset.flags)
+      const expectedStart = availableServices.includes('strengths-and-needs')
+        ? 'starts at Sentence Plan or SAN'
+        : 'starts at Sentence Plan'
+
+      expect(preset.shortDescription).toMatch(new RegExp(`, ${expectedStart}$`))
+    },
+  )
+
   describe.each([
     {
       id: 'san-v2-community',

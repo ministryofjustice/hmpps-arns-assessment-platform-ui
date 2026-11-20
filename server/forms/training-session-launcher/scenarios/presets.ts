@@ -60,7 +60,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'default',
     name: 'Default',
-    shortDescription: 'All fields randomised',
+    shortDescription: 'Random person, starts at Sentence Plan',
     description: 'Scenario with fully randomised subject details and practitioner details.',
     flags: [],
     fixedValues: {
@@ -71,7 +71,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'sp-national-rollout',
     name: 'SP National Rollout',
-    shortDescription: 'National rollout scenario',
+    shortDescription: 'Community case, starts at Sentence Plan',
     description: 'Scenario configured for Sentence Plan national rollout in a community/probation setting.',
     flags: [],
     fixedValues: {
@@ -83,7 +83,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'sp-private-beta',
     name: 'SP Private Beta',
-    shortDescription: 'Private Beta scenario',
+    shortDescription: 'Community case, starts at Sentence Plan or SAN',
     description: 'Scenario configured for Sentence Plan with private beta access.',
     flags: ['SAN_PRIVATE_BETA'],
     fixedValues: {
@@ -95,7 +95,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'pqip-pso-entrant-training',
     name: 'PQiP/PSO Entrant Training',
-    shortDescription: 'National rollout scenario',
+    shortDescription: 'Probation case study, starts at Sentence Plan',
     description: 'Scenario configured for PQiP/PSO entrant training.',
     flags: [],
     fixedValues: {
@@ -112,7 +112,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'pom-module-8',
     name: 'POM Module 8',
-    shortDescription: 'National rollout scenario',
+    shortDescription: 'Prison case study, starts at Sentence Plan',
     description: 'Scenario configured for POM Module 8 in a prison setting.',
     flags: [],
     fixedValues: {
@@ -130,7 +130,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'san-v2-community',
     name: 'SAN v2 Community',
-    shortDescription: 'SAN and Sentence Plan training (community)',
+    shortDescription: 'Probation case study, starts at Sentence Plan or SAN',
     description:
       'Scenario configured for Strengths and Needs (SAN) and Sentence Plan training in a community/probation setting.',
     flags: ['SAN_PRIVATE_BETA'],
@@ -148,7 +148,7 @@ export const scenarioPresets: ScenarioPreset[] = [
   {
     id: 'san-v2-prison',
     name: 'SAN v2 Prison',
-    shortDescription: 'SAN and Sentence Plan training (prison)',
+    shortDescription: 'Prison case study, starts at Sentence Plan or SAN',
     description: 'Scenario configured for Strengths and Needs (SAN) and Sentence Plan training in a prison setting.',
     flags: ['SAN_PRIVATE_BETA'],
     fixedValues: {
