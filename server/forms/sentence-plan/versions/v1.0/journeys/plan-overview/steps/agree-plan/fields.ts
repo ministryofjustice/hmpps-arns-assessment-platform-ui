@@ -1,6 +1,7 @@
-import { Format, validation, Self, Answer, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Format, validation, Self, Answer, Condition, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKButton, GovUKRadioInput, GovUKTextareaInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { CaseData } from '../../../../constants'
+import { isPlanAgreementUpdatesEnabled } from '../../../../guards'
 
 const detailsForNoField = GovUKTextareaInput({
   code: 'plan_agreement_details_no',
@@ -30,7 +31,9 @@ export const planAgreementQuestion = GovUKRadioInput({
   code: 'plan_agreement_question',
   fieldset: {
     legend: {
-      text: Format('Does %1 agree to this plan?', CaseData.Forename),
+      text: when(isPlanAgreementUpdatesEnabled)
+        .then(Format('Have you shared this plan with %1?', CaseData.Forename))
+        .else(Format('Does %1 agree to this plan?', CaseData.Forename)),
       classes: 'govuk-fieldset__legend--l',
       isPageHeading: true,
     },

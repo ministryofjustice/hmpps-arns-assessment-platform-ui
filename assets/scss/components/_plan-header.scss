@@ -40,6 +40,13 @@
       white-space: nowrap;
       float: right;
     }
+
+    &__navigation-separator {
+      border-left: 1px solid govuk-functional-colour(border);
+      height: 1.25em;
+      margin: 0 govuk-spacing(2);
+      vertical-align: middle;
+    }
   }
 
   &__header-actions {
