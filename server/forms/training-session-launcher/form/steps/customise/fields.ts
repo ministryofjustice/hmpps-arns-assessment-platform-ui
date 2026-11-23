@@ -6,6 +6,7 @@ import { subjectDetailsTabContent } from './tabs/subjectDetailsTab'
 import { criminogenicNeedsTabContent } from './tabs/criminogenicNeedsTab'
 import { flagsTabContent } from './tabs/flagsTab'
 import { practitionerDetailsTabContent } from './tabs/practitionerDetailsTab'
+import { scenarioNameValidation } from '../../validation/customiseValidation'
 
 /**
  * Page heading with caption
@@ -63,6 +64,7 @@ const scenarioNameInput = GovUKTextInput({
   hint: 'Shown in your sessions list and, if you save it, in the scenarios list',
   classes: 'govuk-input--width-20',
   defaultValue: Format('%1 (Customised)', Data('originalScenarioName')),
+  validWhen: scenarioNameValidation(),
 })
 
 /**

@@ -2,6 +2,7 @@ import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKTextInput, GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
+import { randomisedState } from '../../../validation/customiseValidation'
 
 /**
  * Practitioner details tab content
@@ -23,7 +24,7 @@ export const practitionerDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'practitionerIdentifier',
-    randomize: Data('practitionerIdentifier_isRandomized'),
+    randomize: randomisedState('practitionerIdentifier'),
     field: GovUKTextInput({
       code: 'practitionerIdentifier',
       label: 'Practitioner identifier',
@@ -35,7 +36,7 @@ export const practitionerDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'practitionerDisplayName',
-    randomize: Data('practitionerDisplayName_isRandomized'),
+    randomize: randomisedState('practitionerDisplayName'),
     field: GovUKTextInput({
       code: 'practitionerDisplayName',
       label: 'Display name',
@@ -47,7 +48,7 @@ export const practitionerDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'accessMode',
-    randomize: Data('accessMode_isRandomized'),
+    randomize: randomisedState('accessMode'),
     field: GovUKRadioInput({
       code: 'accessMode',
       label: 'Access mode',
@@ -62,7 +63,7 @@ export const practitionerDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'planAccessMode',
-    randomize: Data('planAccessMode_isRandomized'),
+    randomize: randomisedState('planAccessMode'),
     field: GovUKRadioInput({
       code: 'planAccessMode',
       label: 'Plan access mode',

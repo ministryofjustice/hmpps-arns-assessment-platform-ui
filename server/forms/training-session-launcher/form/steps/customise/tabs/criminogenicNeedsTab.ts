@@ -7,6 +7,7 @@ import {
   GovUKCheckboxInput,
 } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { RandomizableField } from '../../../../components'
+import { needScoreValidation, randomisedState } from '../../../validation/customiseValidation'
 
 /**
  * Configuration for each need area
@@ -23,7 +24,7 @@ interface NeedConfig {
  * Each field is wrapped with RandomizableField to allow toggling randomization
  */
 function createNeedFields(config: NeedConfig): BlockDefinition[] {
-  const { prefix, hasScore, maxScore } = config
+  const { title, prefix, hasScore, maxScore } = config
 
   const linkedToHarmCode = `${prefix}LinkedToHarm`
   const linkedToReoffendingCode = `${prefix}LinkedToReoffending`
@@ -34,7 +35,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
   const fields: BlockDefinition[] = [
     RandomizableField({
       fieldKey: linkedToHarmCode,
-      randomize: Data(`${linkedToHarmCode}_isRandomized`),
+      randomize: randomisedState(linkedToHarmCode),
       field: GovUKRadioInput({
         code: linkedToHarmCode,
         label: 'Linked to harm',
@@ -49,7 +50,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
 
     RandomizableField({
       fieldKey: linkedToReoffendingCode,
-      randomize: Data(`${linkedToReoffendingCode}_isRandomized`),
+      randomize: randomisedState(linkedToReoffendingCode),
       field: GovUKRadioInput({
         code: linkedToReoffendingCode,
         label: 'Linked to reoffending',
@@ -64,7 +65,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
 
     RandomizableField({
       fieldKey: strengthsCode,
-      randomize: Data(`${strengthsCode}_isRandomized`),
+      randomize: randomisedState(strengthsCode),
       field: GovUKRadioInput({
         code: strengthsCode,
         label: 'Strengths',
@@ -79,7 +80,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
 
     RandomizableField({
       fieldKey: thresholdCode,
-      randomize: Data(`${thresholdCode}_isRandomized`),
+      randomize: randomisedState(thresholdCode),
       field: GovUKRadioInput({
         code: thresholdCode,
         label: 'High scoring (threshold)',
@@ -97,7 +98,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
     fields.push(
       RandomizableField({
         fieldKey: scoreCode,
-        randomize: Data(`${scoreCode}_isRandomized`),
+        randomize: randomisedState(scoreCode),
         field: GovUKTextInput({
           code: scoreCode,
           label: 'Score',
@@ -105,6 +106,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
           inputType: 'number',
           classes: 'govuk-input--width-4',
           defaultValue: Data(`scenario.${scoreCode}`),
+          validWhen: maxScore === undefined ? [] : needScoreValidation(scoreCode, title, maxScore),
         }),
       }),
     )
