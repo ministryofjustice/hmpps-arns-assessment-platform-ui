@@ -61,7 +61,6 @@ const assessmentCell = {
               'view-historic',
               Data('assessmentUuid'),
               Item().path('assessmentVersionId'),
-              `${Section.accommodation.code}/${Step.accommodation_analysis.path}`,
             ]),
             contentFor('previous_versions_table_action_view'),
             contentFor('previous_versions_table_action_view_assessment_visually_hidden'),
