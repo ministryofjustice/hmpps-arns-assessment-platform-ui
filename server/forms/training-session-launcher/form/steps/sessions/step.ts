@@ -1,4 +1,13 @@
-import { step, submit, access, redirect, Post, Data, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  step,
+  submit,
+  access,
+  redirect,
+  Post,
+  Data,
+  Condition,
+  Format,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   notificationBanners,
   errorBanner,
@@ -17,6 +26,7 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
  *
  * Displays all active training sessions.
  * Users can generate handover links for each session.
+ * Deleting one session or resetting all of them goes through the confirm-remove step first.
  */
 export const sessionsStep = step({
   path: '/sessions',
@@ -54,16 +64,14 @@ export const sessionsStep = step({
     submit({
       when: Post('action').match(Condition.Equals('deleteSession')),
       onAlways: {
-        effects: [TrainingSessionLauncherEffects.deleteSession()],
-        next: [redirect({ goto: 'sessions' })],
+        next: [redirect({ goto: Format('confirm-remove?item=session&id=%1', Post('trainingSessionId')) })],
       },
     }),
 
     submit({
       when: Post('action').match(Condition.Equals('resetAllSessions')),
       onAlways: {
-        effects: [TrainingSessionLauncherEffects.deleteAllSessions()],
-        next: [redirect({ goto: 'sessions' })],
+        next: [redirect({ goto: 'confirm-remove?item=all-sessions' })],
       },
     }),
   ],
