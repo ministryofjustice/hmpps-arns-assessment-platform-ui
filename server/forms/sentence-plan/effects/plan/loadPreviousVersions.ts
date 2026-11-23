@@ -40,10 +40,15 @@ export const loadPreviousVersions = (deps: SentencePlanEffectsDeps) => async (co
     throw new NotFound('Previous versions not found')
   }
 
+  const sanAssessmentUuid = previousVersions.unaggregatedVersions.some(version => version.entityType === 'AAP_SAN')
+    ? (await deps.coordinatorApi.getEntityAssessment(assessmentUuid)).sanAssessmentId
+    : null
+
   const trimmedVersions: PreviousVersionsResponse = {
     ...previousVersions,
     allVersions: trimTodayVersions(previousVersions.allVersions),
     countersignedVersions: trimTodayVersions(previousVersions.countersignedVersions),
   }
   context.setData('previousVersions', trimmedVersions)
+  context.setData('sanAssessmentUuid', sanAssessmentUuid)
 }

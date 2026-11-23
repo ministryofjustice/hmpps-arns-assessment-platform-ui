@@ -28,9 +28,7 @@ function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
     personName: props.personName,
     versions: props.previousVersions,
     showAssessmentColumn: props.showAssessmentColumn ?? true,
-    sanAssessmentUuid: props.sanAssessmentUuid,
-    sanFormVersionUrl: '/strengths-and-needs/v1.0/view-historic/',
-    sanAssessmentAccomodationLink: '/accommodation/accommodation-status',
+    sanAssessmentUrl: `/strengths-and-needs/v1.0/view-historic/${props.sanAssessmentUuid}`,
     tables: {
       allVersions: {
         tableHeading: 'All versions',

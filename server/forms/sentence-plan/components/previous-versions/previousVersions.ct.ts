@@ -18,7 +18,9 @@ test.describe('previous versions', () => {
       PreviousVersions,
       {
         personName: 'Test',
+        sanAssessmentUuid: 'san-uuid',
         previousVersions: {
+          unaggregatedVersions: [],
           allVersions: {},
           countersignedVersions: {},
         },
@@ -42,6 +44,7 @@ test.describe('previous versions', () => {
     const unsignedBlock = {
       type: StructureType.BLOCK,
       personName: 'Test',
+      sanAssessmentUuid: 'san-uuid',
       previousVersions: {
         allVersions: {
           [toDateKey(yesterday)]: {
@@ -53,7 +56,7 @@ test.describe('previous versions', () => {
               updatedAt: yesterday.toISOString(),
               status: 'UNSIGNED',
               planAgreementStatus: '',
-              entityType: 'ASSESSMENT',
+              entityType: 'AAP_SAN',
             } as VersionDetails,
             planVersion: {
               uuid: crypto.randomUUID(),
