@@ -101,7 +101,8 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
  *    the scenario has the SAN Private Beta flag, the CRN is a valid CRN that is not a magic CRN, and the ARNS API is
  *    behind Wiremock. When it is not ticked or not Private Beta, removes any stubs an earlier launch left instead
  * 5. Calls the handover API to create the link
- * 6. Sets the link in context data for redirect, or sets handoverApiFailure if the stubs or the API call fail
+ * 6. Sets the link in context data for redirect, or sets handoverApiFailure if the session has gone or the stubs or
+ *    the API call fail
  */
 export const generateHandoverLink =
   (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
@@ -126,7 +127,10 @@ export const generateHandoverLink =
     const session = trainingLauncher.sessions.find(s => s.id === trainingSessionId)
 
     if (!session) {
-      throw new Error(`Cannot generate handover link: session with ID '${trainingSessionId}' not found`)
+      // e.g. removed in another tab: show the error summary on the refreshed list rather than an error page
+      logger.warn({ trainingSessionId }, 'Cannot generate training handover link: session not found')
+      context.setData('handoverApiFailure', true)
+      return
     }
 
     // Resolve handover config based on session flags

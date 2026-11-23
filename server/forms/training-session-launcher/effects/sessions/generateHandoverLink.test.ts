@@ -126,4 +126,16 @@ describe('generateHandoverLink', () => {
     expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
     expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
   })
+
+  it('should set handoverApiFailure without calling the handover API when the session no longer exists', async () => {
+    // Arrange
+    givenSession({ ...createSession({ crn: 'X123456' }), id: 'another-session' })
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
+  })
 })
