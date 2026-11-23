@@ -324,6 +324,62 @@ export class TabPanelController {
         }
       }
     }
+
+    this.#openDetailsWithErrors()
+
+    // Capture phase, so the field is visible before the GOV.UK error summary moves focus to it
+    document.addEventListener('click', this.#onDocumentClick, true)
+  }
+
+  /**
+   * Open collapsed details elements that hold a field with an inline error, so the error can be seen
+   */
+  #openDetailsWithErrors() {
+    this.#element.querySelectorAll('.govuk-form-group--error').forEach(group => {
+      this.#openAncestorDetails(group)
+    })
+  }
+
+  #openAncestorDetails(element) {
+    let details = element.closest('details')
+
+    while (details && this.#element.contains(details)) {
+      details.open = true
+      details = details.parentElement?.closest('details')
+    }
+  }
+
+  /**
+   * When an in-page link (such as an error summary link) points at a field in a hidden panel,
+   * select that panel's tab and open any details around the field, so the field can take focus.
+   * @param {MouseEvent} event
+   */
+  #onDocumentClick = event => {
+    const link = event.target instanceof Element ? event.target.closest('a[href^="#"]') : null
+
+    if (!link || link.hash.length < 2) {
+      return
+    }
+
+    const target = document.getElementById(decodeURIComponent(link.hash.slice(1)))
+
+    if (!target || !this.#element.contains(target)) {
+      return
+    }
+
+    const panel = target.closest('[role="tabpanel"]')
+    const tab = panel ? this.#element.querySelector(`[aria-controls="${panel.id}"]`) : null
+    const currentTab = this.#getCurrentTab()
+
+    if (tab && tab !== currentTab) {
+      if (currentTab) {
+        this.#hideTab(currentTab)
+      }
+
+      this.#showTab(tab)
+    }
+
+    this.#openAncestorDetails(target)
   }
 
   /**
@@ -340,6 +396,7 @@ export class TabPanelController {
       tab.removeEventListener('click', this.#onTabClick)
       tab.removeEventListener('keydown', this.#onTabKeydown)
     })
+    document.removeEventListener('click', this.#onDocumentClick, true)
   }
 
   #onTabClick = event => {
