@@ -2,7 +2,7 @@ import { GovUKSummaryList, GovUKTabs } from '@ministryofjustice/hmpps-forge/govu
 import { not } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
-import { financeSection, hasFinancialConcerns } from '../../section'
+import { financeSection, hasFinancialConcerns, noFinancialConcerns } from '../../section'
 import {
   goToPractitionerAnalysisButton,
   markAsCompleteButton,
@@ -13,6 +13,7 @@ import { questionsOf } from '../../../../steps/view-all-answers/sections'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { Section } from '../../../../constants/section'
 import { Step } from '../../constants/step'
+import { practitionerAnalysisNotRequired } from '../../../../constants/content'
 
 export const questions = questionsOf({
   section: Section.finance,
@@ -56,12 +57,12 @@ export const summaryTab = HtmlBlock({
         {
           id: 'practitioner-analysis',
           label: commonContentFor('practitioner_analysis'),
-          visibleWhen: hasFinancialConcerns,
           panel: {
             blocks: [
               financeSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
               financeSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
               financeSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
+              practitionerAnalysisNotRequired(noFinancialConcerns),
               markAsCompleteButton,
             ],
           },

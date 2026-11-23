@@ -67,7 +67,14 @@ test.describe('Summary', () => {
             - /url: finance-concerns#finance_concerns-question
         - button "Mark as complete"
     `)
-    await expect(page.getByRole('tab', { name: 'Practitioner analysis' })).not.toBeVisible()
+    await page.getByRole('tab', { name: 'Practitioner analysis' }).click()
+    await expect(page.getByText('Practitioner analysis not required')).toBeVisible()
+    await expect(page.getByText('Are there any strengths or protective factors')).not.toBeVisible()
+    await page.getByRole('tab', { name: 'Summary' }).click()
+
+    await page.getByRole('button', { name: 'Mark as complete' }).click()
+    await expect(page).toHaveURL(/finance-analysis/)
+    await expect(financesPage.alert).not.toBeVisible()
   })
 
   test('shows summary page (with financial concerns, no debt)', async ({

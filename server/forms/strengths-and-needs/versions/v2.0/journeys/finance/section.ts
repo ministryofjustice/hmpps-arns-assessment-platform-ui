@@ -17,6 +17,7 @@ export const hasFamilyOrFriendsIncome = Answer(Question.finance_income).match(
 )
 
 export const hasFinancialConcerns = Answer(Question.finance_concerns).match(Condition.Equals(CommonOption.yes))
+export const noFinancialConcerns = Answer(Question.finance_concerns).match(Condition.Equals(CommonOption.no))
 export const hasTheirDebt = Answer(Question.finance_debt).match(Condition.Equals(Option.yes_their_debt))
 export const hasSomeoneElsesDebt = Answer(Question.finance_debt).match(Condition.Equals(Option.yes_someone_elses_debt))
 export const hasDebt = or(hasTheirDebt, hasSomeoneElsesDebt)
@@ -337,10 +338,8 @@ const strengthsOrProtectiveFactors = question({
     validationMessage: contentFor('question.finance_practitioner_analysis_strengths_or_protective_factors.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({
-      changeHref: Step.finance_summary.path,
-    }),
+    field: radioField({ dependentWhen: hasFinancialConcerns, visibleWhen: hasFinancialConcerns }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_summary.path, visibleWhen: hasFinancialConcerns }),
   },
 })
 
@@ -365,10 +364,8 @@ const riskOfSeriousHarm = question({
     validationMessage: contentFor('question.finance_practitioner_analysis_risk_of_serious_harm.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({
-      changeHref: Step.finance_summary.path,
-    }),
+    field: radioField({ dependentWhen: hasFinancialConcerns, visibleWhen: hasFinancialConcerns }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_summary.path, visibleWhen: hasFinancialConcerns }),
   },
 })
 
@@ -393,10 +390,8 @@ const riskOfReoffending = question({
     validationMessage: contentFor('question.finance_practitioner_analysis_risk_of_reoffending.validation'),
   },
   displayModes: {
-    field: radioField(),
-    summaryRow: itemisedSummaryRow({
-      changeHref: Step.finance_summary.path,
-    }),
+    field: radioField({ dependentWhen: hasFinancialConcerns, visibleWhen: hasFinancialConcerns }),
+    summaryRow: itemisedSummaryRow({ changeHref: Step.finance_summary.path, visibleWhen: hasFinancialConcerns }),
   },
 })
 

@@ -175,7 +175,9 @@ test.describe('Questions', () => {
 
     await expect(page).toHaveURL(/finance-summary/)
     await expect(page.getByText('How good is Test at managing their money?')).not.toBeVisible()
-    await expect(page.getByRole('tab', { name: 'Practitioner analysis' })).not.toBeVisible()
+    await page.getByRole('tab', { name: 'Practitioner analysis' }).click()
+    await expect(page.getByText('Practitioner analysis not required')).toBeVisible()
+    await expect(page.getByText('Are there any strengths or protective factors')).not.toBeVisible()
   })
 
   for (const debtCase of [
