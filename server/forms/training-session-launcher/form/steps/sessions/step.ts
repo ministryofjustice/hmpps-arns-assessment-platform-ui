@@ -46,7 +46,8 @@ export const sessionsStep = step({
       when: Post('action').match(Condition.Equals('generateLink')),
       onAlways: {
         effects: [TrainingSessionLauncherEffects.generateHandoverLink()],
-        next: [redirect({ goto: Data('handoverLink') })],
+        // With no handover link (the API call failed) there is no redirect, so the page renders its error summary
+        next: [redirect({ when: Data('handoverLink').match(Condition.IsRequired()), goto: Data('handoverLink') })],
       },
     }),
 

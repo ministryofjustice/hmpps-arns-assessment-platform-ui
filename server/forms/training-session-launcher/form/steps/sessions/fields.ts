@@ -27,7 +27,8 @@ export const notificationBanners = CollectionBlock({
 })
 
 /**
- * API failure error banner
+ * Error summary shown when the handover API fails to create a link.
+ * GOV.UK Frontend moves focus to it on page load (data-module="govuk-error-summary").
  */
 export const errorBanner = HtmlBlock({
   visibleWhen: Data('handoverApiFailure').match(Condition.Equals(true)),
@@ -36,7 +37,9 @@ export const errorBanner = HtmlBlock({
       <div role="alert">
         <h2 class="govuk-error-summary__title">There is a problem</h2>
         <div class="govuk-error-summary__body">
-          <p class="govuk-body">The link could not be created. Try again.</p>
+          <ul class="govuk-list govuk-error-summary__list">
+            <li>The link could not be created. Try again. If it keeps happening, tell the training team.</li>
+          </ul>
         </div>
       </div>
     </div>
