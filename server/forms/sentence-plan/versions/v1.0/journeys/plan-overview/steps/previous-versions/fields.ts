@@ -6,6 +6,5 @@ export const previousVersions = PreviousVersions({
   personName: CaseData.Forename,
   previousVersions: Data('previousVersions'),
   showAssessmentColumn: Data('showAssessmentColumn'),
-  sanAssessmentUuid: Data('sanAssessmentUuid'),
-  sanAssessmentVersion: Data('sanAssessmentVersion'),
+  sanAssessmentUuid: Data('assessmentUuid'),
 })

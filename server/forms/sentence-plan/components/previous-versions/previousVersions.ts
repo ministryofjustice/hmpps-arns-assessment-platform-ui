@@ -18,7 +18,6 @@ export interface PreviousVersions extends BlockDefinition {
   previousVersions: ResolvableObject<PreviousVersionsResponse>
   showAssessmentColumn?: ResolvableBoolean
   sanAssessmentUuid: ResolvableString
-  sanAssessmentVersion: ResolvableString
 }
 
 /**
@@ -30,7 +29,7 @@ function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
     versions: props.previousVersions,
     showAssessmentColumn: props.showAssessmentColumn ?? true,
     sanAssessmentUuid: props.sanAssessmentUuid,
-    sanAssessmentVersion: props.sanAssessmentVersion,
+    sanFormVersionUrl: '/strengths-and-needs/v1.0/view-historic/',
     sanAssessmentAccomodationLink: '/accommodation/accommodation-status',
     tables: {
       allVersions: {
