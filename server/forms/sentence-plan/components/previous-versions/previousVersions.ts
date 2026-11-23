@@ -3,7 +3,6 @@ import {
   ResolvableBoolean,
   ResolvableObject,
   ResolvableString,
-  ResolvableNumber,
   ResolvedPropsOf,
 } from '@ministryofjustice/hmpps-forge/core/components'
 import { nunjucksComponent } from '@ministryofjustice/hmpps-forge/express-nunjucks'
@@ -19,7 +18,6 @@ export interface PreviousVersions extends BlockDefinition {
   previousVersions: ResolvableObject<PreviousVersionsResponse>
   showAssessmentColumn?: ResolvableBoolean
   sanAssessmentUuid: ResolvableString
-  sanAssessmentVersion?: ResolvableNumber
 }
 
 /**
@@ -32,7 +30,8 @@ function buildParams(props: ResolvedPropsOf<PreviousVersions>) {
     showAssessmentColumn: props.showAssessmentColumn ?? true,
     sanAssessmentAccommodationLink: 'accommodation/accommodation-analysis',
     sanAssessmentUuid: props.sanAssessmentUuid,
-    sanAssessmentVersion: props.sanAssessmentVersion ?? 1,
+    sanFormVersionUrl: '/strengths-and-needs/v1.0/view-historic/',
+    sanAssessmentAccomodationLink: '/accommodation/accommodation-status',
     tables: {
       allVersions: {
         tableHeading: 'All versions',

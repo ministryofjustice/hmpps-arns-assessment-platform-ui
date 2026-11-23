@@ -1,4 +1,4 @@
-import { and, Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core/authoring'
+import { Answer, Condition, Data, or } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { BlockDefinition, TemplateWrapper } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKHeading, GovUKSummaryList, GovUKTag } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { answerRow, questionsWithin } from '../../../../constants/questionContent'
@@ -43,12 +43,7 @@ export const anyAnswered = (fields: Answerable[]) =>
   or(
     fields
       .flatMap(field => questionsWithin(field.content))
-      .map(question =>
-        and(
-          Answer(question.code).match(Condition.IsRequired()),
-          Answer(question.code).match(Condition.String.HasMinLength(1)),
-        ),
-      ),
+      .map(question => Answer(question.code).match(Condition.IsRequired())),
   )
 const groupHeading = (text: ReturnType<typeof commonContentFor>, fields: Answerable[]) =>
   GovUKHeading({ text, size: 'm', level: 3, visibleWhen: anyAnswered(fields) })

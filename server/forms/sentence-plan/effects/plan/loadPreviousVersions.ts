@@ -31,18 +31,6 @@ export const loadPreviousVersions = (deps: SentencePlanEffectsDeps) => async (co
     throw new InternalServerError('Assessment UUID is required to load previous versions')
   }
 
-  const sanAssessmentContext = context.getSession().handoverContext?.assessmentContext
-  const sanAssessmentUuid = sanAssessmentContext?.assessmentId
-  const sanAssessmentVersion = sanAssessmentContext?.assessmentVersion
-
-  if (sanAssessmentContext?.assessmentId) {
-    context.setData('sanAssessmentUuid', sanAssessmentUuid)
-  }
-
-  if (sanAssessmentContext?.assessmentVersion !== undefined) {
-    context.setData('sanAssessmentVersion', sanAssessmentVersion)
-  }
-
   const showAssessmentColumn = hasPrivateBetaOasysAccess(context)
   context.setData('showAssessmentColumn', showAssessmentColumn)
 
