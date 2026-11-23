@@ -183,13 +183,15 @@ test.describe('Questions', () => {
   for (const debtCase of [
     {
       answer: Option.yes_their_debt,
-      visibleQuestion: 'yes_type_of_debt',
-      hiddenQuestion: 'yes_someone_elses_type_of_debt',
+      visibleQuestion: Question.yes_type_of_debt,
+      hiddenQuestion: Question.yes_someone_elses_type_of_debt,
+      detailsQuestion: Question.yes_type_of_debt_debt_to_others_details,
     },
     {
       answer: Option.yes_someone_elses_debt,
-      visibleQuestion: 'yes_someone_elses_type_of_debt',
-      hiddenQuestion: 'yes_type_of_debt',
+      visibleQuestion: Question.yes_someone_elses_type_of_debt,
+      hiddenQuestion: Question.yes_type_of_debt,
+      detailsQuestion: Question.yes_someone_elses_type_of_debt_debt_to_others_details,
     },
   ] as const) {
     test(`shows only the correct debt type question for ${debtCase.answer}`, async ({
@@ -217,13 +219,7 @@ test.describe('Questions', () => {
       await expect(financesPage.questions[debtCase.visibleQuestion].option(Option.debt_to_others)).toBeVisible()
       await expect(financesPage.questions[debtCase.hiddenQuestion].option(Option.debt_to_others)).not.toBeVisible()
       await financesPage.questions[debtCase.visibleQuestion].option(Option.debt_to_others).check()
-      await expect(
-        financesPage.questions[
-          debtCase.visibleQuestion === 'yes_type_of_debt'
-            ? 'yes_type_of_debt_debt_to_others_details'
-            : 'yes_someone_elses_type_of_debt_debt_to_others_details'
-        ].input,
-      ).toBeVisible()
+      await expect(financesPage.questions[debtCase.detailsQuestion].input).toBeVisible()
     })
   }
 })

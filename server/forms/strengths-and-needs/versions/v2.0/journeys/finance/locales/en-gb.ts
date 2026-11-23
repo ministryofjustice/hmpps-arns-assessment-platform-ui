@@ -6,7 +6,6 @@ export const english = {
   question: {
     [Question.finance_income]: {
       text: 'Where does %1 currently get their money from?',
-      hint: '',
       option: {
         [Option.carers_allowance]: 'Carer’s allowance',
         [Option.disability_benefits]: {

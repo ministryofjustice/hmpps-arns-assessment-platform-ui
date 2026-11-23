@@ -36,8 +36,8 @@ import { test } from '../../fixtures'
  * to exercise every question and change link.
  */
 
-const summaryPage = 'finance-summary'
-const analysisPage = 'finance-analysis'
+const summaryPage = Step.finance_summary.path
+const analysisPage = Step.finance_analysis.path
 const fullyAnswered: Scenario = {
   answers: [
     { question: Question.finance_income, value: [Option.employment, Option.family_or_friends, CommonOption.other] },
@@ -64,13 +64,13 @@ const fullyAnswered: Scenario = {
     { question: Question.finance_practitioner_analysis_risk_of_reoffending_yes_details, value: 'Some details' },
   ],
   summaryChangeLinks: [
-    changeLink('finance-income', 'finance_income'),
-    changeLink('community-finance-income-friends-family', 'community_finance_income_friends_family'),
-    changeLink('finance-concerns', 'finance_concerns'),
-    changeLink('finance-money-management', 'finance_money_management'),
-    changeLink('finance-money-management', 'finance_debt'),
-    changeLink('finance-debt', 'yes_type_of_debt'),
-    changeLink('finance-changes', 'finance_changes'),
+    changeLink(Step.finance_income.path, Question.finance_income),
+    changeLink(Step.community_finance_income_friends_family.path, Question.community_finance_income_friends_family),
+    changeLink(Step.finance_concerns.path, Question.finance_concerns),
+    changeLink(Step.finance_money_management.path, Question.finance_money_management),
+    changeLink(Step.finance_money_management.path, Question.finance_debt),
+    changeLink(Step.finance_debt.path, Question.yes_type_of_debt),
+    changeLink(Step.finance_changes.path, Question.finance_changes),
   ],
   userSubmittedSteps: [
     Step.finance_income.code,
@@ -84,9 +84,9 @@ const fullyAnswered: Scenario = {
 }
 
 const practitionerAnalysisChangeLinks = [
-  changeLink('finance-summary', 'finance_practitioner_analysis_strengths_or_protective_factors'),
-  changeLink('finance-summary', 'finance_practitioner_analysis_risk_of_serious_harm'),
-  changeLink('finance-summary', 'finance_practitioner_analysis_risk_of_reoffending'),
+  changeLink(Step.finance_summary.path, Question.finance_practitioner_analysis_strengths_or_protective_factors),
+  changeLink(Step.finance_summary.path, Question.finance_practitioner_analysis_risk_of_serious_harm),
+  changeLink(Step.finance_summary.path, Question.finance_practitioner_analysis_risk_of_reoffending),
 ]
 
 test.describe('Finances change links', () => {
