@@ -8,7 +8,7 @@ export interface LastUpdatedData {
 }
 
 /**
- * Derive whether the plan was updated after agreement.
+ * Derive the latest update for draft plans or plans updated after agreement.
  *
  * Compares the most recent timeline event against the agreement date.
  * If any goal event occurred after agreement, sets flags for displaying
@@ -21,8 +21,8 @@ export interface LastUpdatedData {
  *
  * Sets:
  * - Data('isUpdatedAfterAgreement'): Boolean
- * - Data('lastUpdatedDate'): Date of the most recent update (when updated after agreement)
- * - Data('lastUpdatedByName'): Name of who last updated (when updated after agreement)
+ * - Data('lastUpdatedDate'): Date of the most recent update for either case
+ * - Data('lastUpdatedByName'): Name of who made that update
  */
 export const derivePlanLastUpdated = () => (context: SentencePlanContext) => {
   const result = derivePlanLastUpdatedData(
@@ -91,7 +91,7 @@ export const derivePlanLastUpdatedData = (
 ): LastUpdatedData => {
   const noUpdate: LastUpdatedData = { isUpdatedAfterAgreement: false }
 
-  if (!latestAgreementDate || latestAgreementStatus === 'DRAFT') {
+  if (latestAgreementStatus !== 'DRAFT' && !latestAgreementDate) {
     return noUpdate
   }
 
@@ -119,7 +119,10 @@ export const derivePlanLastUpdatedData = (
 
   const eventDate = new Date(mostRecentEvent.timestamp)
 
-  if (eventDate.getTime() <= new Date(latestAgreementDate).getTime()) {
+  if (
+    latestAgreementStatus !== 'DRAFT' &&
+    (!latestAgreementDate || eventDate.getTime() <= new Date(latestAgreementDate).getTime())
+  ) {
     return noUpdate
   }
 
@@ -135,7 +138,7 @@ export const derivePlanLastUpdatedData = (
     'Unknown'
 
   return {
-    isUpdatedAfterAgreement: true,
+    isUpdatedAfterAgreement: latestAgreementStatus !== 'DRAFT',
     lastUpdatedDate: eventDate.toISOString(),
     lastUpdatedByName: updatedByName,
   }

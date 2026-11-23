@@ -7,19 +7,34 @@ import {
   Query,
   Format,
   Condition,
+  and,
+  not,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { planAgreementQuestion, notesField, saveButton } from './fields'
 import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
-import { redirectToOverviewIfReadOnly, redirectUnlessAllActiveGoalsHaveSteps } from '../../../../guards'
+import { CaseData } from '../../../../constants'
+import {
+  isPlanAgreementUpdatesEnabled,
+  hasPostAgreementStatus,
+  isOasysAccess,
+  redirectToOverviewIfReadOnly,
+  redirectUnlessAllActiveGoalsHaveSteps,
+} from '../../../../guards'
 
 export const agreePlanStep = step({
   path: '/agree-plan',
-  title: 'Do they agree to this plan?',
+  title: when(isPlanAgreementUpdatesEnabled)
+    .then(Format('Have you shared this plan with %1?', CaseData.Forename))
+    .else('Do they agree to this plan?'),
   reachability: { entryWhen: true },
   blocks: [planAgreementQuestion, notesField, saveButton],
   view: {
     locals: {
       backlink: Format('overview?goalStatusTab=%1', Query('goalStatusTab').nullish('current')),
+      buttons: {
+        showReturnToOasysLink: and(isOasysAccess, isPlanAgreementUpdatesEnabled, not(hasPostAgreementStatus)),
+      },
     },
   },
   onAccess: [

@@ -29,6 +29,11 @@ export const BooleanFeatureFlags = {
     nunjucksKey: 'supervisionPackageEnabled',
     fallbackState: false,
   },
+  ENABLE_PLAN_AGREEMENT_UPDATES: {
+    fliptKey: 'sp-enable-plan-agreement-updates',
+    nunjucksKey: 'planAgreementUpdatesEnabled',
+    fallbackState: false,
+  },
 }
 
 export interface FeatureFlagConfig {

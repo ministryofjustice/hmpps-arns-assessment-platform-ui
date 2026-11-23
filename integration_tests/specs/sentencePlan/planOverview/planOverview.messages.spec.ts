@@ -2,7 +2,7 @@ import { expect } from '@playwright/test'
 import { test } from '../../../support/fixtures'
 import { currentGoals } from '../../../builders/sentencePlanFactories'
 import PlanOverviewPage from '../../../pages/sentencePlan/planOverviewPage'
-import {} from '../sentencePlanUtils'
+import { expectPlanAgreementUpdates } from '../../../support/featureFlags'
 
 const oneDay = 24 * 60 * 60 * 1000
 
@@ -99,6 +99,10 @@ test.describe('Plan Overview - Agreement Status Messages', () => {
 
     await expect(planOverviewPage.planAgreedMessage).not.toBeVisible()
     await expect(planOverviewPage.planCreatedMessage).not.toBeVisible()
-    await expect(planOverviewPage.planLastUpdatedMessage).not.toBeVisible()
+    if (expectPlanAgreementUpdates) {
+      await expect(planOverviewPage.planLastUpdatedMessage).toBeVisible()
+    } else {
+      await expect(planOverviewPage.planLastUpdatedMessage).toBeHidden()
+    }
   })
 })
