@@ -140,6 +140,18 @@ describe('confirm-remove step', () => {
       expect(sessionIds()).toEqual(['session-2'])
     })
 
+    it('should delete the session named in the query, not one posted in the form body', async () => {
+      const client = createClient()
+
+      const result = await client.post(
+        '/training-session-launcher/confirm-remove',
+        request({ action: 'confirm', trainingSessionId: 'session-2' }, { item: 'session', id: 'session-1' }),
+      )
+
+      expectRedirect(result, 'sessions')
+      expect(sessionIds()).toEqual(['session-2'])
+    })
+
     it('should leave sessions untouched when cancelled', async () => {
       const client = createClient()
 

@@ -121,11 +121,11 @@ export const confirmRemoval =
     }
 
     if (target.item === 'session') {
-      await deleteSession(deps)(context)
+      await deleteSession(deps)(context, target.trainingSessionId)
     } else if (target.item === 'all-sessions') {
       await deleteAllSessions(deps)(context)
     } else {
-      await deleteScenario(deps)(context)
+      await deleteScenario(deps)(context, target.scenarioId)
     }
   }
 

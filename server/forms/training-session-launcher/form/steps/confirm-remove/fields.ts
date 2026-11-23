@@ -4,7 +4,7 @@ import { GovUKButton } from '@ministryofjustice/hmpps-forge/govuk-components'
 
 /**
  * Confirmation question, naming the item, with "Yes, remove" and "Cancel" buttons.
- * The hidden fields carry the IDs the existing delete effects read from POST data.
+ * The item to remove comes from the query string and is checked against the trainer's preferences, never from POST data.
  */
 export const confirmRemoveForm = TemplateWrapper({
   template: `
@@ -13,8 +13,6 @@ export const confirmRemoveForm = TemplateWrapper({
     {{detail}}
     <form method="post" novalidate>
       <input type="hidden" name="_csrf" value="{{csrfToken}}">
-      <input type="hidden" name="trainingSessionId" value="{{trainingSessionId}}">
-      <input type="hidden" name="scenarioId" value="{{scenarioId}}">
       <div class="govuk-button-group">
         {{slot:buttons}}
       </div>
@@ -26,8 +24,6 @@ export const confirmRemoveForm = TemplateWrapper({
     detail: when(Data('removal.detail').match(Condition.IsRequired()))
       .then(Format('<p class="govuk-body">%1</p>', Data('removal.detail').pipe(Transformer.String.EscapeHtml())))
       .else(''),
-    trainingSessionId: Data('removal.trainingSessionId').pipe(Transformer.String.EscapeHtml()),
-    scenarioId: Data('removal.scenarioId').pipe(Transformer.String.EscapeHtml()),
   },
   slots: {
     buttons: [
