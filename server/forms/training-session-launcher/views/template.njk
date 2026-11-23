@@ -1,8 +1,23 @@
 {%- extends "partials/layout.njk" -%}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+{%- from "govuk/components/error-summary/macro.njk" import govukErrorSummary -%}
 
-{% block pageTitle %}{{ step.title }} - Training - {{ applicationName }}{% endblock %}
+{% set allValidationErrors = (fieldValidationErrors or []).concat(domainValidationErrors or []) %}
+
+{# Each link names the tab that holds the field (details.tab), as the field may sit in a hidden tab #}
+{% set errorSummaryList = [] %}
+{% for item in allValidationErrors | toErrorSummary %}
+  {% set error = allValidationErrors[loop.index0] %}
+  {% set tab = error.details.tab if error.details else '' %}
+  {% set _ = errorSummaryList.push({
+    text: (tab + ': ' + item.text) if tab else item.text,
+    href: item.href,
+    attributes: item.attributes
+  }) %}
+{% endfor %}
+
+{% block pageTitle %}{{ 'Error: ' if allValidationErrors.length }}{{ step.title }} - Training - {{ applicationName }}{% endblock %}
 
 {% block head %}
   {{ super() }}
@@ -50,6 +65,11 @@
         <a href="{{ step.backlink }}" class="govuk-back-link">Back</a>
       {% endif %}
 
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorSummaryList
+      }) if allValidationErrors.length }}
+
       {% for block in blocks %}
         {{ block | safe }}
       {% endfor %}
@@ -64,16 +84,9 @@
   </p>
 {% endset %}
 
-{% block supportWidget %}
-  {{ supportWidget({
-    helpContent: launcherHelpContent,
-    supportItems: [
-      { label: 'Preferences ID', value: data.preferencesId }
-    ] if data.preferencesId else []
-  }) }}
-{% endblock %}
-
-{% block govukFooter %}
+{# Overrides the GOV.UK template's footer block, which would wrap these in a second footer landmark.
+   The support widget sits outside the landmark, and the service footer is the only contentinfo. #}
+{% block footer %}
   {{ supportWidget({
     helpContent: launcherHelpContent,
     supportItems: [
@@ -88,5 +101,4 @@
       baseUrl: footerBaseUrl or "/platform"
     }) }}
   {% endif %}
-
 {% endblock %}

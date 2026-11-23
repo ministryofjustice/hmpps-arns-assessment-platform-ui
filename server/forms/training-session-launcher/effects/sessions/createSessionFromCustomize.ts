@@ -26,7 +26,8 @@ function collectSessionData(context: TrainingSessionLauncherContext): {
   values: ScenarioValues
   flags: TrainingScenarioFlag[]
 } {
-  const scenarioName = context.getAnswer('scenarioName') || 'Untitled Session'
+  // The Customise step requires a scenario name before this effect runs
+  const scenarioName = context.getAnswer('scenarioName')
   const flags = context.getAnswer('flags') ?? []
 
   const values: Partial<ScenarioValues> = {}
@@ -121,7 +122,7 @@ export const createSessionFromCustomize =
     const notification: TrainingLauncherNotification = {
       type: 'success',
       title: 'Session created',
-      message: `'${scenarioName}' session is ready. Generate a handover link to begin.`,
+      message: `${scenarioName} session started. Select Generate link to open it.`,
       target: 'sessions',
     }
     userSession.notifications.push(notification)
