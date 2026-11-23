@@ -84,16 +84,9 @@
   </p>
 {% endset %}
 
-{% block supportWidget %}
-  {{ supportWidget({
-    helpContent: launcherHelpContent,
-    supportItems: [
-      { label: 'Preferences ID', value: data.preferencesId }
-    ] if data.preferencesId else []
-  }) }}
-{% endblock %}
-
-{% block govukFooter %}
+{# Overrides the GOV.UK template's footer block, which would wrap these in a second footer landmark.
+   The support widget sits outside the landmark, and the service footer is the only contentinfo. #}
+{% block footer %}
   {{ supportWidget({
     helpContent: launcherHelpContent,
     supportItems: [
@@ -108,5 +101,4 @@
       baseUrl: footerBaseUrl or "/platform"
     }) }}
   {% endif %}
-
 {% endblock %}
