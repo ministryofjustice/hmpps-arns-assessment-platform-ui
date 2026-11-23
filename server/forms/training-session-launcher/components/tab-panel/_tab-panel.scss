@@ -12,14 +12,9 @@
     background: govuk-colour('white');
     border: 1px solid #d9dadb;
 
-    // Only fix the height on wider screens. On narrow screens the sidebar and panel stack and must grow with
-    // their content, or the scenario list is squeezed out of view.
+    // The layout grows with its content at every width, so the page is the only scroll area
     @include govuk-media-query($from: tablet) {
       grid-template-columns: 280px 1fr;
-      grid-template-rows: minmax(0, 1fr);
-      min-height: 500px;
-      max-height: 70vh;
-      overflow: hidden;
     }
   }
 
@@ -27,8 +22,6 @@
   &__sidebar {
     background-color: govuk-colour('black', $variant: 'tint-95');
     padding: govuk-spacing(4);
-    overflow-y: auto;
-    min-height: 0;
 
     &-title {
       margin-bottom: govuk-spacing(3);
@@ -104,35 +97,9 @@
 
   // Right panels container
   &__panels {
-    overflow-y: scroll;
-    min-height: 0;
+    // Lets long content such as tables shrink inside the grid column instead of widening the page
+    min-width: 0;
     padding: govuk-spacing(4);
-    scrollbar-gutter: stable;
-
-    // Firefox scrollbar styling
-    scrollbar-width: auto;
-    scrollbar-color: govuk-functional-colour(border) govuk-colour('black', $variant: 'tint-95');
-
-    // WebKit (Chrome, Safari, Edge) scrollbar styling
-    &::-webkit-scrollbar {
-      width: 10px;
-      -webkit-appearance: none;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: govuk-colour('black', $variant: 'tint-95');
-      border-radius: 5px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: govuk-functional-colour(border);
-      border-radius: 5px;
-      border: 2px solid govuk-colour('black', $variant: 'tint-95');
-
-      &:hover {
-        background-color: govuk-colour('black', $variant: 'tint-25');
-      }
-    }
 
     @include govuk-media-query($from: tablet) {
       padding: govuk-spacing(6);

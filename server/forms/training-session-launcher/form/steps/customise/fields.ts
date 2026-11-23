@@ -92,6 +92,10 @@ export const customiseFormWrapper = TemplateWrapper({
       </div>
 
       {{slot:tabPanel}}
+
+      <div class="govuk-button-group">
+        {{slot:endActions}}
+      </div>
     </form>
   `,
   values: {
@@ -118,5 +122,13 @@ export const customiseFormWrapper = TemplateWrapper({
       }),
     ],
     tabPanel: [customiseTabPanel],
+    // The tab panel is long, so the primary action is repeated at the end of the form
+    endActions: [
+      GovUKButton({
+        text: 'Create session',
+        name: 'action',
+        value: 'createSession',
+      }),
+    ],
   },
 })
