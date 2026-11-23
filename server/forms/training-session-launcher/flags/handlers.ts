@@ -59,7 +59,7 @@ export interface FlagHandler {
  * Registry mapping flags to their handlers
  */
 const flagHandlers: Record<TrainingScenarioFlag, FlagHandler> = {
-  SAN_PRIVATE_BETA: {
+  SAN_BETA: {
     session: {
       modifyRequest: request => ({ ...request, assessmentType: 'SAN_SP' }),
     },
@@ -174,7 +174,7 @@ export function resolveHandoverConfig(flags: TrainingScenarioFlag[]): ResolvedHa
  * Get all fields that should be excluded based on flags and the scenario's fixed values.
  * Excluded fields remain undefined (not fixed, not randomized).
  *
- * Criminogenic needs fields are excluded only when the SAN_PRIVATE_BETA flag is off and the
+ * Criminogenic needs fields are excluded only when the SAN_BETA flag is off and the
  * scenario has turned the mocked criminogenic needs off. Built-in presets never fix that
  * setting, so they always get needs.
  */
@@ -185,7 +185,7 @@ export function getExcludedFields(
   // A scenario that never set the mocks setting counts as on
   const mocksTurnedOff = fixedValues.useMockedCriminogenicNeeds === 'NO'
 
-  if (flags.includes('SAN_PRIVATE_BETA') || !mocksTurnedOff) {
+  if (flags.includes('SAN_BETA') || !mocksTurnedOff) {
     return new Set<ScenarioFieldKey>()
   }
 
@@ -247,7 +247,7 @@ export async function runAfterCreateSessionHooks(
 
 export function mapFlagToTargetApplication(flag: TrainingScenarioFlag): TargetApplication {
   switch (flag) {
-    case 'SAN_PRIVATE_BETA':
+    case 'SAN_BETA':
       return 'strengths-and-needs'
 
     case 'TIERING_ASSESSMENT':

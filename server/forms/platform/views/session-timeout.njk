@@ -1,0 +1,39 @@
+{#- Uses Sentence Plan's page so SP keeps its own footer; the govukFooter block swaps it for other services -#}
+{%- extends "sentence-plan/views/simple-page.njk" -%}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
+
+{% set timeoutContent = sessionTimeoutContentFor(timedOutService) %}
+{% set pageTitle = timeoutContent.page.title %}
+{% set hmppsHeaderServiceNameLink = timeoutContent.page.returnButton.href if timeoutContent.page.returnButton %}
+{% set disableHeaderLink = not timeoutContent.page.returnButton %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ timeoutContent.page.heading }}</h1>
+      <div data-qa="session-timeout-content">
+        {% for paragraph in timeoutContent.page.paragraphs %}
+          <p class="govuk-body">{{ paragraph }}</p>
+        {% endfor %}
+      </div>
+
+      {% if timeoutContent.page.returnButton %}
+        {#- OASys users have to sign in again through the handover service -#}
+        {{ govukButton({
+          text: timeoutContent.page.returnButton.text,
+          href: ('/sign-in/handover?service=' + timedOutService) if timedOutAuthSource == 'OASYS' else timeoutContent.page.returnButton.href,
+          attributes: { 'data-ai-id': 'unsaved-information-deleted-go-to-plan-button' }
+        }) }}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block govukFooter %}
+  {% if timedOutService == 'sentence-plan' %}
+    {{ super() }}
+  {% else %}
+    {{ pdsFooter({ baseUrl: footerBaseUrl or basePath }) }}
+  {% endif %}
+{% endblock %}

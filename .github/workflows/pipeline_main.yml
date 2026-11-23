@@ -38,6 +38,11 @@ jobs:
     needs: node_build
     secrets: inherit
 
+  playwright_component_tests:
+    name: Component tests
+    uses: ./.github/workflows/component_test.yml
+    needs: node_build
+
   build_docker:
     name: Build docker image
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/docker_build.yml@v2
