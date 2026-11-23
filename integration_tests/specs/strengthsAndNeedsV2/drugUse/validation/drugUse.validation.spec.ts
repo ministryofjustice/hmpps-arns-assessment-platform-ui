@@ -8,22 +8,28 @@ import { forDrug } from '../../sanUtils'
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Validation', () => {
-  test('validation ever misused drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-status', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
     await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v2.0').save()
 
     await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
-
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'ever misused drugs')
-
     const { questions } = drugUsePage
 
     await drugUsePage.saveAndContinue.click()
+    await expect(drugUsePage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select if they’ve ever misused drugs":
+              - /url: "#drug_use"
+      `)
     await questions.drug_use.errorLink.click()
     await expect(questions.drug_use.input).toBeFocused()
   })
 
-  test('validation misused drug types', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-types', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -34,15 +40,24 @@ test.describe('Validation', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-types')
-
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_types.path)
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
+    const { questions } = drugUsePage
 
     await drugUsePage.saveAndContinue.click()
-    await expect(drugUsePage.alert.getByRole('link', { name: 'Select which drugs they’ve misused' })).toBeVisible()
+    await expect(drugUsePage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select which drugs they’ve misused":
+              - /url: "#select_misused_drugs"
+      `)
+    await questions.select_misused_drugs.errorLink.click()
+    await expect(questions.select_misused_drugs.input).toBeFocused()
   })
 
-  test('validation last use these drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-last-used', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -56,15 +71,24 @@ test.describe('Validation', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-last-used')
-
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_last_used.path)
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'last use these drugs')
 
     await drugUsePage.saveAndContinue.click()
-    await expect(drugUsePage.alert.getByRole('link', { name: 'Select when they last used this drug' })).toBeVisible()
+    await expect(drugUsePage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select when they last used this drug":
+              - /url: "#drug_last_used_cannabis"
+      `)
+    const lastUsed = drugUsePage.question(forDrug(Question.drug_last_used_value, Option.cannabis))
+    await lastUsed.errorLink.click()
+    await expect(lastUsed.input).toBeFocused()
   })
 
-  test('validation drug use details', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-details', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -79,8 +103,7 @@ test.describe('Validation', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code, Step.drug_use_last_used.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-details')
-
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_details.path)
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Used in the last 6 months')
     const { questions } = drugUsePage
 
@@ -104,7 +127,7 @@ test.describe('Validation', () => {
     await expect(howOftenUsed.input).toBeFocused()
   })
 
-  test('validation last injected drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-last-injected', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -130,15 +153,24 @@ test.describe('Validation', () => {
       ])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-last-injected')
-
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_last_injected.path)
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'injected drugs')
 
     await drugUsePage.saveAndContinue.click()
-    await expect(drugUsePage.alert.getByRole('link', { name: 'Select when they injected this drug' })).toBeVisible()
+    await expect(drugUsePage.alert).toMatchAriaSnapshot(`
+    - alert:
+      - heading "There is a problem" [level=2]
+      - list:
+        - listitem:
+          - link "Select when they injected this drug":
+            - /url: "#drugs_injected_amphetamines"
+      `)
+    const lastInjected = drugUsePage.question(forDrug(Question.drugs_injected_value, Option.amphetamines))
+    await lastInjected.errorLink.click()
+    await expect(lastInjected.input).toBeFocused()
   })
 
-  test('validation stop or reduce drug use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-reduce-use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -166,8 +198,7 @@ test.describe('Validation', () => {
       ])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-reduce-use')
-
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_reduce_use.path)
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'stop or reduce their drug use')
     const { questions } = drugUsePage
 
@@ -206,7 +237,7 @@ test.describe('Validation', () => {
     await expect(questions.drugs_anything_helped_stop_or_reduce_use_details.input).toBeFocused()
   })
 
-  test('validation change drug use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('validation drug-use-change-use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -238,13 +269,20 @@ test.describe('Validation', () => {
       ])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-change-use')
-
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_change_use.path)
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'want to make changes to their drug use')
+    const { questions } = drugUsePage
 
     await drugUsePage.saveAndContinue.click()
-    await expect(
-      drugUsePage.alert.getByRole('link', { name: 'Select if they want to make changes to their drug use' }),
-    ).toBeVisible()
+    await expect(drugUsePage.alert).toMatchAriaSnapshot(`
+      - alert:
+        - heading "There is a problem" [level=2]
+        - list:
+          - listitem:
+            - link "Select if they want to make changes to their drug use":
+              - /url: "#drug_use_changes"
+      `)
+    await questions.drug_use_changes.errorLink.click()
+    await expect(questions.drug_use_changes.input).toBeFocused()
   })
 })

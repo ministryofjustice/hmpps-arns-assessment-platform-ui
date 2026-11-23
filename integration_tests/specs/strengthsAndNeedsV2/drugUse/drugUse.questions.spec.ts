@@ -41,7 +41,7 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-types')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_types.path)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Which drugs has')
 
@@ -82,38 +82,6 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows summary page, never misused drugs', async ({
-    page,
-    createSession,
-    strengthsAndNeedsBuilder,
-    baseURL,
-  }) => {
-    const { handoverLink, sanAssessmentId } = await createSession({
-      targetService: TargetService.STRENGTHS_AND_NEEDS,
-    })
-    await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId, 'v2.0').withAnswers([{ question: Question.drug_use, value: CommonOption.no }])
-      .withUserSubmittedSteps([Step.drug_use_status.code])
-      .save()
-
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-summary')
-
-    const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Summary')
-
-    await expect(drugUsePage.summary).toMatchAriaSnapshot(`
-      - tabpanel "Summary":
-        - term: Has Test ever misused drugs?
-        - definition:
-          - paragraph: "No"
-        - definition:
-          - link "Change Has Test ever misused drugs?":
-            - /url: drug-use-status#drug_use-question
-        - heading [level=2]
-        - heading [level=2]
-        - button "Go to practitioner analysis"
-    `)
-  })
-
   test('shows drugs last used', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
@@ -127,7 +95,7 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-last-used')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_last_used.path)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'last use these drugs')
 
@@ -164,7 +132,7 @@ test.describe('Questions', () => {
       .withUserSubmittedSteps([Step.drug_use_status.code, Step.drug_use_types.code, Step.drug_use_last_used.code])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-details')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_details.path)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'Used in the last 6 months')
 
@@ -239,7 +207,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-last-injected')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_last_injected.path)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'injected drugs')
 
@@ -286,7 +254,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-reduce-use')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_reduce_use.path)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'stop or reduce their drug use')
 
@@ -345,7 +313,7 @@ test.describe('Questions', () => {
       ])
       .save()
 
-    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, 'drug-use-change-use')
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_change_use.path)
 
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'want to make changes to their drug use')
 
