@@ -27,6 +27,7 @@ interface FormConfigField {
 export interface FormConfig {
   version: string
   fields: Record<string, FormConfigField>
+  goLiveDate?: string
 }
 
 const fieldOptionsOf = (content: QuestionContent): Pick<FormConfigField, 'options'> =>
@@ -41,6 +42,7 @@ export const buildFormConfig = (
   version: string,
   sections: SectionDefinition[],
   sectionStatusKeys: string[],
+  goLiveDate?: string,
 ): FormConfig => {
   const fields: Record<string, FormConfigField> = {}
 
@@ -75,5 +77,5 @@ export const buildFormConfig = (
     }
   })
 
-  return { version, fields }
+  return { version, fields, goLiveDate }
 }

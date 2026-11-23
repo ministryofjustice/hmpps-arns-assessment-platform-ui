@@ -21,7 +21,7 @@ test.describe('Missing victim collection', () => {
       const { handoverLink, sanAssessmentId } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
-      await strengthsAndNeedsBuilder.extend(sanAssessmentId).save()
+      await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
       await OffenceAnalysisPage.navigateTo(
         page,

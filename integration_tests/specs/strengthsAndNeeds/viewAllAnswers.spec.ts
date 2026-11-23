@@ -320,7 +320,7 @@ test.describe('View all answers', () => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
 
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         ...accommodation,
         ...employment,
@@ -386,7 +386,7 @@ test.describe('View all answers', () => {
 
   test('shows only what has been answered', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
 
@@ -394,7 +394,7 @@ test.describe('View all answers', () => {
     expect(await pageText(page)).toContain('Accommodation\nIncomplete\nEmployment and education')
 
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: 'current_accommodation', value: 'NO_ACCOMMODATION' },
         { question: 'type_of_no_accommodation', value: 'ROUGH_SLEEPING' },
@@ -418,8 +418,9 @@ test.describe('View all answers', () => {
 })
 
 test.describe('Accessibility', () => {
-  test('should be accessible', async ({ baseURL, createSession, page }) => {
+  test('should be accessible', async ({ baseURL, createSession, strengthsAndNeedsBuilder, page }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
     await checkAccessibility(page, {
@@ -430,7 +431,7 @@ test.describe('Accessibility', () => {
 
   test('print should be accessible', async ({ baseURL, createSession, page, strengthsAndNeedsBuilder }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)
@@ -453,7 +454,7 @@ test.describe('View all answers print view', () => {
     strengthsAndNeedsBuilder,
   }) => {
     const { handoverLink, sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await navigateToStrengthsAndNeeds(page, handoverLink)
     await page.goto(`${baseURL}${sanFormPath}${v1Path}/edit/${sanAssessmentId}/current${viewAllAnswers}`)

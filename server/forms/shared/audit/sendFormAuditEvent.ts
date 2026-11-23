@@ -1,4 +1,5 @@
 import AuditService from '../../../services/auditService'
+import { AssessmentVersionQueryResult } from '../../../interfaces/aap-api/queryResult'
 
 export interface AuditEffectContext {
   getState(key: string): unknown
@@ -19,6 +20,7 @@ export const sendFormAuditEvent = async (
   const user = context.getState('user') as { id?: string } | undefined
   const requestId = context.getState('requestId') as string | undefined
   const crn = context.getSession()?.caseDetails?.crn
+  const formVersion = (context.getData('assessment') as AssessmentVersionQueryResult | undefined)?.formVersion
 
   await auditService.send({
     action,
@@ -29,7 +31,7 @@ export const sendFormAuditEvent = async (
     details: {
       form,
       assessmentUuid: context.getData('assessmentUuid'),
-      formVersion: context.getData('formVersion'),
+      formVersion,
       ...details,
     },
   })

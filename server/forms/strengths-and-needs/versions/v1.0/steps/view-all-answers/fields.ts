@@ -5,7 +5,7 @@ import { answerRow, questionsWithin } from '../../../../constants/questionConten
 import { Section, SectionComplete } from '../../constants/section'
 import { commonContentFor } from '../../locales'
 import { analysisOf, Answerable, questionsOf, ViewAllAnswersSection, viewAllAnswersSections } from './sections'
-import { CaseData } from '../../constants/formVersion'
+import { CaseData } from '../../../../constants/common'
 
 type SectionDefinition = (typeof Section)[keyof typeof Section]
 

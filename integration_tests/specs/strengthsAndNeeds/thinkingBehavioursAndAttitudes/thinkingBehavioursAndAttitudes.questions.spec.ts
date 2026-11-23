@@ -12,7 +12,7 @@ test.describe('Questions', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await ThinkingBehavioursAndAttitudesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
 
@@ -168,7 +168,7 @@ test.describe('Questions', () => {
       sexuallyMotivatedOffenceHistory: 'YES',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
         { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
@@ -232,7 +232,7 @@ test.describe('Questions', () => {
     })
 
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
         { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },
@@ -297,7 +297,7 @@ test.describe('Questions', () => {
       sexuallyMotivatedOffenceHistory: 'YES',
     })
     await strengthsAndNeedsBuilder
-      .extend(sanAssessmentId)
+      .extend(sanAssessmentId, 'v1.0')
       .withAnswers([
         { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_present },
         { question: Question.thinking_behaviours_attitudes_supervision, value: Option.yes_supervision },

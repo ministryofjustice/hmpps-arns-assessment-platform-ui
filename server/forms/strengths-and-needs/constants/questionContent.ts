@@ -275,7 +275,7 @@ export const requiredValidationOf = (content: { validationMessage?: ResolvableSt
  * revealed questions have them projected into their conditional reveal block.
  */
 export const radioField =
-  (placement: FieldPlacement & { legendClasses?: string } = {}) =>
+  (placement: FieldPlacement & { legendClasses?: ResolvableString } = {}) =>
   (content: OptionedQuestionContent) =>
     GovUKRadioInput(
       definedPropsOf({

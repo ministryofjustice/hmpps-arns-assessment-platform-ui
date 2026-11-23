@@ -25,6 +25,7 @@ export interface OasysCreateRequest {
   previousOasysSanPk?: string
   previousOasysSpPk?: string
   regionPrisonCode?: string
+  oasysData?: Record<string, any>
 }
 
 export interface OasysCreateResponse {

@@ -10,7 +10,7 @@ test.describe('Errors', () => {
       accessMode: 'READ_ONLY',
       planAccessMode: 'READ_WRITE',
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await page.goto(handoverLink)
     await handlePrivacyScreenIfPresent(page)
@@ -22,12 +22,12 @@ test.describe('Errors', () => {
   })
 
   test('Access denied', async ({ page, createSession, strengthsAndNeedsBuilder }) => {
-    const { handoverLink } = await createSession({
+    const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
       accessMode: 'READ_ONLY',
       planAccessMode: 'READ_WRITE',
     })
-    await strengthsAndNeedsBuilder.fresh().save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await page.goto(handoverLink)
     await page.goto(handoverLink)
@@ -42,7 +42,7 @@ test.describe('Errors', () => {
 test.describe('HMPPS Auth error', () => {
   test('forbidden', async ({ baseURL, page, createSession, strengthsAndNeedsBuilder }) => {
     const { sanAssessmentId } = await createSession({ targetService: TargetService.STRENGTHS_AND_NEEDS })
-    await strengthsAndNeedsBuilder.extend(sanAssessmentId).save()
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     // HMPPS Auth login
     await login(page)

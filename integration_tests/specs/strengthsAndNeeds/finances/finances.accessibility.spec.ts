@@ -3,10 +3,11 @@ import { test, TargetService } from '../../../support/fixtures'
 import { checkAccessibility } from '../sanUtils'
 
 test.describe('Accessibility', () => {
-  test('should be accessible', async ({ page, createSession, baseURL }) => {
+  test('should be accessible', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
     await checkAccessibility(page, {

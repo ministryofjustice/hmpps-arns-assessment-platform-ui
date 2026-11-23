@@ -36,6 +36,7 @@ export function buildCoordinatorRequest(session: Session): OasysCreateRequest {
       crn: values.crn,
     },
     newPeriodOfSupervision: 'N',
+    oasysData: values.oasysData,
   }
 
   return applyCreateSessionModifiers(flags, baseRequest)
@@ -97,14 +98,16 @@ export async function createInCoordinatorAndUpdatePreferences(
     await deps.preferencesStore.update<{ trainingLauncher?: TrainingLauncherPreferences }>(preferencesId, current => {
       const trainingLauncher = current?.trainingLauncher ?? DEFAULT_PREFERENCES
 
+      session.sanAssessmentId = coordinatorResponse.sanAssessmentId
+      session.sanAssessmentVersion = coordinatorResponse.sanAssessmentVersion
+      session.sentencePlanId = coordinatorResponse.sentencePlanId
+      session.sentencePlanVersion = session.sentencePlanVersion ?? coordinatorResponse.sentencePlanVersion
+
       const updatedSessions = trainingLauncher.sessions.map(s => {
         if (s.id === session.id) {
           return {
             ...s,
-            sanAssessmentId: coordinatorResponse.sanAssessmentId,
-            sanAssessmentVersion: coordinatorResponse.sanAssessmentVersion,
-            sentencePlanId: coordinatorResponse.sentencePlanId,
-            sentencePlanVersion: s.sentencePlanVersion ?? coordinatorResponse.sentencePlanVersion,
+            ...session,
           }
         }
 

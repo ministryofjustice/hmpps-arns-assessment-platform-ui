@@ -1,7 +1,6 @@
 import { Answer, Condition, Transformer } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { ResolvableString } from '@ministryofjustice/hmpps-forge/core/components'
 
-import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import {
   checkboxField,
@@ -27,6 +26,7 @@ import {
   textSummaryRow,
   yesNo,
 } from '../../constants/questionContent'
+import { CaseData } from '../../../../constants/common'
 
 // The parenting responsibilities question only applies once we know the person
 // has children or parenting responsibilities.

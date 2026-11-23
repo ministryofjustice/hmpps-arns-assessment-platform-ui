@@ -9,11 +9,13 @@ test.describe('Previous Versions - Countersigned', () => {
   test('should show countersigned versions from previous days in a separate table', async ({
     page,
     createSession,
+    strengthsAndNeedsBuilder,
     baseURL,
   }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
+    await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').save()
 
     const today = new Date()
     const yesterday = new Date()

@@ -1,7 +1,6 @@
 import { and, Answer, Condition, when } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { GovUKRadioInput } from '@ministryofjustice/hmpps-forge/govuk-components'
 
-import { CaseData } from '../../constants/formVersion'
 import { CommonOption } from '../../constants/commonOption'
 import { Gender } from '../../../../../shared/constants/gender'
 import {
@@ -22,6 +21,7 @@ import { Option } from './constants/option'
 import { Section } from '../../constants/section'
 import { itemisedSummaryRow, optionalDetails, requiredDetails, yesNo } from '../../constants/questionContent'
 import { CharacterLimit } from '../../../../constants/characterLimit'
+import { CaseData } from '../../../../constants/common'
 
 // Base usage applies whenever they have drunk alcohol; the recency questions
 // (frequency, units, binge drinking) only when they drank in the last 3 months.
