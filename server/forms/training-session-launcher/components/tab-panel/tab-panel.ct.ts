@@ -21,7 +21,7 @@ const tabPanelItems: EvaluatedBlock<TabPanel>['items'] = [
           blockType: BlockType.BASIC,
           variant: 'html',
         },
-        html: '<h3>First scenario details</h3>',
+        html: '<h3>First scenario details</h3><a href="#second-field" class="govuk-link">Go to the second field</a>',
       },
     ],
   },
@@ -36,7 +36,11 @@ const tabPanelItems: EvaluatedBlock<TabPanel>['items'] = [
           blockType: BlockType.BASIC,
           variant: 'html',
         },
-        html: '<h3>Second scenario details</h3>',
+        html: `<h3>Second scenario details</h3>
+          <details class="govuk-details"><summary class="govuk-details__summary">More</summary>
+            <div class="govuk-details__text"><input class="govuk-input" id="second-field" name="second"></div>
+          </details>
+          ${'<p class="govuk-body">Long content.</p>'.repeat(80)}`,
       },
     ],
   },
@@ -111,5 +115,71 @@ test.describe('TabPanel', () => {
 
     // Assert
     expect(cursor).toBe('pointer')
+  })
+
+  test('should name the vertical tablist with the sidebar title, outside any navigation landmark', async ({
+    page,
+    mountForgeComponent,
+  }) => {
+    // Act
+    await mountForgeComponent(
+      TabPanel,
+      { id: 'scenarios', sidebarTitle: 'Scenarios', items: tabPanelItems },
+      { assets: trainingSessionLauncherAssets },
+    )
+
+    // Assert
+    const tablist = page.getByRole('tablist', { name: 'Scenarios', exact: true })
+    await expect(tablist).toBeVisible()
+    await expect(tablist).toHaveAttribute('aria-orientation', 'vertical')
+    await expect(page.getByRole('navigation')).toHaveCount(0)
+  })
+
+  for (const width of [375, 1280]) {
+    test(`should grow with its content instead of scrolling inside the page at ${width}px`, async ({
+      page,
+      mountForgeComponent,
+    }) => {
+      // Arrange
+      await page.setViewportSize({ width, height: 700 })
+
+      // Act
+      await mountForgeComponent(
+        TabPanel,
+        { id: 'scenarios', items: tabPanelItems, defaultSelected: 'second-scenario' },
+        { assets: trainingSessionLauncherAssets },
+      )
+
+      // Assert
+      const scrollAreas = await page
+        .locator('.tab-panel, .tab-panel *')
+        .evaluateAll(elements =>
+          elements
+            .filter(element => ['auto', 'scroll', 'hidden'].includes(getComputedStyle(element).overflowY))
+            .map(element => element.className),
+        )
+      expect(scrollAreas).toEqual([])
+      await expect(page.locator('.tab-panel__layout')).toHaveCSS('max-height', 'none')
+      expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeGreaterThan(700)
+    })
+  }
+
+  test('should reveal a field in a hidden panel when an in-page link to it is followed', async ({
+    page,
+    mountForgeComponent,
+  }) => {
+    // Arrange
+    await mountForgeComponent(
+      TabPanel,
+      { id: 'scenarios', items: tabPanelItems },
+      { assets: trainingSessionLauncherAssets },
+    )
+
+    // Act
+    await page.getByRole('link', { name: 'Go to the second field' }).click()
+
+    // Assert
+    await expect(page.getByRole('tab', { name: /Second scenario/ })).toHaveAttribute('aria-selected', 'true')
+    await expect(page.locator('#second-field')).toBeVisible()
   })
 })
