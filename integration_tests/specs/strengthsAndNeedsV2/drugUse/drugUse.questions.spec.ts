@@ -8,7 +8,7 @@ import { test, TargetService } from '../../../support/fixtures'
 import { forDrug, buildPageTitle, sanPageTitles } from '../sanUtils'
 
 test.describe('Questions', () => {
-  test('shows misused drugs', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-status', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -31,7 +31,7 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows drug types', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-types', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -82,7 +82,7 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows drugs last used', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-last-used', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -117,7 +117,7 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('shows drug use details', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-details', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -179,7 +179,7 @@ test.describe('Questions', () => {
       `)
   })
 
-  test('shows drugs last injected', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-last-injected', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -224,7 +224,12 @@ test.describe('Questions', () => {
       `)
   })
 
-  test('shows reduce drug use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-reduce-use, used drugs in last 6 months', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -259,8 +264,8 @@ test.describe('Questions', () => {
     const drugUsePage = await DrugUsePage.verifyOnPage(page, 'stop or reduce their drug use')
 
     await expect(drugUsePage.mainForm).toMatchAriaSnapshot(`
-      - group "Has anything helped Test stop or reduce their drug use?":
-        - text: Has anything helped Test stop or reduce their drug use? Note any treatment or lifestyle changes that have helped them.
+      - group "Does anything help Test to stop or reduce their drug use?":
+        - text: Does anything help Test to stop or reduce their drug use? Consider any treatment, support networks or lifestyle changes.
         - radio "Yes"
         - text: "Yes"
         - radio "No"
@@ -279,7 +284,57 @@ test.describe('Questions', () => {
       `)
   })
 
-  test('shows change drug use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows drug-use-reduce-use, NOT used drugs in last 6 months', async ({
+    page,
+    createSession,
+    strengthsAndNeedsBuilder,
+    baseURL,
+  }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId, 'v2.0').withAnswers([
+        { question: Question.drug_use, value: CommonOption.yes },
+        { question: Question.select_misused_drugs, value: [Option.amphetamines, Option.other_drug] },
+        { question: Question.other_drug_name, value: 'calpol' },
+        { question: forDrug(Question.drug_last_used_value, Option.amphetamines), value: Option.more_than_six },
+        { question: forDrug(Question.drug_last_used_value, Option.other_drug), value: Option.more_than_six },
+        { question: forDrug(Question.how_often_used_value, Option.amphetamines), value: Option.daily },
+        {
+          question: forDrug(Question.how_often_used_details, Option.amphetamines),
+          value: 'amphetamines usage details',
+        },
+        { question: forDrug(Question.how_often_used_value, Option.other_drug), value: Option.daily },
+        { question: forDrug(Question.how_often_used_details, Option.other_drug), value: 'other drug usage details' },
+        { question: Question.drugs_injected, value: [Option.amphetamines] },
+        { question: forDrug(Question.drugs_injected_value, Option.amphetamines), value: [Option.more_than_six] },
+      ])
+      .withUserSubmittedSteps([
+        Step.drug_use_status.code,
+        Step.drug_use_types.code,
+        Step.drug_use_last_used.code,
+        Step.drug_use_details.code,
+        Step.drug_use_last_injected.code,
+      ])
+      .save()
+
+    await DrugUsePage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.drug_use_reduce_use.path)
+
+    const drugUsePage = await DrugUsePage.verifyOnPage(page, 'stop or reduce their drug use')
+
+    await expect(drugUsePage.mainForm).toMatchAriaSnapshot(`
+      - group "Did anything help Test to stop or reduce their drug use?":
+        - text: Did anything help Test to stop or reduce their drug use? Note any treatment or lifestyle changes that have helped them.
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+      - button "Save and continue"
+      `)
+  })
+
+  test('shows drug-use-change-use', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })

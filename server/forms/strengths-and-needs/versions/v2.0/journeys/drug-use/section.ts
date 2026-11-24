@@ -9,6 +9,7 @@ import {
   or,
   Self,
   validation,
+  when,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import {
   GovUKBody,
@@ -464,8 +465,14 @@ const anythingHelpedStopOrReduce = question({
   content: {
     code: Question.drugs_anything_helped_stop_or_reduce_use,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.drugs_anything_helped_stop_or_reduce_use.text', CaseData.Forename),
-    hint: contentFor('question.drugs_anything_helped_stop_or_reduce_use.hint'),
+    text: when(anyDrugUsedInLastSixMonths)
+      .then(contentFor('question.drugs_anything_helped_stop_or_reduce_use.usedInLastSixMonths.text', CaseData.Forename))
+      .else(
+        contentFor('question.drugs_anything_helped_stop_or_reduce_use.notUsedInLastSixMonths.text', CaseData.Forename),
+      ),
+    hint: when(anyDrugUsedInLastSixMonths)
+      .then(contentFor('question.drugs_anything_helped_stop_or_reduce_use.usedInLastSixMonths.hint'))
+      .else(contentFor('question.drugs_anything_helped_stop_or_reduce_use.notUsedInLastSixMonths.hint')),
     options: [
       {
         value: CommonOption.yes,
@@ -480,7 +487,9 @@ const anythingHelpedStopOrReduce = question({
         text: commonContentFor('option.NO'),
       },
     ],
-    validationMessage: contentFor('question.drugs_anything_helped_stop_or_reduce_use.validation'),
+    validationMessage: when(anyDrugUsedInLastSixMonths)
+      .then(contentFor('question.drugs_anything_helped_stop_or_reduce_use.usedInLastSixMonths.validation'))
+      .else(contentFor('question.drugs_anything_helped_stop_or_reduce_use.notUsedInLastSixMonths.validation')),
   },
   displayModes: {
     field: radioField(),
