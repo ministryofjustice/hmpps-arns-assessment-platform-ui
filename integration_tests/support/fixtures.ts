@@ -167,6 +167,7 @@ type WorkerFixtures = {
  */
 type TestApiFixtures = {
   aapClient: TestAapApiClient
+  sanClient: TestAapApiClient
   handoverClient: TestHandoverApiClient
   coordinatorClient: TestCoordinatorApiClient
   assessmentBuilder: AssessmentBuilderFactory
@@ -248,6 +249,17 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(client)
   },
 
+  sanClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestAapApiClient({
+      baseUrl: apis.aapApi.url,
+      dbConnectionString: apis.aapApi.dbConnectionString,
+      authenticationClient: authClient as unknown as AuthenticationClient,
+      testInfo,
+    })
+
+    await use(client)
+  },
+
   handoverClient: async ({ authClient, apis }, use, testInfo) => {
     const client = new TestHandoverApiClient({
       baseUrl: apis.handoverApi.url,
@@ -276,8 +288,8 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(SentencePlanBuilder(aapClient))
   },
 
-  strengthsAndNeedsBuilder: async ({ aapClient }, use) => {
-    await use(StrengthsAndNeedsBuilder(aapClient))
+  strengthsAndNeedsBuilder: async ({ sanClient }, use) => {
+    await use(StrengthsAndNeedsBuilder(sanClient))
   },
 
   coordinatorBuilder: async ({ coordinatorClient }, use) => {

@@ -27,4 +27,10 @@ export default class PreviousVersionsPage extends SentencePlanPage {
   async clickViewVersionOnDate(date: string): Promise<void> {
     await this.table.locator('tr', { hasText: date }).locator('a').click()
   }
+
+  async viewSanVersionOnDate(date: string): Promise<string | null> {
+    const link = this.table.last().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first()
+    await link.click()
+    return link.getAttribute('href')
+  }
 }

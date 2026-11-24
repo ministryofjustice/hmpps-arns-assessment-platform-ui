@@ -15,7 +15,6 @@ import { Fragment, ResolvableString } from '@ministryofjustice/hmpps-forge/core/
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
 import { basePath, CaseData } from '../../constants/formVersion'
 import { contentFor } from './locales'
-import { Section } from '../../constants/section'
 import { SANGenerators } from '../../../../generators'
 import { sentencePlanViewHistoricBasePath } from '../../constants/path'
 
@@ -60,7 +59,6 @@ const assessmentCell = {
               'view-historic',
               Data('assessmentUuid'),
               Item().path('assessmentVersionId'),
-              Section.accommodation.sideNavHref,
             ]),
             contentFor('previous_versions_table_action_view'),
             contentFor('previous_versions_table_action_view_assessment_visually_hidden'),
