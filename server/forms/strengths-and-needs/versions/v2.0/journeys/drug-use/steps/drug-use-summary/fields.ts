@@ -28,7 +28,7 @@ import { SANGenerators } from '../../../../../../generators'
 import { contentFor } from '../../locales'
 import { Option } from '../../constants/option'
 import { changeLinkActions } from '../../../../constants/questionContent'
-import { practitionerAnalysisNotRequired } from "../../../../constants/content"
+import { practitionerAnalysisNotRequired } from '../../../../constants/content'
 
 export const questions = questionsOf({
   section: Section.drug_use,

@@ -62,9 +62,16 @@ export const english = {
       validation: 'Select when they injected this drug',
     },
     [Question.drugs_anything_helped_stop_or_reduce_use]: {
-      text: 'Has anything helped %1 stop or reduce their drug use?',
-      hint: 'Note any treatment or lifestyle changes that have helped them.',
-      validation: 'Select if anything has helped them stop or reduce their drug use',
+      usedInLastSixMonths: {
+        text: 'Does anything help %1 to stop or reduce their drug use?',
+        hint: 'Consider any treatment, support networks or lifestyle changes.',
+        validation: 'Select if anything has helped them stop or reduce their drug use',
+      },
+      notUsedInLastSixMonths: {
+        text: 'Did anything help %1 to stop or reduce their drug use?',
+        hint: 'Note any treatment or lifestyle changes that have helped them.',
+        validation: 'Select if anything helped them stop or reduce their drug use',
+      },
     },
     [Question.drugs_anything_helped_stop_or_reduce_use_details]: {
       validation: 'Enter details on what has helped stop or reduce their drug use',
