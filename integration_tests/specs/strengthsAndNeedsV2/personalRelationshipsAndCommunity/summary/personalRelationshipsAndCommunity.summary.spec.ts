@@ -217,12 +217,12 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Does Test currently have a partner?":
             - /url: personal-relationships-community#personal_relationships_community_relationship_status-question
-        - term: How would you describe Test current relationship situation?
+        - term: How would you describe Test's current relationship situation?
         - definition:
           - paragraph: Positive and supportive
           - paragraph: test
         - definition:
-          - link "Change How would you describe Test current relationship situation?":
+          - link "Change How would you describe Test's current relationship situation?":
             - /url: personal-relationships-community#personal_relationships_community_current_relationship-question
         - term: How would you describe Test's history of intimate relationships?
         - definition:
