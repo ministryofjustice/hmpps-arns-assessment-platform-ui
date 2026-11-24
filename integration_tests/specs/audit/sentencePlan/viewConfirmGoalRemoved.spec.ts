@@ -1,7 +1,7 @@
 import { test } from '../../../support/fixtures'
 import ConfirmRemoveGoalPage from '../../../pages/sentencePlan/confirmRemoveGoalPage'
 import { sentencePlanV1UrlBuilders } from '../../sentencePlan/sentencePlanUtils'
-import { AuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, activeGoalWithSteps, expectAuditEvent } from './helpers'
 
 test.describe('View Remove a Goal confirmation', () => {
   test('visiting confirm remove page', async ({ page, auditQueue, openSentencePlan }) => {
@@ -15,7 +15,7 @@ test.describe('View Remove a Goal confirmation', () => {
     await page.goto(sentencePlanV1UrlBuilders.goalConfirmRemoved(goalUuid))
     await ConfirmRemoveGoalPage.verifyOnPage(page)
 
-    const event = await auditQueue.waitForAuditEvent(crn, AuditEvent.VIEW_CONFIRM_GOAL_REMOVED)
+    const event = await auditQueue.waitForAuditEvent(crn, SentencePlanAuditEvent.VIEW_CONFIRM_GOAL_REMOVED)
     expectAuditEvent(event, goalUuid)
   })
 })

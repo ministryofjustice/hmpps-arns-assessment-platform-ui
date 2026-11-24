@@ -1,12 +1,11 @@
 import { createForgePackage, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { sentencePlanV1Journey } from './versions/v1.0'
-import { AuditEvent, SentencePlanEffects, sentencePlanEffectRegistry } from './effects'
+import { CommonAuditEvent, SentencePlanEffects, sentencePlanEffectRegistry } from './effects'
 import { SentencePlanEffectsDeps } from './effects/types'
 import { sentencePlanComponents } from './components'
 import { sentencePlanTransformerRegistry } from './transformers'
 import { createPrivacyScreen } from '../shared'
 import { CaseData } from './versions/v1.0/constants'
-import { unsavedInformationDeletedStep } from './steps/unsaved-information-deleted/step'
 import { mergedPlanWarningStep } from './steps/merged-plan-warning/step'
 import config from '../../config'
 
@@ -19,7 +18,7 @@ const privacyScreenStep = createPrivacyScreen({
   loadEffects: [SentencePlanEffects.loadSessionData()],
   submitEffects: [
     SentencePlanEffects.setPrivacyAccepted(),
-    SentencePlanEffects.sendAuditEvent(AuditEvent.CONFIRM_PRIVACY_SCREEN),
+    SentencePlanEffects.sendAuditEvent(CommonAuditEvent.CONFIRM_PRIVACY_SCREEN),
   ],
   submitRedirectPath: 'v1.0/plan/overview',
   alreadyAcceptedRedirectPath: 'v1.0/plan/overview',
@@ -27,6 +26,8 @@ const privacyScreenStep = createPrivacyScreen({
   basePath: '/sentence-plan/v1.0',
   headerServiceNameLink: '/sentence-plan/v1.0/plan/overview',
   personForename: CaseData.Forename,
+  title: 'Close other applications',
+  feedbackUrl: config.nationalRolloutFeedbackUrl,
 })
 
 /**
@@ -54,7 +55,7 @@ const sentencePlanRootJourney = journey({
   title: 'Sentence plan',
   path: '/sentence-plan',
   children: [sentencePlanV1Journey],
-  steps: [mergedPlanWarningStep, privacyScreenStep, unsavedInformationDeletedStep],
+  steps: [mergedPlanWarningStep, privacyScreenStep],
 })
 
 /**

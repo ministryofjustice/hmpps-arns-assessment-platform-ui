@@ -4,22 +4,15 @@
  * Displays a warning modal when the user has been inactive for a configurable period.
  * Follows the MOJ modal dialog design pattern.
  *
- * Usage:
- * <moj-session-timeout-modal
- *   data-warning-after-inactive-seconds="3000"
- *   data-countdown-seconds="600"
- *   data-timeout-redirect-url="/sentence-plan/unsaved-information-deleted">
- * </moj-session-timeout-modal>
- *
- * Attributes:
- * - data-warning-after-inactive-seconds: Show warning after this many seconds of inactivity (default: 3000 = 50 mins)
- * - data-countdown-seconds: Countdown duration once modal is shown in seconds (default: 600 = 10 mins)
- * - data-timeout-redirect-url: URL to redirect to on timeout or delete (default: /sentence-plan/unsaved-information-deleted)
- * - data-auth-source: The authentication source (e.g., OASys) to pass through for re-authentication
+ * Rendered by server/views/partials/session-timeout-modal.njk, which sets the timings,
+ * redirect URL and per-service wording as data- attributes.
+ * `{countdown}` in data-description is swapped for the live countdown.
  */
 
 // Only track meaningful interactions - not passive movements
 const ACTIVITY_EVENTS = ['mousedown', 'keydown', 'touchstart', 'click', 'submit']
+
+const COUNTDOWN_PLACEHOLDER = '{countdown}'
 
 export class SessionTimeoutModal extends HTMLElement {
   constructor() {
@@ -28,9 +21,13 @@ export class SessionTimeoutModal extends HTMLElement {
     // Configuration from data attributes
     this.warningAfterInactiveSeconds = parseInt(this.dataset.warningAfterInactiveSeconds, 10) || 3000
     this.countdownSeconds = parseInt(this.dataset.countdownSeconds, 10) || 600
-    this.timeoutRedirectUrl = this.dataset.timeoutRedirectUrl || '/sentence-plan/unsaved-information-deleted'
+    this.timeoutRedirectUrl = this.dataset.timeoutRedirectUrl || '/platform/session-timeout'
     this.authSource = this.dataset.authSource || ''
     this.csrfToken = this.dataset.csrfToken || ''
+    this.heading = this.dataset.heading
+    this.description = this.dataset.description
+    this.continueText = this.dataset.continueText
+    this.leaveText = this.dataset.leaveText
 
     // State
     this.lastActivityTime = Date.now()
@@ -43,7 +40,7 @@ export class SessionTimeoutModal extends HTMLElement {
     this.handleActivity = this.handleActivity.bind(this)
     this.checkInactivity = this.checkInactivity.bind(this)
     this.handleContinueSession = this.handleContinueSession.bind(this)
-    this.handleDeleteInfo = this.handleDeleteInfo.bind(this)
+    this.handleLeave = this.handleLeave.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
 
     this.setupActivityListeners()
@@ -55,17 +52,11 @@ export class SessionTimeoutModal extends HTMLElement {
       <div class="moj-session-timeout-modal" role="alertdialog" aria-labelledby="session-timeout-title" aria-describedby="session-timeout-description" aria-modal="true">
         <div class="moj-session-timeout-modal__backdrop"></div>
         <div class="moj-session-timeout-modal__dialog" tabindex="-1" data-qa="session-timeout">
-          <h2 class="govuk-heading-l" id="session-timeout-title">Your unsaved information will be deleted soon</h2>
-          <p class="govuk-body" id="session-timeout-description">
-            We will delete any unsaved information if you do not continue in the next <strong class="moj-session-timeout-modal__countdown"></strong>. This is to protect your information.
-          </p>
+          <h2 class="govuk-heading-l" id="session-timeout-title"></h2>
+          <p class="govuk-body" id="session-timeout-description"></p>
           <div class="moj-session-timeout-modal__actions">
-            <button type="button" class="govuk-button" data-ai-id="session-timeout-modal-continue-button" data-action="continue">
-              Continue using sentence plan
-            </button>
-            <a href="#" class="govuk-link moj-session-timeout-modal__delete-link" data-ai-id="session-timeout-modal-delete-link" data-action="delete">
-              Delete unsaved information
-            </a>
+            <button type="button" class="govuk-button" data-ai-id="session-timeout-modal-continue-button" data-action="continue"></button>
+            <a href="#" class="govuk-link moj-session-timeout-modal__delete-link" data-ai-id="session-timeout-modal-delete-link" data-action="leave"></a>
           </div>
         </div>
       </div>
@@ -73,12 +64,25 @@ export class SessionTimeoutModal extends HTMLElement {
 
     this.$modal = this.querySelector('.moj-session-timeout-modal')
     this.$dialog = this.querySelector('.moj-session-timeout-modal__dialog')
-    this.$countdown = this.querySelector('.moj-session-timeout-modal__countdown')
     this.$continueButton = this.querySelector('[data-action="continue"]')
-    this.$deleteLink = this.querySelector('[data-action="delete"]')
+    this.$leaveLink = this.querySelector('[data-action="leave"]')
+
+    // Set as text, not HTML, so the wording can't inject markup
+    this.querySelector('#session-timeout-title').textContent = this.heading
+    this.$continueButton.textContent = this.continueText
+    this.$leaveLink.textContent = this.leaveText
+
+    this.$countdown = document.createElement('strong')
+    this.$countdown.className = 'moj-session-timeout-modal__countdown'
+    const [textBeforeCountdown, textAfterCountdown = ''] = this.description.split(COUNTDOWN_PLACEHOLDER)
+    this.querySelector('#session-timeout-description').replaceChildren(
+      textBeforeCountdown,
+      this.$countdown,
+      textAfterCountdown,
+    )
 
     this.$continueButton.addEventListener('click', this.handleContinueSession)
-    this.$deleteLink.addEventListener('click', this.handleDeleteInfo)
+    this.$leaveLink.addEventListener('click', this.handleLeave)
     document.addEventListener('keydown', this.handleKeyDown)
   }
 
@@ -157,14 +161,14 @@ export class SessionTimeoutModal extends HTMLElement {
     // Remove modal from DOM to avoid selector conflicts
     if (this.$modal) {
       this.$continueButton.removeEventListener('click', this.handleContinueSession)
-      this.$deleteLink.removeEventListener('click', this.handleDeleteInfo)
+      this.$leaveLink.removeEventListener('click', this.handleLeave)
       document.removeEventListener('keydown', this.handleKeyDown)
       this.innerHTML = ''
       this.$modal = null
       this.$dialog = null
       this.$countdown = null
       this.$continueButton = null
-      this.$deleteLink = null
+      this.$leaveLink = null
     }
   }
 
@@ -198,7 +202,7 @@ export class SessionTimeoutModal extends HTMLElement {
   }
 
   getRedirectUrl() {
-    // Append auth source as query param so the unsaved-info page knows how to re-authenticate
+    // Append auth source as query param so the timeout page knows how to re-authenticate
     if (this.authSource) {
       const separator = this.timeoutRedirectUrl.includes('?') ? '&' : '?'
       return `${this.timeoutRedirectUrl}${separator}auth=${encodeURIComponent(this.authSource)}`
@@ -228,7 +232,7 @@ export class SessionTimeoutModal extends HTMLElement {
     this.hideModal()
   }
 
-  handleDeleteInfo(event) {
+  handleLeave(event) {
     event.preventDefault()
     this.clearAllTimers()
     window.location.href = this.getRedirectUrl()
@@ -236,7 +240,7 @@ export class SessionTimeoutModal extends HTMLElement {
 
   // Focus trap and keyboard handling
   // - Tab/Shift+Tab: circular navigation including dialog (for screen reader access to content)
-  // - Escape: intentionally does NOT close the modal - user must explicitly choose to continue or delete
+  // - Escape: intentionally does NOT close the modal - user must explicitly choose to continue or leave
   handleKeyDown(event) {
     if (!this.isModalOpen) return
 
@@ -248,7 +252,7 @@ export class SessionTimeoutModal extends HTMLElement {
 
     if (event.key === 'Tab') {
       // Include dialog in focus trap so screen reader users can Tab back to hear content
-      const focusableElements = [this.$dialog, this.$continueButton, this.$deleteLink]
+      const focusableElements = [this.$dialog, this.$continueButton, this.$leaveLink]
       const currentIndex = focusableElements.indexOf(document.activeElement)
 
       event.preventDefault()
@@ -273,7 +277,7 @@ export class SessionTimeoutModal extends HTMLElement {
     })
     if (this.$modal) {
       this.$continueButton.removeEventListener('click', this.handleContinueSession)
-      this.$deleteLink.removeEventListener('click', this.handleDeleteInfo)
+      this.$leaveLink.removeEventListener('click', this.handleLeave)
       document.removeEventListener('keydown', this.handleKeyDown)
     }
     this.clearAllTimers()

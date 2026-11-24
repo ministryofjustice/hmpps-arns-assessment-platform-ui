@@ -4,9 +4,12 @@ import express from 'express'
 import fs from 'fs'
 import { mpopNunjucksSetup } from '@ministryofjustice/hmpps-mpop-frontend-components-lib'
 import { ValidationResult } from '@ministryofjustice/hmpps-forge/core/framework'
+import { DateTime } from 'luxon'
+import { registerForgeGovUKComponentsGlobals } from '@ministryofjustice/hmpps-forge/govuk-components'
 import { formatDate, initialiseName, possessive } from './utils'
 import config from '../config'
 import logger from '../../logger'
+import { getSessionTimeoutContent } from '../forms/platform/steps/session-timeout/sessionTimeoutContent'
 
 export default function nunjucksSetup(app?: express.Express) {
   if (app) {
@@ -16,8 +19,6 @@ export default function nunjucksSetup(app?: express.Express) {
     app.locals.applicationName = 'Assess and plan'
     app.locals.environmentName = config.environmentName
     app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
-    app.locals.feedbackFormUrl = config.feedbackFormUrl
-    app.locals.nationalRolloutFeedbackUrl = config.nationalRolloutFeedbackUrl
     app.locals.serviceNowFormUrl = config.serviceNowFormUrl
     app.locals.oasysUrl = config.oasysUrl
     app.locals.mpopUrl = config.mpopUrl
@@ -73,6 +74,8 @@ export default function nunjucksSetup(app?: express.Express) {
   // Filters required by the MPoP components library's templates
   mpopNunjucksSetup(njkEnv)
 
+  njkEnv.addGlobal('sessionTimeoutContentFor', getSessionTimeoutContent)
+
   njkEnv.addFilter('possessive', possessive)
 
   njkEnv.addFilter('initialiseName', initialiseName)
@@ -118,9 +121,15 @@ export default function nunjucksSetup(app?: express.Express) {
     return true
   }
 
+  const displayDateForToday = (today: DateTime = DateTime.now()) => {
+    return today.toFormat('dd MMMM y')
+  }
+
   njkEnv.addFilter('mapNavItem', mapNavItem)
 
   njkEnv.addFilter('isDeepestActive', isDeepestActive)
+
+  njkEnv.addGlobal('displayDateForToday', displayDateForToday)
 
   njkEnv.addFilter('toErrorSummary', (errors: ValidationResult[]) =>
     errors.map(error => ({
@@ -169,6 +178,8 @@ export default function nunjucksSetup(app?: express.Express) {
       )
     },
   )
+
+  registerForgeGovUKComponentsGlobals(njkEnv)
 
   return njkEnv
 }

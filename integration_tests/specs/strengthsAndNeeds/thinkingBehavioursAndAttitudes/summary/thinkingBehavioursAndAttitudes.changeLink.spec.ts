@@ -1,0 +1,181 @@
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v1.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/option'
+import { Question } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/question'
+import { Step } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/thinking-behaviours-and-attitudes/constants/step'
+import { thinking } from '../../sanUtils'
+import {
+  changeLink,
+  expectChangeLinksListed,
+  expectEachChangeLinkToLandOnItsQuestion,
+  practitionerAnalysisTab,
+  Scenario,
+  summaryTab,
+} from '../../changeLinkUtils'
+import { test } from '../../fixtures'
+
+/**
+ * Thinking, behaviours and attitudes change links
+ *
+ *   1. Questions: for each branch of the section, every question change link followed
+ *   2. Practitioner analysis: every practitioner analysis change link followed
+ *   3. Summary: what the summary and analysis pages list
+ *
+ * Branches: Fully answered in order to cover every question
+ */
+
+const summaryPage = 'thinking-behaviours-attitudes-summary'
+const analysisPage = 'thinking-behaviours-attitudes-analysis'
+
+const fullyAnswered: Scenario = {
+  answers: [
+    { question: Question.thinking_behaviours_attitudes_consequences, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_stable_behaviour, value: CommonOption.no },
+    { question: Question.thinking_behaviours_attitudes_offending_activities, value: Option.yes_offending_activities },
+    { question: Question.thinking_behaviours_attitudes_peer_pressure, value: Option.some },
+    { question: Question.thinking_behaviours_attitudes_peer_pressure_some_details, value: 'Some details' },
+    { question: Question.thinking_behaviours_attitudes_problem_solving, value: Option.limited_problem_solving },
+    { question: Question.thinking_behaviours_attitudes_peoples_views, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour, value: Option.some },
+    { question: Question.thinking_behaviours_attitudes_temper_management, value: CommonOption.no },
+    { question: Question.thinking_behaviours_attitudes_violence_controlling_behaviour, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_impulsive_behaviour, value: CommonOption.yes },
+    {
+      question: Question.thinking_behaviours_attitudes_positive_attitude,
+      value: Option.negative_attitude_and_concerns,
+    },
+    { question: Question.thinking_behaviours_attitudes_hostile_orientation, value: Option.some },
+    { question: Question.thinking_behaviours_attitudes_supervision, value: Option.unsure_supervision },
+    { question: Question.thinking_behaviours_attitudes_criminal_behaviour, value: Option.sometimes },
+    { question: Question.thinking_behaviours_attitudes_changes, value: CommonOption.not_applicable },
+    { question: Question.thinking_behaviours_attitudes_risk_sexual_harm, value: CommonOption.yes },
+    { question: Question.thinking_behaviours_attitudes_sexual_preoccupation, value: Option.sometimes },
+    {
+      question: Question.thinking_behaviours_attitudes_offence_related_sexual_interest,
+      value: Option.some_offence_related_sexual_interest,
+    },
+    { question: Question.thinking_behaviours_attitudes_emotional_intimacy, value: CommonOption.unknown },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors,
+      value: CommonOption.yes,
+    },
+    {
+      question:
+        Question.thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors_yes_details,
+      value: 'Some details',
+    },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details,
+      value: 'Some details',
+    },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending,
+      value: CommonOption.yes,
+    },
+    {
+      question: Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details,
+      value: 'Some details',
+    },
+  ],
+  summaryChangeLinks: [
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_consequences'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_stable_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_offending_activities'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_peer_pressure'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_problem_solving'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_peoples_views'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_manipulative_predatory_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_temper_management'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_violence_controlling_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_impulsive_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_positive_attitude'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_hostile_orientation'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_supervision'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_criminal_behaviour'),
+    changeLink('thinking-behaviours-attitudes', 'thinking_behaviours_attitudes_changes'),
+    changeLink('thinking-behaviours-attitudes-risk-of-sexual-harm', 'thinking_behaviours_attitudes_risk_sexual_harm'),
+    changeLink(
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
+      'thinking_behaviours_attitudes_sexual_preoccupation',
+    ),
+    changeLink(
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
+      'thinking_behaviours_attitudes_offence_related_sexual_interest',
+    ),
+    changeLink(
+      'thinking-behaviours-attitudes-risk-of-sexual-harm-details',
+      'thinking_behaviours_attitudes_emotional_intimacy',
+    ),
+  ],
+  userSubmittedSteps: [
+    Step.thinking_behaviours_attitudes.code,
+    Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
+    Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
+    Step.thinking_behaviours_attitudes_summary.code,
+  ],
+}
+
+const practitionerAnalysisChangeLinks = [
+  changeLink(
+    'thinking-behaviours-attitudes-summary',
+    'thinking_behaviours_attitudes_practitioner_analysis_strengths_or_protective_factors',
+  ),
+  changeLink(
+    'thinking-behaviours-attitudes-summary',
+    'thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm',
+  ),
+  changeLink(
+    'thinking-behaviours-attitudes-summary',
+    'thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending',
+  ),
+]
+
+test.describe('Thinking, behaviours and attitudes change links', () => {
+  test.describe('Questions', () => {
+    test.describe('fully answered', () => {
+      test('each change link lands on its question', async ({ page, openSection }) => {
+        const section = await openSection(thinking, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
+
+        await expectEachChangeLinkToLandOnItsQuestion(
+          page,
+          `${section}/${summaryPage}`,
+          fullyAnswered.summaryChangeLinks,
+          summaryTab,
+        )
+      })
+    })
+  })
+
+  test.describe('Practitioner analysis', () => {
+    test('each change link lands on its question', async ({ page, openSection }) => {
+      const section = await openSection(thinking, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
+
+      await expectEachChangeLinkToLandOnItsQuestion(
+        page,
+        `${section}/${analysisPage}`,
+        practitionerAnalysisChangeLinks,
+        practitionerAnalysisTab,
+      )
+    })
+  })
+
+  test.describe('Summary', () => {
+    test.describe('fully answered', () => {
+      test('the summary and analysis pages list every change link', async ({ page, openSection }) => {
+        const section = await openSection(thinking, fullyAnswered.answers, fullyAnswered.userSubmittedSteps)
+
+        await expectChangeLinksListed(page, `${section}/${summaryPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(page, `${section}/${analysisPage}`, fullyAnswered.summaryChangeLinks, summaryTab)
+        await expectChangeLinksListed(
+          page,
+          `${section}/${analysisPage}`,
+          practitionerAnalysisChangeLinks,
+          practitionerAnalysisTab,
+        )
+      })
+    })
+  })
+})

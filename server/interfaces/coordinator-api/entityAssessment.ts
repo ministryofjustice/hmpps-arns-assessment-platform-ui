@@ -30,7 +30,7 @@ export interface AnswerDto {
 export type SanAssessmentData = Record<string, AnswerDto>
 
 /**
- * Response from Coordinator API: GET /entity/{entityUuid}/ASSESSMENT
+ * Response from Coordinator API: GET /entity/{entityUuid}/AAP_SAN
  */
 export interface EntityAssessmentResponse {
   sanAssessmentId: string

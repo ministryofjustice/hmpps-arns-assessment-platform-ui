@@ -59,7 +59,7 @@ export async function registerTrainingStubs(
   }
 
   // Sentence Plan only reads ARNS needs for SAN_BETA assessments (canAccessSanInfo), so stubs for any other session would never be used.
-  const wantsMockedNeeds = values.useMockedCriminogenicNeeds === 'YES' && flags.includes('SAN_PRIVATE_BETA')
+  const wantsMockedNeeds = values.useMockedCriminogenicNeeds === 'YES' && flags.includes('SAN_BETA')
   const stubs = wantsMockedNeeds ? ArnsNeedsStubBuilder.build(values.crn, values) : []
 
   if (stubs.length === 0) {

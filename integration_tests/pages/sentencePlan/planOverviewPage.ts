@@ -1,8 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import { expectPlanAgreementUpdates } from '../../support/featureFlags'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class PlanOverviewPage extends AbstractPage {
+export default class PlanOverviewPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly createGoalLink: Locator
