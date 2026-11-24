@@ -18,7 +18,7 @@ import { MOJBanner } from '@ministryofjustice/hmpps-forge/moj-components'
 import { commonContentFor } from '../../../../locales'
 import { goToPractitionerAnalysisButton, markAsCompleteButton } from '../../../../constants/buttons'
 import { Step } from '../../constants/step'
-import { drugHowOftenUsed, drugHowOftenUsedDetails, drugLastUsed, drugUseSection } from '../../section'
+import { drugHowOftenUsed, drugHowOftenUsedDetails, drugLastUsed, drugUseSection, noDrugUse } from '../../section'
 import { questionsOf } from '../../../../steps/view-all-answers/sections'
 import { anyAnswered } from '../../../../steps/view-all-answers/fields'
 import { Section } from '../../../../constants/section'
@@ -28,6 +28,7 @@ import { SANGenerators } from '../../../../../../generators'
 import { contentFor } from '../../locales'
 import { Option } from '../../constants/option'
 import { changeLinkActions } from '../../../../constants/questionContent'
+import { practitionerAnalysisNotRequired } from "../../../../constants/content"
 
 export const questions = questionsOf({
   section: Section.drug_use,
@@ -196,6 +197,7 @@ export const summaryTab = HtmlBlock({
               drugUseSection.practitionerAnalysis.strengthsOrProtectiveFactors.displayModes.field,
               drugUseSection.practitionerAnalysis.riskOfSeriousHarm.displayModes.field,
               drugUseSection.practitionerAnalysis.riskOfReoffending.displayModes.field,
+              practitionerAnalysisNotRequired(noDrugUse),
               markAsCompleteButton,
             ],
           },
