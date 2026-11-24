@@ -7,9 +7,14 @@ interface CommandTimeline {
   data: Record<string, any>
 }
 
+export interface Hook {
+  type: string
+}
+
 export interface Command {
   type: string
   timeline?: CommandTimeline
+  hooks?: Hook[]
   user: User
   assessmentUuid: string
 }

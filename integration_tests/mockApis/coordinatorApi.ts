@@ -117,7 +117,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/coordinator-api/entity/${entityUuid}/ASSESSMENT`,
+        urlPattern: `/coordinator-api/entity/${entityUuid}/AAP_SAN`,
       },
       response: {
         status: 200,
@@ -131,7 +131,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/coordinator-api/entity/${entityUuid}/ASSESSMENT`,
+        urlPattern: `/coordinator-api/entity/${entityUuid}/AAP_SAN`,
       },
       response: {
         status: 404,
@@ -151,7 +151,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: `/coordinator-api/entity/${entityUuid}/ASSESSMENT`,
+        urlPattern: `/coordinator-api/entity/${entityUuid}/AAP_SAN`,
       },
       response: {
         status: 500,

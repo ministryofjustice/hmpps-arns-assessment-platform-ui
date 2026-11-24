@@ -126,7 +126,7 @@ test.describe('Select Area of Need', () => {
       // Create and save a first goal (selecting an area along the way).
       let planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.clickCreateGoal()
-      let selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      const selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
       await selectAreaOfNeedPage.selectAreaAndContinue('drug-use')
 
       const createGoalPage = await CreateGoalPage.verifyOnPage(page)
@@ -138,7 +138,7 @@ test.describe('Select Area of Need', () => {
       // Start a second goal: the previous area must not be pre-selected.
       planOverviewPage = await PlanOverviewPage.verifyOnPage(page)
       await planOverviewPage.clickCreateGoal()
-      selectAreaOfNeedPage = await SelectAreaOfNeedPage.verifyOnPage(page)
+      await SelectAreaOfNeedPage.verifyOnPage(page)
 
       await expect(page.locator('[name="area_of_need"]:checked')).toHaveCount(0)
     })

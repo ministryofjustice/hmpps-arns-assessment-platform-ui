@@ -29,7 +29,7 @@ export const flagsTabContent = [
     validWhen: flagsValidation(),
     items: [
       {
-        value: 'SAN_PRIVATE_BETA',
+        value: 'SAN_BETA',
         text: 'SAN Private Beta',
         hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
       },

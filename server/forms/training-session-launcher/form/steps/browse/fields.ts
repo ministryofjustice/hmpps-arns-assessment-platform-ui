@@ -108,6 +108,7 @@ const scenarioPanelContent = [
         GovUKButton({
           text: 'Start session',
           id: Format('start-session-%1', Item().path('id')),
+          preventDoubleClick: true,
         }),
       ],
       deleteButton: [
