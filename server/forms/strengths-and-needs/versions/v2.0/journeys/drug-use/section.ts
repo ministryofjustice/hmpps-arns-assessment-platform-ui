@@ -46,6 +46,8 @@ import { changeLinkActions, optionalDetails, requiredDetails, summaryRow, yesNo 
 import { StrengthsAndNeedsTransformers } from '../../../../transformers'
 import { StrengthsAndNeedsConditions } from '../../../../conditions'
 
+export const noDrugUse = Answer(Question.drug_use).match(Condition.Equals(CommonOption.no))
+
 const anyInjectableSelectedDrugs = Data('injectableSelectedDrugs').match(Condition.IsRequired())
 
 export const drugUsedInLastSixMonths = (drugValue: ChainableExpr) =>
@@ -608,9 +610,13 @@ const strengthsOrProtectiveFactors = question({
     validationMessage: contentFor('question.drug_use_practitioner_analysis_strengths_or_protective_factors.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: not(noDrugUse),
+      visibleWhen: not(noDrugUse),
+    }),
     summaryRow: summaryRow({
       changeHref: Step.drug_use_summary.path,
+      visibleWhen: not(noDrugUse),
     }),
   },
 })
@@ -636,9 +642,13 @@ const riskOfSeriousHarm = question({
     validationMessage: contentFor('question.drug_use_practitioner_analysis_risk_of_serious_harm.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: not(noDrugUse),
+      visibleWhen: not(noDrugUse),
+    }),
     summaryRow: summaryRow({
       changeHref: Step.drug_use_summary.path,
+      visibleWhen: not(noDrugUse),
     }),
   },
 })
@@ -664,9 +674,13 @@ const riskOfReoffending = question({
     validationMessage: contentFor('question.drug_use_practitioner_analysis_risk_of_reoffending.validation'),
   },
   displayModes: {
-    field: radioField(),
+    field: radioField({
+      dependentWhen: not(noDrugUse),
+      visibleWhen: not(noDrugUse),
+    }),
     summaryRow: summaryRow({
       changeHref: Step.drug_use_summary.path,
+      visibleWhen: not(noDrugUse),
     }),
   },
 })
