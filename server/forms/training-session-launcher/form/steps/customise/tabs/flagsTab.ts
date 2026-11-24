@@ -101,6 +101,7 @@ export const flagsTabContent = [
           rows: 14,
           defaultValue: JSON.stringify(defaultOasysData, null, 4),
         }),
+        checked: true,
       },
       {
         value: 'NEW_PERIOD_OF_SUPERVISION',

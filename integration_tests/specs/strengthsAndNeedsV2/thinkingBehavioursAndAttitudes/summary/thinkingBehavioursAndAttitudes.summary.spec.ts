@@ -7,7 +7,7 @@ import ThinkingBehavioursAndAttitudesPage from 'pages/strengthsAndNeedsV2/thinki
 import { test, TargetService } from '../../../../support/fixtures'
 
 test.describe('Summary', () => {
-  test('shows summary page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+  test('shows summary complete page', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
       sexuallyMotivatedOffenceHistory: 'YES',
@@ -43,6 +43,7 @@ test.describe('Summary', () => {
       ])
       .withUserSubmittedSteps([
         Step.thinking_behaviours_attitudes.code,
+        Step.thinking_behaviours_attitudes_changes.code,
         Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
         Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
         Step.thinking_behaviours_attitudes_summary.code,
@@ -75,15 +76,15 @@ test.describe('Summary', () => {
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_stable_behaviour-question
         - term: Does Test engage in activities that could link to offending?
         - definition:
-          - paragraph: Engages in pro-social activities and understands the link to offending
+          - paragraph: No, does not engage in these activities
         - definition:
           - link "Change Does Test engage in activities that could link to offending?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_offending_activities-question
-        - term: Is Test resilient towards peer pressure or influence by criminal associates?
+        - term: Is Test influenced by others in relation to their offending?
         - definition:
-          - paragraph: Yes, resilient towards peer pressure or influence by criminal associates
+          - paragraph: No, not influenced by others
         - definition:
-          - link "Change Is Test resilient towards peer pressure or influence by criminal associates?":
+          - link "Change Is Test influenced by others in relation to their offending?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_peer_pressure-question
         - term: Is Test able to solve problems in a positive way?
         - definition:
@@ -97,15 +98,15 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Does Test understand other people’s views?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_peoples_views-question
-        - term: Does Test show manipulative behaviour or a predatory lifestyle?
+        - term: Are there any indications that Test manipulates or exploits other people for personal gain?
         - definition:
-          - paragraph: Generally gives an honest account of their lives and has no history of showing manipulative behaviour or a predatory lifestyle
+          - paragraph: No indications
         - definition:
-          - link "Change Does Test show manipulative behaviour or a predatory lifestyle?":
+          - link "Change Are there any indications that Test manipulates or exploits other people for personal gain?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_manipulative_predatory_behaviour-question
         - term: Is Test able to manage their temper?
         - definition:
-          - paragraph: Yes, is able to manage their temper well
+          - paragraph: Yes, manages it well
         - definition:
           - link "Change Is Test able to manage their temper?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_temper_management-question
@@ -121,17 +122,17 @@ test.describe('Summary', () => {
         - definition:
           - link "Change Does Test act on impulse?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_impulsive_behaviour-question
-        - term: Does Test have hostile orientation to others or to general rules?
+        - term: Does Test show hostility towards other people, rules or authority?
         - definition:
-          - paragraph: They’re able to have constructive conversations when they disagree with others and can forgive past wrongs
+          - paragraph: No, does not show hostility
         - definition:
-          - link "Change Does Test have hostile orientation to others or to general rules?":
+          - link "Change Does Test show hostility towards other people, rules or authority?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_hostile_orientation-question
-        - term: Does Test accept supervision and their licence conditions?
+        - term: Are there indications Test is willing to engage positively with their sentence?
         - definition:
-          - paragraph: Accepts supervision and has responded well to supervision in the past
+          - paragraph: Significant indications
         - definition:
-          - link "Change Does Test accept supervision and their licence conditions?":
+          - link "Change Are there indications Test is willing to engage positively with their sentence?":
             - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_supervision-question
         - term: Does Test support or excuse criminal behaviour?
         - definition:
@@ -144,7 +145,7 @@ test.describe('Summary', () => {
           - paragraph: Test is not present
         - definition:
           - link "Change Does Test want to make changes to their thinking, behaviours and attitudes?":
-            - /url: thinking-behaviours-attitudes#thinking_behaviours_attitudes_changes-question
+            - /url: thinking-behaviours-attitudes-changes#thinking_behaviours_attitudes_changes-question
         - term: Are there any concerns that Test poses a risk of sexual harm to others?
         - definition:
           - paragraph: "Yes"
@@ -153,19 +154,19 @@ test.describe('Summary', () => {
             - /url: thinking-behaviours-attitudes-risk-of-sexual-harm#thinking_behaviours_attitudes_risk_sexual_harm-question
         - term: Is there evidence Test shows sexual preoccupation?
         - definition:
-          - paragraph: Yes, the amount of time they spend engaging in sexual activity or thinking about sex is unhealthy and is impacting their day-to-day life
+          - paragraph: Significant evidence
         - definition:
           - link "Change Is there evidence Test shows sexual preoccupation?":
             - /url: thinking-behaviours-attitudes-risk-of-sexual-harm-details#thinking_behaviours_attitudes_sexual_preoccupation-question
         - term: Is there evidence Test has offence-related sexual interests?
         - definition:
-          - paragraph: Yes, there are recurrent and persistent patterns of a preference for sexual activity that is illegal or harmful and no evidence of healthy sexual interests
+          - paragraph: Yes, significant evidence
         - definition:
           - link "Change Is there evidence Test has offence-related sexual interests?":
             - /url: thinking-behaviours-attitudes-risk-of-sexual-harm-details#thinking_behaviours_attitudes_offence_related_sexual_interest-question
         - term: Is there evidence Test finds it easier to seek emotional intimacy with children over adults?
         - definition:
-          - paragraph: Yes, they find it easier to seek emotional intimacy with children and have significant difficulty forming intimate relationships with adults
+          - paragraph: Yes, significant evidence
         - definition:
           - link "Change Is there evidence Test finds it easier to seek emotional intimacy with children over adults?":
             - /url: thinking-behaviours-attitudes-risk-of-sexual-harm-details#thinking_behaviours_attitudes_emotional_intimacy-question
@@ -209,6 +210,7 @@ test.describe('Summary', () => {
       ])
       .withUserSubmittedSteps([
         Step.thinking_behaviours_attitudes.code,
+        Step.thinking_behaviours_attitudes_changes.code,
         Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
         Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
         Step.thinking_behaviours_attitudes_summary.code,
@@ -281,6 +283,7 @@ test.describe('Summary', () => {
       ])
       .withUserSubmittedSteps([
         Step.thinking_behaviours_attitudes.code,
+        Step.thinking_behaviours_attitudes_changes.code,
         Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
         Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
         Step.thinking_behaviours_attitudes_summary.code,

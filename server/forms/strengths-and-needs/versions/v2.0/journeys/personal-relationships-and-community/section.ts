@@ -370,7 +370,10 @@ const currentRelationship = question({
   content: {
     code: Question.personal_relationships_community_current_relationship,
     format: QuestionFormat.RADIO,
-    text: contentFor('question.personal_relationships_community_current_relationship.text', CaseData.Forename),
+    text: contentFor(
+      'question.personal_relationships_community_current_relationship.text',
+      CaseData.ForenamePossessive,
+    ),
     options: [
       {
         value: Option.happy_relationship,
