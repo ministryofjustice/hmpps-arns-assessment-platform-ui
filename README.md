@@ -142,6 +142,34 @@ make e2e-ci                 # Run Playwright tests in Docker container against a
 make dev-up && make e2e-ui  # Run Playwright tests locally against application in Docker
 ```
 
+### Testing the plan agreement feature flag locally
+
+1. **Set the app flag.** In the [local WireMock snapshot](docker/wiremock/mappings/flipt/evaluation-snapshot.json#L63), find `sp-enable-plan-agreement-updates` and set `enabled` to `true` for **Confirm plan** or `false` for **Agree plan** (the default).
+2. **Apply the change.** If the local stack is stopped, run `make dev-up`. If it is already running, restart WireMock and the UI from the repository root:
+
+   ```bash
+   docker compose -p hmpps-assess-risks-and-needs \
+     -f docker/docker-compose.base.yml -f docker/docker-compose.local.yml \
+     restart wiremock aap-ui
+   ```
+
+3. **Run the tests.** Once the app is available at `http://localhost:3000`, run the command that matches the app flag:
+
+   | App flag              | Full-suite command                           |
+   | --------------------- | -------------------------------------------- |
+   | `true` (Confirm plan) | `TEST_PLAN_AGREEMENT_UPDATES=true make e2e`  |
+   | `false` (Agree plan)  | `TEST_PLAN_AGREEMENT_UPDATES=false make e2e` |
+
+`TEST_PLAN_AGREEMENT_UPDATES` tells Playwright what to expect; it does not change the app flag.
+
+To run only the agreement spec in Confirm plan mode:
+
+```bash
+TEST_PLAN_AGREEMENT_UPDATES=true npx playwright test sentencePlan/agreePlan.spec.ts --project=parallel
+```
+
+After testing the updated UI, restore `enabled` to `false` and rerun the restart command above.
+
 ### Testing Types
 
 #### Integration Tests

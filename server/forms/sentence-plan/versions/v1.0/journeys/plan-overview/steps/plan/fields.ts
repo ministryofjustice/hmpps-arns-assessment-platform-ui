@@ -24,6 +24,7 @@ import {
   hasCouldNotAnswerStatus,
   hasPostAgreementStatus,
   isReadOnlyAccess,
+  isPlanAgreementUpdatesEnabled,
 } from '../../../../guards'
 
 const isMissingStepsOnAgreePlan = and(
@@ -69,6 +70,19 @@ export const planLastUpdatedMessage = GovUKBody({
   ),
   text: Format(
     'Last updated on %1 by %2. <a href="plan-history" class="govuk-link govuk-link--no-visited-state govuk-!-display-none-print" data-ai-id="plan-overview-view-plan-history">View plan history</a>',
+    Data('lastUpdatedDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
+    Data('lastUpdatedByName'),
+  ),
+})
+
+export const draftPlanLastUpdatedMessage = GovUKBody({
+  visibleWhen: and(
+    isPlanAgreementUpdatesEnabled,
+    Data('latestAgreementStatus').match(Condition.Equals('DRAFT')),
+    Data('lastUpdatedDate').match(Condition.IsRequired()),
+  ),
+  text: Format(
+    'Last updated on %1 by %2.',
     Data('lastUpdatedDate').pipe(Transformer.String.FormatDate({ dateStyle: 'long' })),
     Data('lastUpdatedByName'),
   ),
@@ -381,7 +395,12 @@ export const blankPlanOverviewContent = HtmlBlock({
       .else(''),
     when(Post('action').match(Condition.Equals('agree-plan')))
       .then(
-        '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> To agree the plan, create a goal to work on now</p>',
+        Format(
+          '<p class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span> %1</p>',
+          when(isPlanAgreementUpdatesEnabled)
+            .then('To confirm the plan, create a goal to work on now')
+            .else('To agree the plan, create a goal to work on now'),
+        ),
       )
       .else(''),
     when(canAccessSanContent)

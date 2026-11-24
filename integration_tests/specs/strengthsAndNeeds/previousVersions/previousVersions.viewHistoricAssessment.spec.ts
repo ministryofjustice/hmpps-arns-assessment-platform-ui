@@ -63,7 +63,7 @@ test.describe('View Historic Assessment', () => {
       await expect(newPage).toHaveTitle('Accommodation analysis - Strengths and needs')
 
       const historicAssessmentPage = await HistoricAssessmentPage.verifyOnPage(newPage, 'Employment and education')
-      expect(historicAssessmentPage.page.url()).toContain('accommodation/accommodation-analysis')
+      expect(historicAssessmentPage.page.url()).toContain('accommodation/accommodation-status')
       await expect(historicAssessmentPage.returnToOasysButton).toBeHidden()
 
       await expect(historicAssessmentPage.alertHeading).toHaveCount(1)

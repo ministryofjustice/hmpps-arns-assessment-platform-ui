@@ -60,6 +60,17 @@
           "rollouts": []
         },
         {
+          "key": "sp-enable-plan-agreement-updates",
+          "name": "sp-enable-plan-agreement-updates",
+          "description": "Temporary feature flag for agree/confirm plan updates",
+          "enabled": false,
+          "type": "BOOLEAN_FLAG_TYPE",
+          "createdAt": "2026-01-01T00:00:00Z",
+          "updatedAt": "2026-01-01T00:00:00Z",
+          "rules": [],
+          "rollouts": []
+        },
+        {
           "key": "sp-downtime-notification-banner-content",
           "name": "sp-downtime-notification-banner-content",
           "description": "Downtime banner is disabled by default",
