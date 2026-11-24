@@ -515,9 +515,9 @@ const sexualPreoccupation = question({
     hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.hint'),
     options: [
       {
-        value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES.text'),
-        hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES.hint'),
+        value: CommonOption.no,
+        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO.hint'),
       },
       {
         value: Option.sometimes,
@@ -525,9 +525,9 @@ const sexualPreoccupation = question({
         hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.SOMETIMES.hint'),
       },
       {
-        value: CommonOption.no,
-        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO.text'),
-        hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.NO.hint'),
+        value: CommonOption.yes,
+        text: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_sexual_preoccupation.option.YES.hint'),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],
@@ -549,12 +549,12 @@ const offenceRelatedSexualInterest = question({
     text: contentFor('question.thinking_behaviours_attitudes_offence_related_sexual_interest.text', CaseData.Forename),
     options: [
       {
-        value: Option.yes_offence_related_sexual_interest,
+        value: Option.no_offence_related_sexual_interest,
         text: contentFor(
-          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST.text',
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.text',
         ),
         hint: contentFor(
-          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
         ),
       },
       {
@@ -567,12 +567,12 @@ const offenceRelatedSexualInterest = question({
         ),
       },
       {
-        value: Option.no_offence_related_sexual_interest,
+        value: Option.yes_offence_related_sexual_interest,
         text: contentFor(
-          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.text',
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST.text',
         ),
         hint: contentFor(
-          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.NO_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
+          'question.thinking_behaviours_attitudes_offence_related_sexual_interest.option.YES_OFFENCE_RELATED_SEXUAL_INTEREST.hint',
         ),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
@@ -596,9 +596,9 @@ const emotionalIntimacy = question({
     hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.hint'),
     options: [
       {
-        value: CommonOption.yes,
-        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES.text'),
-        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES.hint'),
+        value: CommonOption.no,
+        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO.hint'),
       },
       {
         value: Option.sometimes,
@@ -606,9 +606,9 @@ const emotionalIntimacy = question({
         hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.SOMETIMES.hint'),
       },
       {
-        value: CommonOption.no,
-        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO.text'),
-        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.NO.hint'),
+        value: CommonOption.yes,
+        text: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES.text'),
+        hint: contentFor('question.thinking_behaviours_attitudes_emotional_intimacy.option.YES.hint'),
       },
       { value: CommonOption.unknown, text: commonContentFor('option.UNKNOWN') },
     ],

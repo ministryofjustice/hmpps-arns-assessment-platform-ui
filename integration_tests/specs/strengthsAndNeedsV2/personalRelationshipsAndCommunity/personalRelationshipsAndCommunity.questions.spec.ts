@@ -178,8 +178,8 @@ test.describe('Questions', () => {
         - text: Yes, not living together
         - radio "No"
         - text: No
-      - group "How would you describe Test current relationship situation?":
-        - text: How would you describe Test current relationship situation?
+      - group "How would you describe Test's current relationship situation?":
+        - text: How would you describe Test's current relationship situation?
         - radio "Positive and supportive"
         - text: Positive and supportive Their current relationship is positive and supportive, or they are content being single.
         - radio "Has some difficulties but remains supportive"

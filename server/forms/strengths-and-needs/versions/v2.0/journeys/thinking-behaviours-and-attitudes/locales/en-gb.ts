@@ -35,7 +35,7 @@ export const english = {
       option: {
         [Option.no_offending_activities]: {
           text: 'No, does not engage in these activities',
-          hint: 'Engages is positive activities and relationships and avoids situations that may create opportunities to offend.',
+          hint: 'Engages in positive activities and relationships and avoids situations that may create opportunities to offend.',
         },
         [Option.sometimes_offending_activities]: {
           text: 'Yes, sometimes',
@@ -64,7 +64,7 @@ export const english = {
           hint: 'Is regularly influenced by others in relation to offending and remains vulnerable to peer pressure, manipulation or criminal associates.',
         },
       },
-      validation: 'Select if they’re influenced by others in relation to their offending',
+      validation: 'Select if they are influenced by others in relation to their offending',
     },
     [Question.thinking_behaviours_attitudes_problem_solving]: {
       text: 'Is %1 able to solve problems in a positive way?',
@@ -105,7 +105,7 @@ export const english = {
           hint: 'Clear and recurring pattern of manipulating, exploiting or taking advantage of others for personal gain.',
         },
       },
-      validation: 'Select if there are indications they manipulate or exploit other people for personal gain?',
+      validation: 'Select if there are indications they manipulate or exploit other people for personal gain',
     },
     [Question.thinking_behaviours_attitudes_temper_management]: {
       text: 'Is %1 able to manage their temper?',
@@ -278,14 +278,14 @@ export const english = {
       validation: 'Give details on strengths or protective factors related to their thinking, behaviours and attitudes',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm]: {
-      text: 'Are %1 thinking, behaviours and attitudes linked to risk of serious harm?',
+      text: 'Is %1 thinking, behaviours and attitudes linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details]: {
       validation: 'Give details on the risk of serious harm',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending]: {
-      text: 'Are %1 thinking, behaviours and attitudes linked to risk of reoffending?',
+      text: 'Is %1 thinking, behaviours and attitudes linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details]: {

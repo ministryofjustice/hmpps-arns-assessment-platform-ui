@@ -43,7 +43,7 @@ test.describe('Questions', () => {
       - group "Does Test engage in activities that could link to offending?":
         - text: Does Test engage in activities that could link to offending?
         - radio "No, does not engage in these activities"
-        - text: No, does not engage in these activities Engages is positive activities and relationships and avoids situations that may create opportunities to offend.
+        - text: No, does not engage in these activities Engages in positive activities and relationships and avoids situations that may create opportunities to offend.
         - radio "Yes, sometimes"
         - text: Yes, sometimes Sometimes spends time in activities, situations or relationships linked to offending but recognises the risks.
         - radio "Yes, regularly"
@@ -381,32 +381,33 @@ test.describe('Questions', () => {
     await expect(thinkingBehavioursAndAttitudesPage.mainForm).toMatchAriaSnapshot(`
       - group "Is there evidence Test shows sexual preoccupation?":
         - text: Is there evidence Test shows sexual preoccupation? Sexual preoccupation is when sexual thoughts or behaviours take up a significant amount of time and affect day-to-day life, relationships, responsibilities or other important activities.
-        - radio "Significant evidence"
-        - text: Significant evidence Sexual thoughts or behaviours take up a significant amount of time and have a substantial impact on their daily functioning.
-        - radio "Some evidence"
-        - text: Some evidence Sexual thoughts or behaviours take up a significant amount of time, but there is evidence of other interests or attempts to reduce the behaviour.
         - radio "No evidence"
         - text: No evidence Sexual thoughts or behaviours do not appear to affect their daily functioning.
+        - radio "Some evidence"
+        - text: Some evidence Sexual thoughts or behaviours take up a significant amount of time, but there is evidence of other interests or attempts to reduce the behaviour.
+        - radio "Significant evidence"
+        - text: Significant evidence Sexual thoughts or behaviours take up a significant amount of time and have a substantial impact on their daily functioning.
         - radio "Unknown"
         - text: Unknown
       - group "Is there evidence Test has offence-related sexual interests?":
         - text: Is there evidence Test has offence-related sexual interests?
-        - radio "Yes, significant evidence"
-        - text: Yes, significant evidence A persistent preference for illegal or harmful sexual activity, with little or no evidence of healthy, consensual sexual interests.
-        - radio "Yes, some evidence"
-        - text: Yes, some evidence Some evidence of healthy, consensual sexual activity, but also recurring interest in or behaviour involving illegal or harmful sexual activity.
         - radio "No evidence"
         - text: No evidence Healthy sexual interests. While offending may have involved illegal sexual activity, their usual way of meeting sexual needs is legal and consensual.
+        - radio "Yes, some evidence"
+        - text: Yes, some evidence Some evidence of healthy, consensual sexual activity, but also recurring interest in or behaviour involving illegal or harmful sexual activity.
+        - radio "Yes, significant evidence"
+        - text: Yes, significant evidence A persistent preference for illegal or harmful sexual activity, with little or no evidence of healthy, consensual sexual interests.
         - radio "Unknown"
         - text: Unknown
       - group "Is there evidence Test finds it easier to seek emotional intimacy with children over adults?":
         - text: Is there evidence Test finds it easier to seek emotional intimacy with children over adults? This means looking to children to meet emotional needs that would usually be met through relationships with other adults.
-        - radio "Yes, significant evidence"
-        - text: Yes, significant evidence They find it easier to seek emotional intimacy with children and have significant difficulty forming intimate relationships with adults.
-        - radio "Yes, some evidence"
-        - text: Yes, some evidence Shows some evidence of having or wanting stable adult relationships but finds it easier to seek emotional intimacy with children over adults.
         - radio "No evidence"
         - text: No evidence They have or have had an intimate relationship with an adult that they value or have the skills, ability and desire to form stable relationships.
+        - radio "Yes, some evidence"
+        - text: Yes, some evidence Shows some evidence of having or wanting stable adult relationships but finds it easier to seek emotional intimacy with children over adults.
+        - radio "Yes, significant evidence"
+        - text: Yes, significant evidence They find it easier to seek emotional intimacy with children and have significant difficulty forming intimate relationships with adults.
+        - radio "Unknown"
         - text: Unknown
       - button "Save and continue"
     `)

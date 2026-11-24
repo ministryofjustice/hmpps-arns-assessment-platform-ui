@@ -38,7 +38,7 @@ test.describe('Validation', () => {
             - link "Select if they engage in activities that could link to offending":
               - /url: "#thinking_behaviours_attitudes_offending_activities"
           - listitem:
-            - link "Select if they’re influenced by others in relation to their offending":
+            - link "Select if they are influenced by others in relation to their offending":
               - /url: "#thinking_behaviours_attitudes_peer_pressure"
           - listitem:
             - link "Select if they are able to solve problems in a positive way":
@@ -47,7 +47,7 @@ test.describe('Validation', () => {
             - link "Select if they understand other people’s views":
               - /url: "#thinking_behaviours_attitudes_peoples_views"
           - listitem:
-            - link "Select if there are indications they manipulate or exploit other people for personal gain?":
+            - link "Select if there are indications they manipulate or exploit other people for personal gain":
               - /url: "#thinking_behaviours_attitudes_manipulative_predatory_behaviour"
           - listitem:
             - link "Select if they are able to manage their temper":
