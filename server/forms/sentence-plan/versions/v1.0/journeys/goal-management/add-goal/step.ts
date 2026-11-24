@@ -12,7 +12,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { contentBlocks, backLinkHref } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { CaseData } from '../../../constants'
 
 /**
@@ -35,7 +35,9 @@ export const createGoalStep = step({
       effects: [
         SentencePlanEffects.setAreaDataFromUrlParam(),
         SentencePlanEffects.loadAreaAssessmentInfo(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CREATE_GOAL, {
+          areaOfNeed: Params('areaOfNeed'),
+        }),
       ],
     }),
 
@@ -65,7 +67,7 @@ export const createGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.createGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('You added a goal to %1 plan', CaseData.ForenamePossessive),
@@ -81,7 +83,7 @@ export const createGoalStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.createGoal(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.CREATE_GOAL, { areaOfNeed: Params('areaOfNeed') }),
           SentencePlanEffects.addNotification({
             type: 'success',
 

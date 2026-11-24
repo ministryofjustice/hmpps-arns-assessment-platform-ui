@@ -1,4 +1,4 @@
-export type EntityType = 'ASSESSMENT' | 'AAP_PLAN'
+export type EntityType = 'AAP_SAN' | 'AAP_PLAN'
 
 export type VersionDetails = {
   uuid: string
@@ -21,4 +21,5 @@ export type VersionsTable = Record<string, LastVersionsOnDate>
 export interface PreviousVersionsResponse {
   allVersions: VersionsTable
   countersignedVersions: VersionsTable
+  unaggregatedVersions: VersionDetails[]
 }

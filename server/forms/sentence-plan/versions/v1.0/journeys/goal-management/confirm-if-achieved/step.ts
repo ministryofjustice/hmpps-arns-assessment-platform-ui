@@ -10,7 +10,7 @@ import {
   Condition,
 } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { pageHeading, goalCard, allStepsCompletedField, hasAchievedGoal, saveAndContinueButton } from './fields'
-import { AuditEvent, SentencePlanEffects } from '../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../effects'
 import { redirectIfGoalNotFound, redirectUnlessAllStepsCompleted } from '../../../guards'
 import { CaseData } from '../../../constants'
 
@@ -36,7 +36,7 @@ export const confirmIfAchievedStep = step({
     access({
       effects: [
         SentencePlanEffects.setActiveGoalContext(),
-        SentencePlanEffects.sendAuditEvent(AuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
+        SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.VIEW_CONFIRM_GOAL_ACHIEVED),
       ],
     }),
     redirectIfGoalNotFound('../../plan/overview'),
@@ -56,7 +56,7 @@ export const confirmIfAchievedStep = step({
       onValid: {
         effects: [
           SentencePlanEffects.markGoalAsAchieved(),
-          SentencePlanEffects.sendAuditEvent(AuditEvent.EDIT_GOAL_ACHIEVED),
+          SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.EDIT_GOAL_ACHIEVED),
           SentencePlanEffects.addNotification({
             type: 'success',
             message: Format('Congratulations on achieving a goal, %1', CaseData.Forename),

@@ -1,5 +1,5 @@
 import { access, Format, not, step } from '@ministryofjustice/hmpps-forge/core/authoring'
-import { AuditEvent, SentencePlanEffects } from '../../../../../../effects'
+import { SentencePlanAuditEvent, SentencePlanEffects } from '../../../../../../effects'
 import { CaseData } from '../../../../constants'
 import { isPdfRenderRequest, redirectToOverviewUnlessPrintAndShareEnabled } from '../../../../guards'
 import {
@@ -54,11 +54,11 @@ export const printPreviewStep = step({
      */
     access({
       when: not(isPdfRenderRequest),
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.PRINT_ALL_GOALS)],
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.PRINT_ALL_GOALS)],
     }),
     access({
       when: isPdfRenderRequest,
-      effects: [SentencePlanEffects.sendAuditEvent(AuditEvent.PRINT_ALL_GOALS, { exportedAsPdf: true })],
+      effects: [SentencePlanEffects.sendAuditEvent(SentencePlanAuditEvent.PRINT_ALL_GOALS, { exportedAsPdf: true })],
     }),
   ],
 })
