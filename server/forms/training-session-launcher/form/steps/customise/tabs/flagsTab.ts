@@ -8,14 +8,14 @@ import { GovUKCheckboxInput, GovUKTextInput } from '@ministryofjustice/hmpps-for
  */
 export const flagsTabContent = [
   HtmlBlock({
-    content: '<h2 class="govuk-heading-m">Scenario Flags</h2>',
+    content: '<h2 class="govuk-heading-m">Scenario flags</h2>',
   }),
 
   HtmlBlock({
     content: `
       <p class="govuk-body">
-        Flags control special behaviors and feature toggles for the training scenario.
-        These affect how the target application behaves during the training session.
+        Flags switch on features or situations for this scenario.
+        They change how Sentence Plan or Strengths and needs behaves in the session.
       </p>
     `,
   }),
@@ -23,17 +23,17 @@ export const flagsTabContent = [
   GovUKCheckboxInput({
     code: 'flags',
     label: 'Active flags',
-    hint: 'Select the flags to enable for this scenario',
+    hint: 'Select all that apply',
     defaultValue: Data('flags'),
     items: [
       {
-        value: 'SAN_PRIVATE_BETA',
+        value: 'SAN_BETA',
         text: 'SAN Private Beta',
         hint: 'Enables Strengths and Needs private beta features and criminogenic needs',
       },
       {
         value: 'NEW_PERIOD_OF_SUPERVISION',
-        text: 'New Period of Supervision',
+        text: 'New period of supervision',
         hint: 'Simulates a new period of supervision. The session will be created with the plan in a reset state.',
       },
       {
@@ -42,7 +42,7 @@ export const flagsTabContent = [
         hint: 'Simulates an OASys merge. The plan will be created then merged to a new PK, setting the MERGED flag. Do not combine with New Period of Supervision.',
         block: GovUKTextInput({
           code: 'mergeOldPk',
-          label: 'Previous OASys Assessment PK',
+          label: 'Previous OASys assessment PK',
           hint: 'The OASys Assessment PK of the existing session to merge from.',
           classes: 'govuk-input--width-10',
         }),

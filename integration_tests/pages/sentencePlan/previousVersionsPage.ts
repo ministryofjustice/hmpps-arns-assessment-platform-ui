@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class PreviousVersionsPage extends AbstractPage {
+export default class PreviousVersionsPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly mainContent: Locator
@@ -26,5 +26,11 @@ export default class PreviousVersionsPage extends AbstractPage {
 
   async clickViewVersionOnDate(date: string): Promise<void> {
     await this.table.locator('tr', { hasText: date }).locator('a').click()
+  }
+
+  async viewSanVersionOnDate(date: string): Promise<string | null> {
+    const link = this.table.last().getByRole('row', { name: date }).getByRole('link', { name: 'View' }).first()
+    await link.click()
+    return link.getAttribute('href')
   }
 }

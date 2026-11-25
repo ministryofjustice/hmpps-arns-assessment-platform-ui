@@ -9,15 +9,17 @@
   &__layout {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(0, 1fr);
     background: govuk-colour('white');
     border: 1px solid #d9dadb;
-    min-height: 500px;
-    max-height: 70vh;
-    overflow: hidden;
 
+    // Only fix the height on wider screens. On narrow screens the sidebar and panel stack and must grow with
+    // their content, or the scenario list is squeezed out of view.
     @include govuk-media-query($from: tablet) {
       grid-template-columns: 280px 1fr;
+      grid-template-rows: minmax(0, 1fr);
+      min-height: 500px;
+      max-height: 70vh;
+      overflow: hidden;
     }
   }
 

@@ -44,6 +44,27 @@ describe('derivePlanLastUpdated', () => {
       expect(result.isUpdatedAfterAgreement).toBe(false)
     })
 
+    it('should return the latest update for a draft plan', () => {
+      const timeline = [
+        createTimelineItem({
+          timestamp: '2024-06-17T14:00:00Z',
+          customData: { createdBy: 'Jane Smith' },
+        }),
+        createTimelineItem({
+          timestamp: '2024-06-18T09:00:00Z',
+          customData: { updatedBy: 'Moses Hill' },
+        }),
+      ]
+
+      const result = derivePlanLastUpdatedData(timeline, undefined, 'DRAFT')
+
+      expect(result).toEqual({
+        isUpdatedAfterAgreement: false,
+        lastUpdatedDate: new Date('2024-06-18T09:00:00Z').toISOString(),
+        lastUpdatedByName: 'Moses Hill',
+      })
+    })
+
     it('should return false when there is no agreement date', () => {
       // Arrange
       const timeline = [createTimelineItem()]

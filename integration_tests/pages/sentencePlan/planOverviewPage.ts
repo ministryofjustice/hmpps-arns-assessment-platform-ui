@@ -1,7 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import { expectPlanAgreementUpdates } from '../../support/featureFlags'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class PlanOverviewPage extends AbstractPage {
+export default class PlanOverviewPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly createGoalLink: Locator
@@ -59,7 +60,10 @@ export default class PlanOverviewPage extends AbstractPage {
     this.noGoalsMessage = page.getByText(/does not have any goals/i)
     this.updateAgreementLink = page.getByRole('link', { name: /update .+'s agreement/i })
     this.noFutureGoalsMessage = page.getByText(/does not have any future goals/i)
-    this.agreePlanButton = page.getByRole('button', { name: /agree plan/i })
+    this.agreePlanButton = page.getByRole('button', {
+      name: expectPlanAgreementUpdates ? 'Confirm plan' : 'Agree plan',
+      exact: true,
+    })
     this.printAllGoalsButton = page.getByRole('button', { name: 'Print all goals' })
     this.header = page.getByTestId('plan-header')
     this.footer = page.locator('footer')

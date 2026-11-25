@@ -3,7 +3,7 @@ import { test } from '../../../support/fixtures'
 import { currentGoalsWithCompletedSteps } from '../../../builders/sentencePlanFactories'
 import { handlePrivacyScreenIfPresent } from '../../sentencePlan/sentencePlanUtils'
 import HistoricPlanPage from '../../../pages/sentencePlan/historicPlanPage'
-import { AuditEvent, expectAuditEvent } from './helpers'
+import { SentencePlanAuditEvent, expectAuditEvent } from './helpers'
 
 test.describe('Views historic Sentence Plan from OASys handover', () => {
   test('audits the historic plan once when handover provides a planVersion', async ({
@@ -39,7 +39,7 @@ test.describe('Views historic Sentence Plan from OASys handover', () => {
     await HistoricPlanPage.verifyOnPage(page)
 
     // The handover redirect lands directly on the tabbed URL, so exactly one event must be sent
-    const event = await auditQueue.waitForAuditEvent(association.crn, AuditEvent.VIEW_HISTORIC_PLAN)
+    const event = await auditQueue.waitForAuditEvent(association.crn, SentencePlanAuditEvent.VIEW_HISTORIC_PLAN)
     expectAuditEvent(event)
     expect(event.details.planVersionTimestamp).toBeDefined()
   })

@@ -101,7 +101,7 @@ function createNeedFields(config: NeedConfig): BlockDefinition[] {
         field: GovUKTextInput({
           code: scoreCode,
           label: 'Score',
-          hint: maxScore ? `0 to ${maxScore}` : undefined,
+          hint: maxScore ? `Enter a number from 0 to ${maxScore}` : undefined,
           inputType: 'number',
           classes: 'govuk-input--width-4',
           defaultValue: Data(`scenario.${scoreCode}`),
@@ -130,15 +130,15 @@ function createNeedSection(config: NeedConfig): BlockDefinition {
  */
 export const criminogenicNeedsTabContent = [
   HtmlBlock({
-    content: '<h2 class="govuk-heading-m">Criminogenic Needs</h2>',
+    content: '<h2 class="govuk-heading-m">Criminogenic needs</h2>',
   }),
 
   HtmlBlock({
     content: `
       <p class="govuk-body">
-        Configure the criminogenic needs scores and flags for this scenario.
-        Click on each section to expand and edit the values.
-        Check "Randomise" to generate a new value each time the scenario is loaded.
+        Set the criminogenic need scores and flags for this scenario.
+        Open each need area to change its values.
+        Select "Random" to get a new value each time a session is started.
       </p>
     `,
   }),
@@ -166,7 +166,7 @@ export const criminogenicNeedsTabContent = [
 
   // Education/Training/Employability (Section 4)
   createNeedSection({
-    title: 'Employment & Education',
+    title: 'Education, training and employability',
     prefix: 'ete',
     hasScore: true,
     maxScore: 4,
@@ -181,7 +181,7 @@ export const criminogenicNeedsTabContent = [
 
   // Drug Use (Section 8)
   createNeedSection({
-    title: 'Drug Use',
+    title: 'Drug use',
     prefix: 'drug',
     hasScore: true,
     maxScore: 8,
@@ -189,7 +189,7 @@ export const criminogenicNeedsTabContent = [
 
   // Alcohol Use (Section 9)
   createNeedSection({
-    title: 'Alcohol Use',
+    title: 'Alcohol use',
     prefix: 'alcohol',
     hasScore: true,
     maxScore: 4,
@@ -197,14 +197,14 @@ export const criminogenicNeedsTabContent = [
 
   // Health and Wellbeing (Section 10)
   createNeedSection({
-    title: 'Health & Wellbeing',
+    title: 'Health and wellbeing',
     prefix: 'emo',
     hasScore: false,
   }),
 
   // Personal Relationships (Section 6)
   createNeedSection({
-    title: 'Relationships',
+    title: 'Personal relationships and community',
     prefix: 'rel',
     hasScore: true,
     maxScore: 6,
@@ -212,7 +212,7 @@ export const criminogenicNeedsTabContent = [
 
   // Thinking/Behaviour/Attitudes (Section 11)
   createNeedSection({
-    title: 'Thinking & Behaviour',
+    title: 'Thinking, behaviours and attitudes',
     prefix: 'think',
     hasScore: true,
     maxScore: 10,
@@ -220,7 +220,7 @@ export const criminogenicNeedsTabContent = [
 
   // Lifestyle and Associates (Section 7)
   createNeedSection({
-    title: 'Lifestyle',
+    title: 'Lifestyle and associates',
     prefix: 'lifestyle',
     hasScore: true,
     maxScore: 6,
