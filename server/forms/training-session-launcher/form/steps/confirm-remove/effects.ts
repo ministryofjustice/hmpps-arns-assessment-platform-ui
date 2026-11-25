@@ -1,6 +1,7 @@
 import { trainingSessionLauncherEffectRegistry } from '../../../effects/index'
 import { deleteAllSessions, deleteSession } from '../../../effects/preferences/saveSession'
 import { deleteScenario } from '../../../effects/preferences/saveScenario'
+import { addNotification } from '../../../effects/notifications/addNotification'
 import { TrainingSessionLauncherEffectsDeps } from '../../../effects/types'
 import { DisplayScenario, DisplaySession, TrainingSessionLauncherContext } from '../../../types'
 
@@ -15,6 +16,7 @@ export type RemovalItem = 'session' | 'all-sessions' | 'scenario'
 export interface RemovalTarget {
   item: RemovalItem
   question: string
+  name: string
   detail: string
   trainingSessionId: string
   scenarioId: string
@@ -34,7 +36,7 @@ export function resolveRemovalTarget(
   sessions: DisplaySession[],
   savedScenarios: DisplayScenario[],
 ): RemovalTarget | undefined {
-  const none = { detail: '', trainingSessionId: '', scenarioId: '' }
+  const none = { name: '', detail: '', trainingSessionId: '', scenarioId: '' }
 
   if (item === 'all-sessions') {
     if (sessions.length === 0) {
@@ -60,6 +62,7 @@ export function resolveRemovalTarget(
       ...none,
       item,
       question: `Are you sure you want to remove ${session.scenarioName}?`,
+      name: session.scenarioName,
       detail: [`${session.givenName} ${session.familyName}`.trim(), session.crn].filter(Boolean).join(', '),
       trainingSessionId: session.id,
       returnPath: 'sessions',
@@ -78,6 +81,7 @@ export function resolveRemovalTarget(
       ...none,
       item,
       question: `Are you sure you want to remove ${scenario.name}?`,
+      name: scenario.name,
       scenarioId: scenario.id,
       returnPath: 'browse',
       cancelPath: `browse?scenario=${encodeURIComponent(scenario.id)}`,
@@ -122,8 +126,20 @@ export const confirmRemoval =
 
     if (target.item === 'session') {
       await deleteSession(deps)(context, target.trainingSessionId)
+      await addNotification()(context, {
+        type: 'success',
+        title: 'Session removed',
+        message: `${target.name} has been removed.`,
+        target: 'sessions',
+      })
     } else if (target.item === 'all-sessions') {
       await deleteAllSessions(deps)(context)
+      await addNotification()(context, {
+        type: 'success',
+        title: 'Sessions removed',
+        message: 'All your training sessions have been removed.',
+        target: 'sessions',
+      })
     } else {
       await deleteScenario(deps)(context, target.scenarioId)
     }

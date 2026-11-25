@@ -46,11 +46,12 @@ const savedScenario: SavedScenario = {
 describe('confirm-remove step', () => {
   let stored: { trainingLauncher: TrainingLauncherPreferences }
   let update: jest.Mock
+  let httpSession: { notifications?: unknown[] }
 
   const request = (body?: Record<string, unknown>, query?: Record<string, string>) => ({
     body,
     query,
-    session: {},
+    session: httpSession,
     state: { preferencesId: 'preferences-1', csrfToken: 'csrf-token' },
   })
 
@@ -94,6 +95,7 @@ describe('confirm-remove step', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    httpSession = {}
     stored = {
       trainingLauncher: {
         savedScenarios: [savedScenario],
@@ -138,6 +140,9 @@ describe('confirm-remove step', () => {
       expectRedirect(result, 'sessions')
       expect(update).toHaveBeenCalledTimes(1)
       expect(sessionIds()).toEqual(['session-2'])
+      expect(httpSession.notifications).toEqual([
+        { type: 'success', title: 'Session removed', message: 'POM module 8 has been removed.', target: 'sessions' },
+      ])
     })
 
     it('should delete the session named in the query, not one posted in the form body', async () => {
@@ -211,6 +216,14 @@ describe('confirm-remove step', () => {
       expect(update).toHaveBeenCalledTimes(1)
       expect(sessionIds()).toEqual([])
       expect(removeTrainingStubs).toHaveBeenCalledTimes(2)
+      expect(httpSession.notifications).toEqual([
+        {
+          type: 'success',
+          title: 'Sessions removed',
+          message: 'All your training sessions have been removed.',
+          target: 'sessions',
+        },
+      ])
     })
 
     it('should leave sessions untouched when cancelled', async () => {
