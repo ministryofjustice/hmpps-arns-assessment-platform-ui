@@ -19,8 +19,6 @@
 
 {% block pageTitle %}{{ 'Error: ' if allValidationErrors.length }}{{ step.title }} - Training - {{ applicationName }}{% endblock %}
 
-{% block pageTitle %}{{ step.title }} - Training - {{ applicationName }}{% endblock %}
-
 {% block head %}
   {{ super() }}
   {% block pageStylesheets %}
