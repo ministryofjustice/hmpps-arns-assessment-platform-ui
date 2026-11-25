@@ -12,16 +12,16 @@ import { handoverGenderOptions } from '../../../../../shared/constants/gender'
  */
 export const subjectDetailsTabContent = [
   HtmlBlock({
-    content: '<h2 class="govuk-heading-m">Subject Details</h2>',
+    content: '<h2 class="govuk-heading-m">Subject details</h2>',
   }),
 
   HtmlBlock({
     content:
-      '<p class="govuk-body">Configure the subject details for this scenario. Check "Randomise" to generate a new value each time the scenario is loaded.</p>',
+      '<p class="govuk-body">Set the details of the person on probation or in prison for this scenario. Select "Random" next to a field to get a new value each time a session is started.</p>',
   }),
 
   HtmlBlock({
-    content: '<h3 class="govuk-heading-s govuk-!-margin-top-6">Personal Information</h3>',
+    content: '<h3 class="govuk-heading-s govuk-!-margin-top-6">Personal information</h3>',
   }),
 
   RandomizableField({
@@ -52,7 +52,7 @@ export const subjectDetailsTabContent = [
     field: GovUKTextInput({
       code: 'dateOfBirth',
       label: 'Date of birth',
-      hint: 'Format: YYYY-MM-DD (e.g., 1985-03-15)',
+      hint: 'Use year-month-day, for example 1985-03-15',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.dateOfBirth'),
     }),
@@ -110,7 +110,7 @@ export const subjectDetailsTabContent = [
     field: GovUKTextInput({
       code: 'crn',
       label: 'CRN',
-      hint: 'Case Reference Number',
+      hint: 'Case reference number (nDelius)',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.crn'),
     }),
@@ -134,7 +134,7 @@ export const subjectDetailsTabContent = [
     field: GovUKTextInput({
       code: 'pnc',
       label: 'PNC',
-      hint: 'Police National Computer number',
+      hint: 'Police National Computer (PNC) number',
       classes: 'govuk-input--width-20',
       defaultValue: Data('scenario.pnc'),
     }),
@@ -145,8 +145,8 @@ export const subjectDetailsTabContent = [
     randomize: Data('oasysAssessmentPk_isRandomized'),
     field: GovUKTextInput({
       code: 'oasysAssessmentPk',
-      label: 'OASys Assessment PK',
-      hint: '7-digit identifier',
+      label: 'OASys assessment PK',
+      hint: 'The 7-digit OASys assessment ID',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.oasysAssessmentPk'),
     }),
@@ -157,8 +157,8 @@ export const subjectDetailsTabContent = [
     randomize: Data('sentencePlanVersion_isRandomized'),
     field: GovUKTextInput({
       code: 'sentencePlanVersion',
-      label: 'Sentence Plan Version',
-      hint: 'Version number',
+      label: 'Sentence plan version',
+      hint: 'Leave blank to use the current version',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.sentencePlanVersion'),
     }),

@@ -2,6 +2,8 @@
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {%- from "moj/components/domain-specific/probation/footer/macro.njk" import pdsFooter -%}
 
+{% block pageTitle %}{{ step.title }} - Training - {{ applicationName }}{% endblock %}
+
 {% block head %}
   {{ super() }}
   {% block pageStylesheets %}
