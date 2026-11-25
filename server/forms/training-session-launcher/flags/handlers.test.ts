@@ -22,7 +22,7 @@ describe('flag handlers', () => {
     })
 
     it('should offer the SAN target for SAN Private Beta when the SAN target is enabled', () => {
-      const { availableServices } = resolveHandoverConfig(['SAN_PRIVATE_BETA'])
+      const { availableServices } = resolveHandoverConfig(['SAN_BETA'])
 
       expect(availableServices).toEqual(['sentence-plan', 'strengths-and-needs'])
     })
@@ -30,7 +30,7 @@ describe('flag handlers', () => {
     it('should not offer the SAN target for SAN Private Beta when the SAN target is disabled', () => {
       config.forms.trainingSessionLauncher.sanTargetEnabled = false
 
-      const { availableServices } = resolveHandoverConfig(['SAN_PRIVATE_BETA', 'TIERING_ASSESSMENT'])
+      const { availableServices } = resolveHandoverConfig(['SAN_BETA', 'TIERING_ASSESSMENT'])
 
       expect(availableServices).toEqual(['sentence-plan', 'tiering-assessment'])
     })

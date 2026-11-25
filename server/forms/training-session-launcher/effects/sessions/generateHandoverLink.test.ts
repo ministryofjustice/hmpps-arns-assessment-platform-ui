@@ -103,7 +103,7 @@ describe('generateHandoverLink', () => {
 
     it('should reject a request that still posts the SAN target', async () => {
       // Arrange
-      givenSession(createSession({ crn: 'X123456' }, ['SAN_PRIVATE_BETA']))
+      givenSession(createSession({ crn: 'X123456' }, ['SAN_BETA']))
       jest
         .mocked(context.getPostData)
         .mockImplementation((key: string) => (key === 'trainingSessionId' ? 'session-1' : 'strengths-and-needs'))
@@ -117,7 +117,7 @@ describe('generateHandoverLink', () => {
 
     it('should still create a Sentence Plan handover link', async () => {
       // Arrange
-      givenSession(createSession({ crn: 'X123456' }, ['SAN_PRIVATE_BETA']))
+      givenSession(createSession({ crn: 'X123456' }, ['SAN_BETA']))
 
       // Act
       await generateHandoverLink(deps)(context)
