@@ -1,7 +1,7 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { Section, SectionComplete } from '../../versions/v1.0/constants/section'
-import { queueCommand } from './pendingCommands'
+import { queueCommands } from './pendingCommands'
 
 export const setSectionProgress =
   (_deps: StrengthsAndNeedsEffectsDeps) =>
@@ -15,7 +15,7 @@ export const setSectionProgress =
 
     context.setData(section.statusKey, status)
 
-    queueCommand(context, {
+    queueCommands(context, {
       command: {
         type: 'UpdateAssessmentPropertiesCommand',
         assessmentUuid,

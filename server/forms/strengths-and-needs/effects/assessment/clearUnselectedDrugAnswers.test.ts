@@ -2,6 +2,7 @@ import { createTestEffectContext } from '@ministryofjustice/hmpps-forge/core/tes
 import { clearUnselectedDrugAnswers } from './clearUnselectedDrugAnswers'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { PendingCommand } from './pendingCommands'
+import { UpdateAssessmentAnswersCommand } from '../../../../interfaces/aap-api/command'
 
 const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
 const user = { id: 'test.user', name: 'Test User', authSource: 'HMPPS_AUTH' as const, token: 'test-token' }
@@ -31,13 +32,15 @@ describe('clearUnselectedDrugAnswers', () => {
       drugs_injected: ['AMPHETAMINES', 'BENZODIAZEPINES'],
     })
 
+    const pendingCommand = pending[0].command as UpdateAssessmentAnswersCommand
+
     expect(pending).toHaveLength(1)
-    expect(pending[0].command.removed.sort()).toEqual([
+    expect(pendingCommand.removed.sort()).toEqual([
       'drugs_injected_amphetamines',
       'how_often_used_last_six_months_amphetamines',
       'how_often_used_last_six_months_amphetamines_details',
     ])
-    expect(pending[0].command.added).toEqual({ drugs_injected: { type: 'Multi', values: ['BENZODIAZEPINES'] } })
+    expect(pendingCommand.added).toEqual({ drugs_injected: { type: 'Multi', values: ['BENZODIAZEPINES'] } })
     expect(context.getAnswer('how_often_used_last_six_months_amphetamines')).toBeUndefined()
     expect(context.getAnswer('drug_last_used_benzodiazepines')).toBe('LAST_SIX')
   })
@@ -48,8 +51,10 @@ describe('clearUnselectedDrugAnswers', () => {
       drugs_injected: ['AMPHETAMINES'],
     })
 
-    expect(pending[0].command.removed).toEqual(['drugs_injected'])
-    expect(pending[0].command.added).toEqual({})
+    const pendingCommand = pending[0].command as UpdateAssessmentAnswersCommand
+
+    expect(pendingCommand.removed).toEqual(['drugs_injected'])
+    expect(pendingCommand.added).toEqual({})
   })
 
   it('keeps answ ers in the injected list that are not drugs', async () => {
@@ -58,7 +63,9 @@ describe('clearUnselectedDrugAnswers', () => {
       drugs_injected: ['AMPHETAMINES', 'NONE'],
     })
 
-    expect(pending[0].command.added).toEqual({ drugs_injected: { type: 'Multi', values: ['NONE'] } })
+    const pendingCommand = pending[0].command as UpdateAssessmentAnswersCommand
+
+    expect(pendingCommand.added).toEqual({ drugs_injected: { type: 'Multi', values: ['NONE'] } })
   })
 
   it('saves nothing when every answer is about a selected drug', async () => {

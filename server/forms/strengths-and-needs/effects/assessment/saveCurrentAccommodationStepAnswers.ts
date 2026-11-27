@@ -4,7 +4,7 @@ import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { Question } from '../../versions/v1.0/journeys/accommodation/constants/question'
 import { SanAuditEvent } from '../../auditEvents'
-import { queueCommand } from './pendingCommands'
+import { queueCommands } from './pendingCommands'
 import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
 
 /**
@@ -87,7 +87,7 @@ export const saveCurrentAccommodationStepAnswers =
     const changedFields =
       !clearFields && isAutosaved ? fieldsToChange.filter(field => !removed.includes(field)) : fieldsToChange
 
-    queueCommand(context, {
+    queueCommands(context, {
       command,
       mapToOasys: true,
       /* Field codes only, answers do not belong in the audit log. */

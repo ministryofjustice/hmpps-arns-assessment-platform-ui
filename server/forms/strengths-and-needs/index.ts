@@ -75,7 +75,11 @@ export const strengthsAndNeedsRootJourney = journey({
       effects: [StrengthsAndNeedsEffects.resolveHistoricVersion()],
     }),
     access({
-      effects: [StrengthsAndNeedsEffects.loadAssessment()],
+      effects: [
+        StrengthsAndNeedsEffects.loadAssessment(),
+        StrengthsAndNeedsEffects.runMigration(),
+        StrengthsAndNeedsEffects.commitPendingCommands(),
+      ],
     }),
   ],
   steps: [versionRedirectStep, privacyScreenStep],

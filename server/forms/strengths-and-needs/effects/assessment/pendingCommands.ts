@@ -1,6 +1,7 @@
 import {
   UpdateAssessmentAnswersCommand,
   UpdateAssessmentPropertiesCommand,
+  UpdateFormVersionCommand,
 } from '../../../../interfaces/aap-api/command'
 import { sendFormAuditEvent } from '../../../shared'
 import { SAN_AUDIT_FORM } from '../../auditEvents'
@@ -9,7 +10,7 @@ import { UpdateOasysDataMappingHook } from './updateOasysDataMappingHook'
 import { latestVersion } from '../../constants/formVersion'
 
 export interface PendingCommand {
-  command: UpdateAssessmentAnswersCommand | UpdateAssessmentPropertiesCommand
+  command: UpdateAssessmentAnswersCommand | UpdateAssessmentPropertiesCommand | UpdateFormVersionCommand
   /** Re-run the OASys data mapping once this batch is applied */
   mapToOasys?: boolean
   /** Audit event to send only after the batch has been saved */
@@ -20,8 +21,11 @@ export interface PendingCommand {
  * Hold a command until `commitPendingCommands` runs, so one page submission
  * makes one API round trip instead of one per effect.
  */
-export const queueCommand = (context: StrengthsAndNeedsContext, pending: PendingCommand) => {
-  context.setData('pendingCommands', [...(context.getData('pendingCommands') ?? []), pending])
+export const queueCommands = (context: StrengthsAndNeedsContext, pending: PendingCommand | PendingCommand[]) => {
+  const existingCommands = context.getData('pendingCommands') ?? []
+  const pendingCommands = Array.isArray(pending) ? pending : [pending]
+
+  context.setData('pendingCommands', [...existingCommands, ...pendingCommands])
 }
 
 /**

@@ -3,7 +3,7 @@ import { drugsList } from '../../versions/v1.0/journeys/drug-use/constants'
 import { Question } from '../../versions/v1.0/journeys/drug-use/constants/question'
 import { SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { queueCommand } from './pendingCommands'
+import { queueCommands } from './pendingCommands'
 
 // The answers asked about each drug, on the drug details and history pages.
 const perDrugQuestions = [
@@ -56,7 +56,7 @@ export const clearUnselectedDrugAnswers =
       context.clearAnswer(code)
     }
 
-    queueCommand(context, {
+    queueCommands(context, {
       command: {
         type: 'UpdateAssessmentAnswersCommand',
         assessmentUuid,

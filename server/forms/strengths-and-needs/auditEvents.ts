@@ -17,5 +17,7 @@ export enum SanAuditEvent {
   SAVE_QUESTION_PAGE = 'SAVE_QUESTION_PAGE',
   MARK_SECTION_COMPLETE = 'MARK_SECTION_COMPLETE',
   EDIT_ANSWERS = 'EDIT_ANSWERS',
+  EDIT_PROPERTIES = 'EDIT_PROPERTIES',
+  UPDATE_FORM_VERSION = 'UPDATE_FORM_VERSION',
   PRINT_ASSESSMENT = 'PRINT_ASSESSMENT', // TODO: wire up when SAN has a print button of its own - a browser print is not this event
 }

@@ -3,7 +3,7 @@ import { wrapAll } from '../../../../data/aap-api/wrappers'
 import { buildAnswerDelta, buildChangedAnswerCodes } from './answerDelta'
 import { SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { queueCommand } from './pendingCommands'
+import { queueCommands } from './pendingCommands'
 import { restoreSuppressedAnswers } from './restoreSuppressedAnswers'
 
 export const saveCurrentStepAnswers =
@@ -57,7 +57,7 @@ export const saveCurrentStepAnswers =
     const fieldsToChange = [...new Set([...buildChangedAnswerCodes(histories), ...fieldsToClear])]
     const changedFields = clearRemovals ? fieldsToChange : fieldsToChange.filter(field => !removed.includes(field))
 
-    queueCommand(context, {
+    queueCommands(context, {
       command,
       mapToOasys: true,
       /* Field codes only, answers do not belong in the audit log. */

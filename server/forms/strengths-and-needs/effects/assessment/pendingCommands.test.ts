@@ -1,5 +1,5 @@
 import { createTestEffectContext } from '@ministryofjustice/hmpps-forge/core/testing'
-import { commitPendingCommands, queueCommand } from './pendingCommands'
+import { commitPendingCommands, queueCommands } from './pendingCommands'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { strengthsAndNeedsV1Journey } from '../../versions/v1.0'
 import { formConfigsByVersion } from '../../constants/formConfigRegistry'
@@ -32,8 +32,8 @@ describe('commitPendingCommands', () => {
 
   it('sends every queued command in one batch, with the OASys hook on the last command only', async () => {
     const { deps, context } = setup()
-    queueCommand(context, { command: properties('a'), mapToOasys: true })
-    queueCommand(context, { command: properties('b'), mapToOasys: true })
+    queueCommands(context, { command: properties('a'), mapToOasys: true })
+    queueCommands(context, { command: properties('b'), mapToOasys: true })
 
     await commitPendingCommands(deps)(context)
 
@@ -50,7 +50,7 @@ describe('commitPendingCommands', () => {
     const order: string[] = []
     ;(deps.api.executeCommands as jest.Mock).mockImplementation(async () => order.push('save'))
     ;(deps.auditService.send as jest.Mock).mockImplementation(async () => order.push('audit'))
-    queueCommand(context, {
+    queueCommands(context, {
       command: properties('a'),
       audit: { action: 'EDIT_ANSWERS', details: { changedFields: ['a'] } },
     })
@@ -66,7 +66,7 @@ describe('commitPendingCommands', () => {
   it('does not send audit events when the save fails', async () => {
     const { deps, context } = setup()
     ;(deps.api.executeCommands as jest.Mock).mockRejectedValue(new Error('boom'))
-    queueCommand(context, { command: properties('a'), audit: { action: 'EDIT_ANSWERS', details: {} } })
+    queueCommands(context, { command: properties('a'), audit: { action: 'EDIT_ANSWERS', details: {} } })
 
     await expect(commitPendingCommands(deps)(context)).rejects.toThrow('boom')
     expect(deps.auditService.send).not.toHaveBeenCalled()

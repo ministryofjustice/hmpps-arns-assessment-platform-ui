@@ -2,6 +2,7 @@ import { createTestEffectContext } from '@ministryofjustice/hmpps-forge/core/tes
 import { clearInapplicableLivingWithAnswers } from './clearInapplicableLivingWithAnswers'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { PendingCommand } from './pendingCommands'
+import { UpdateAssessmentAnswersCommand } from '../../../../interfaces/aap-api/command'
 
 const assessmentUuid = 'e8f1a0a4-0000-4000-8000-000000000001'
 const user = { id: 'test.user', name: 'Test User', authSource: 'HMPPS_AUTH' as const, token: 'test-token' }
@@ -33,13 +34,15 @@ describe('clearInapplicableLivingWithAnswers', () => {
   ])('removes who they live with for %s', async (_name, status) => {
     const { context, pending } = await run({ ...status, ...livingWithAnswers })
 
+    const pendingCommand = pending[0].command as UpdateAssessmentAnswersCommand
+
     expect(pending).toHaveLength(1)
-    expect(pending[0].command.removed.sort()).toEqual([
+    expect(pendingCommand.removed.sort()).toEqual([
       'living_with',
       'living_with_other_details',
       'living_with_partner_details',
     ])
-    expect(pending[0].command.added).toEqual({})
+    expect(pendingCommand.added).toEqual({})
     expect(context.getAnswer('living_with')).toBeUndefined()
   })
 

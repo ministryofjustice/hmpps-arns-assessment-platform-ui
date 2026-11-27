@@ -1,6 +1,6 @@
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
 import { wrapAll } from '../../../../data/aap-api/wrappers'
-import { queueCommand } from './pendingCommands'
+import { queueCommands } from './pendingCommands'
 import { IsUserSubmitted, isUserSubmittedCode } from '../../versions/v1.0/constants/userSubmitted'
 
 export const setUserSubmitted =
@@ -11,7 +11,7 @@ export const setUserSubmitted =
 
     context.setData(isUserSubmittedCode(stepCode), isUserSubmitted)
 
-    queueCommand(context, {
+    queueCommands(context, {
       command: {
         type: 'UpdateAssessmentPropertiesCommand',
         assessmentUuid,

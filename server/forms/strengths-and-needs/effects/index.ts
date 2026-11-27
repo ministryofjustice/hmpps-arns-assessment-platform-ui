@@ -27,6 +27,7 @@ import { resolveEntryRoute } from './session/resolveEntryRoute'
 import { initializeSessionFromAccessV2 } from './session/initializeSessionFromAccessV2'
 import { setSectionProgressV2 } from './assessment/setSectionProgressV2'
 import { commitPendingCommands } from './assessment/pendingCommands'
+import { runMigration } from './migration/runMigration'
 
 export const sanEffects = new EffectRegistry<StrengthsAndNeedsEffectsDeps>()
 
@@ -67,6 +68,7 @@ export const StrengthsAndNeedsEffects = {
     'saveCurrentAccommodationStepAnswers',
     saveCurrentAccommodationStepAnswers,
   ),
+  runMigration: sanEffects.register('runMigration', runMigration),
 }
 
 export { CommonAuditEvent } from '../../shared'

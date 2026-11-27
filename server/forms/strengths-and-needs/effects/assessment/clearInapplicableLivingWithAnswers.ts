@@ -2,7 +2,7 @@ import { Option } from '../../versions/v1.0/journeys/accommodation/constants/opt
 import { Question } from '../../versions/v1.0/journeys/accommodation/constants/question'
 import { SanAuditEvent } from '../../auditEvents'
 import { StrengthsAndNeedsContext, StrengthsAndNeedsEffectsDeps } from '../types'
-import { queueCommand } from './pendingCommands'
+import { queueCommands } from './pendingCommands'
 
 const livingWithQuestions = [
   Question.living_with,
@@ -43,7 +43,7 @@ export const clearInapplicableLivingWithAnswers =
       context.clearAnswer(code)
     }
 
-    queueCommand(context, {
+    queueCommands(context, {
       command: {
         type: 'UpdateAssessmentAnswersCommand',
         assessmentUuid,
