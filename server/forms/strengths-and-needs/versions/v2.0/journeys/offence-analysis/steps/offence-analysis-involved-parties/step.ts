@@ -18,7 +18,7 @@ import { Option } from '../../constants/option'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
-import { auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageView } from '../../../../audit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisInvolvedPartiesStep = step({
@@ -56,19 +56,11 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         effects: [
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_involved_parties.code),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_impact.code, IsUserSubmitted.false),
-          StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.no),
-          StrengthsAndNeedsEffects.commitPendingCommands(),
+          StrengthsAndNeedsEffects.setSectionProgress(Section.offence_analysis, SectionComplete.no),
         ],
       },
       onValid: {
-        effects: [
-          StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
-          auditPageAction(
-            SanAuditEvent.SAVE_QUESTION_PAGE,
-            Section.offence_analysis,
-            Step.offence_analysis_involved_parties,
-          ),
-        ],
+        effects: [StrengthsAndNeedsEffects.saveCurrentStepAnswers(), StrengthsAndNeedsEffects.commitPendingCommands()],
         next: [
           redirect({
             goto: Step.offence_analysis_impact.path,
@@ -79,11 +71,6 @@ export const offenceAnalysisInvolvedPartiesStep = step({
         effects: [
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.commitPendingCommands(),
-          auditPageAction(
-            SanAuditEvent.SAVE_QUESTION_PAGE,
-            Section.offence_analysis,
-            Step.offence_analysis_involved_parties,
-          ),
         ],
       },
     }),

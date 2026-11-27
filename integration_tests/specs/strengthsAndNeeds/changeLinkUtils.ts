@@ -79,7 +79,7 @@ export const expectEachChangeLinkToLandOnItsQuestion = async (
   }
 }
 
-export const expectSucessAfterEditChanges = async (
+export const expectSuccessAfterEditChanges = async (
   page: Page,
   url: string,
   link: ChangeLink,

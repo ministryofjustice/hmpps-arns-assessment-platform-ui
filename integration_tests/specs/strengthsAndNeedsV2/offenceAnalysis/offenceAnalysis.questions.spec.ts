@@ -260,6 +260,98 @@ test.describe('Questions', () => {
     `)
   })
 
+  test('shows impact questions', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId)
+      .withAnswers([
+        {
+          question: Question.offence_analysis_description_of_offence,
+          value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        },
+        {
+          question: Question.offence_analysis_elements,
+          value: [Option.arson],
+        },
+        {
+          question: Question.offence_analysis_reason,
+          value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        },
+        {
+          question: Question.offence_analysis_motivations,
+          value: [Option.addictions_or_perceived_needs],
+        },
+        {
+          question: Question.offence_analysis_who_was_the_victim,
+          value: [CommonOption.other],
+        },
+        {
+          question: Question.offence_analysis_who_was_the_victim_other_details,
+          value: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+        },
+        {
+          question: Question.offence_analysis_how_many_involved,
+          value: Option.two,
+        },
+      ])
+      .withUserSubmittedSteps([Step.offence_analysis.code, Step.offence_analysis_involved_parties.code])
+      .save()
+
+    await OffenceAnalysisPage.navigateTo(
+      page,
+      handoverLink,
+      baseURL,
+      sanAssessmentId,
+      Step.offence_analysis_impact.path,
+    )
+
+    const offenceAnalysisPage = await OffenceAnalysisPage.verifyOnPage(
+      page,
+      'Was Test the leader of the current index offence(s)?',
+    )
+
+    await expect(offenceAnalysisPage.mainForm).toMatchAriaSnapshot(`
+      - group "Was Test the leader of the current index offence(s)?":
+        - text: Was Test the leader of the current index offence(s)?
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+      - group "Does Test recognise the impact on the victims or wider community?":
+        - text: Does Test recognise the impact on the victims or wider community?
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+      - group "Does Test accept responsibility for the current index offence(s)?":
+        - text: Does Test accept responsibility for the current index offence(s)?
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+      - group "Is there an escalation in seriousness from previous offending?":
+        - text: Is there an escalation in seriousness from previous offending?
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+        - radio "Not applicable"
+        - text: Not applicable
+      - text: What are the patterns of offending? Analyse whether the current index offence(s) is (or are) part of a wider pattern of offending and identify any established or emerging themes. You do not need to list all previous convictions.
+      - textbox "What are the patterns of offending?"
+      - text: You can enter up to 4000 characters You have 4,000 characters remaining
+      - group "Are the current or previous offences linked to risk of serious harm, risks to the individual or other risks?":
+        - text: Are the current or previous offences linked to risk of serious harm, risks to the individual or other risks?
+        - radio "Yes"
+        - text: "Yes"
+        - radio "No"
+        - text: "No"
+      - button "Mark as complete"
+    `)
+  })
+
   test('navigates to involved parties', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,

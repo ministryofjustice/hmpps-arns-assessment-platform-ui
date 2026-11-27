@@ -7,6 +7,7 @@ import {
   changeLink,
   expectChangeLinksListed,
   expectEachChangeLinkToLandOnItsQuestion,
+  expectSuccessAfterEditChanges,
   Scenario,
   summaryTab,
 } from '../../changeLinkUtils'
@@ -139,6 +140,24 @@ test.describe('Offence analysis change links', () => {
         `${section}/${summaryPage}`,
         withVictim.summaryChangeLinks,
         summaryTab,
+      )
+    })
+
+    test('save changes answers after clicking change link victim question', async ({ page, openSection }) => {
+      const section = await openSection(
+        offence,
+        withVictim.answers,
+        withVictim.userSubmittedSteps,
+        withVictim.collections,
+      )
+      await expectSuccessAfterEditChanges(
+        page,
+        `${section}/${victimSummaryPage}`,
+        changeLink(
+          Step.offence_analysis_victim_edit.path.replace('%1', '0'),
+          Question.offence_analysis_victim_relationship,
+        ),
+        withVictim.collections,
       )
     })
   })
