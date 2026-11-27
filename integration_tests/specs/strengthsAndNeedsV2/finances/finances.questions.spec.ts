@@ -124,7 +124,7 @@ test.describe('Questions', () => {
     `)
   })
 
-  test('continues to money management when financial concerns are answered Yes', async ({
+  test('shows money management and debt questions', async ({
     page,
     createSession,
     strengthsAndNeedsBuilder,
@@ -133,27 +133,81 @@ test.describe('Questions', () => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
-    await strengthsAndNeedsBuilder.fresh().save()
-    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId)
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId)
+      .withAnswers([
+        { question: Question.finance_income, value: [Option.employment] },
+        { question: Question.finance_concerns, value: CommonOption.yes },
+      ])
+      .withUserSubmittedSteps([
+        Step.finance_income.code,
+        Step.finance_concerns.code,
+        Step.finance_money_management.code,
+      ])
+      .save()
 
-    const financesPage = new FinancesPage(page)
-    await financesPage.questions.finance_income.option(Option.employment).check()
-    await financesPage.saveAndContinue.click()
-    await expect(page).toHaveURL(/finance-concerns/)
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.finance_money_management.path)
 
-    await financesPage.questions.finance_concerns.option(CommonOption.yes).check()
-    await financesPage.saveAndContinue.click()
-
-    await expect(page).toHaveURL(/finance-money-management/)
-    await expect(page.getByText('How good is Test at managing their money?')).toBeVisible()
+    const financesPage = await FinancesPage.verifyOnPage(page, 'managing their money')
+    await expect(financesPage.mainForm).toMatchAriaSnapshot(`
+      - group "How good is Test at managing their money?":
+        - text: How good is Test at managing their money? This includes things like budgeting, prioritising bills and paying rent.
+        - radio "Able to manage their money well and is a strength"
+        - text: Able to manage their money well and is a strength
+        - radio "Able to manage their money for everyday necessities"
+        - text: Able to manage their money for everyday necessities
+        - radio "Unable to manage their money well"
+        - text: Unable to manage their money well
+        - radio "Unable to manage their money which is creating other problems"
+        - text: Unable to manage their money which is creating other problems
+      - group "Is Test affected by debt?":
+        - text: Is Test affected by debt?
+        - radio "Yes, their own debt"
+        - text: Yes, their own debt
+        - radio "Yes, someone else’s debt"
+        - text: Yes, someone else’s debt or
+        - radio "No"
+        - text: "No"
+        - radio "Unknown"
+        - text: Unknown
+      - button "Save and continue"
+    `)
   })
 
-  test('ends the question flow when financial concerns are answered No', async ({
-    page,
-    createSession,
-    strengthsAndNeedsBuilder,
-    baseURL,
-  }) => {
+  test('shows debt type question', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
+    const { handoverLink, sanAssessmentId } = await createSession({
+      targetService: TargetService.STRENGTHS_AND_NEEDS,
+    })
+    await strengthsAndNeedsBuilder
+      .extend(sanAssessmentId)
+      .withAnswers([
+        { question: Question.finance_income, value: [Option.employment] },
+        { question: Question.finance_concerns, value: CommonOption.yes },
+        { question: Question.finance_money_management, value: Option.good },
+        { question: Question.finance_debt, value: Option.yes_their_debt },
+      ])
+      .withUserSubmittedSteps([
+        Step.finance_income.code,
+        Step.finance_concerns.code,
+        Step.finance_money_management.code,
+      ])
+      .save()
+
+    await FinancesPage.navigateTo(page, handoverLink, baseURL, sanAssessmentId, Step.finance_debt.path)
+
+    const financesPage = await FinancesPage.verifyOnPage(page, 'What type of debt')
+    await expect(financesPage.mainForm).toMatchAriaSnapshot(`
+      - group "What type of debt does Test have?":
+        - text: What type of debt does Test have? Select all that apply.
+        - checkbox "Debt to others"
+        - text: Debt to others
+        - checkbox "Formal debt"
+        - text: Formal debt
+      - button "Save and continue"
+    `)
+  })
+
+  test('shows finance changes question', async ({ page, createSession, strengthsAndNeedsBuilder, baseURL }) => {
     const { handoverLink, sanAssessmentId } = await createSession({
       targetService: TargetService.STRENGTHS_AND_NEEDS,
     })
@@ -163,21 +217,36 @@ test.describe('Questions', () => {
     const financesPage = new FinancesPage(page)
     await financesPage.questions.finance_income.option(Option.employment).check()
     await financesPage.saveAndContinue.click()
-    await expect(page).toHaveURL(/finance-concerns/)
-
-    const concerns = financesPage.questions.finance_concerns
-    await concerns.option(CommonOption.yes).check()
-    await concerns.option(CommonOption.no).check()
-    await expect(concerns.option(CommonOption.no)).toBeChecked()
-    await expect(concerns.option(CommonOption.yes)).not.toBeChecked()
-    await expect(financesPage.questions.finance_concerns_no_details.input).toBeVisible()
+    await financesPage.questions.finance_concerns.option(CommonOption.yes).check()
+    await financesPage.saveAndContinue.click()
+    await financesPage.questions.finance_money_management.option(Option.good).check()
+    await financesPage.questions.finance_debt.option(CommonOption.no).check()
     await financesPage.saveAndContinue.click()
 
-    await expect(page).toHaveURL(/finance-summary/)
-    await expect(page.getByText('How good is Test at managing their money?')).not.toBeVisible()
-    await page.getByRole('tab', { name: 'Practitioner analysis' }).click()
-    await expect(page.getByText('Practitioner analysis not required')).toBeVisible()
-    await expect(page.getByText('Are there any strengths or protective factors')).not.toBeVisible()
+    await expect(page).toHaveURL(new RegExp(Step.finance_changes.path))
+    await expect(financesPage.mainForm).toMatchAriaSnapshot(`
+      - group "Does Test want to make changes to their finances?":
+        - text: Does Test want to make changes to their finances? Test must answer this question.
+        - radio "I have already made positive changes and want to maintain them"
+        - text: I have already made positive changes and want to maintain them
+        - radio "I am actively making changes"
+        - text: I am actively making changes
+        - radio "I want to make changes and know how to"
+        - text: I want to make changes and know how to
+        - radio "I want to make changes but need help"
+        - text: I want to make changes but need help
+        - radio "I am thinking about making changes"
+        - text: I am thinking about making changes
+        - radio "I do not want to make changes"
+        - text: I do not want to make changes
+        - radio "I do not want to answer"
+        - text: I do not want to answer or
+        - radio "Test is not present"
+        - text: Test is not present
+        - radio "Not applicable"
+        - text: Not applicable
+      - button "Save and continue"
+    `)
   })
 
   for (const debtCase of [

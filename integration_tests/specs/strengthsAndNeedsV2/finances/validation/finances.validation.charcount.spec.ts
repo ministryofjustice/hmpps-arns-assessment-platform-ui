@@ -106,6 +106,17 @@ test.describe('Finances character counts', () => {
     })
   }
 
+  test('finance-money-management: debt unknown details', async ({ page, openSection }) => {
+    const section = await openSection(finances, answers, userSubmittedSteps)
+    const financesPage = new FinancesPage(page)
+    const { questions } = financesPage
+    await page.goto(`${section}/${Step.finance_money_management.path}`)
+
+    await questions.finance_debt.option(CommonOption.unknown).check()
+
+    await expectTheLimitsOnThePage(financesPage)
+  })
+
   test('finance-debt: type of debt — their own (debt_to_others and formal_debt)', async ({ page, openSection }) => {
     const section = await openSection(finances, answers, userSubmittedSteps)
     const financesPage = new FinancesPage(page)
