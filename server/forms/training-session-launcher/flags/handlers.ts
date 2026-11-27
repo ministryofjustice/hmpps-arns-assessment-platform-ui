@@ -144,6 +144,13 @@ export function isTargetEnabled(target: TargetApplication): boolean {
 }
 
 /**
+ * Drop the SAN start point from a scenario sublabel when this environment does not offer SAN
+ */
+export function sublabelForEnabledTargets(shortDescription: string): string {
+  return isTargetEnabled('strengths-and-needs') ? shortDescription : shortDescription.replace(/ or SAN$/, '')
+}
+
+/**
  * Resolve handover configuration by merging all flag configs
  * Later flags override earlier flags for simple properties
  * urlParams are merged, modifyRequest functions are chained

@@ -1,4 +1,4 @@
-import { getExcludedFields } from '../../flags/handlers'
+import { getExcludedFields, sublabelForEnabledTargets } from '../../flags/handlers'
 import {
   applyRandomization,
   ScenarioValues,
@@ -177,7 +177,7 @@ function transformToDisplayScenario(scenario: ResolvedScenario, isCustom: boolea
   return {
     id: scenario.id,
     name: scenario.name,
-    shortDescription: scenario.shortDescription,
+    shortDescription: sublabelForEnabledTargets(scenario.shortDescription),
     description: scenario.description,
     flags: scenario.flags,
     randomizeFields: scenario.randomizeFields,
