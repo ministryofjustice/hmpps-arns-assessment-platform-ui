@@ -27,7 +27,8 @@ export const notificationBanners = CollectionBlock({
 })
 
 /**
- * API failure error banner
+ * Error summary shown when the handover API fails to create a link.
+ * GOV.UK Frontend moves focus to it on page load (data-module="govuk-error-summary").
  */
 export const errorBanner = HtmlBlock({
   visibleWhen: Data('handoverApiFailure').match(Condition.Equals(true)),
@@ -36,7 +37,9 @@ export const errorBanner = HtmlBlock({
       <div role="alert">
         <h2 class="govuk-error-summary__title">There is a problem</h2>
         <div class="govuk-error-summary__body">
-          <p class="govuk-body">Failed to generate handover link. Please try again.</p>
+          <ul class="govuk-list govuk-error-summary__list">
+            <li>The link could not be created. Try again. If it keeps happening, tell the training team.</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -49,7 +52,7 @@ export const errorBanner = HtmlBlock({
 export const pageHeading = HtmlBlock({
   content: `
     <span class="govuk-caption-l">Training</span>
-    <h1 class="govuk-heading-l">Active sessions</h1>
+    <h1 class="govuk-heading-l">Your sessions</h1>
   `,
 })
 
@@ -62,13 +65,13 @@ export const pageHelpText = GovUKDetails({
     HtmlBlock({
       content: `
         <p class="govuk-body">
-          This page shows all your active training sessions. Each session represents a case study
-          you can use to practice assessments.
+          This page shows the training sessions you have started in this browser. Each session is a
+          made-up case study you can use to practise an assessment.
         </p>
         <p class="govuk-body">
-          For each session, select a target service and click <strong>Generate link</strong> to
-          open the assessment. Use <strong>Delete session</strong> to remove individual sessions,
-          or <strong>Reset all sessions</strong> to clear everything and start fresh.
+          To open a session, choose the service to open it in, then select <strong>Generate link</strong>.
+          Select <strong>Delete session</strong> to remove one session, or <strong>Reset all sessions</strong>
+          to remove all of them.
         </p>
       `,
     }),
@@ -82,9 +85,9 @@ export const noSessionsMessage = HtmlBlock({
   visibleWhen: Data('sessions').not.match(Condition.IsRequired()),
   content: `
     <div class="govuk-inset-text">
-      <p class="govuk-body">You don't have any active training sessions.</p>
+      <p class="govuk-body">You have not started any training sessions.</p>
       <p class="govuk-body">
-        <a href="browse" class="govuk-link">Select a scenario</a> to create a new session.
+        <a href="browse" class="govuk-link">Choose a scenario</a> to start a session.
       </p>
     </div>
   `,
@@ -144,7 +147,7 @@ export const sessionCardBlock = TemplateWrapper({
     actions: [
       GovUKSelectInput({
         code: 'targetApplication',
-        label: { text: 'Target service', classes: 'govuk-!-font-weight-bold' },
+        label: { text: 'Service to open', classes: 'govuk-!-font-weight-bold' },
         items: Item().path('availableServices'),
       }),
 
@@ -184,7 +187,7 @@ export const sectionBreak = HtmlBlock({
  * New session button
  */
 export const newSessionButton = GovUKLinkButton({
-  text: '+ New session',
+  text: 'Start a new session',
   href: 'browse',
   classes: 'govuk-button--secondary',
 })

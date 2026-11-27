@@ -1,7 +1,8 @@
 import config from '../../../../config'
+import logger from '../../../../../logger'
 import { CreateHandoverLinkRequest } from '../../../../interfaces/handover-api/request'
 import { HandoverSubjectDetails } from '../../../../interfaces/handover-api/shared'
-import { resolveHandoverConfig } from '../../flags/handlers'
+import { isTargetEnabled, resolveHandoverConfig } from '../../flags/handlers'
 import { ScenarioValues } from '../../scenarios'
 import { TrainingSessionLauncherContext, TrainingLauncherPreferences, Session, TargetApplication } from '../../types'
 import { TrainingSessionLauncherEffectsDeps } from '../types'
@@ -73,9 +74,8 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
     oasysAssessmentPk: values.oasysAssessmentPk,
   }
 
-  // Add version info based on target application
-  if (targetApplication === 'strengths-and-needs' && session.sanAssessmentVersion) {
-    request.assessmentVersion = session.sanAssessmentVersion
+  if (targetApplication === 'strengths-and-needs' && values.sanAssessmentVersion) {
+    request.assessmentVersion = values.sanAssessmentVersion
   }
 
   if (targetApplication === 'sentence-plan' && values.sentencePlanVersion) {
@@ -89,6 +89,28 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
   return request
 }
 
+async function updateHandoverAssessmentContext(
+  deps: TrainingSessionLauncherEffectsDeps,
+  response: { handoverSessionId: string },
+  request: CreateHandoverLinkRequest,
+  session: Session,
+): Promise<void> {
+  if (!session.sanAssessmentId) {
+    return
+  }
+
+  await deps.handoverApiClient.updateContext(response.handoverSessionId, {
+    principal: request.user,
+    subject: request.subjectDetails,
+    assessmentContext: {
+      oasysAssessmentPk: session.values.oasysAssessmentPk,
+      assessmentId: session.sanAssessmentId,
+      assessmentVersion: session.sanAssessmentVersion,
+    },
+    criminogenicNeedsData: request.criminogenicNeedsData,
+  })
+}
+
 /**
  * Generate a handover link for an existing training session.
  *
@@ -100,7 +122,8 @@ function buildHandoverRequest(session: Session, targetApplication: TargetApplica
  *    the scenario has the SAN Private Beta flag, the CRN is a valid CRN that is not a magic CRN, and the ARNS API is
  *    behind Wiremock. When it is not ticked or not Private Beta, removes any stubs an earlier launch left instead
  * 5. Calls the handover API to create the link
- * 6. Sets the link in context data for redirect
+ * 6. Sets the link in context data for redirect, or sets handoverApiFailure if the session has gone or the stubs or
+ *    the API call fail
  */
 export const generateHandoverLink =
   (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
@@ -117,6 +140,10 @@ export const generateHandoverLink =
       throw new Error('Cannot generate handover link: trainingSessionId is missing from POST data')
     }
 
+    if (!isTargetEnabled(targetApplication)) {
+      throw new Error(`Cannot generate handover link: target '${targetApplication}' is not enabled in this environment`)
+    }
+
     // Load session from preferences
     const preferences = await deps.preferencesStore.get<{ trainingLauncher?: TrainingLauncherPreferences }>(
       preferencesId,
@@ -125,7 +152,10 @@ export const generateHandoverLink =
     const session = trainingLauncher.sessions.find(s => s.id === trainingSessionId)
 
     if (!session) {
-      throw new Error(`Cannot generate handover link: session with ID '${trainingSessionId}' not found`)
+      // e.g. removed in another tab: show the error summary on the refreshed list rather than an error page
+      logger.warn({ trainingSessionId }, 'Cannot generate training handover link: session not found')
+      context.setData('handoverApiFailure', true)
+      return
     }
 
     // Resolve handover config based on session flags
@@ -135,14 +165,24 @@ export const generateHandoverLink =
     const baseRequest = buildHandoverRequest(session, targetApplication)
     const request = handoverConfig.modifyRequest(baseRequest)
 
-    await registerTrainingStubs(deps.wiremockAdminClient, session.values, session.flags)
+    try {
+      await registerTrainingStubs(deps.wiremockAdminClient, session.values, session.flags)
 
-    const response = await deps.handoverApiClient.createHandoverLink(request)
+      const response = await deps.handoverApiClient.createHandoverLink(request)
 
-    // Append clientId and any flag-based URL params to the handover link
-    const clientId = getClientIdForTarget(targetApplication)
-    const finalHandoverLink = appendParamsToLink(response.handoverLink, clientId, handoverConfig.urlParams)
+      if (targetApplication === 'strengths-and-needs' && session.flags.includes('SAN_BETA')) {
+        await updateHandoverAssessmentContext(deps, response, request, session)
+      }
 
-    // Set the link in context for redirect
-    context.setData('handoverLink', finalHandoverLink)
+      // Append clientId and any flag-based URL params to the handover link
+      const clientId = getClientIdForTarget(targetApplication)
+      const finalHandoverLink = appendParamsToLink(response.handoverLink, clientId, handoverConfig.urlParams)
+
+      // Set the link in context for redirect
+      context.setData('handoverLink', finalHandoverLink)
+    } catch (error) {
+      // Leave handoverLink unset so the sessions page renders the error summary instead of redirecting
+      logger.error({ err: error, trainingSessionId, targetApplication }, 'Failed to generate training handover link')
+      context.setData('handoverApiFailure', true)
+    }
   }

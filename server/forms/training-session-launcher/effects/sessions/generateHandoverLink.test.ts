@@ -1,3 +1,4 @@
+import config from '../../../../config'
 import { generateHandoverLink } from './generateHandoverLink'
 import { PartialScenarioValues } from '../../scenarios/schema'
 import { Session, TrainingSessionLauncherContext } from '../../types'
@@ -12,13 +13,18 @@ jest.mock('../../../../config', () => ({
     'tiering-assessment': { clientId: 'tiering-assessment' },
   },
   ingressUrl: 'http://localhost:3000',
+  forms: { trainingSessionLauncher: { sanTargetEnabled: true } },
 }))
 
 jest.mock('./trainingStubs')
+jest.mock('../../../../../logger')
 
 // flags/handlers pulls in faker (ESM only), which Jest cannot load, and none of its behaviour is under test here
 jest.mock('../../flags/handlers', () => ({
   resolveHandoverConfig: () => ({ urlParams: {}, modifyRequest: (request: unknown) => request }),
+  isTargetEnabled: (target: string) =>
+    target !== 'strengths-and-needs' ||
+    jest.requireMock('../../../../config').forms.trainingSessionLauncher.sanTargetEnabled,
 }))
 
 const createSession = (values: PartialScenarioValues, flags: Session['flags'] = []): Session => ({
@@ -61,7 +67,7 @@ describe('generateHandoverLink', () => {
   it('should register the training stubs for the session before creating the handover link', async () => {
     // Arrange
     const session = createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accOtherWeightedScore: '4' }, [
-      'SAN_PRIVATE_BETA',
+      'SAN_BETA',
     ])
     givenSession(session)
 
@@ -76,9 +82,7 @@ describe('generateHandoverLink', () => {
   it('should not send criminogenic needs in the handover request, even for SAN Private Beta', async () => {
     // Arrange
     givenSession(
-      createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, [
-        'SAN_PRIVATE_BETA',
-      ]),
+      createSession({ crn: 'X123456', useMockedCriminogenicNeeds: 'YES', accLinkedToHarm: 'YES' }, ['SAN_BETA']),
     )
 
     // Act
@@ -87,5 +91,90 @@ describe('generateHandoverLink', () => {
     // Assert
     const [request] = handoverApiClient.createHandoverLink.mock.calls[0]
     expect(request).not.toHaveProperty('criminogenicNeedsData')
+  })
+
+  describe('when the SAN target is disabled', () => {
+    beforeEach(() => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = false
+    })
+
+    afterEach(() => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = true
+    })
+
+    it('should reject a request that still posts the SAN target', async () => {
+      // Arrange
+      givenSession(createSession({ crn: 'X123456' }, ['SAN_BETA']))
+      jest
+        .mocked(context.getPostData)
+        .mockImplementation((key: string) => (key === 'trainingSessionId' ? 'session-1' : 'strengths-and-needs'))
+
+      // Act & Assert
+      await expect(generateHandoverLink(deps)(context)).rejects.toThrow(
+        "target 'strengths-and-needs' is not enabled in this environment",
+      )
+      expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
+    })
+
+    it('should still create a Sentence Plan handover link', async () => {
+      // Arrange
+      givenSession(createSession({ crn: 'X123456' }, ['SAN_BETA']))
+
+      // Act
+      await generateHandoverLink(deps)(context)
+
+      // Assert
+      expect(context.setData).toHaveBeenCalledWith('handoverLink', expect.stringContaining('clientId=sentence-plan'))
+    })
+  })
+
+  it('should set the handover link when the handover API succeeds', async () => {
+    // Arrange
+    givenSession(createSession({ crn: 'X123456' }))
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverLink', 'http://handover/link?clientId=sentence-plan')
+    expect(context.setData).not.toHaveBeenCalledWith('handoverApiFailure', true)
+  })
+
+  it('should set handoverApiFailure and leave handoverLink unset when the handover API fails', async () => {
+    // Arrange
+    givenSession(createSession({ crn: 'X123456' }))
+    handoverApiClient.createHandoverLink.mockRejectedValue(new Error('Handover API unavailable'))
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(context.setData).not.toHaveBeenCalledWith('handoverLink', expect.anything())
+  })
+
+  it('should set handoverApiFailure when registering the training stubs fails', async () => {
+    // Arrange
+    givenSession(createSession({ crn: 'X123456' }))
+    jest.mocked(registerTrainingStubs).mockRejectedValueOnce(new Error('Wiremock unavailable'))
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
+  })
+
+  it('should set handoverApiFailure without calling the handover API when the session no longer exists', async () => {
+    // Arrange
+    givenSession({ ...createSession({ crn: 'X123456' }), id: 'another-session' })
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
   })
 })

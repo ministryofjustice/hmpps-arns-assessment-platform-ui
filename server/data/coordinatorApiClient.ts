@@ -54,7 +54,7 @@ export default class CoordinatorApiClient extends RestClient {
    * @throws 404 if no associated entities were found
    */
   async getEntityAssessment(entityUuid: string): Promise<EntityAssessmentResponse> {
-    return this.get({ path: `/entity/${entityUuid}/ASSESSMENT` }, asSystem())
+    return this.get({ path: `/entity/${entityUuid}/AAP_SAN` }, asSystem())
   }
 
   /**

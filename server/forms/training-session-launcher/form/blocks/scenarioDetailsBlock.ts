@@ -40,8 +40,12 @@ export const scenarioDetailsBlock = TemplateWrapper({
             <dd>{{oasysAssessmentPk}}</dd>
           </div>
           <div class="scenario-picker__inline-summary-item">
-            <dt>Sentence Plan Version</dt>
+            <dt>Sentence plan version</dt>
             <dd>{{sentencePlanVersion}}</dd>
+          </div>
+          <div class="scenario-picker__inline-summary-item">
+            <dt>SAN Assessment Version</dt>
+            <dd>{{sanAssessmentVersion}}</dd>
           </div>
         </dl>
 
@@ -49,7 +53,7 @@ export const scenarioDetailsBlock = TemplateWrapper({
         {{slot:flags}}
       </section>
       <section class="scenario-picker__section">
-        <h3 class="govuk-heading-s">Criminogenic Needs</h3>
+        <h3 class="govuk-heading-s">Criminogenic needs</h3>
         {{slot:needs}}
       </section>
     </div>
@@ -63,6 +67,7 @@ export const scenarioDetailsBlock = TemplateWrapper({
     pnc: Item().path('pnc').pipe(Transformer.String.EscapeHtml()),
     oasysAssessmentPk: Item().path('oasysAssessmentPk').pipe(Transformer.String.EscapeHtml()),
     sentencePlanVersion: Item().path('sentencePlanVersion').pipe(Transformer.String.EscapeHtml()),
+    sanAssessmentVersion: Item().path('sanAssessmentVersion').pipe(Transformer.String.EscapeHtml()),
   },
   slots: {
     flags: [

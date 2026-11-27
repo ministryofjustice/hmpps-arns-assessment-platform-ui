@@ -1,7 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test'
-import AbstractPage from '../abstractPage'
+import SentencePlanPage from './sentencePlanPage'
 
-export default class HistoricPlanPage extends AbstractPage {
+export default class HistoricPlanPage extends SentencePlanPage {
   readonly pageHeading: Locator
 
   readonly alertHeading: Locator
@@ -60,6 +60,12 @@ export default class HistoricPlanPage extends AbstractPage {
   static async verifyOnPage(page: Page): Promise<HistoricPlanPage> {
     const historicPlan = new HistoricPlanPage(page)
     await expect(historicPlan.pageHeading).toContainText(/'s plan$/i)
+    return historicPlan
+  }
+
+  static async verifyOnSanPage(page: Page): Promise<HistoricPlanPage> {
+    const historicPlan = new HistoricPlanPage(page)
+    await expect(historicPlan.pageHeading).toContainText('Accommodation')
     return historicPlan
   }
 

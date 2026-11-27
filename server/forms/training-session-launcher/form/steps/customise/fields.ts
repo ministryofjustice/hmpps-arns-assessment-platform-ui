@@ -6,6 +6,7 @@ import { subjectDetailsTabContent } from './tabs/subjectDetailsTab'
 import { criminogenicNeedsTabContent } from './tabs/criminogenicNeedsTab'
 import { flagsTabContent } from './tabs/flagsTab'
 import { practitionerDetailsTabContent } from './tabs/practitionerDetailsTab'
+import { scenarioNameValidation } from '../../validation/customiseValidation'
 
 /**
  * Page heading with caption
@@ -23,31 +24,31 @@ export const pageHeading = block<HtmlBlock>({
  */
 const customiseTabPanel = TabPanel({
   id: 'customise-scenario',
-  sidebarTitle: 'Configuration',
+  sidebarTitle: 'Scenario settings',
   defaultSelected: 'subject-details',
   queryParam: 'tab',
   items: [
     {
       id: 'subject-details',
-      label: 'Subject Details',
-      sublabel: 'Name, DOB, identifiers',
+      label: 'Subject details',
+      sublabel: 'Name, date of birth, identifiers',
       panel: subjectDetailsTabContent,
     },
     {
       id: 'criminogenic-needs',
-      label: 'Criminogenic Needs',
-      sublabel: 'Need scores and flags',
+      label: 'Criminogenic needs',
+      sublabel: 'Need scores and links to harm',
       panel: criminogenicNeedsTabContent,
     },
     {
       id: 'flags',
-      label: 'Scenario Flags',
-      sublabel: 'Feature toggles',
+      label: 'Scenario flags',
+      sublabel: 'Features and situations',
       panel: flagsTabContent,
     },
     {
       id: 'practitioner',
-      label: 'Practitioner Details',
+      label: 'Practitioner details',
       sublabel: 'Access and identity',
       panel: practitionerDetailsTabContent,
     },
@@ -60,8 +61,10 @@ const customiseTabPanel = TabPanel({
 const scenarioNameInput = GovUKTextInput({
   code: 'scenarioName',
   label: 'Scenario name',
+  hint: 'Shown in your sessions list and, if you save it, in the scenarios list',
   classes: 'govuk-input--width-20',
   defaultValue: Format('%1 (Customised)', Data('originalScenarioName')),
+  validWhen: scenarioNameValidation(),
 })
 
 /**
@@ -89,6 +92,10 @@ export const customiseFormWrapper = TemplateWrapper({
       </div>
 
       {{slot:tabPanel}}
+
+      <div class="govuk-button-group">
+        {{slot:endActions}}
+      </div>
     </form>
   `,
   values: {
@@ -105,7 +112,7 @@ export const customiseFormWrapper = TemplateWrapper({
         value: 'createSession',
       }),
       GovUKButton({
-        text: 'Save as preset',
+        text: 'Save as a new scenario',
         name: 'action',
         value: 'savePreset',
         classes: 'govuk-button--secondary',
@@ -115,5 +122,13 @@ export const customiseFormWrapper = TemplateWrapper({
       }),
     ],
     tabPanel: [customiseTabPanel],
+    // The tab panel is long, so the primary action is repeated at the end of the form
+    endActions: [
+      GovUKButton({
+        text: 'Create session',
+        name: 'action',
+        value: 'createSession',
+      }),
+    ],
   },
 })

@@ -2,8 +2,14 @@ import { AxeBuilder } from '@axe-core/playwright'
 import { test as base } from '@playwright/test'
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
 import { promises as fs } from 'node:fs'
-import type { AccessMode, CriminogenicNeedsData } from '@server/interfaces/handover-api/shared'
+import type {
+  AccessMode,
+  CriminogenicNeedsData,
+  HandoverSubjectDetails,
+  YesNoNull,
+} from '@server/interfaces/handover-api/shared'
 import type { AssessmentType } from '@server/interfaces/coordinator-api/oasysCreate'
+import { StrengthsAndNeedsBuilder, StrengthsAndNeedsBuilderFactory } from 'builders/StrengthsAndNeedsBuilder'
 import type { PlaywrightExtendedConfig } from '../../playwright.config'
 import { TestHmppsAuthClient } from './apis/TestHmppsAuthClient'
 import { TestAapApiClient } from './apis/TestAapApiClient'
@@ -91,6 +97,7 @@ const TARGET_SERVICE_CLIENT_IDS: Record<TargetService, string> = {
 
 export interface CreateSessionOptions {
   targetService: TargetService
+  accessMode?: AccessMode
   planAccessMode?: AccessMode
   assessmentType?: AssessmentType
   pnc?: string
@@ -116,6 +123,12 @@ export interface CreateSessionOptions {
    * The About page and assessment-info expanders are hidden for these users.
    */
   noCrn?: boolean
+  sexuallyMotivatedOffenceHistory?: YesNoNull
+  /**
+   * Overrides for the handover subject details (person on probation).
+   * For example, `{ gender: '2' }` for a female subject ('1' = Male, '2' = Female).
+   */
+  subject?: Partial<HandoverSubjectDetails>
 }
 
 export interface SessionFixture {
@@ -154,10 +167,12 @@ type WorkerFixtures = {
  */
 type TestApiFixtures = {
   aapClient: TestAapApiClient
+  sanClient: TestAapApiClient
   handoverClient: TestHandoverApiClient
   coordinatorClient: TestCoordinatorApiClient
   assessmentBuilder: AssessmentBuilderFactory
   sentencePlanBuilder: SentencePlanBuilderFactory
+  strengthsAndNeedsBuilder: StrengthsAndNeedsBuilderFactory
   coordinatorBuilder: CoordinatorBuilderFactory
   handoverBuilder: HandoverBuilderFactory
   createSession: (options: CreateSessionOptions) => Promise<SessionFixture>
@@ -234,6 +249,17 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
     await use(client)
   },
 
+  sanClient: async ({ authClient, apis }, use, testInfo) => {
+    const client = new TestAapApiClient({
+      baseUrl: apis.aapApi.url,
+      dbConnectionString: apis.aapApi.dbConnectionString,
+      authenticationClient: authClient as unknown as AuthenticationClient,
+      testInfo,
+    })
+
+    await use(client)
+  },
+
   handoverClient: async ({ authClient, apis }, use, testInfo) => {
     const client = new TestHandoverApiClient({
       baseUrl: apis.handoverApi.url,
@@ -260,6 +286,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
   sentencePlanBuilder: async ({ aapClient }, use) => {
     await use(SentencePlanBuilder(aapClient))
+  },
+
+  strengthsAndNeedsBuilder: async ({ sanClient }, use) => {
+    await use(StrengthsAndNeedsBuilder(sanClient))
   },
 
   coordinatorBuilder: async ({ coordinatorClient }, use) => {
@@ -290,12 +320,20 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
         sessionBuilder.withoutCrn()
       }
 
+      if (options.subject) {
+        sessionBuilder.withSubject(options.subject)
+      }
+
       if (options.pnc) {
         sessionBuilder.withSubjectPNC(options.pnc)
       }
 
       if (options.planAccessMode) {
         sessionBuilder.withPlanAccessMode(options.planAccessMode)
+      }
+
+      if (options.accessMode) {
+        sessionBuilder.withAccessMode(options.accessMode)
       }
 
       // Criminogenic needs for the ARNS stub below:
@@ -307,6 +345,10 @@ export const test = base.extend<TestApiFixtures & InternalFixtures, WorkerFixtur
 
       if (options.planVersion) {
         sessionBuilder.withPlanVersion(options.planVersion)
+      }
+
+      if (options.sexuallyMotivatedOffenceHistory) {
+        sessionBuilder.withSexuallyMotivatedOffenceHistory(options.sexuallyMotivatedOffenceHistory)
       }
 
       const session = await sessionBuilder.save()

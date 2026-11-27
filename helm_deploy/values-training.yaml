@@ -51,6 +51,8 @@ generic-service:
     FORGE_DEVTOOLS_ENABLED: 'false'
     AUDIT_ENABLED: 'true'
     FORM_TRAINING_SESSION_LAUNCHER_ENABLED: 'true'
+    # ATE-33: training is Sentence Plan only, so the launcher does not offer SAN as a handover target
+    TRAINING_LAUNCHER_SAN_TARGET_ENABLED: 'false'
     CAN_STUB_ARNS_API: 'true'
     WIREMOCK_ADMIN_URL: 'http://hmpps-arns-assessment-platform-ui-wiremock/__admin'
     SMART_SURVEY_POPUP_CODE: 'XF5PNV'

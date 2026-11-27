@@ -50,9 +50,10 @@ export const saveScenario =
  * Reads the scenario ID from POST data (scenarioId field).
  */
 export const deleteScenario =
-  (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
+  (deps: TrainingSessionLauncherEffectsDeps) =>
+  async (context: TrainingSessionLauncherContext, targetScenarioId?: string) => {
     const preferencesId = context.getState('preferencesId')
-    const scenarioId = context.getPostData('scenarioId') as string | undefined
+    const scenarioId = targetScenarioId ?? (context.getPostData('scenarioId') as string | undefined)
 
     if (!preferencesId) {
       throw InternalServerError('Missing preferencesId in req.state')

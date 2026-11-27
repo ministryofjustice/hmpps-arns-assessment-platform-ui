@@ -155,10 +155,10 @@ make dev-up && make e2e-ui  # Run Playwright tests locally against application i
 
 3. **Run the tests.** Once the app is available at `http://localhost:3000`, run the command that matches the app flag:
 
-   | App flag | Full-suite command |
-   | --- | --- |
-   | `true` (Confirm plan) | `TEST_PLAN_AGREEMENT_UPDATES=true make e2e` |
-   | `false` (Agree plan) | `TEST_PLAN_AGREEMENT_UPDATES=false make e2e` |
+   | App flag              | Full-suite command                           |
+   | --------------------- | -------------------------------------------- |
+   | `true` (Confirm plan) | `TEST_PLAN_AGREEMENT_UPDATES=true make e2e`  |
+   | `false` (Agree plan)  | `TEST_PLAN_AGREEMENT_UPDATES=false make e2e` |
 
 `TEST_PLAN_AGREEMENT_UPDATES` tells Playwright what to expect; it does not change the app flag.
 

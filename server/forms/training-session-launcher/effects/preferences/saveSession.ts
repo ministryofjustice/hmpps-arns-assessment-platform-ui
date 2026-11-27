@@ -56,9 +56,10 @@ async function loadSessions(deps: TrainingSessionLauncherEffectsDeps, preference
  * Reads the session ID from POST data (trainingSessionId field).
  */
 export const deleteSession =
-  (deps: TrainingSessionLauncherEffectsDeps) => async (context: TrainingSessionLauncherContext) => {
+  (deps: TrainingSessionLauncherEffectsDeps) =>
+  async (context: TrainingSessionLauncherContext, trainingSessionId?: string) => {
     const preferencesId = context.getState('preferencesId')
-    const sessionId = context.getPostData('trainingSessionId') as string | undefined
+    const sessionId = trainingSessionId ?? (context.getPostData('trainingSessionId') as string | undefined)
 
     if (!preferencesId) {
       throw new Error('Cannot delete session: preferencesId is missing from state')
