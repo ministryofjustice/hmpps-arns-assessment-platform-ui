@@ -84,7 +84,7 @@ test.describe('View Historic Assessment', () => {
       const { sanAssessmentId, handoverLink } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
-      await strengthsAndNeedsBuilder.extend(sanAssessmentId).withEventsBackdated(startOfDay, endOfDay).save()
+      await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withEventsBackdated(startOfDay, endOfDay).save()
 
       const { newPage } = await navigateToHistoricPlan(page, handoverLink, baseURL, sanAssessmentId)
       await expect(newPage).toHaveTitle('Accommodation analysis - Strengths and needs')
@@ -103,7 +103,7 @@ test.describe('View Historic Assessment', () => {
       const { sanAssessmentId, handoverLink } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
-      await strengthsAndNeedsBuilder.extend(sanAssessmentId)
+      await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0')
         .withEventsBackdated(startOfDay, endOfDay)
         .withAnswers([
           {
@@ -135,7 +135,7 @@ test.describe('View Historic Assessment', () => {
       const { sanAssessmentId, handoverLink } = await createSession({
         targetService: TargetService.STRENGTHS_AND_NEEDS,
       })
-      await strengthsAndNeedsBuilder.extend(sanAssessmentId)
+      await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0')
         .withEventsBackdated(startOfDay, endOfDay)
         .withAnswers([
           {
@@ -217,7 +217,7 @@ test.describe('View Historic Assessment', () => {
         const { sanAssessmentId, handoverLink } = await createSession({
           targetService: TargetService.STRENGTHS_AND_NEEDS,
         })
-        await strengthsAndNeedsBuilder.extend(sanAssessmentId).withEventsBackdated(startOfDay, endOfDay).save()
+        await strengthsAndNeedsBuilder.extend(sanAssessmentId, 'v1.0').withEventsBackdated(startOfDay, endOfDay).save()
 
         const { newPage } = await navigateToHistoricPlan(page, handoverLink, baseURL, sanAssessmentId)
         const historicAssessmentPage = await HistoricAssessmentPage.verifyOnPage(newPage, 'Employment and education')
@@ -237,7 +237,7 @@ test.describe('View Historic Assessment', () => {
           targetService: TargetService.STRENGTHS_AND_NEEDS,
         })
         await strengthsAndNeedsBuilder
-          .extend(sanAssessmentId)
+          .extend(sanAssessmentId, 'v1.0')
           .withEventsBackdated(startOfDay, endOfDay)
           .withAnswers([{ question, value }])
           .save()
