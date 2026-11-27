@@ -17,6 +17,7 @@ jest.mock('../../../../config', () => ({
 }))
 
 jest.mock('./trainingStubs')
+jest.mock('../../../../../logger')
 
 // flags/handlers pulls in faker (ESM only), which Jest cannot load, and none of its behaviour is under test here
 jest.mock('../../flags/handlers', () => ({
@@ -125,5 +126,55 @@ describe('generateHandoverLink', () => {
       // Assert
       expect(context.setData).toHaveBeenCalledWith('handoverLink', expect.stringContaining('clientId=sentence-plan'))
     })
+  })
+
+  it('should set the handover link when the handover API succeeds', async () => {
+    // Arrange
+    givenSession(createSession({ crn: 'X123456' }))
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverLink', 'http://handover/link?clientId=sentence-plan')
+    expect(context.setData).not.toHaveBeenCalledWith('handoverApiFailure', true)
+  })
+
+  it('should set handoverApiFailure and leave handoverLink unset when the handover API fails', async () => {
+    // Arrange
+    givenSession(createSession({ crn: 'X123456' }))
+    handoverApiClient.createHandoverLink.mockRejectedValue(new Error('Handover API unavailable'))
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(context.setData).not.toHaveBeenCalledWith('handoverLink', expect.anything())
+  })
+
+  it('should set handoverApiFailure when registering the training stubs fails', async () => {
+    // Arrange
+    givenSession(createSession({ crn: 'X123456' }))
+    jest.mocked(registerTrainingStubs).mockRejectedValueOnce(new Error('Wiremock unavailable'))
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
+  })
+
+  it('should set handoverApiFailure without calling the handover API when the session no longer exists', async () => {
+    // Arrange
+    givenSession({ ...createSession({ crn: 'X123456' }), id: 'another-session' })
+
+    // Act
+    await generateHandoverLink(deps)(context)
+
+    // Assert
+    expect(context.setData).toHaveBeenCalledWith('handoverApiFailure', true)
+    expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
   })
 })

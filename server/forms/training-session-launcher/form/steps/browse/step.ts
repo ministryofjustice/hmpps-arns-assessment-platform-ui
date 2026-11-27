@@ -1,4 +1,13 @@
-import { step, submit, access, redirect, Query, Post, Condition } from '@ministryofjustice/hmpps-forge/core/authoring'
+import {
+  step,
+  submit,
+  access,
+  redirect,
+  Query,
+  Post,
+  Condition,
+  Format,
+} from '@ministryofjustice/hmpps-forge/core/authoring'
 import { notificationBanners, pageHeading, pageHelpText, scenarioPickerPanel } from './fields'
 import { TrainingSessionLauncherEffects } from '../../../effects'
 
@@ -27,8 +36,7 @@ export const browseStep = step({
     submit({
       when: Post('action').match(Condition.Equals('deleteScenario')),
       onAlways: {
-        effects: [TrainingSessionLauncherEffects.deleteScenario()],
-        next: [redirect({ goto: 'browse' })],
+        next: [redirect({ goto: Format('confirm-remove?item=scenario&id=%1', Post('scenarioId')) })],
       },
     }),
 

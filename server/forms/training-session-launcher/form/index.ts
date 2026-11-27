@@ -1,5 +1,6 @@
 import { access, journey } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { browseStep } from './steps/browse/step'
+import { confirmRemoveStep } from './steps/confirm-remove/step'
 import { customiseStep } from './steps/customise/step'
 import { sessionsStep } from './steps/sessions/step'
 import { TrainingSessionLauncherEffects } from '../effects'
@@ -19,6 +20,7 @@ import { TrainingSessionLauncherEffects } from '../effects'
  * - Browse (scenario picker - main entry point)
  * - Customise (optional - modify scenario before creating session)
  * - Sessions (manage active sessions, generate links into services)
+ * - Confirm remove (confirm before deleting a session, all sessions or a saved scenario)
  */
 export const trainingSessionLauncherJourney = journey({
   code: 'training-session-launcher',
@@ -42,5 +44,5 @@ export const trainingSessionLauncherJourney = journey({
     }),
   ],
 
-  steps: [browseStep, customiseStep, sessionsStep],
+  steps: [browseStep, customiseStep, sessionsStep, confirmRemoveStep],
 })

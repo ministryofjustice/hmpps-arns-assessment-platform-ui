@@ -135,7 +135,7 @@ async function saveSessionAndCreateInBackend(
   const notification: TrainingLauncherNotification = {
     type: 'success',
     title: 'Session created',
-    message: `'${session.name}' session is ready. Generate a handover link to begin.`,
+    message: `${session.name} session started. Select Generate link to open it.`,
     target: 'sessions',
   }
   userSession.notifications.push(notification)

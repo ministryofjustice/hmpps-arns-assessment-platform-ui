@@ -1,6 +1,7 @@
 import { Data } from '@ministryofjustice/hmpps-forge/core/authoring'
 import { HtmlBlock } from '@ministryofjustice/hmpps-forge/core/components'
 import { GovUKCheckboxInput, GovUKTextInput } from '@ministryofjustice/hmpps-forge/govuk-components'
+import { flagsValidation } from '../../../validation/customiseValidation'
 
 /**
  * Scenario flags tab content
@@ -25,6 +26,7 @@ export const flagsTabContent = [
     label: 'Active flags',
     hint: 'Select all that apply',
     defaultValue: Data('flags'),
+    validWhen: flagsValidation(),
     items: [
       {
         value: 'SAN_BETA',
