@@ -1,3 +1,4 @@
+import config from '../../../../config'
 import { generateHandoverLink } from './generateHandoverLink'
 import { PartialScenarioValues } from '../../scenarios/schema'
 import { Session, TrainingSessionLauncherContext } from '../../types'
@@ -12,6 +13,7 @@ jest.mock('../../../../config', () => ({
     'tiering-assessment': { clientId: 'tiering-assessment' },
   },
   ingressUrl: 'http://localhost:3000',
+  forms: { trainingSessionLauncher: { sanTargetEnabled: true } },
 }))
 
 jest.mock('./trainingStubs')
@@ -20,6 +22,9 @@ jest.mock('../../../../../logger')
 // flags/handlers pulls in faker (ESM only), which Jest cannot load, and none of its behaviour is under test here
 jest.mock('../../flags/handlers', () => ({
   resolveHandoverConfig: () => ({ urlParams: {}, modifyRequest: (request: unknown) => request }),
+  isTargetEnabled: (target: string) =>
+    target !== 'strengths-and-needs' ||
+    jest.requireMock('../../../../config').forms.trainingSessionLauncher.sanTargetEnabled,
 }))
 
 const createSession = (values: PartialScenarioValues, flags: Session['flags'] = []): Session => ({
@@ -87,6 +92,42 @@ describe('generateHandoverLink', () => {
     const [request] = handoverApiClient.createHandoverLink.mock.calls[0]
     expect(request).not.toHaveProperty('criminogenicNeedsData')
   })
+
+  describe('when the SAN target is disabled', () => {
+    beforeEach(() => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = false
+    })
+
+    afterEach(() => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = true
+    })
+
+    it('should reject a request that still posts the SAN target', async () => {
+      // Arrange
+      givenSession(createSession({ crn: 'X123456' }, ['SAN_BETA']))
+      jest
+        .mocked(context.getPostData)
+        .mockImplementation((key: string) => (key === 'trainingSessionId' ? 'session-1' : 'strengths-and-needs'))
+
+      // Act & Assert
+      await expect(generateHandoverLink(deps)(context)).rejects.toThrow(
+        "target 'strengths-and-needs' is not enabled in this environment",
+      )
+      expect(handoverApiClient.createHandoverLink).not.toHaveBeenCalled()
+    })
+
+    it('should still create a Sentence Plan handover link', async () => {
+      // Arrange
+      givenSession(createSession({ crn: 'X123456' }, ['SAN_BETA']))
+
+      // Act
+      await generateHandoverLink(deps)(context)
+
+      // Assert
+      expect(context.setData).toHaveBeenCalledWith('handoverLink', expect.stringContaining('clientId=sentence-plan'))
+    })
+  })
+
   it('should set the handover link when the handover API succeeds', async () => {
     // Arrange
     givenSession(createSession({ crn: 'X123456' }))

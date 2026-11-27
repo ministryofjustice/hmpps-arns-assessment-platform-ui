@@ -188,6 +188,8 @@ export default {
     },
     trainingSessionLauncher: {
       enabled: get('FORM_TRAINING_SESSION_LAUNCHER_ENABLED', 'false') === 'true',
+      // Lets the launcher offer Strengths and Needs (SAN) as a handover target. Turned off in training (ATE-33).
+      sanTargetEnabled: get('TRAINING_LAUNCHER_SAN_TARGET_ENABLED', 'true') === 'true',
     },
     dataDeletionTool: {
       enabled: get('FORM_DATA_DELETION_TOOL_ENABLED', 'false') === 'true',
