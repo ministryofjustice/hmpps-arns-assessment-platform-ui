@@ -29,11 +29,10 @@ export const thinkingBehavioursAttitudesRiskOfSexualHarmStep = step({
     locals: {
       sectionTitle: contentFor('step.thinking_behaviours_attitudes_risk_of_sexual_harm_details'),
       pageSubHeading: commonContentFor('sectionTitle.thinking-behaviours-and-attitudes'),
-      sectionTitleClass: 'govuk-body-l',
       backlink: createRoute([
         ...baseSanRoute,
         Section.thinking_behaviours_and_attitudes.path,
-        Step.thinking_behaviours_attitudes.path,
+        Step.thinking_behaviours_attitudes_changes.path,
       ]),
     },
   },

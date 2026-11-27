@@ -64,6 +64,7 @@ const answers = [
 
 const userSubmittedSteps = [
   Step.thinking_behaviours_attitudes.code,
+  Step.thinking_behaviours_attitudes_changes.code,
   Step.thinking_behaviours_attitudes_risk_of_sexual_harm.code,
   Step.thinking_behaviours_attitudes_risk_of_sexual_harm_details.code,
   Step.thinking_behaviours_attitudes_summary.code,
@@ -89,7 +90,7 @@ test.describe('Thinking, behaviours and attitudes character counts', () => {
       const section = await openSection(thinking, answers, userSubmittedSteps)
       const thinkingPage = new ThinkingBehavioursAndAttitudesPage(page)
       const { questions } = thinkingPage
-      await page.goto(`${section}/${Step.thinking_behaviours_attitudes.path}`)
+      await page.goto(`${section}/${Step.thinking_behaviours_attitudes_changes.path}`)
 
       await questions.thinking_behaviours_attitudes_changes.option(option).check()
 

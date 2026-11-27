@@ -33,24 +33,38 @@ export const english = {
     [Question.thinking_behaviours_attitudes_offending_activities]: {
       text: 'Does %1 engage in activities that could link to offending?',
       option: {
-        [Option.no_offending_activities]: 'Engages in pro-social activities and understands the link to offending',
-        [Option.sometimes_offending_activities]:
-          'Sometimes engages in activities linked to offending but recognises the link',
-        [Option.yes_offending_activities]:
-          'Regularly engages in activities which encourage offending and is not aware or does not care about the link to offending',
+        [Option.no_offending_activities]: {
+          text: 'No, does not engage in these activities',
+          hint: 'Engages in positive activities and relationships and avoids situations that may create opportunities to offend.',
+        },
+        [Option.sometimes_offending_activities]: {
+          text: 'Yes, sometimes',
+          hint: 'Sometimes spends time in activities, situations or relationships linked to offending but recognises the risks.',
+        },
+        [Option.yes_offending_activities]: {
+          text: 'Yes, regularly',
+          hint: 'Regularly spending time in activities, situations or relationships that encourage offending and does not recognise, or choose not to act on, the risks.',
+        },
       },
       validation: 'Select if they engage in activities that could link to offending',
     },
     [Question.thinking_behaviours_attitudes_peer_pressure]: {
-      text: 'Is %1 resilient towards peer pressure or influence by criminal associates?',
+      text: 'Is %1 influenced by others in relation to their offending?',
       option: {
-        [CommonOption.yes]: 'Yes, resilient towards peer pressure or influence by criminal associates',
-        [Option.some]:
-          'Has been peer pressured or influenced by criminal associates in the past but recognises the link to their offending',
-        [CommonOption.no]:
-          'No, constantly peer pressured or influenced by criminal associates which is linked to their offending',
+        [CommonOption.yes]: {
+          text: 'No, not influenced by others',
+          hint: 'Has not been influenced by other in relation to offending, or taken clear steps to avoid negative influences.',
+        },
+        [Option.some]: {
+          text: 'Yes, sometimes',
+          hint: 'Has been influenced by others in relation to offending but recognises the influence and is trying to reduce it.',
+        },
+        [CommonOption.no]: {
+          text: 'Yes, regularly',
+          hint: 'Is regularly influenced by others in relation to offending and remains vulnerable to peer pressure, manipulation or criminal associates.',
+        },
       },
-      validation: 'Select if they’re resilient towards peer pressure or influence by criminal associates',
+      validation: 'Select if they are influenced by others in relation to their offending',
     },
     [Question.thinking_behaviours_attitudes_problem_solving]: {
       text: 'Is %1 able to solve problems in a positive way?',
@@ -75,24 +89,38 @@ export const english = {
       validation: 'Select if they understand other people’s views',
     },
     [Question.thinking_behaviours_attitudes_manipulative_predatory_behaviour]: {
-      text: 'Does %1 show manipulative behaviour or a predatory lifestyle?',
+      text: 'Are there any indications that %1 manipulates or exploits other people for personal gain?',
+      hint: 'Consider any current or past history of using deception, abusing trust or taking advantage of other people for personal gain.',
       option: {
-        [CommonOption.no]:
-          'Generally gives an honest account of their lives and has no history of showing manipulative behaviour or a predatory lifestyle',
-        [Option.some]:
-          'Some evidence that they show manipulative behaviour or act in a predatory way towards certain individuals',
-        [CommonOption.yes]: 'Shows a pattern of manipulative behaviour or a predatory lifestyle',
+        [CommonOption.no]: {
+          text: 'No indications',
+          hint: 'No history of manipulating, exploiting or taking advantage of others for personal gain.',
+        },
+        [Option.some]: {
+          text: 'Some indications',
+          hint: 'History of manipulative or exploitative behaviour in certain situations or relationships.',
+        },
+        [CommonOption.yes]: {
+          text: 'Significant indications',
+          hint: 'Clear and recurring pattern of manipulating, exploiting or taking advantage of others for personal gain.',
+        },
       },
-      validation: 'Select if they show manipulative behaviour or a predatory lifestyle',
+      validation: 'Select if there are indications they manipulate or exploit other people for personal gain',
     },
     [Question.thinking_behaviours_attitudes_temper_management]: {
       text: 'Is %1 able to manage their temper?',
       option: {
-        [CommonOption.yes]: 'Yes, is able to manage their temper well',
-        [Option.sometimes]: 'Sometimes has outbreaks of uncontrolled anger',
+        [CommonOption.yes]: {
+          text: 'Yes, manages it well',
+          hint: 'Recognises situations that make them angry or frustrated and deals with them effectively. Remains calm and does not lose control.',
+        },
+        [Option.sometimes]: {
+          text: 'Yes, sometimes able to manage it',
+          hint: 'Occasionally loses control when angry or frustrated, or has difficulty dealing with conflict in some situations.',
+        },
         [CommonOption.no]: {
-          text: 'No, easily loses their temper',
-          hint: 'This may result in a loss of control or inability to stay calm until they have expressed their anger.',
+          text: 'No, is not able to manage it',
+          hint: 'Regularly loses control when angry or frustrated and finds it difficult to remain calm or deal with conflict effectively.',
         },
       },
       validation: 'Select if they are able to manage their temper',
@@ -116,26 +144,40 @@ export const english = {
       validation: 'Select if they act on impulse',
     },
     [Question.thinking_behaviours_attitudes_hostile_orientation]: {
-      text: 'Does %1 have hostile orientation to others or to general rules?',
+      text: 'Does %1 show hostility towards other people, rules or authority?',
       option: {
-        [CommonOption.no]:
-          'They’re able to have constructive conversations when they disagree with others and can forgive past wrongs',
-        [Option.some]: 'Some evidence of suspicious, angry or vengeful thinking and behaviour',
+        [CommonOption.no]: {
+          text: 'No, does not show hostility',
+          hint: 'Can consider other people’s views, discuss disagreements constructively and move past previous conflicts.',
+        },
+        [Option.some]: {
+          text: 'Yes, sometimes',
+          hint: 'Sometimes shows suspicious, angry or vengeful thinking, or struggles to accept other people’s views.',
+        },
         [CommonOption.yes]: {
-          text: 'There is evidence of suspicious, angry and vengeful thinking and behaviour',
-          html: 'There is evidence of suspicious, angry <strong>and</strong> vengeful thinking and behaviour',
+          text: 'Yes, regularly',
+          hint: 'Regularly shows suspicious, angry or vengeful thinking and behaviour, holds grudges, shows little regard for other people’s views or wellbeing, or views other people, rules or authority with hostility.',
         },
       },
-      validation: 'Select if they have hostile orientation to others or to general rules',
+      validation: 'Select if they show hostility towards other people, rules or authority',
     },
     [Question.thinking_behaviours_attitudes_supervision]: {
-      text: 'Does %1 accept supervision and their licence conditions?',
+      text: 'Are there indications %1 is willing to engage positively with their sentence?',
       option: {
-        [Option.yes_supervision]: 'Accepts supervision and has responded well to supervision in the past',
-        [Option.unsure_supervision]: 'Unsure about supervision and has put minimum effort into supervision in the past',
-        [Option.no_supervision]: 'Not prepared to accept supervision and has failed to follow supervision in the past',
+        [Option.yes_supervision]: {
+          text: 'Significant indications',
+          hint: 'Willing to engage positively and cooperate.',
+        },
+        [Option.unsure_supervision]: {
+          text: 'Some indications',
+          hint: 'Has mixed views about their sentence or engages only to meet minimum requirements.',
+        },
+        [Option.no_supervision]: {
+          text: 'No indications',
+          hint: 'Is unlikely to engage positively with their sentence.',
+        },
       },
-      validation: 'Select if they accept supervision and their licence conditions',
+      validation: 'Select if there are indications they are willing to engage positively with their sentence',
     },
     [Question.thinking_behaviours_attitudes_criminal_behaviour]: {
       text: 'Does %1 support or excuse criminal behaviour?',
@@ -167,14 +209,19 @@ export const english = {
     },
     [Question.thinking_behaviours_attitudes_sexual_preoccupation]: {
       text: 'Is there evidence %1 shows sexual preoccupation?',
+      hint: 'Sexual preoccupation is when sexual thoughts or behaviours take up a significant amount of time and affect day-to-day life, relationships, responsibilities or other important activities.',
       option: {
-        [CommonOption.yes]:
-          'Yes, the amount of time they spend engaging in sexual activity or thinking about sex is unhealthy and is impacting their day-to-day life',
-        [Option.sometimes]:
-          'Shows some evidence of improving their day-to-day life but still spends a significant amount of time preoccupied with sex',
         [CommonOption.no]: {
-          text: 'No, the amount of time they spend engaging in sexual activity or thinking about sex is healthy and is balanced alongside all other important areas of their life',
-          hint: 'This includes behaviours like masturbating regularly, having casual sex or using pornography to meet their needs in a healthy way.',
+          text: 'No evidence',
+          hint: 'Sexual thoughts or behaviours do not appear to affect their daily functioning.',
+        },
+        [Option.sometimes]: {
+          text: 'Some evidence',
+          hint: 'Sexual thoughts or behaviours take up a significant amount of time, but there is evidence of other interests or attempts to reduce the behaviour.',
+        },
+        [CommonOption.yes]: {
+          text: 'Significant evidence',
+          hint: 'Sexual thoughts or behaviours take up a significant amount of time and have a substantial impact on their daily functioning.',
         },
       },
       validation: 'Select if there’s evidence of sexual preoccupation',
@@ -182,28 +229,37 @@ export const english = {
     [Question.thinking_behaviours_attitudes_offence_related_sexual_interest]: {
       text: 'Is there evidence %1 has offence-related sexual interests?',
       option: {
-        [Option.yes_offence_related_sexual_interest]: {
-          text: 'Yes, there are recurrent and persistent patterns of a preference for sexual activity that is illegal or harmful and no evidence of healthy sexual interests',
-          hint: 'They are strongly aroused by illegal harmful sexual acts with little or no interest in consensual sex.',
-        },
-        [Option.some_offence_related_sexual_interest]:
-          'Shows some evidence of healthy sexual activity including consensual sex but shows behaviour that is recurrent and persistent or an interest in sexual activity that is illegal or harmful',
         [Option.no_offence_related_sexual_interest]: {
-          text: 'No, they have healthy sexual interests rather than a preference for sexual activity that is illegal or harmful',
-          hint: 'While offending, they may have engaged in sexual activity that is illegal but their preferred route to meeting their sexual needs is both legal and consensual.',
+          text: 'No evidence',
+          hint: 'Healthy sexual interests. While offending may have involved illegal sexual activity, their usual way of meeting sexual needs is legal and consensual.',
+        },
+        [Option.some_offence_related_sexual_interest]: {
+          text: 'Yes, some evidence',
+          hint: 'Some evidence of healthy, consensual sexual activity, but also recurring interest in or behaviour involving illegal or harmful sexual activity.',
+        },
+        [Option.yes_offence_related_sexual_interest]: {
+          text: 'Yes, significant evidence',
+          hint: 'A persistent preference for illegal or harmful sexual activity, with little or no evidence of healthy, consensual sexual interests.',
         },
       },
       validation: 'Select if they show evidence of offence-related sexual interests',
     },
     [Question.thinking_behaviours_attitudes_emotional_intimacy]: {
       text: 'Is there evidence %1 finds it easier to seek emotional intimacy with children over adults?',
+      hint: 'This means looking to children to meet emotional needs that would usually be met through relationships with other adults.',
       option: {
-        [CommonOption.yes]:
-          'Yes, they find it easier to seek emotional intimacy with children and have significant difficulty forming intimate relationships with adults',
-        [Option.sometimes]:
-          'Shows some evidence of having or wanting stable adult relationships but finds it easier to seek emotional intimacy with children over adults',
-        [CommonOption.no]:
-          'No, they have or have had a intimate relationship with an adult that they value or have the skills, ability and desire to form stable relationships',
+        [CommonOption.no]: {
+          text: 'No evidence',
+          hint: 'They have or have had an intimate relationship with an adult that they value or have the skills, ability and desire to form stable relationships.',
+        },
+        [Option.sometimes]: {
+          text: 'Yes, some evidence',
+          hint: 'Shows some evidence of having or wanting stable adult relationships but finds it easier to seek emotional intimacy with children over adults.',
+        },
+        [CommonOption.yes]: {
+          text: 'Yes, significant evidence',
+          hint: 'They find it easier to seek emotional intimacy with children and have significant difficulty forming intimate relationships with adults.',
+        },
       },
       validation:
         'Select if they show evidence that they find it easier to seek emotional intimacy with children over adults',
@@ -222,14 +278,14 @@ export const english = {
       validation: 'Give details on strengths or protective factors related to their thinking, behaviours and attitudes',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm]: {
-      text: 'Are %1 thinking, behaviours and attitudes linked to risk of serious harm?',
+      text: 'Is %1 thinking, behaviours and attitudes linked to risk of serious harm?',
       validation: 'Select if linked to risk of serious harm',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_serious_harm_yes_details]: {
       validation: 'Give details on the risk of serious harm',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending]: {
-      text: 'Are %1 thinking, behaviours and attitudes linked to risk of reoffending?',
+      text: 'Is %1 thinking, behaviours and attitudes linked to risk of reoffending?',
       validation: 'Select if linked to risk of reoffending',
     },
     [Question.thinking_behaviours_attitudes_practitioner_analysis_risk_of_reoffending_yes_details]: {

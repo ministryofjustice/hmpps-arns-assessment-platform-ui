@@ -27,7 +27,6 @@ export const thinkingBehavioursAttitudesStep = step({
     thinkingBehavioursAttitudesSection.questions.hostileOrientation.displayModes.field,
     thinkingBehavioursAttitudesSection.questions.supervision.displayModes.field,
     thinkingBehavioursAttitudesSection.questions.criminalBehaviour.displayModes.field,
-    thinkingBehavioursAttitudesSection.questions.changes.displayModes.field,
     saveButton,
   ],
   onAccess: [
@@ -68,7 +67,7 @@ export const thinkingBehavioursAttitudesStep = step({
         ],
         next: [
           redirect({
-            goto: Step.thinking_behaviours_attitudes_risk_of_sexual_harm.path,
+            goto: Step.thinking_behaviours_attitudes_changes.path,
           }),
         ],
       },
