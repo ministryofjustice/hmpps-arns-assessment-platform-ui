@@ -133,7 +133,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     shortDescription: 'Probation case study, starts at Sentence Plan or SAN',
     description:
       'Scenario configured for Strengths and Needs (SAN) and Sentence Plan training in a community/probation setting.',
-    flags: ['SAN_PRIVATE_BETA'],
+    flags: ['SAN_BETA'],
     fixedValues: {
       givenName: 'Charlie',
       familyName: 'Patterson',
@@ -150,7 +150,7 @@ export const scenarioPresets: ScenarioPreset[] = [
     name: 'SAN v2 Prison',
     shortDescription: 'Prison case study, starts at Sentence Plan or SAN',
     description: 'Scenario configured for Strengths and Needs (SAN) and Sentence Plan training in a prison setting.',
-    flags: ['SAN_PRIVATE_BETA'],
+    flags: ['SAN_BETA'],
     fixedValues: {
       givenName: 'Phillip',
       familyName: 'Jones',

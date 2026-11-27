@@ -1,3 +1,4 @@
+import config from '../../../config'
 import { getPresetById, resolvePreset, scenarioPresets } from './presets'
 import { resolveHandoverConfig } from '../flags/handlers'
 
@@ -6,6 +7,7 @@ jest.mock('../../../config', () => ({
     'sentence-plan': { clientId: 'sentence-plan', displayName: 'Sentence Plan' },
     'strengths-and-needs': { clientId: 'strengths-and-needs-assessment', displayName: 'Strengths and Needs (SAN)' },
   },
+  forms: { trainingSessionLauncher: { sanTargetEnabled: true } },
 }))
 
 // The scenarios modules pull in faker (ESM only), which Jest cannot load, so randomisation is stubbed
@@ -24,6 +26,10 @@ jest.mock('./index', () => ({
 }))
 
 describe('scenario presets', () => {
+  afterEach(() => {
+    config.forms.trainingSessionLauncher.sanTargetEnabled = true
+  })
+
   it('should have unique ids', () => {
     const ids = scenarioPresets.map(preset => preset.id)
 
@@ -77,12 +83,12 @@ describe('scenario presets', () => {
       expect(getPresetById(id)?.name).toBe(name)
     })
 
-    it('should resolve its fixed values and the SAN Private Beta flag', () => {
+    it('should resolve its fixed values and the SAN_BETA flag', () => {
       const resolved = resolvePreset(getPresetById(id)!, 123)
 
       expect(resolved.id).toBe(id)
       expect(resolved.seed).toBe(123)
-      expect(resolved.flags).toEqual(['SAN_PRIVATE_BETA'])
+      expect(resolved.flags).toEqual(['SAN_BETA'])
       expect(resolved.values).toMatchObject(expectedValues)
     })
 
@@ -97,6 +103,15 @@ describe('scenario presets', () => {
       const { availableServices } = resolveHandoverConfig(getPresetById(id)!.flags)
 
       expect(availableServices).toEqual(['sentence-plan', 'strengths-and-needs'])
+    })
+
+    it('should still be listed but offer only Sentence Plan when the SAN target is disabled', () => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = false
+
+      const { availableServices } = resolveHandoverConfig(getPresetById(id)!.flags)
+
+      expect(scenarioPresets.map(preset => preset.id)).toContain(id)
+      expect(availableServices).toEqual(['sentence-plan'])
     })
   })
 })
