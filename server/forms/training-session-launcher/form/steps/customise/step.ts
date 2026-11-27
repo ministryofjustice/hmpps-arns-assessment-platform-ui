@@ -15,7 +15,8 @@ import { TrainingSessionLauncherEffects } from '../../../effects'
  * Flow:
  * - Access: Loads scenario, redirects to browse if no scenario query param
  * - Action: Handles reset button to restore original values
- * - Submit: Creates session from custom data and redirects to sessions
+ * - Submit: Validates the form, then creates a session (or saves a scenario) from the custom data.
+ *   Invalid submissions re-render the page with an error summary and inline errors.
  */
 export const customiseStep = step({
   path: '/customise',
@@ -38,7 +39,8 @@ export const customiseStep = step({
   onSubmission: [
     submit({
       when: Post('action').match(Condition.Equals('createSession')),
-      onAlways: {
+      validate: true,
+      onValid: {
         effects: [TrainingSessionLauncherEffects.createSessionFromCustomize()],
         next: [redirect({ goto: 'sessions' })],
       },
@@ -46,7 +48,8 @@ export const customiseStep = step({
 
     submit({
       when: Post('action').match(Condition.Equals('savePreset')),
-      onAlways: {
+      validate: true,
+      onValid: {
         effects: [TrainingSessionLauncherEffects.saveCustomPreset()],
         next: [redirect({ goto: 'browse' })],
       },

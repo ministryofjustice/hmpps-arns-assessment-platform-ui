@@ -4,6 +4,12 @@ import { GovUKTextInput, GovUKSelectInput, GovUKRadioInput } from '@ministryofju
 import { RandomizableField } from '../../../../components'
 import { stubbedCrns } from '../../../../scenarios/stubbedCrns'
 import { handoverGenderOptions } from '../../../../../shared/constants/gender'
+import {
+  crnValidation,
+  dateOfBirthValidation,
+  oasysAssessmentPkValidation,
+  randomisedState,
+} from '../../../validation/customiseValidation'
 
 /**
  * Subject details tab content
@@ -26,7 +32,7 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'givenName',
-    randomize: Data('givenName_isRandomized'),
+    randomize: randomisedState('givenName'),
     field: GovUKTextInput({
       code: 'givenName',
       label: 'Given name',
@@ -37,7 +43,7 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'familyName',
-    randomize: Data('familyName_isRandomized'),
+    randomize: randomisedState('familyName'),
     field: GovUKTextInput({
       code: 'familyName',
       label: 'Family name',
@@ -48,19 +54,20 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'dateOfBirth',
-    randomize: Data('dateOfBirth_isRandomized'),
+    randomize: randomisedState('dateOfBirth'),
     field: GovUKTextInput({
       code: 'dateOfBirth',
       label: 'Date of birth',
       hint: 'Use year-month-day, for example 1985-03-15',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.dateOfBirth'),
+      validWhen: dateOfBirthValidation(),
     }),
   }),
 
   RandomizableField({
     fieldKey: 'gender',
-    randomize: Data('gender_isRandomized'),
+    randomize: randomisedState('gender'),
     field: GovUKSelectInput({
       code: 'gender',
       label: 'Gender',
@@ -72,7 +79,7 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'location',
-    randomize: Data('location_isRandomized'),
+    randomize: randomisedState('location'),
     field: GovUKRadioInput({
       code: 'location',
       label: 'Location',
@@ -87,7 +94,7 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'sexuallyMotivatedOffenceHistory',
-    randomize: Data('sexuallyMotivatedOffenceHistory_isRandomized'),
+    randomize: randomisedState('sexuallyMotivatedOffenceHistory'),
     field: GovUKRadioInput({
       code: 'sexuallyMotivatedOffenceHistory',
       label: 'Sexually motivated offence history',
@@ -106,13 +113,14 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'crn',
-    randomize: Data('crn_isRandomized'),
+    randomize: randomisedState('crn'),
     field: GovUKTextInput({
       code: 'crn',
       label: 'CRN',
       hint: 'Case reference number (nDelius)',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.crn'),
+      validWhen: crnValidation(),
     }),
   }),
 
@@ -130,7 +138,7 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'pnc',
-    randomize: Data('pnc_isRandomized'),
+    randomize: randomisedState('pnc'),
     field: GovUKTextInput({
       code: 'pnc',
       label: 'PNC',
@@ -142,19 +150,20 @@ export const subjectDetailsTabContent = [
 
   RandomizableField({
     fieldKey: 'oasysAssessmentPk',
-    randomize: Data('oasysAssessmentPk_isRandomized'),
+    randomize: randomisedState('oasysAssessmentPk'),
     field: GovUKTextInput({
       code: 'oasysAssessmentPk',
       label: 'OASys assessment PK',
       hint: 'The 7-digit OASys assessment ID',
       classes: 'govuk-input--width-10',
       defaultValue: Data('scenario.oasysAssessmentPk'),
+      validWhen: oasysAssessmentPkValidation(),
     }),
   }),
 
   RandomizableField({
     fieldKey: 'sentencePlanVersion',
-    randomize: Data('sentencePlanVersion_isRandomized'),
+    randomize: randomisedState('sentencePlanVersion'),
     field: GovUKTextInput({
       code: 'sentencePlanVersion',
       label: 'Sentence plan version',
