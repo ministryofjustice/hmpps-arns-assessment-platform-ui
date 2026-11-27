@@ -1,5 +1,5 @@
 import config from '../../../config'
-import { getExcludedFields, resolveHandoverConfig } from './handlers'
+import { getExcludedFields, resolveHandoverConfig, sublabelForEnabledTargets } from './handlers'
 
 jest.mock('../../../config', () => ({
   handoverTargets: { 'sentence-plan': {}, 'strengths-and-needs': {}, 'tiering-assessment': {} },
@@ -33,6 +33,26 @@ describe('flag handlers', () => {
       const { availableServices } = resolveHandoverConfig(['SAN_BETA', 'TIERING_ASSESSMENT'])
 
       expect(availableServices).toEqual(['sentence-plan', 'tiering-assessment'])
+    })
+  })
+
+  describe('sublabelForEnabledTargets()', () => {
+    afterEach(() => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = true
+    })
+
+    it('should keep the SAN start point when the SAN target is enabled', () => {
+      expect(sublabelForEnabledTargets('Prison case study, starts at Sentence Plan or SAN')).toBe(
+        'Prison case study, starts at Sentence Plan or SAN',
+      )
+    })
+
+    it('should drop the SAN start point when the SAN target is disabled', () => {
+      config.forms.trainingSessionLauncher.sanTargetEnabled = false
+
+      expect(sublabelForEnabledTargets('Prison case study, starts at Sentence Plan or SAN')).toBe(
+        'Prison case study, starts at Sentence Plan',
+      )
     })
   })
 
