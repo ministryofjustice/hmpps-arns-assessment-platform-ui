@@ -108,7 +108,7 @@ describe('view all answers', () => {
     expect(headings(await renderPage(), 2)).toEqual([
       'Accommodation',
       'Employment and education',
-      // 'Finances',
+      'Finances',
       'Drug use',
       'Alcohol use',
       'Health and wellbeing',
@@ -124,7 +124,7 @@ describe('view all answers', () => {
    * covers both the questions and the analysis.
    */
   it('shows a status against every section, complete only once the section is', async () => {
-    expect(tags(await renderPage())).toEqual(Array(8).fill('Incomplete'))
+    expect(tags(await renderPage())).toEqual(Array(9).fill('Incomplete'))
 
     const complete = await renderPage({}, { [Section.accommodation.statusKey]: SectionComplete.yes })
     expect(tags(complete).filter(tag => tag === 'Complete')).toHaveLength(1)

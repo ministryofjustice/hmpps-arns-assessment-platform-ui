@@ -6,6 +6,7 @@ import { Question as HealthQuestion } from '@server/forms/strengths-and-needs/ve
 import { Question as PersonalRelationshipsQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/personal-relationships-and-community/constants/question'
 import { Question as ThinkingBehavioursQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/thinking-behaviours-and-attitudes/constants/question'
 import { Question as EmploymentQuestion } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/employment-and-education/constants/question'
+import { Question as FinanceQuestion } from '@server/forms/strengths-and-needs/versions/v1.0/journeys/finance/constants/question'
 import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
 import { Option as AccommodationOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/accommodation/constants/option'
 import { Option as AlcoholOption } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/alcohol-use/constants/option'
@@ -163,28 +164,33 @@ const employment: Answer[] = [
   },
 ]
 
-// TODO Uncomment it during ACT-752 Finance framework
-// const finance: Answer[] = [
-//   { question: 'finance_income', value: ['EMPLOYMENT', 'FAMILY_OR_FRIENDS', 'OTHER'] },
-//   // An optioned reveal inside a multi-select option.
-//   { question: 'finance_income_family_or_friends_details', value: 'YES' },
-//   { question: 'finance_income_other_details', value: details('other income') },
-//   { question: 'finance_bank_account', value: 'NO' },
-//   { question: 'finance_money_management', value: 'FAIRLY_BAD' },
-//   { question: 'finance_money_management_fairly_bad_details', value: details('fairly bad with money') },
-//   { question: 'finance_gambling', value: 'YES_THEIR_GAMBLING' },
-//   { question: 'finance_gambling_yes_their_gambling_details', value: details('their gambling') },
-//   // Two levels of reveal: radio -> checkbox -> details.
-//   { question: 'finance_debt', value: 'YES_THEIR_DEBT' },
-//   { question: 'yes_type_of_debt', value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT'] },
-//   { question: 'yes_type_of_debt_debt_to_others_details', value: details('debt to others') },
-//   { question: 'yes_type_of_debt_formal_debt_details', value: details('formal debt') },
-//   { question: 'finance_changes', value: 'THINKING_ABOUT_MAKING_CHANGES' },
-//   { question: 'finance_changes_thinking_about_making_changes_details', value: details('thinking about it') },
-//   // Analysis left deliberately partial.
-//   { question: 'finance_strengths_protective_factors', value: 'NO' },
-//   { question: 'finance_no_strengths_protective_factors_details', value: details('no finance strengths') },
-// ]
+const finance: Answer[] = [
+  { question: FinanceQuestion.finance_income, value: ['EMPLOYMENT', 'FAMILY_OR_FRIENDS', 'OTHER'] },
+  // An optioned reveal inside a multi-select option.
+  { question: FinanceQuestion.family_or_friends_details, value: 'YES' },
+  { question: FinanceQuestion.finance_income_other_details, value: details('other income') },
+  { question: FinanceQuestion.finance_bank_account, value: 'NO' },
+  { question: FinanceQuestion.finance_money_management, value: 'FAIRLY_BAD' },
+  { question: FinanceQuestion.finance_money_management_fairly_bad_details, value: details('fairly bad with money') },
+  { question: FinanceQuestion.finance_gambling, value: 'YES_THEIR_GAMBLING' },
+  { question: FinanceQuestion.finance_gambling_yes_their_gambling_details, value: details('their gambling') },
+  // Two levels of reveal: radio -> checkbox -> details.
+  { question: FinanceQuestion.finance_debt, value: 'YES_THEIR_DEBT' },
+  { question: FinanceQuestion.yes_type_of_debt, value: ['DEBT_TO_OTHERS', 'FORMAL_DEBT'] },
+  { question: FinanceQuestion.yes_type_of_debt_debt_to_others_details, value: details('debt to others') },
+  { question: FinanceQuestion.yes_type_of_debt_formal_debt_details, value: details('formal debt') },
+  { question: FinanceQuestion.finance_changes, value: 'THINKING_ABOUT_MAKING_CHANGES' },
+  {
+    question: FinanceQuestion.finance_changes_thinking_about_making_changes_details,
+    value: details('thinking about it'),
+  },
+  // Analysis left deliberately partial.
+  { question: FinanceQuestion.finance_practitioner_analysis_strengths_or_protective_factors, value: 'NO' },
+  {
+    question: FinanceQuestion.finance_practitioner_analysis_strengths_or_protective_factors_no_details,
+    value: details('no finance strengths'),
+  },
+]
 
 const drugUse: Answer[] = [
   { question: 'drug_use', value: 'YES' },
@@ -535,7 +541,7 @@ const thinking: Answer[] = [
 const statuses: Record<string, string> = {
   [Section.accommodation.statusKey]: SectionComplete.yes,
   [Section.employment_and_education.statusKey]: SectionComplete.yes,
-  // [Section.finance.statusKey]: SectionComplete.no,
+  [Section.finance.statusKey]: SectionComplete.no,
   [Section.drug_use.statusKey]: SectionComplete.yes,
   [Section.alcohol_use.statusKey]: SectionComplete.yes,
   [Section.health_and_wellbeing.statusKey]: SectionComplete.no,
@@ -562,7 +568,7 @@ test.describe('View all answers', () => {
         // TODO Uncomment for each section work
         ...accommodation,
         ...employment,
-        // ...finance,
+        ...finance,
         ...drugUse,
         ...alcohol,
         ...health,
@@ -582,7 +588,7 @@ test.describe('View all answers', () => {
     // TODO Uncomment for each section work
     await expect(page.getByText(`${sanPageTitles.accommodation}\nComplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.employmentAndEducation}\nComplete`, { exact: true })).toBeVisible()
-    // expect(page.getByText('Finances\nIncomplete', { exact: true })).toBeVisible()
+    await expect(page.getByText(`${sanPageTitles.finances}\nIncomplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.alcoholUse}\nComplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.healthAndWellbeing}\nIncomplete`, { exact: true })).toBeVisible()
     await expect(page.getByText(`${sanPageTitles.personal}\nIncomplete`, { exact: true })).toBeVisible()
@@ -652,6 +658,8 @@ test.describe('View all answers', () => {
         'Incomplete\n' +
         'Employment and education\n' +
         'Incomplete\n' +
+        'Finances\n' +
+        'Incomplete\n' +
         'Drug use\n' +
         'Incomplete\n' +
         'Alcohol use\n' +
@@ -710,6 +718,7 @@ test.describe('View all answers', () => {
     await expect(page.getByText('other reason for no')).toBeVisible()
     await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
     await expect(page.getByText("Is the location of Test's accommodation suitable?")).not.toBeVisible()
+    await expect(page.getByText('Finances\nIncomplete\n')).toBeVisible()
     await expect(page.getByText('Alcohol use\nIncomplete\n')).toBeVisible()
     await expect(page.getByText('Health and wellbeing\nIncomplete\n')).toBeVisible()
     await expect(page.getByText('Personal relationships and community\nIncomplete\n')).toBeVisible()

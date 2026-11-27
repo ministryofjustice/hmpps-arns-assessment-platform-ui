@@ -1,7 +1,12 @@
 import { expect, Page } from '@playwright/test'
 import { basePath, formVersion } from '@server/forms/strengths-and-needs/versions/v2.0/constants/formVersion'
-import type { AuditMessage } from '../../../support/AuditQueueClient'
+import { CommonOption } from '@server/forms/strengths-and-needs/versions/v2.0/constants/commonOption'
+import { Option } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/finance/constants/option'
+import { Step } from '@server/forms/strengths-and-needs/versions/v2.0/journeys/finance/constants/step'
+import { Section } from '@server/forms/strengths-and-needs/versions/v2.0/constants/section'
+import FinancesPage from '../../../pages/strengthsAndNeedsV2/financesPage'
 import { handlePrivacyScreenIfPresent } from '../../strengthsAndNeeds/sanUtils'
+import type { AuditMessage } from '../../../support/AuditQueueClient'
 
 export { CommonAuditEvent, SanAuditEvent } from '../auditEvents'
 
@@ -29,32 +34,47 @@ export function expectSanAuditEvent(
   }
 }
 
-/**
- * Finances is the shortest section, so helper targets it
- */
-// TODO Uncomment it during ACT-752 Finance framework
-// export const financeAnswers = [
-//   { question: Question.finance_income, value: [Option.employment] },
-//   { question: Question.finance_bank_account, value: CommonOption.yes },
-//   { question: Question.finance_money_management, value: Option.good },
-//   { question: Question.finance_money_management_good_details, value: 'Manages money well.' },
-//   { question: Question.finance_gambling, value: [CommonOption.no] },
-//   { question: Question.finance_debt, value: [CommonOption.no] },
-//   { question: Question.finance_changes, value: CommonOption.made_changes },
-//   { question: Question.finance_changes_made_changes_details, value: 'Has made changes.' },
-// ]
-
-/**
- * Nav from the handover to finances summary the way a practitioner would.
- */
-export const walkToFinanceSummary = async (
+/** Opens the first question page in the finance section via the OASys handover. */
+export const navigateToFinanceIncome = async (
   page: Page,
   handoverLink: string,
   sanAssessmentId: string,
 ): Promise<void> => {
   await page.goto(handoverLink)
   await handlePrivacyScreenIfPresent(page)
-  await page.goto(`/${basePath}/edit/${sanAssessmentId}/current/finances/finance`)
+  await page.goto(`${basePath}/edit/${sanAssessmentId}/current${Section.finance.path}/${Step.finance_income.path}`)
+}
+
+/**
+ * Nav from the handover to the finance-income page (first step of v2 Finance),
+ * then save through each step to reach the finance-summary page.
+ *
+ * v2 Finance page order (shortest path, no family_or_friends income):
+ *   1. finance-income      → Save and continue
+ *   2. finance-concerns    → answer Yes → Save and continue
+ *   3. finance-money-management → Save and continue
+ *   4. finance-changes     → Save and continue  (debt = no skips debt-type page)
+ *   → finance-summary
+ */
+export const walkToFinanceSummary = async (
+  page: Page,
+  handoverLink: string,
+  sanAssessmentId: string,
+): Promise<void> => {
+  await navigateToFinanceIncome(page, handoverLink, sanAssessmentId)
+  const financesPage = new FinancesPage(page)
+
+  await financesPage.questions.finance_income.option(Option.employment).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await expect(page).toHaveURL(new RegExp(Step.finance_concerns.path))
+  await financesPage.questions.finance_concerns.option(CommonOption.yes).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await expect(page).toHaveURL(new RegExp(Step.finance_money_management.path))
+  await financesPage.questions.finance_money_management.option(Option.good).check()
+  await financesPage.questions.finance_debt.option(CommonOption.no).check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await expect(page).toHaveURL(new RegExp(Step.finance_changes.path))
+  await financesPage.questions.finance_changes.option(CommonOption.made_changes).check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await expect(page).toHaveURL(/finance-summary/)
 }
