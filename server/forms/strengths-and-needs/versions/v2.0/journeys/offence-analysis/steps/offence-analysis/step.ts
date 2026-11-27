@@ -18,7 +18,7 @@ import { Option } from '../../constants/option'
 import { saveButton } from '../../../../constants/buttons'
 import { victimsCollection } from '../../constants/collections'
 import { autosaveSubmit } from '../../../../autosave'
-import { auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageView } from '../../../../audit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisStep = step({
@@ -57,7 +57,6 @@ export const offenceAnalysisStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.commitPendingCommands(),
           StrengthsAndNeedsEffects.emptyCollection(victimsCollection),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis),
         ],
         next: [
           redirect({

@@ -7,7 +7,7 @@ import { markAsCompleteButton } from '../../../../constants/buttons'
 import { createRoute } from '../../../../../../generators'
 import { baseSanRoute } from '../../../../constants/path'
 import { autosaveSubmit } from '../../../../autosave'
-import { auditPageAction, auditPageView } from '../../../../audit'
+import { auditPageView } from '../../../../audit'
 import { isUserSubmittedCondition, IsUserSubmitted } from '../../../../constants/userSubmitted'
 
 export const offenceAnalysisImpactStep = step({
@@ -51,7 +51,6 @@ export const offenceAnalysisImpactStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.yes),
           StrengthsAndNeedsEffects.commitPendingCommands(),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis_impact),
         ],
         next: [
           redirect({
@@ -64,7 +63,7 @@ export const offenceAnalysisImpactStep = step({
           StrengthsAndNeedsEffects.saveCurrentStepAnswers(false),
           StrengthsAndNeedsEffects.setSectionProgressV2(Section.offence_analysis, SectionComplete.no),
           StrengthsAndNeedsEffects.setUserSubmitted(Step.offence_analysis_summary.code, IsUserSubmitted.false),
-          auditPageAction(SanAuditEvent.SAVE_QUESTION_PAGE, Section.offence_analysis, Step.offence_analysis_impact),
+          StrengthsAndNeedsEffects.commitPendingCommands(),
         ],
       },
     }),
