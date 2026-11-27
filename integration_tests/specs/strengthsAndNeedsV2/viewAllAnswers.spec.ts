@@ -658,9 +658,9 @@ test.describe('View all answers', () => {
         'Incomplete\n' +
         'Employment and education\n' +
         'Incomplete\n' +
-        'Drug use\n' +
-        'Incomplete\n' +
         'Finances\n' +
+        'Incomplete\n' +
+        'Drug use\n' +
         'Incomplete\n' +
         'Alcohol use\n' +
         'Incomplete\n' +
